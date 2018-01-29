@@ -1,11 +1,17 @@
 const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
+const NULL_ECDSA_SIGNATURE = {
+    r: "",
+    s: "",
+    v: 0
+};
+
 const WEB3_ERROR_INVALID_ADDRESS = "invalid address";
 const WEB3_ERROR_ACCOUNT_NOT_FOUND = "Account not found";
 const WEB3_ERROR_NO_PRIVATE_KEY = "cannot sign data; no private key";
 
-
 export {
     NULL_ADDRESS,
+    NULL_ECDSA_SIGNATURE,
     WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_ACCOUNT_NOT_FOUND,
     WEB3_ERROR_NO_PRIVATE_KEY,

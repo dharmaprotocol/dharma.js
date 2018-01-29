@@ -1,9 +1,9 @@
 import Web3 from 'web3'
-import { ECDSASignature, DebtOrder } from './types'
+import { ECDSASignature, DebtOrder } from '../types'
 import promisify from 'tiny-promisify'
 import { DebtOrderWrapper } from 'src/wrappers/debt_order_wrapper'
 import { signatureUtils } from 'utils/signature_utils'
-import { Assertions } from './invariants'
+import { Assertions } from '../invariants'
 import singleLineString from 'single-line-string'
 import {
     WEB3_ERROR_INVALID_ADDRESS,
@@ -11,14 +11,14 @@ import {
     WEB3_ERROR_NO_PRIVATE_KEY
 } from 'utils/constants'
 
-export const OrderSignerErrors = {
+export const SignerAPIErrors = {
     INVALID_SIGNING_KEY: (unavailableKey: string) =>
         singleLineString`Unable to sign debt order because private key
                          associated with ${unavailableKey} is invalid
                          or unavailable`
 }
 
-export class OrderSigner {
+export class SignerAPI {
     private web3: Web3
     private assert: Assertions
 
@@ -93,7 +93,7 @@ export class OrderSigner {
         payload: string,
         address: string
     ): Promise<ECDSASignature> {
-        this.assert.account.notNull(address, OrderSignerErrors.INVALID_SIGNING_KEY(address))
+        this.assert.account.notNull(address, SignerAPIErrors.INVALID_SIGNING_KEY(address))
 
         const signPromise = promisify(this.web3.eth.sign)
 
@@ -107,7 +107,7 @@ export class OrderSigner {
                 e.message.includes(WEB3_ERROR_ACCOUNT_NOT_FOUND) ||
                 e.message.includes(WEB3_ERROR_NO_PRIVATE_KEY)
             ) {
-                throw new Error(OrderSignerErrors.INVALID_SIGNING_KEY(address))
+                throw new Error(SignerAPIErrors.INVALID_SIGNING_KEY(address))
             } else {
                 throw e
             }

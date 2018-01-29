@@ -1,12 +1,18 @@
 import { BigNumber } from 'bignumber.js'
-import { DebtOrder, IssuanceCommitment } from '../types'
+import { ECDSASignature, DebtOrder, IssuanceCommitment } from '../types'
 import Web3Utils from 'web3-utils'
+
+import { NULL_ECDSA_SIGNATURE } from 'utils/constants'
 
 export class DebtOrderWrapper {
     private debtOrder: DebtOrder
 
     constructor(debtOrder: DebtOrder) {
         this.debtOrder = debtOrder
+    }
+
+    public getCreditor(): string {
+        return this.debtOrder.creditor
     }
 
     /**
@@ -119,5 +125,61 @@ export class DebtOrderWrapper {
             this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
         )
+    }
+
+    public getOrderAddresses(): string[] {
+        return [
+            this.debtOrder.issuanceVersion,
+            this.debtOrder.debtor,
+            this.debtOrder.underwriter,
+            this.debtOrder.termsContract,
+            this.debtOrder.principalToken,
+            this.debtOrder.relayer
+        ]
+    }
+
+    public getOrderValues(): BigNumber[] {
+        return [
+            this.debtOrder.underwriterRiskRating,
+            this.debtOrder.salt,
+            this.debtOrder.principalAmount,
+            this.debtOrder.underwriterFee,
+            this.debtOrder.relayerFee,
+            this.debtOrder.creditorFee,
+            this.debtOrder.debtorFee,
+            this.debtOrder.expirationTimestampInSec
+        ]
+    }
+
+    public getOrderBytes32(): string[] {
+        return [this.debtOrder.termsContractParameters]
+    }
+
+    public getSignaturesR(): string[] {
+        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures()
+
+        return [debtorSignature.r, creditorSignature.r, underwriterSignature.r]
+    }
+
+    public getSignaturesS(): string[] {
+        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures()
+
+        return [debtorSignature.s, creditorSignature.s, underwriterSignature.s]
+    }
+
+    public getSignaturesV(): number[] {
+        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures()
+
+        return [debtorSignature.v, creditorSignature.v, underwriterSignature.v]
+    }
+
+    private getSignatures(): ECDSASignature[] {
+        let { debtorSignature, creditorSignature, underwriterSignature } = this.debtOrder
+
+        debtorSignature = debtorSignature || NULL_ECDSA_SIGNATURE
+        creditorSignature = creditorSignature || NULL_ECDSA_SIGNATURE
+        underwriterSignature = underwriterSignature || NULL_ECDSA_SIGNATURE
+
+        return [debtorSignature, creditorSignature, underwriterSignature]
     }
 }

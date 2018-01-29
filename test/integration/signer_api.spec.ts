@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { OrderSigner, OrderSignerErrors } from 'src/order_signer'
+import { SignerAPI, SignerAPIErrors } from 'src/apis/signer_api'
 import * as Units from 'utils/units'
 import moment from 'moment'
 import Web3 from 'web3'
@@ -13,7 +13,7 @@ import { ACCOUNTS, NULL_ADDRESS } from '../accounts'
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
 const web3 = new Web3(provider)
 
-let orderSigner = new OrderSigner(web3)
+let orderSigner = new SignerAPI(web3)
 
 // For the unit test's purposes, we use arbitrary
 // addresses for all debt order fields that expect addresses.
@@ -54,7 +54,7 @@ describe('Order Signer (Unit Tests)', () => {
         //
         //     test("throws INVALID_SIGNING_KEY error", async () => {
         //         await expect(orderSigner.asDebtor(debtOrder)).rejects
-        //             .toThrow(OrderSignerErrors.INVALID_SIGNING_KEY(debtOrder.debtor));
+        //             .toThrow(SignerAPIErrors.INVALID_SIGNING_KEY(debtOrder.debtor));
         //     });
         // });
 
@@ -64,7 +64,7 @@ describe('Order Signer (Unit Tests)', () => {
 
             test('throws INVALID_SIGNING_KEY error', async () => {
                 await expect(orderSigner.asDebtor(debtOrderWithNullDebtor)).rejects.toThrow(
-                    OrderSignerErrors.INVALID_SIGNING_KEY(NULL_ADDRESS)
+                    SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS)
                 )
             })
         })
@@ -75,7 +75,7 @@ describe('Order Signer (Unit Tests)', () => {
 
             test('throws INVALID_SIGNING_KEY error', async () => {
                 await expect(orderSigner.asDebtor(debtOrderWithExternalDebtor)).rejects.toThrow(
-                    OrderSignerErrors.INVALID_SIGNING_KEY(debtOrderWithExternalDebtor.debtor)
+                    SignerAPIErrors.INVALID_SIGNING_KEY(debtOrderWithExternalDebtor.debtor)
                 )
             })
         })
@@ -123,7 +123,7 @@ describe('Order Signer (Unit Tests)', () => {
 
             test('throws INVALID_SIGNING_KEY error', async () => {
                 await expect(orderSigner.asCreditor(debtOrderWithNullCreditor)).rejects.toThrow(
-                    OrderSignerErrors.INVALID_SIGNING_KEY(NULL_ADDRESS)
+                    SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS)
                 )
             })
         })
@@ -134,7 +134,7 @@ describe('Order Signer (Unit Tests)', () => {
 
             test('throws INVALID_SIGNING_KEY error', async () => {
                 await expect(orderSigner.asCreditor(debtOrderWithExternalCreditor)).rejects.toThrow(
-                    OrderSignerErrors.INVALID_SIGNING_KEY(debtOrderWithExternalCreditor.creditor)
+                    SignerAPIErrors.INVALID_SIGNING_KEY(debtOrderWithExternalCreditor.creditor)
                 )
             })
         })
@@ -187,7 +187,7 @@ describe('Order Signer (Unit Tests)', () => {
             test('throws INVALID_SIGNING_KEY error', async () => {
                 await expect(
                     orderSigner.asUnderwriter(debtOrderWithNullUnderwriter)
-                ).rejects.toThrow(OrderSignerErrors.INVALID_SIGNING_KEY(NULL_ADDRESS))
+                ).rejects.toThrow(SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS))
             })
         })
 
@@ -200,7 +200,7 @@ describe('Order Signer (Unit Tests)', () => {
                 await expect(
                     orderSigner.asUnderwriter(debtOrderWithExternalUnderwriter)
                 ).rejects.toThrow(
-                    OrderSignerErrors.INVALID_SIGNING_KEY(
+                    SignerAPIErrors.INVALID_SIGNING_KEY(
                         debtOrderWithExternalUnderwriter.underwriter
                     )
                 )

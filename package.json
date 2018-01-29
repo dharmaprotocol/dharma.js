@@ -23,7 +23,7 @@
     "prebuild": "rimraf dist",
     "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
-    "testrpc": "ganache-cli -m 'arm impose enemy alpha bird attend hunt host town sleep charge catalog'",
+    "chain": "ganache-cli --networkId 70 --accounts 20 -m 'arm impose enemy alpha bird attend hunt host town sleep charge catalog'",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache",
