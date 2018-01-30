@@ -4,6 +4,8 @@ import moment from 'moment'
 import * as Units from 'utils/units'
 import Web3 from 'web3'
 
+import { DummyTokenContract, DummyTokenRegistryContract } from 'src/wrappers'
+
 import { ACCOUNTS, NULL_ADDRESS } from '../accounts'
 
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
@@ -32,7 +34,27 @@ let debtOrder = {
     salt: new BigNumber(0)
 }
 
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 }
+
 describe('Order API (Integration Tests)', () => {
+    let principalToken: DummyTokenContract
+
+    // Example of how to initialize new tokens
+    beforeAll(async () => {
+        const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)
+
+        // Get the token address for our dummy Augur REP token
+        const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync('REP')
+
+        principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS)
+
+        // Set arbitrary balances for people
+        await principalToken.setBalance.sendTransactionAsync(ACCOUNTS[1].address, Units.ether(1))
+
+        const personsBalance = await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
+        console.log(personsBalance)
+    })
+
     test('base case', async () => {
         const test = await orderApi.fillDebtOrder(debtOrder)
     })

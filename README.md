@@ -7,22 +7,12 @@ _Install dependencies:_
 yarn
 ```
 
-_Separately, download Charta smart contracts and get them set up_
+_Start `testrpc` and migrate Dharma contract dependencies_
 ```bash
-cd ../
-git clone https://github.com/dharmaprotocol/charta.git
-cd charta/
-
-# Install dependencies
-yarn
-
-# Start local test blockchain and install local dependencies:
 yarn chain
 ```
 
 **Wait until you see `Dependency contract migrations complete, test chain is ready for use!` before running tests.**
-
-Then, in the `dharma.js` repo:
 
 _Testing w/ hot-reloading_
 ```bash

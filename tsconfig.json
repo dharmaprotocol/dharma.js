@@ -22,6 +22,6 @@
     "src",
     "test",
     "test/**/*.spec.ts",
-    "utils",
+    "utils"
   ]
 }
