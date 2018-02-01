@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { ECDSASignature, DebtOrder, IssuanceCommitment } from '../types'
 import Web3Utils from 'web3-utils'
-
 import { NULL_ECDSA_SIGNATURE } from 'utils/constants'
 
 export class DebtOrderWrapper {
@@ -63,13 +62,13 @@ export class DebtOrderWrapper {
         return Web3Utils.soliditySha3(
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
+            this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
             this.debtOrder.debtorFee,
             this.debtOrder.creditorFee,
             this.debtOrder.relayer,
             this.debtOrder.relayerFee,
-            this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
         )
     }
@@ -120,9 +119,9 @@ export class DebtOrderWrapper {
         return Web3Utils.soliditySha3(
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
+            this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
-            this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
         )
     }

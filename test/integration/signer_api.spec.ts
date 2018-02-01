@@ -32,7 +32,7 @@ let debtOrder = {
     underwriterFee: Units.ether(0.001),
     underwriterRiskRating: Units.percent(0.001),
     termsContract: ACCOUNTS[7].address,
-    termsContractParameters: ACCOUNTS[8].address,
+    termsContractParameters: web3.sha3('bytes32proxy'),
     expirationTimestampInSec: new BigNumber(moment().seconds()),
     salt: new BigNumber(0)
 }
@@ -95,13 +95,13 @@ describe('Order Signer (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
                     debtOrder.debtorFee,
                     debtOrder.creditorFee,
                     debtOrder.relayer,
                     debtOrder.relayerFee,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
 
@@ -154,13 +154,13 @@ describe('Order Signer (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
                     debtOrder.debtorFee,
                     debtOrder.creditorFee,
                     debtOrder.relayer,
                     debtOrder.relayerFee,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
 
@@ -222,9 +222,9 @@ describe('Order Signer (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
 
