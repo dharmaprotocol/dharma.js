@@ -79,10 +79,10 @@ export class OrderAPI {
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
         const debtToken = await DebtTokenContract.deployed(this.web3, TX_DEFAULTS)
 
-        this.assert.order.invalidDebtorFee(debtOrder, OrderAPIErrors.INVALID_DEBTOR_FEE())
-        this.assert.order.invalidUnderwriterFee(debtOrder, OrderAPIErrors.INVALID_UNDERWRITER_FEE())
-        this.assert.order.invalidRelayerFee(debtOrder, OrderAPIErrors.INVALID_RELAYER_FEE())
-        this.assert.order.invalidFees(debtOrder, OrderAPIErrors.INVALID_FEES())
+        this.assert.order.validDebtorFee(debtOrder, OrderAPIErrors.INVALID_DEBTOR_FEE())
+        this.assert.order.validUnderwriterFee(debtOrder, OrderAPIErrors.INVALID_UNDERWRITER_FEE())
+        this.assert.order.validRelayerFee(debtOrder, OrderAPIErrors.INVALID_RELAYER_FEE())
+        this.assert.order.validFees(debtOrder, OrderAPIErrors.INVALID_FEES())
         this.assert.order.notExpired(debtOrder, OrderAPIErrors.EXPIRED())
 
         this.assert.order.notAlreadyIssued(
@@ -91,19 +91,17 @@ export class OrderAPI {
             OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED()
         )
 
-        // const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(this.web3, TX_DEFAULTS)
+        // this.assert.order.sufficientCreditorBalance(
+        //     debtOrder,
+        //     dummyToken,
+        //     OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT(),
+        // )
 
-        // const dummyToken = await DummyTokenContract.deployed(this.web3, TX_DEFAULTS)
-        this.assert.order.insufficientCreditorBalance(
-            dummyToken,
-            debtOrder,
-            OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT()
-        )
-        // this.assert.order.insufficientCreditorAllowance(debtOrder, OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT())
+        // this.assert.order.sufficientCreditorAllowance(dummyToken, debtOrder, OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT())
 
         // // TODO: Fix hash issue
-        // this.assert.order.validDebtorSignature(debtOrder, debtOrderWrapped, options, OrderAPIErrors.INVALID_DEBTOR_SIGNATURE())
-        // this.assert.order.validCreditorSignature(debtOrder, debtOrderWrapped, options, OrderAPIErrors.INVALID_CREDITOR_SIGNATURE())
+        // this.assert.order.validDebtorSignature(debtOrder, OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(), options)
+        // this.assert.order.validCreditorSignature(debtOrder, debtOrderWrapped, OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(), options)
         // this.assert.order.validUnderwriterSignature(debtOrder, debtOrderWrapped, options, OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE())
 
         // // TODO: Fix error on debt order cancellation commitment hash (temp assertion by order_api.spec.ts logs)

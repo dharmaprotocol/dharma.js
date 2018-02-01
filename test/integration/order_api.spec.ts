@@ -1,10 +1,12 @@
 import { BigNumber } from 'bignumber.js'
 import { OrderAPI, OrderAPIErrors } from 'src/apis/order_api'
+import { SignerAPI } from 'src/apis/signer_api'
 import moment from 'moment'
 import * as Units from 'utils/units'
 import Web3 from 'web3'
 import ABIDecoder from 'abi-decoder'
-import { DebtOrder } from '../../src/types'
+import { ECDSASignature, DebtOrder } from '../../src/types'
+import { signatureUtils } from 'utils/signature_utils'
 
 import {
     DummyTokenContract,
@@ -19,6 +21,7 @@ import { ACCOUNTS, NULL_ADDRESS } from '../accounts'
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
 const web3 = new Web3(provider)
 const orderApi = new OrderAPI(web3)
+const orderSigner = new SignerAPI(web3)
 
 // For the unit test's purposes, we use arbitrary
 // addresses for all debt order fields that expect addresses.
@@ -37,7 +40,7 @@ let debtOrder = {
     underwriterFee: Units.ether(0.001),
     underwriterRiskRating: Units.percent(0.001),
     termsContract: ACCOUNTS[7].address,
-    termsContractParameters: ACCOUNTS[8].address,
+    termsContractParameters: web3.sha3('bytes32proxy'),
     expirationTimestampInSec: new BigNumber(
         moment()
             .add(7, 'days')
@@ -71,8 +74,11 @@ describe('Order API (Integration Tests)', () => {
         // personsBalance = await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
     })
 
-    test('base case', async () => {
-        const test = await orderApi.fillDebtOrder(debtOrder, TX_DEFAULTS)
+    describe('...base case', () => {
+        test('base case', async () => {
+            // TX_DEFAULTS.from = debtOrder.debtor
+            const test = await orderApi.fillDebtOrder(debtOrder)
+        })
     })
 
     /*
@@ -245,116 +251,112 @@ describe('Order API (Integration Tests)', () => {
             // await expect(orderApi.fillDebtOrder(toCancelIssuance)).rejects.toThrow(
             //     OrderAPIErrors.ISSUANCE_CANCELLED()
         })
+    })
 
-        // NEEDS HASH FIX
-        // /*
-        //     CONSENSUALITY INVARIANTS
-        // */
+    // /*
+    //     CONSENSUALITY INVARIANTS
+    // */
 
-        // describe('...if message sender not debtor, debtor signature must be valid', () => {
-        //     let msgSenderNotDebtor
+    // describe('...if message sender not debtor, debtor signature must be valid', async () => {
+    //     let msgSenderNotDebtor
+    //     let debtOrderWrapped
 
-        //     beforeAll(async () => {
-        //         msgSenderNotDebtor = Object.assign({}, debtOrder)
-        //         const debtOrderWrapped = new DebtOrderWrapper(msgSenderNotDebtor)
-        //     })
+    //     beforeAll(async () => {
+    //         msgSenderNotDebtor = Object.assign({}, debtOrder)
+    //         debtOrderWrapped = new DebtOrderWrapper(msgSenderNotDebtor)
 
-        //     test('throws INVALID_DEBTOR_SIGNATURE error', async () => {
-        //         await expect(orderApi.fillDebtOrder(msgSenderNotDebtor, TX_DEFAULTS)).rejects.toThrow(
-        //             OrderAPIErrors.INVALID_DEBTOR_SIGNATURE()
-        //         )
-        //     })
-        // })
+    //     })
+    //     const signatures = await orderSigner.asDebtor(debtOrder)
 
-        // describe('...if message sender not creditor, creditor signature must be valid', () =>  {
-        //     let msgSenderNotCreditor
+    //     debtOrder.debtorSignature = signatures
 
-        //     beforeAll(async () => {
-        //         msgSenderNotCreditor = Object.assign({}, debtOrder)
-        //         const debtOrderWrapped = new DebtOrderWrapper(msgSenderNotCreditor)
-        //     })
+    //     test('throws INVALID_DEBTOR_SIGNATURE error', async () => {
+    //         await expect(orderApi.fillDebtOrder(msgSenderNotDebtor, TX_DEFAULTS)).rejects.toThrow(
+    //             OrderAPIErrors.INVALID_DEBTOR_SIGNATURE()
+    //         )
+    //     })
+    // })
 
-        //     test('throws INVALID_CREDITOR_SIGNATURE error', async () => {
-        //         await expect(orderApi.fillDebtOrder(msgSenderNotCreditor, TX_DEFAULTS)).rejects.toThrow(
-        //             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE()
-        //         )
-        //     })
-        // })
+    // describe('...if message sender not creditor, creditor signature must be valid', async () =>  {
+    //     let msgSenderNotCreditor
+    //     let debtOrderWrapped
 
-        // describe('...if message sender not underwriter, underwriter signature must be valid', () => {
-        //     let msgSenderNotUnderwriter
+    //     beforeAll(async () => {
+    //         // msgSenderNotCreditor = Object.assign({}, debtOrder)
+    //         debtOrderWrapped = new DebtOrderWrapper(msgSenderNotCreditor)
+    //     })
 
-        //     beforeAll(async () => {
-        //         msgSenderNotUnderwriter = Object.assign({}, debtOrder)
-        //         const debtOrderWrapped = new DebtOrderWrapper(msgSenderNotUnderwriter)
-        //     })
+    //     const misSignature = await orderSigner.asDebtor(debtOrder)
+    //     // msgSenderNotCreditor = Object.assign({debtorSignature: misSignature}, msgSenderNotCreditor)
+    //     debtOrder.creditorSignature = misSignature
+    //     // console.log(debtOrder.creditorSignature)
+    //     msgSenderNotCreditor = Object.assign({}, debtOrder)
+    //     // console.log(msgSenderNotCreditor)
 
-        //     test('throws INVALID_UNDERWRITER_SIGNATURE error', async () => {
-        //         await expect(orderApi.fillDebtOrder(msgSenderNotUnderwriter, TX_DEFAULTS)).rejects.toThrow(
-        //             OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE()
-        //         )
-        //     })
-        // })
+    //     test('throws INVALID_CREDITOR_SIGNATURE error', async () => {
+    //         await expect(orderApi.fillDebtOrder(msgSenderNotCreditor, debtOrderWrapped, TX_DEFAULTS)).rejects.toThrow(
+    //             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE()
+    //         )
+    //     })
+    // })
 
-        /*
-            EXTERNAL INVARIANTS
-        */
+    // describe('...if message sender not underwriter, underwriter signature must be valid', () => {
+    //     let msgSenderNotUnderwriter
 
-        describe('...creditor has insufficient balance', async () => {
-            let personsBalance
-            let tokenWithoutCreditorBalance = Object.assign({}, debtOrder)
-            // console.log(tokenWithoutCreditorBalance)
+    //     beforeAll(async () => {
+    //         msgSenderNotUnderwriter = Object.assign({}, debtOrder)
+    //         const debtOrderWrapped = new DebtOrderWrapper(msgSenderNotUnderwriter)
+    //     })
 
-            beforeAll(async () => {
-                // debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS)
-                const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(
-                    web3,
-                    TX_DEFAULTS
-                )
+    //     test('throws INVALID_UNDERWRITER_SIGNATURE error', async () => {
+    //         await expect(orderApi.fillDebtOrder(msgSenderNotUnderwriter, TX_DEFAULTS)).rejects.toThrow(
+    //             OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE()
+    //         )
+    //     })
+    // })
 
-                // Get the token address for our dummy Augur REP token
-                const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync(
-                    'REP'
-                )
+    /*
+        EXTERNAL INVARIANTS
+    */
 
-                principalToken = await DummyTokenContract.at(
-                    principalTokenAddress,
-                    web3,
-                    TX_DEFAULTS
-                )
+    describe('...creditor has insufficient balance', async () => {
+        let tokenWithoutCreditorBalance = Object.assign({}, debtOrder)
 
-                // Set arbitrary balances for people
-                await principalToken.setBalance.sendTransactionAsync(
-                    ACCOUNTS[1].address,
-                    Units.ether(0.5)
-                )
+        beforeAll(async () => {
+            const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)
 
-                personsBalance = await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
-                // console.log(personsBalance)
-            })
+            // Get the token address for our dummy Augur REP token
+            const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync('REP')
 
-            // console.log(personsBalance)
-            // const result = await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
-            // console.log(result)
-            // DummyTokenContract.
-            // debtOrder.creditor.
-            // tokenWithoutCreditorBalance.principalAmount = Units.ether(0.5)
+            principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS)
 
-            test('throws CREDITOR_BALANCE_INSUFFICIENT error', async () => {
-                await expect(
-                    orderApi.fillDebtOrder(tokenWithoutCreditorBalance, principalToken)
-                ).rejects.toThrow(OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT())
-            })
+            // Set arbitrary balances for people
+            await principalToken.setBalance.sendTransactionAsync(
+                ACCOUNTS[1].address,
+                Units.ether(0.5)
+            )
+            const personsBalance = await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
         })
 
-        // describe('...creditor allowance to TokenTransferProxy is insufficient', () => {
-        //     // add logic
-
-        //     test('throws CREDITOR_ALLOWANCE_INSUFFICIENT error', async () => {
-        //         await expect(orderApi.fillDebtOrder(transferWithoutSufficientBalance)).rejects.toThrow(
-        //             OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT()
-        //         )
-        //     })
-        // })
+        test('throws CREDITOR_BALANCE_INSUFFICIENT error', async () => {
+            await expect(
+                orderApi.fillDebtOrder(tokenWithoutCreditorBalance, principalToken)
+            ).rejects.toThrow(OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT())
+        })
     })
+
+    // describe('...creditor allowance to TokenTransferProxy is insufficient', () => {
+    //     let tokenWithoutCreditorsAllowance = Object.assign({}, debtOrder)
+
+    //     beforeAll(async () => {
+    //         //
+    //         const
+    //     })
+
+    //     test('throws CREDITOR_ALLOWANCE_INSUFFICIENT error', async () => {
+    //         await expect(orderApi.fillDebtOrder(tokenWithoutCreditorsAllowance, principalToken)).rejects.toThrow(
+    //             OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT()
+    //         )
+    //     })
+    // })
 })

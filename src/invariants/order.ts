@@ -23,28 +23,28 @@ export class OrderAssertions {
     */
 
     // principal > debtor fee
-    public invalidDebtorFee(debtOrder: DebtOrder, errorMessage: string) {
+    public validDebtorFee(debtOrder: DebtOrder, errorMessage: string) {
         if (debtOrder.principalAmount.lt(debtOrder.debtorFee)) {
             throw new Error(errorMessage)
         }
     }
 
     // If no underwriter is specified, underwriter fees must be 0
-    public invalidUnderwriterFee(debtOrder: DebtOrder, errorMessage: string) {
+    public validUnderwriterFee(debtOrder: DebtOrder, errorMessage: string) {
         if (debtOrder.underwriter === undefined && debtOrder.underwriterFee.gt(0)) {
             throw new Error(errorMessage)
         }
     }
 
     // If no relayer is specified, relayer fees must be 0
-    public invalidRelayerFee(debtOrder: DebtOrder, errorMessage: string) {
+    public validRelayerFee(debtOrder: DebtOrder, errorMessage: string) {
         if (debtOrder.relayer === undefined && debtOrder.relayerFee.gt(0)) {
             throw new Error(errorMessage)
         }
     }
 
     // creditorFee + debtorFee == relayerFee + underwriterFee
-    public invalidFees(debtOrder: DebtOrder, errorMessage: string) {
+    public validFees(debtOrder: DebtOrder, errorMessage: string) {
         const totalFees = debtOrder.creditorFee.add(debtOrder.debtorFee)
         const otherFees = debtOrder.relayerFee.add(debtOrder.underwriterFee)
         if (!totalFees.eq(debtOrder.relayerFee.add(debtOrder.underwriterFee))) {
@@ -82,10 +82,9 @@ export class OrderAssertions {
     //         throw new Error(errorMessage)
     //     }
     // }
-
-    // // TODO: Fix error on debt order cancellation commitment hash
     // // Issuance cannot have been cancelled
     // public async issuanceNotCancelled(debtKernel: DebtKernelContract, debtOrderWrapped: DebtOrderWrapper, errorMessage: string) {
+    //     // const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
     //     if (await debtKernel.issuanceCancelled.callAsync(debtOrderWrapped.getIssuanceCommitmentHash())) {
     //         throw new Error(errorMessage)
     //     }
@@ -96,12 +95,8 @@ export class OrderAssertions {
     */
 
     // If message sender not debtor, debtor signature must be valid
-    public validDebtorSignature(
-        debtOrder: DebtOrder,
-        debtOrderWrapped: DebtOrderWrapper,
-        options?: TxData,
-        errorMessage: string
-    ) {
+    public validDebtorSignature(debtOrder: DebtOrder, errorMessage: string, options?: TxData) {
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
         if (options.from !== debtOrder.debtor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -119,9 +114,14 @@ export class OrderAssertions {
     public validCreditorSignature(
         debtOrder: DebtOrder,
         debtOrderWrapped: DebtOrderWrapper,
-        options?: TxData,
-        errorMessage: string
+        errorMessage: string,
+        options?: TxData
     ) {
+        console.log(options.from)
+        console.log(debtOrder.creditor)
+        console.log(debtOrder.creditorSignature)
+        console.log(debtOrderWrapped.getCreditorCommitmentHash())
+        // console.log(debtOrder.debtorSignature)
         if (options.from !== debtOrder.creditor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -160,22 +160,33 @@ export class OrderAssertions {
     */
 
     // Creditor balance > principal + fee
-    public async insufficientCreditorBalance(
-        dummyToken: DummyTokenContract,
+    public async sufficientCreditorBalance(
         debtOrder: DebtOrder,
+        dummyToken: DummyTokenContract,
         errorMessage: string
     ) {
-        const creditorBalance = await dummyToken.balanceOf.callAsync(debtOrder.creditor)
-        console.log(creditorBalance)
-        if (creditorBalance < debtOrder.principalAmount.add(debtOrder.creditorFee)) {
+        const creditorBalance = await dummyToken.balanceOf.callAsync(debtOrder.issuanceVersion)
+
+        if (creditorBalance.lt(debtOrder.principalAmount.add(debtOrder.creditorFee))) {
             throw new Error(errorMessage)
         }
     }
 
     // // Creditor Allowance to TokenTransferProxy >= principal + creditorFee
-    // public async sufficientCreditorAllowance(dummyToken: DummyTokenContract, debtOrder: DebtOrder, errorMessage: string) {
+    // public async sufficientCreditorAllowance(dummyToken: DummyTokenContract, debtKernel: DebtKernelContract, debtOrder: DebtOrder, errorMessage: string) {
+
+    //     const temp = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
+
+    //     const tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY
+
     //     const creditorAllowance = await dummyToken.allowance.callAsync(debtOrder.creditor)
-    //     if(creditorAllowance >= debtOrder.principalAmount.add(debtOrder.creditorFee)) {
+
+    //     const totalCreditorPayment = debtOrder.principalAmount.add(debtOrder.creditorFee)
+
+    //     const creditorBalance = dummyToken.balanceOf.callAsync(debtOrder.creditor)
+    //     const creditor
+
+    //     if(creditorAllowance.gte(debtOrder.principalAmount.add(debtOrder.creditorFee))) {
     //         throw new Error(errorMessage)
     //     }
     // }

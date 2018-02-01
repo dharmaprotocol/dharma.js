@@ -24,4 +24,5 @@ yarn test:watch
 _Ensure watchman is updated_
 ```bash
 brew uninstall watchman
+brew install watchman
 ```
