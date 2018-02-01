@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { ECDSASignature, DebtOrder, IssuanceCommitment } from '../types'
-import Web3Utils from 'web3-utils'
-
+import { SHA3 } from 'utils/solidity'
 import { NULL_ECDSA_SIGNATURE } from 'utils/constants'
 
 export class DebtOrderWrapper {
@@ -41,7 +40,7 @@ export class DebtOrderWrapper {
      */
     public getIssuanceCommitmentHash(): string {
         const issuanceCommitment = this.getIssuanceCommitment()
-        return Web3Utils.soliditySha3(
+        return SHA3([
             issuanceCommitment.issuanceVersion,
             issuanceCommitment.debtor,
             issuanceCommitment.underwriter,
@@ -49,7 +48,7 @@ export class DebtOrderWrapper {
             issuanceCommitment.termsContract,
             issuanceCommitment.termsContractParameters,
             issuanceCommitment.salt
-        )
+        ])
     }
 
     /**
@@ -60,18 +59,18 @@ export class DebtOrderWrapper {
      * @return The debt order's hash
      */
     public getHash(): string {
-        return Web3Utils.soliditySha3(
+        return SHA3([
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
+            this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
             this.debtOrder.debtorFee,
             this.debtOrder.creditorFee,
             this.debtOrder.relayer,
             this.debtOrder.relayerFee,
-            this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
-        )
+        ])
     }
 
     /**
@@ -117,14 +116,14 @@ export class DebtOrderWrapper {
      * @return Underwriter commitment hash
      */
     public getUnderwriterCommitmentHash(): string {
-        return Web3Utils.soliditySha3(
+        return SHA3([
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
             this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
-        )
+        ])
     }
 
     public getOrderAddresses(): string[] {

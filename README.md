@@ -18,3 +18,10 @@ _Testing w/ hot-reloading_
 ```bash
 yarn test:watch
 ```
+
+## Troubleshooting
+
+_Ensure watchman is updated_
+```bash
+brew uninstall watchman
+```
