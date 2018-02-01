@@ -34,7 +34,7 @@ let debtOrder = {
     underwriterFee: Units.ether(0.001),
     underwriterRiskRating: Units.percent(0.001),
     termsContract: ACCOUNTS[7].address,
-    termsContractParameters: ACCOUNTS[8].address,
+    termsContractParameters: web3.sha3('bytes32proxy'),
     expirationTimestampInSec: new BigNumber(moment().seconds()),
     salt: new BigNumber(0)
 }

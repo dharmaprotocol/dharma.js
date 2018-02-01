@@ -80,6 +80,7 @@
   "devDependencies": {
     "@types/jest": "^22.0.0",
     "@types/node": "^8.0.0",
+    "bn.js": "^4.11.8",
     "charta": "git://github.com/dharmaprotocol/charta.git#develop-transpiled",
     "colors": "^1.1.2",
     "commitizen": "^2.9.6",
