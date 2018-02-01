@@ -72,7 +72,7 @@ export class OrderAPI {
     // TODO: Add validations
     public async fillDebtOrder(
         debtOrder: DebtOrder,
-        dummyToken?: DummyTokenContract,
+        principalToken?: DummyTokenContract,
         options?: TxData
     ): Promise<string> {
         const debtKernel = await this.loadDebtKernel()
@@ -91,31 +91,46 @@ export class OrderAPI {
             OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED()
         )
 
-        // this.assert.order.sufficientCreditorBalance(
-        //     debtOrder,
-        //     dummyToken,
-        //     OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT(),
-        // )
+        this.assert.order.sufficientCreditorBalance(
+            debtOrder,
+            principalToken,
+            OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT()
+        )
 
-        // this.assert.order.sufficientCreditorAllowance(dummyToken, debtOrder, OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT())
+        await this.assert.order.sufficientCreditorAllowance(
+            debtOrder,
+            principalToken,
+            debtKernel,
+            OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT()
+        )
 
-        // // TODO: Fix hash issue
-        // this.assert.order.validDebtorSignature(debtOrder, OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(), options)
-        // this.assert.order.validCreditorSignature(debtOrder, debtOrderWrapped, OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(), options)
-        // this.assert.order.validUnderwriterSignature(debtOrder, debtOrderWrapped, options, OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE())
+        await this.assert.order.debtOrderNotCancelled(
+            debtOrder,
+            debtKernel,
+            OrderAPIErrors.ORDER_CANCELLED()
+        )
 
-        // // TODO: Fix error on debt order cancellation commitment hash (temp assertion by order_api.spec.ts logs)
-        // await this.assert.order.debtOrderNotCancelled(
-        //     debtKernel,
-        //     debtOrderWrapped,
-        //     OrderAPIErrors.ORDER_CANCELLED()
-        // )
+        await this.assert.order.issuanceNotCancelled(
+            debtOrder,
+            debtKernel,
+            OrderAPIErrors.ISSUANCE_CANCELLED()
+        )
 
-        // await this.assert.order.issuanceNotCancelled(
-        //     debtKernel,
-        //     debtOrderWrapped,
-        //     OrderAPIErrors.ISSUANCE_CANCELLED()
-        // )
+        this.assert.order.validDebtorSignature(
+            debtOrder,
+            OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
+            options
+        )
+        this.assert.order.validCreditorSignature(
+            debtOrder,
+            OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
+            options
+        )
+        this.assert.order.validUnderwriterSignature(
+            debtOrder,
+            OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
+            options
+        )
 
         return debtKernel.fillDebtOrder.sendTransactionAsync(
             debtOrderWrapped.getCreditor(),
