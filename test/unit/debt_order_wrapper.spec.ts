@@ -79,13 +79,13 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
                     debtOrder.debtorFee,
                     debtOrder.creditorFee,
                     debtOrder.relayer,
                     debtOrder.relayerFee,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
             )
@@ -126,9 +126,9 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
             )

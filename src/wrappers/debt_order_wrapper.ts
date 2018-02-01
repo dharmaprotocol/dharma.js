@@ -63,13 +63,13 @@ export class DebtOrderWrapper {
         return Web3Utils.soliditySha3(
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
+            this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
             this.debtOrder.debtorFee,
             this.debtOrder.creditorFee,
             this.debtOrder.relayer,
             this.debtOrder.relayerFee,
-            this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
         )
     }
@@ -120,9 +120,9 @@ export class DebtOrderWrapper {
         return Web3Utils.soliditySha3(
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
+            this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
-            this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
         )
     }

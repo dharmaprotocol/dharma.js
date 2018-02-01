@@ -52,7 +52,6 @@ describe('Order API (Integration Tests)', () => {
         await principalToken.setBalance.sendTransactionAsync(ACCOUNTS[1].address, Units.ether(1))
 
         const personsBalance = await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
-        console.log(personsBalance)
     })
 
     test('base case', async () => {

@@ -1,9 +1,4 @@
-/**
- * This file is auto-generated using abi-gen. Don't edit directly.
- * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
- */
-// tslint:disable-next-line:no-unused-variable
-import { BaseContract, TxData, TxDataPayable } from './base_contract_wrapper'
+import { BaseContract, TxData } from './base_contract_wrapper'
 import promisify from 'tiny-promisify'
 import { classUtils } from 'utils/class_utils'
 import { BigNumber } from 'bignumber.js'
@@ -11,6 +6,38 @@ import * as fs from 'fs-extra'
 import * as Web3 from 'web3'
 
 export class DebtKernelContract extends BaseContract {
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults)
+        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
+    }
+
+    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<DebtKernelContract> {
+        const currentNetwork = web3.version.network
+        const { abi, networks } = await this.getArtifactsData(web3)
+        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address)
+
+        return new DebtKernelContract(web3ContractInstance, defaults)
+    }
+    static async at(
+        address: string,
+        web3: Web3,
+        defaults: Partial<TxData>
+    ): Promise<DebtKernelContract> {
+        const { abi } = await this.getArtifactsData(web3)
+        const web3ContractInstance = web3.eth.contract(abi).at(address)
+
+        return new DebtKernelContract(web3ContractInstance, defaults)
+    }
+    private static async getArtifactsData(web3: Web3): Promise<any> {
+        try {
+            const artifact = await fs.readFile('src/artifacts/DebtKernel.json', 'utf8')
+            const { abi, networks } = JSON.parse(artifact)
+            return { abi, networks }
+        } catch (e) {
+            console.error('Artifacts malformed or nonexistent: ' + e.toString())
+        }
+    }
+
     public cancelDebtOrder = {
         async sendTransactionAsync(
             orderAddresses: (string)[],
@@ -435,35 +462,5 @@ export class DebtKernelContract extends BaseContract {
                 }
             )
         })
-    }
-    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<DebtKernelContract> {
-        const currentNetwork = web3.version.network
-        const { abi, networks } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address)
-
-        return new DebtKernelContract(web3ContractInstance, defaults)
-    }
-    static async at(
-        address: string,
-        web3: Web3,
-        defaults: Partial<TxData>
-    ): Promise<DebtKernelContract> {
-        const { abi } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(address)
-
-        return new DebtKernelContract(web3ContractInstance, defaults)
-    }
-    private static async getArtifactsData(web3: Web3): Promise<any> {
-        try {
-            const artifact = await fs.readFile('src/artifacts/DebtKernel.json', 'utf8')
-            const { abi, networks } = JSON.parse(artifact)
-            return { abi, networks }
-        } catch (e) {
-            console.error('Artifacts malformed or nonexistent: ' + e.toString())
-        }
-    }
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults)
-        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
     }
 } // tslint:disable:max-file-line-count
