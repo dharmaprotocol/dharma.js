@@ -119,9 +119,9 @@ export class DebtOrderWrapper {
         return SHA3([
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
+            this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
-            this.debtOrder.underwriterFee,
             this.debtOrder.expirationTimestampInSec
         ])
     }

@@ -222,9 +222,9 @@ describe('Order Signer (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
 
