@@ -95,13 +95,13 @@ describe('Order Signer (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
                     debtOrder.debtorFee,
                     debtOrder.creditorFee,
                     debtOrder.relayer,
                     debtOrder.relayerFee,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
 
@@ -154,13 +154,13 @@ describe('Order Signer (Unit Tests)', () => {
                         debtOrder.termsContractParameters,
                         debtOrder.salt
                     ),
+                    debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
                     debtOrder.debtorFee,
                     debtOrder.creditorFee,
                     debtOrder.relayer,
                     debtOrder.relayerFee,
-                    debtOrder.underwriterFee,
                     debtOrder.expirationTimestampInSec
                 )
 

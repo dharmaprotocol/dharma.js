@@ -70,6 +70,7 @@ export class OrderAssertions {
         const getOwnerAddress = await debtToken.ownerOf.callAsync(
             new BigNumber(debtOrderWrapper.getIssuanceCommitmentHash())
         )
+        console.log(getOwnerAddress)
         if (getOwnerAddress !== NULL_ADDRESS) {
             throw new Error(errorMessage)
         }
@@ -82,9 +83,6 @@ export class OrderAssertions {
         errorMessage: string
     ) {
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
-        // console.log("debtorder")
-        // console.log(debtOrderWrapped.getDebtorCommitmentHash())
-        // console.log(await debtKernel.debtOrderCancelled.callAsync(debtOrderWrapped.getDebtorCommitmentHash()))
         if (
             await debtKernel.debtOrderCancelled.callAsync(
                 debtOrderWrapped.getDebtorCommitmentHash()
@@ -101,15 +99,6 @@ export class OrderAssertions {
         errorMessage: string
     ) {
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
-        console.log(debtOrderWrapped)
-        // console.log(debtOrderWrapped.getIssuanceCommitmentHash())
-        console.log(
-            await debtKernel.issuanceCancelled.callAsync(
-                debtOrderWrapped.getIssuanceCommitmentHash()
-            )
-        )
-        // console.log()
-        // console.log()
         if (
             await debtKernel.issuanceCancelled.callAsync(
                 debtOrderWrapped.getIssuanceCommitmentHash()
@@ -130,9 +119,9 @@ export class OrderAssertions {
         if (options.from !== debtOrder.debtor) {
             if (
                 !signatureUtils.isValidSignature(
-                    debtOrder.debtor,
+                    debtOrderWrapped.getDebtorCommitmentHash(),
                     debtOrder.debtorSignature,
-                    debtOrderWrapped.getDebtorCommitmentHash()
+                    debtOrder.debtor
                 )
             ) {
                 throw new Error(errorMessage)
@@ -146,9 +135,9 @@ export class OrderAssertions {
         if (options.from !== debtOrder.creditor) {
             if (
                 !signatureUtils.isValidSignature(
-                    debtOrder.creditor,
+                    debtOrderWrapped.getCreditorCommitmentHash(),
                     debtOrder.creditorSignature,
-                    debtOrderWrapped.getCreditorCommitmentHash()
+                    debtOrder.creditor
                 )
             ) {
                 throw new Error(errorMessage)
@@ -162,9 +151,9 @@ export class OrderAssertions {
         if (options.from !== debtOrder.underwriter) {
             if (
                 !signatureUtils.isValidSignature(
-                    debtOrder.underwriter,
+                    debtOrderWrapped.getUnderwriterCommitmentHash(),
                     debtOrder.underwriterSignature,
-                    debtOrderWrapped.getUnderwriterCommitmentHash()
+                    debtOrder.underwriter
                 )
             ) {
                 throw new Error(errorMessage)

@@ -121,11 +121,13 @@ export class OrderAPI {
             OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
             options
         )
+
         this.assert.order.validCreditorSignature(
             debtOrder,
             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
             options
         )
+
         this.assert.order.validUnderwriterSignature(
             debtOrder,
             OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
