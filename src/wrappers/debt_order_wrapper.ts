@@ -1,7 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { ECDSASignature, DebtOrder, IssuanceCommitment } from '../types'
 import Web3Utils from 'web3-utils'
-
 import { NULL_ECDSA_SIGNATURE } from 'utils/constants'
 
 export class DebtOrderWrapper {
