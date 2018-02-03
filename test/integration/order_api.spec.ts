@@ -63,12 +63,17 @@ describe('Order API (Integration Tests)', () => {
     let principalToken: DummyTokenContract
     let debtWrapper: DebtOrderWrapper
     let debtKernel: DebtKernelContract
+    let dummyTokenRegistry: DummyTokenRegistryContract
 
     // Example of how to initialize new tokens
     beforeAll(async () => {
         debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS)
         debtOrder.kernelVersion = debtKernel.address
-        const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)
+        dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)
+
+        // // Get the token address for our dummy Augur REP token
+        debtOrder.principalToken = await dummyTokenRegistry.getTokenAddress.callAsync('REP')
+        principalToken = await DummyTokenContract.at(debtOrder.principalToken, web3, TX_DEFAULTS)
 
         debtOrder.salt = generateSalt()
         const debtorSignature = await orderSigner.asDebtor(debtOrder)
@@ -78,17 +83,15 @@ describe('Order API (Integration Tests)', () => {
         const underWriterSignature = await orderSigner.asUnderwriter(debtOrder)
         debtOrder.underwriterSignature = underWriterSignature
 
-        // // Get the token address for our dummy Augur REP token
-        const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync('REP')
-        principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS)
-
         // // Set arbitrary balances for people
         await principalToken.setBalance.sendTransactionAsync(ACCOUNTS[1].address, Units.ether(2))
         await principalToken.balanceOf.callAsync(ACCOUNTS[1].address)
     })
 
     test('base case', async () => {
-        await principalToken.setBalance.sendTransactionAsync(ACCOUNTS[1].address, Units.ether(5))
+        await principalToken.setBalance.sendTransactionAsync(debtOrder.debtor, Units.ether(5), {
+            from: ACCOUNTS[0].address
+        })
 
         const tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
         const result = await principalToken.approve.sendTransactionAsync(
@@ -96,7 +99,6 @@ describe('Order API (Integration Tests)', () => {
             Units.ether(2),
             { from: debtOrder.creditor }
         )
-
         const test = await orderApi.fillDebtOrder(debtOrder, principalToken, TX_DEFAULTS)
     })
 
@@ -170,8 +172,10 @@ describe('Order API (Integration Tests)', () => {
 
             await principalToken.setBalance.sendTransactionAsync(
                 ACCOUNTS[1].address,
-                Units.ether(5)
+                Units.ether(5),
+                { from: ACCOUNTS[0].address }
             )
+
             const tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
             await principalToken.approve.sendTransactionAsync(tokenTransferProxy, Units.ether(2), {
                 from: debtOrder.creditor
@@ -183,12 +187,6 @@ describe('Order API (Integration Tests)', () => {
                 debtOrderWrapped.getOrderBytes32(),
                 { from: debtOrder.debtor }
             )
-            // ABIDecoder.addABI(debtKernel.web3ContractInstance.abi)
-            // const receipt = await web3.eth.getTransactionReceipt(result)
-            // const [log] = ABIDecoder.decodeLogs(receipt.logs)
-            // // console.log(log.events[0]);
-            // // console.log(log.events[1]);
-            // logEvent = log.events[1]
         })
 
         test('throws DEBT_ORDER_CANCELLED', async () => {
@@ -198,28 +196,70 @@ describe('Order API (Integration Tests)', () => {
         })
     })
 
-    describe('...order cannot have already been issued', () => {
+    describe('...order cannot have already been issued', async () => {
         let issuedDebt
+        let tokenTransferProxy
 
         beforeAll(async () => {
+            debtOrder.salt = generateSalt()
             issuedDebt = Object.assign({}, debtOrder)
+
+            const debtorSignature = await orderSigner.asDebtor(issuedDebt)
+            issuedDebt.debtorSignature = debtorSignature
+            const creditorSignature = await orderSigner.asCreditor(issuedDebt)
+            issuedDebt.creditorSignature = creditorSignature
+            const underWriterSignature = await orderSigner.asUnderwriter(issuedDebt)
+            issuedDebt.underwriterSignature = underWriterSignature
+
+            await principalToken.setBalance.sendTransactionAsync(
+                issuedDebt.creditor,
+                Units.ether(5),
+                { from: ACCOUNTS[0].address }
+            )
+
+            tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
+            const result1 = await principalToken.approve.sendTransactionAsync(
+                tokenTransferProxy,
+                Units.ether(2),
+                { from: issuedDebt.creditor }
+            )
+            // console.log(issuedDebt)
+
+            // const result3 = await principalToken.balanceOf.callAsync(issuedDebt.creditor)
+            // console.log(result3)
             const debtOrderWrapped = new DebtOrderWrapper(issuedDebt)
 
-            const debtorSignature = await orderSigner.asDebtor(debtOrder)
-            debtOrder.debtorSignature = debtorSignature
+            const result2 = await orderApi.fillDebtOrder(issuedDebt, principalToken, TX_DEFAULTS)
 
-            await debtKernel.fillDebtOrder.sendTransactionAsync(
-                debtOrderWrapped.getCreditor(),
-                debtOrderWrapped.getOrderAddresses(),
-                debtOrderWrapped.getOrderValues(),
-                debtOrderWrapped.getOrderBytes32(),
-                debtOrderWrapped.getSignaturesV(),
-                debtOrderWrapped.getSignaturesR(),
-                debtOrderWrapped.getSignaturesS()
-            )
+            // ABIDecoder.addABI(debtKernel.web3ContractInstance.abi)
+            // const receipt = await web3.eth.getTransactionReceipt(result2)
+            // const [log] = ABIDecoder.decodeLogs(receipt.logs)
+            // console.log(log.events[0]);
+            // console.log(log.events[1]);
         })
 
+        // await principalToken.setBalance.sendTransactionAsync(debtOrder.debtor, Units.ether(5), {from: ACCOUNTS[0].address})
+
+        // tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
+        // await principalToken.approve.sendTransactionAsync(
+        //     tokenTransferProxy,
+        //     Units.ether(2),
+        //     { from: debtOrder.creditor }
+        // )
+
         test('throws DEBT_ORDER_ALREADY_ISSUED', async () => {
+            await principalToken.setBalance.sendTransactionAsync(
+                issuedDebt.debtor,
+                Units.ether(2),
+                { from: ACCOUNTS[0].address }
+            )
+
+            const tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
+            const result = await principalToken.approve.sendTransactionAsync(
+                tokenTransferProxy,
+                Units.ether(2),
+                { from: issuedDebt.creditor }
+            )
             await expect(
                 orderApi.fillDebtOrder(issuedDebt, principalToken, TX_DEFAULTS)
             ).rejects.toThrow(OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED())
@@ -229,6 +269,7 @@ describe('Order API (Integration Tests)', () => {
     describe('...issuance cannot have already been cancelled', async () => {
         let toCancelIssuance
         let logEvent
+        let debtOrderWrapped
 
         beforeAll(async () => {
             debtOrder.salt = generateSalt()
@@ -251,12 +292,6 @@ describe('Order API (Integration Tests)', () => {
                 debtOrderWrapped.getIssuanceCommitment().salt,
                 { from: debtOrderWrapped.getIssuanceCommitment().underwriter }
             )
-
-            ABIDecoder.addABI(debtKernel.web3ContractInstance.abi)
-            const receipt = await web3.eth.getTransactionReceipt(result)
-            const [log] = ABIDecoder.decodeLogs(receipt.logs)
-            // console.log(log.events[0]);
-            // console.log(log.events[1]);
         })
 
         test('throws ISSUANCE_CANCELLED', async () => {

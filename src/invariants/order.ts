@@ -63,14 +63,15 @@ export class OrderAssertions {
 
     // Debt cannot already have been issued
     public async notAlreadyIssued(
+        debtOrder: DebtOrder,
         debtToken: DebtTokenContract,
-        debtOrderWrapper: DebtOrderWrapper,
         errorMessage: string
     ) {
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+
         const getOwnerAddress = await debtToken.ownerOf.callAsync(
-            new BigNumber(debtOrderWrapper.getIssuanceCommitmentHash())
+            new BigNumber(debtOrderWrapped.getIssuanceCommitmentHash())
         )
-        console.log(getOwnerAddress)
         if (getOwnerAddress !== NULL_ADDRESS) {
             throw new Error(errorMessage)
         }
@@ -114,7 +115,6 @@ export class OrderAssertions {
 
     // If message sender not debtor, debtor signature must be valid
     public validDebtorSignature(debtOrder: DebtOrder, errorMessage: string, options?: TxData) {
-        // console.log(debtOrder)
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
         if (options.from !== debtOrder.debtor) {
             if (

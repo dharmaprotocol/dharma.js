@@ -69,7 +69,6 @@ export class OrderAPI {
         this.config = config || {}
     }
 
-    // TODO: Add validations
     public async fillDebtOrder(
         debtOrder: DebtOrder,
         principalToken?: DummyTokenContract,
@@ -84,12 +83,6 @@ export class OrderAPI {
         this.assert.order.validRelayerFee(debtOrder, OrderAPIErrors.INVALID_RELAYER_FEE())
         this.assert.order.validFees(debtOrder, OrderAPIErrors.INVALID_FEES())
         this.assert.order.notExpired(debtOrder, OrderAPIErrors.EXPIRED())
-
-        this.assert.order.notAlreadyIssued(
-            debtToken,
-            debtOrderWrapped,
-            OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED()
-        )
 
         this.assert.order.sufficientCreditorBalance(
             debtOrder,
@@ -114,6 +107,12 @@ export class OrderAPI {
             debtOrder,
             debtKernel,
             OrderAPIErrors.ISSUANCE_CANCELLED()
+        )
+
+        await this.assert.order.notAlreadyIssued(
+            debtOrder,
+            debtToken,
+            OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED()
         )
 
         this.assert.order.validDebtorSignature(
