@@ -164,7 +164,6 @@ describe('Order API (Integration Tests)', () => {
 
     describe('...order cannot have been cancelled', async () => {
         let toCancelDebtOrder
-        let logEvent
 
         beforeAll(async () => {
             toCancelDebtOrder = Object.assign({}, debtOrder)
@@ -218,34 +217,13 @@ describe('Order API (Integration Tests)', () => {
             )
 
             tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
-            const result1 = await principalToken.approve.sendTransactionAsync(
-                tokenTransferProxy,
-                Units.ether(2),
-                { from: issuedDebt.creditor }
-            )
-            // console.log(issuedDebt)
-
-            // const result3 = await principalToken.balanceOf.callAsync(issuedDebt.creditor)
-            // console.log(result3)
+            await principalToken.approve.sendTransactionAsync(tokenTransferProxy, Units.ether(2), {
+                from: issuedDebt.creditor
+            })
             const debtOrderWrapped = new DebtOrderWrapper(issuedDebt)
 
-            const result2 = await orderApi.fillDebtOrder(issuedDebt, principalToken, TX_DEFAULTS)
-
-            // ABIDecoder.addABI(debtKernel.web3ContractInstance.abi)
-            // const receipt = await web3.eth.getTransactionReceipt(result2)
-            // const [log] = ABIDecoder.decodeLogs(receipt.logs)
-            // console.log(log.events[0]);
-            // console.log(log.events[1]);
+            await orderApi.fillDebtOrder(issuedDebt, principalToken, TX_DEFAULTS)
         })
-
-        // await principalToken.setBalance.sendTransactionAsync(debtOrder.debtor, Units.ether(5), {from: ACCOUNTS[0].address})
-
-        // tokenTransferProxy = await debtKernel.TOKEN_TRANSFER_PROXY.callAsync()
-        // await principalToken.approve.sendTransactionAsync(
-        //     tokenTransferProxy,
-        //     Units.ether(2),
-        //     { from: debtOrder.creditor }
-        // )
 
         test('throws DEBT_ORDER_ALREADY_ISSUED', async () => {
             await principalToken.setBalance.sendTransactionAsync(
