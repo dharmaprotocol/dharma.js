@@ -1,6 +1,7 @@
 import * as _ from 'lodash'
 import { BigNumber } from 'bignumber.js'
 import * as Web3 from 'web3'
+import singleLineString from 'single-line-string'
 
 export interface TxData {
     from?: string
@@ -11,6 +12,15 @@ export interface TxData {
 
 export interface TxDataPayable extends TxData {
     value?: BigNumber
+}
+
+export const CONTRACT_WRAPPER_ERRORS = {
+    CONTRACT_NOT_FOUND_ON_NETWORK: (contractName: string, networkId: number) =>
+        singleLineString`Unable to find address for contract ${contractName}
+                         on network with id ${networkId}`,
+    ARTIFACTS_NOT_READABLE: (contractName: string) =>
+        singleLineString`Artifacts for contract ${contractName} either malformed
+                         or nonexistent.`
 }
 
 export class BaseContract {
@@ -42,7 +52,7 @@ export class BaseContract {
             ...removeUndefinedProperties(txData as any)
             // HACK: TS can't prove that T is spreadable.
             // Awaiting https://github.com/Microsoft/TypeScript/pull/13288 to be merged
-        }
+        } as TxData
         if (_.isUndefined(txDataWithDefaults.gas) && !_.isUndefined(estimateGasAsync)) {
             const estimatedGas = await estimateGasAsync(txData)
             txDataWithDefaults.gas = estimatedGas

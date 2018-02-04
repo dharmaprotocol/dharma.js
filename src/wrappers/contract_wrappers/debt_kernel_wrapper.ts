@@ -1,43 +1,12 @@
-import { BaseContract, TxData } from './base_contract_wrapper'
+import { BaseContract, CONTRACT_WRAPPER_ERRORS, TxData } from './base_contract_wrapper'
 import promisify from 'tiny-promisify'
 import { classUtils } from 'utils/class_utils'
 import { BigNumber } from 'bignumber.js'
 import * as fs from 'fs-extra'
 import * as Web3 from 'web3'
+import { Web3Wrapper } from '@0xproject/web3-wrapper'
 
 export class DebtKernelContract extends BaseContract {
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults)
-        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
-    }
-
-    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<DebtKernelContract> {
-        const currentNetwork = web3.version.network
-        const { abi, networks } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address)
-
-        return new DebtKernelContract(web3ContractInstance, defaults)
-    }
-    static async at(
-        address: string,
-        web3: Web3,
-        defaults: Partial<TxData>
-    ): Promise<DebtKernelContract> {
-        const { abi } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(address)
-
-        return new DebtKernelContract(web3ContractInstance, defaults)
-    }
-    private static async getArtifactsData(web3: Web3): Promise<any> {
-        try {
-            const artifact = await fs.readFile('src/artifacts/DebtKernel.json', 'utf8')
-            const { abi, networks } = JSON.parse(artifact)
-            return { abi, networks }
-        } catch (e) {
-            console.error('Artifacts malformed or nonexistent: ' + e.toString())
-        }
-    }
-
     public cancelDebtOrder = {
         async sendTransactionAsync(
             orderAddresses: (string)[],
@@ -442,25 +411,75 @@ export class DebtKernelContract extends BaseContract {
             return result
         }
     }
-    async deploy(...args: any[]): Promise<any> {
-        const wrapper = this
-        const rejected = false
 
-        return new Promise((resolve, reject) => {
-            wrapper.web3ContractInstance.new(
-                wrapper.defaults,
-                (err: string, contract: Web3.ContractInstance) => {
-                    if (err) {
-                        reject(err)
-                    } else if (contract.address) {
-                        wrapper.web3ContractInstance = wrapper.web3ContractInstance.at(
-                            contract.address
-                        )
-                        wrapper.address = contract.address
-                        resolve()
-                    }
-                }
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults)
+        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
+    }
+
+    public static async deployed(
+        web3: Web3,
+        defaults: Partial<TxData>
+    ): Promise<DebtKernelContract> {
+        const web3Wrapper = new Web3Wrapper(web3.currentProvider)
+
+        const currentNetwork = await web3Wrapper.getNetworkIdAsync()
+        const { abi, networks } = await this.getArtifactsData()
+
+        if (networks[currentNetwork]) {
+            const { address: contractAddress } = networks[currentNetwork]
+
+            const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(
+                contractAddress
             )
-        })
+
+            if (contractExists) {
+                const web3ContractInstance = web3.eth.contract(abi).at(contractAddress)
+                return new DebtKernelContract(web3ContractInstance, defaults)
+            } else {
+                throw new Error(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        'DebtKernel',
+                        currentNetwork
+                    )
+                )
+            }
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK('DebtKernel', currentNetwork)
+            )
+        }
+    }
+
+    public static async at(
+        address: string,
+        web3: Web3,
+        defaults: Partial<TxData>
+    ): Promise<DebtKernelContract> {
+        const web3Wrapper = new Web3Wrapper(web3.currentProvider)
+
+        const { abi } = await this.getArtifactsData()
+        const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(address)
+        const currentNetwork = await web3Wrapper.getNetworkIdAsync()
+
+        if (contractExists) {
+            const web3ContractInstance = web3.eth.contract(abi).at(address)
+
+            return new DebtKernelContract(web3ContractInstance, defaults)
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK('DebtKernel', currentNetwork)
+            )
+        }
+    }
+
+    private static async getArtifactsData(): Promise<any> {
+        try {
+            const artifact = await fs.readFile('src/artifacts/DebtKernel.json', 'utf8')
+            const { abi, networks } = JSON.parse(artifact)
+            return { abi, networks }
+        } catch (e) {
+            throw new Error(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE('DebtKernel'))
+        }
     }
 } // tslint:disable:max-file-line-count

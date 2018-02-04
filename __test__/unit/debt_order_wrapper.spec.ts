@@ -27,7 +27,7 @@ let debtOrder = {
     termsContract: ACCOUNTS[7].address,
     termsContractParameters: ACCOUNTS[8].address,
     expirationTimestampInSec: new BigNumber(moment().seconds()),
-    salt: new BigNumber(0)
+    salt: new BigNumber(0),
 }
 
 describe('Debt Order Wrapper (Unit Tests)', () => {

@@ -40,6 +40,13 @@
     jsonschema "^1.2.0"
     lodash.values "^4.3.0"
 
+"@0xproject/types@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@0xproject/types/-/types-0.1.8.tgz#efbe46444c77f70f114e5ed88e03a0c2dea04ee1"
+  dependencies:
+    bignumber.js "~4.1.0"
+    web3 "^0.20.0"
+
 "@0xproject/utils@^0.1.0", "@0xproject/utils@^0.1.1":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.1.3.tgz#58a9c7e19ab7710e0af17a0c2f1c7fc1b3140e85"
@@ -56,11 +63,28 @@
     js-sha3 "^0.7.0"
     lodash "^4.17.4"
 
+"@0xproject/utils@^0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.2.4.tgz#d84d0737f47730e5724a76797d30e716b587a0cf"
+  dependencies:
+    bignumber.js "~4.1.0"
+    js-sha3 "^0.7.0"
+    lodash "^4.17.4"
+    web3 "^0.20.0"
+
 "@0xproject/web3-wrapper@^0.1.1":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@0xproject/web3-wrapper/-/web3-wrapper-0.1.7.tgz#571abde77db602700e958666aca7b2f7f9746f58"
   dependencies:
     "@0xproject/utils" "^0.2.2"
+    lodash "^4.17.4"
+    web3 "^0.20.0"
+
+"@0xproject/web3-wrapper@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@0xproject/web3-wrapper/-/web3-wrapper-0.1.9.tgz#33d8da77e4d98846b0179fa5873eac1a185972b7"
+  dependencies:
+    "@0xproject/utils" "^0.2.4"
     lodash "^4.17.4"
     web3 "^0.20.0"
 

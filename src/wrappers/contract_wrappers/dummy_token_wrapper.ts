@@ -9,8 +9,9 @@ import { classUtils } from 'utils/class_utils'
 import { BigNumber } from 'bignumber.js'
 import * as fs from 'fs-extra'
 import * as Web3 from 'web3'
+import { Web3Wrapper } from '@0xproject/web3-wrapper'
 
-import { BaseContract } from './base_contract_wrapper'
+import { BaseContract, CONTRACT_WRAPPER_ERRORS } from './base_contract_wrapper'
 
 export class DummyTokenContract extends BaseContract {
     public mintingFinished = {
@@ -428,54 +429,41 @@ export class DummyTokenContract extends BaseContract {
             return abiEncodedTransactionData
         }
     }
-    async deploy(...args: any[]): Promise<any> {
-        const wrapper = this
 
-        return new Promise((resolve, reject) => {
-            wrapper.web3ContractInstance.new(
-                wrapper.defaults,
-                (err: string, contract: Web3.ContractInstance) => {
-                    if (err) {
-                        reject(err)
-                    } else if (contract.address) {
-                        wrapper.web3ContractInstance = wrapper.web3ContractInstance.at(
-                            contract.address
-                        )
-                        wrapper.address = contract.address
-                        resolve()
-                    }
-                }
-            )
-        })
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults)
+        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
     }
-    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<DummyTokenContract> {
-        const currentNetwork = web3.version.network
-        const { abi, networks } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address)
 
-        return new DummyTokenContract(web3ContractInstance, defaults)
-    }
-    static async at(
+    public static async at(
         address: string,
         web3: Web3,
         defaults: Partial<TxData>
     ): Promise<DummyTokenContract> {
-        const { abi } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(address)
+        const web3Wrapper = new Web3Wrapper(web3.currentProvider)
 
-        return new DummyTokenContract(web3ContractInstance, defaults)
+        const { abi } = await this.getArtifactsData()
+        const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(address)
+        const currentNetwork = await web3Wrapper.getNetworkIdAsync()
+
+        if (contractExists) {
+            const web3ContractInstance = web3.eth.contract(abi).at(address)
+
+            return new DummyTokenContract(web3ContractInstance, defaults)
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK('DummyToken', currentNetwork)
+            )
+        }
     }
-    private static async getArtifactsData(web3: Web3): Promise<any> {
+
+    private static async getArtifactsData(): Promise<any> {
         try {
             const artifact = await fs.readFile('src/artifacts/DummyToken.json', 'utf8')
             const { abi, networks } = JSON.parse(artifact)
             return { abi, networks }
         } catch (e) {
-            console.error('Artifacts malformed or nonexistent: ' + e.toString())
+            throw new Error(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE('DummyToken'))
         }
-    }
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults)
-        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
     }
 } // tslint:disable:max-file-line-count

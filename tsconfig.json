@@ -20,8 +20,8 @@
   "include": [
     "node_modules/web3-typescript-typings/index.d.ts",
     "src",
-    "test",
-    "test/**/*.spec.ts",
+    "__test__",
+    "__mocks__",
     "utils"
   ]
 }

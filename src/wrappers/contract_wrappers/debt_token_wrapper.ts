@@ -9,8 +9,9 @@ import { classUtils } from 'utils/class_utils'
 import { BigNumber } from 'bignumber.js'
 import * as fs from 'fs-extra'
 import * as Web3 from 'web3'
+import { Web3Wrapper } from '@0xproject/web3-wrapper'
 
-import { BaseContract } from './base_contract_wrapper'
+import { BaseContract, CONTRACT_WRAPPER_ERRORS } from './base_contract_wrapper'
 
 export class DebtTokenContract extends BaseContract {
     public getAuthorizedMintAgents = {
@@ -558,55 +559,75 @@ export class DebtTokenContract extends BaseContract {
             return abiEncodedTransactionData
         }
     }
-    async deploy(...args: any[]): Promise<any> {
-        const wrapper = this
-        const rejected = false
 
-        return new Promise((resolve, reject) => {
-            wrapper.web3ContractInstance.new(
-                wrapper.defaults,
-                (err: string, contract: Web3.ContractInstance) => {
-                    if (err) {
-                        reject(err)
-                    } else if (contract.address) {
-                        wrapper.web3ContractInstance = wrapper.web3ContractInstance.at(
-                            contract.address
-                        )
-                        wrapper.address = contract.address
-                        resolve()
-                    }
-                }
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults)
+        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
+    }
+
+    public static async deployed(
+        web3: Web3,
+        defaults: Partial<TxData>
+    ): Promise<DebtTokenContract> {
+        const web3Wrapper = new Web3Wrapper(web3.currentProvider)
+
+        const currentNetwork = await web3Wrapper.getNetworkIdAsync()
+        const { abi, networks } = await this.getArtifactsData()
+
+        if (networks[currentNetwork]) {
+            const { address: contractAddress } = networks[currentNetwork]
+
+            const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(
+                contractAddress
             )
-        })
-    }
-    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<DebtTokenContract> {
-        const currentNetwork = web3.version.network
-        const { abi, networks } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address)
 
-        return new DebtTokenContract(web3ContractInstance, defaults)
+            if (contractExists) {
+                const web3ContractInstance = web3.eth.contract(abi).at(contractAddress)
+                return new DebtTokenContract(web3ContractInstance, defaults)
+            } else {
+                throw new Error(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        'DebtToken',
+                        currentNetwork
+                    )
+                )
+            }
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK('DebtToken', currentNetwork)
+            )
+        }
     }
-    static async at(
+
+    public static async at(
         address: string,
         web3: Web3,
         defaults: Partial<TxData>
     ): Promise<DebtTokenContract> {
-        const { abi } = await this.getArtifactsData(web3)
-        const web3ContractInstance = web3.eth.contract(abi).at(address)
+        const web3Wrapper = new Web3Wrapper(web3.currentProvider)
 
-        return new DebtTokenContract(web3ContractInstance, defaults)
+        const { abi } = await this.getArtifactsData()
+        const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(address)
+        const currentNetwork = await web3Wrapper.getNetworkIdAsync()
+
+        if (contractExists) {
+            const web3ContractInstance = web3.eth.contract(abi).at(address)
+
+            return new DebtTokenContract(web3ContractInstance, defaults)
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK('DebtToken', currentNetwork)
+            )
+        }
     }
-    private static async getArtifactsData(web3: Web3): Promise<any> {
+
+    private static async getArtifactsData(): Promise<any> {
         try {
             const artifact = await fs.readFile('src/artifacts/DebtToken.json', 'utf8')
             const { abi, networks } = JSON.parse(artifact)
             return { abi, networks }
         } catch (e) {
-            console.error('Artifacts malformed or nonexistent: ' + e.toString())
+            throw new Error(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE('DebtToken'))
         }
-    }
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults)
-        classUtils.bindAll(this, ['web3ContractInstance', 'defaults'])
     }
 } // tslint:disable:max-file-line-count

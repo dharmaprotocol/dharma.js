@@ -1,3 +1,5 @@
+jest.unmock("fs-extra");
+
 import { BigNumber } from 'bignumber.js'
 import { SignerAPI, SignerAPIErrors } from 'src/apis/signer_api'
 import * as Units from 'utils/units'

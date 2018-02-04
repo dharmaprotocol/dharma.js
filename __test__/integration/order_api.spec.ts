@@ -1,3 +1,5 @@
+jest.unmock("fs-extra");
+
 import { BigNumber } from 'bignumber.js'
 import { OrderAPI } from 'src/apis/order_api'
 import moment from 'moment'
