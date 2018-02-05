@@ -1,18 +1,20 @@
 import Web3 from 'web3'
+import { Web3Wrapper } from '@0xproject/web3-wrapper'
 import { DebtOrder, DharmaConfig, TxData } from '../types'
-import { ACCOUNTS } from '../../test/accounts'
+import { ACCOUNTS } from '__test__/accounts'
 import {
     DebtKernelContract,
     DebtOrderWrapper,
     DebtTokenContract,
     DummyTokenContract,
-    DummyTokenRegistryContract
+    DummyTokenRegistryContract,
+    ERC20Contract,
+    TokenTransferProxyContract,
 } from '../wrappers'
 import { Assertions } from '../invariants'
 import promisify from 'tiny-promisify'
 import singleLineString from 'single-line-string'
 import * as Units from 'utils/units'
-import { BigNumber } from 'web3-typescript-typings/node_modules/bignumber.js'
 
 const ORDER_FILL_GAS_MAXIMUM = 500000
 
@@ -30,8 +32,8 @@ export const OrderAPIErrors = {
                         but has no assigned relayer`,
 
     INVALID_DEBTOR_FEE: () =>
-        singleLineString`Debt order has a debtor fee
-                        that is more than the principal`,
+        singleLineString`Debt order cannot have a debtor fee
+                        that is greater than the total principal`,
 
     INVALID_FEES: () =>
         singleLineString`Debt order creditor + debtor fee
@@ -53,10 +55,8 @@ export const OrderAPIErrors = {
         singleLineString`Creditor signature is not valid for debt order`,
 
     INVALID_UNDERWRITER_SIGNATURE: () =>
-        singleLineString`Underwriter signature is not valid for debt order`
+        singleLineString`Underwriter signature is not valid for debt order`,
 }
-
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 }
 
 export class OrderAPI {
     private web3: Web3
@@ -69,14 +69,20 @@ export class OrderAPI {
         this.config = config || {}
     }
 
-    public async fillDebtOrder(
-        debtOrder: DebtOrder,
-        principalToken?: DummyTokenContract,
-        options?: TxData
-    ): Promise<string> {
-        const debtKernel = await this.loadDebtKernel()
+    public async fill(debtOrder: DebtOrder, options?: TxData): Promise<string> {
+        const transactionDefaults = await this.getTxDefaultOptions()
+
+        Object.assign(transactionDefaults, options)
+
+        const debtKernel = await this.loadDebtKernel(transactionDefaults)
+        const debtToken = await this.loadDebtToken(transactionDefaults)
+        const tokenTransferProxy = await this.loadTokenTransferProxy(transactionDefaults)
+        const principalToken = await this.loadERC20Token(
+            debtOrder.principalToken,
+            transactionDefaults,
+        )
+
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
-        const debtToken = await DebtTokenContract.deployed(this.web3, TX_DEFAULTS)
 
         this.assert.order.validDebtorFee(debtOrder, OrderAPIErrors.INVALID_DEBTOR_FEE())
         this.assert.order.validUnderwriterFee(debtOrder, OrderAPIErrors.INVALID_UNDERWRITER_FEE())
@@ -84,53 +90,53 @@ export class OrderAPI {
         this.assert.order.validFees(debtOrder, OrderAPIErrors.INVALID_FEES())
         this.assert.order.notExpired(debtOrder, OrderAPIErrors.EXPIRED())
 
-        this.assert.order.sufficientCreditorBalance(
-            debtOrder,
-            principalToken,
-            OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT()
-        )
-
-        await this.assert.order.sufficientCreditorAllowance(
-            debtOrder,
-            principalToken,
-            debtKernel,
-            OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT()
-        )
-
         await this.assert.order.debtOrderNotCancelled(
             debtOrder,
             debtKernel,
-            OrderAPIErrors.ORDER_CANCELLED()
+            OrderAPIErrors.ORDER_CANCELLED(),
         )
 
         await this.assert.order.issuanceNotCancelled(
             debtOrder,
             debtKernel,
-            OrderAPIErrors.ISSUANCE_CANCELLED()
+            OrderAPIErrors.ISSUANCE_CANCELLED(),
         )
 
         await this.assert.order.notAlreadyIssued(
             debtOrder,
             debtToken,
-            OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED()
+            OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED(),
         )
 
         this.assert.order.validDebtorSignature(
             debtOrder,
+            transactionDefaults,
             OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
-            options
         )
 
         this.assert.order.validCreditorSignature(
             debtOrder,
+            transactionDefaults,
             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
-            options
         )
 
         this.assert.order.validUnderwriterSignature(
             debtOrder,
+            transactionDefaults,
             OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
-            options
+        )
+
+        await this.assert.order.sufficientCreditorBalance(
+            debtOrder,
+            principalToken,
+            OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT(),
+        )
+
+        await this.assert.order.sufficientCreditorAllowance(
+            debtOrder,
+            principalToken,
+            tokenTransferProxy,
+            OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
         )
 
         return debtKernel.fillDebtOrder.sendTransactionAsync(
@@ -141,24 +147,63 @@ export class OrderAPI {
             debtOrderWrapped.getSignaturesV(),
             debtOrderWrapped.getSignaturesR(),
             debtOrderWrapped.getSignaturesS(),
-            options
+            options,
         )
     }
 
-    // TODO: Add error messages for when debt kernel contract is unavailable (e.g. not deployed on chain)
     // TODO: Provide mechanism for user to specify what debt kernel contract they want to interact
     //  with, probably best done in the initialization of dharma.js
-    private async loadDebtKernel(): Promise<DebtKernelContract> {
-        const accounts = await promisify(this.web3.eth.getAccounts)()
-        const transactionDefaults = {
-            from: accounts[0],
-            gas: ORDER_FILL_GAS_MAXIMUM
-        }
-
+    private async loadDebtKernel(transactionDefaults: object): Promise<DebtKernelContract> {
         if (this.config.kernelAddress) {
             return DebtKernelContract.at(this.config.kernelAddress, this.web3, transactionDefaults)
         }
 
         return DebtKernelContract.deployed(this.web3, transactionDefaults)
+    }
+
+    // TODO: Provide mechanism for user to specify what debt token contract they want to interact
+    //  with, probably best done in the initialization of dharma.js
+    private async loadDebtToken(transactionDefaults: object): Promise<DebtTokenContract> {
+        if (this.config.tokenAddress) {
+            return DebtTokenContract.at(this.config.tokenAddress, this.web3, transactionDefaults)
+        }
+
+        return DebtTokenContract.deployed(this.web3, transactionDefaults)
+    }
+
+    // TODO: Provide mechanism for user to specify what token transfer proxy contract they want to interact
+    //  with, probably best done in the initialization of dharma.js
+    private async loadTokenTransferProxy(
+        transactionDefaults: object,
+    ): Promise<TokenTransferProxyContract> {
+        if (this.config.tokenTransferProxyAddress) {
+            return TokenTransferProxyContract.at(
+                this.config.tokenTransferProxyAddress,
+                this.web3,
+                transactionDefaults,
+            )
+        }
+
+        return TokenTransferProxyContract.deployed(this.web3, transactionDefaults)
+    }
+
+    private async loadERC20Token(
+        tokenAddress: string,
+        transactionDefaults: object,
+    ): Promise<ERC20Contract> {
+        return ERC20Contract.at(tokenAddress, this.web3, transactionDefaults)
+    }
+
+    private async getTxDefaultOptions(): Promise<object> {
+        const web3Wrapper = new Web3Wrapper(this.web3.currentProvider)
+
+        const accounts = await web3Wrapper.getAvailableAddressesAsync()
+
+        // TODO: Add fault tolerance to scenario in which not addresses are available
+
+        return {
+            from: accounts[0],
+            gas: ORDER_FILL_GAS_MAXIMUM,
+        }
     }
 }
