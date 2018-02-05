@@ -85,7 +85,7 @@ describe("Order API (Integration Tests)", () => {
         ABIDecoder.removeABI(debtKernel.abi);
     });
 
-    describe("#fill", () => {
+    describe("#fillAsync", () => {
         describe("...with valid, consensual order and sufficient principal token balance / allowance", () => {
             beforeAll(async () => {
                 debtOrder.salt = generateSalt();
@@ -111,7 +111,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("emits log indicating successful fill", async () => {
-                const txHash = await orderApi.fill(debtOrder);
+                const txHash = await orderApi.fillAsync(debtOrder);
                 const receipt = await web3Wrapper.getTransactionReceiptAsync(txHash);
 
                 const [debtOrderFilledLog] = _.compact(ABIDecoder.decodeLogs(receipt.logs));
@@ -134,7 +134,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws INVALID_DEBTOR_FEE error", async () => {
-                await expect(orderApi.fill(debtOrderWithInvalidDebtorFee)).rejects.toThrow(
+                await expect(orderApi.fillAsync(debtOrderWithInvalidDebtorFee)).rejects.toThrow(
                     OrderAPIErrors.INVALID_DEBTOR_FEE(),
                 );
             });
@@ -149,7 +149,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws INVALID_UNDERWRITER_FEE error", async () => {
-                await expect(orderApi.fill(debtOrderWithNullUnderwriter)).rejects.toThrow(
+                await expect(orderApi.fillAsync(debtOrderWithNullUnderwriter)).rejects.toThrow(
                     OrderAPIErrors.INVALID_UNDERWRITER_FEE(),
                 );
             });
@@ -164,7 +164,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws INVALID_RELAYER_FEE error", async () => {
-                await expect(orderApi.fill(debtOrderWithNullRelayer)).rejects.toThrow(
+                await expect(orderApi.fillAsync(debtOrderWithNullRelayer)).rejects.toThrow(
                     OrderAPIErrors.INVALID_RELAYER_FEE(),
                 );
             });
@@ -179,7 +179,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws INVALID_FEES error", async () => {
-                await expect(orderApi.fill(debtOrderWithInvalidFees)).rejects.toThrow(
+                await expect(orderApi.fillAsync(debtOrderWithInvalidFees)).rejects.toThrow(
                     OrderAPIErrors.INVALID_FEES(),
                 );
             });
@@ -198,7 +198,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws EXPIRED error", async () => {
-                await expect(orderApi.fill(expiredDebtOrder)).rejects.toThrow(
+                await expect(orderApi.fillAsync(expiredDebtOrder)).rejects.toThrow(
                     OrderAPIErrors.EXPIRED(),
                 );
             });
@@ -220,7 +220,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws DEBT_ORDER_CANCELLED", async () => {
-                await expect(orderApi.fill(toCancelDebtOrder, TX_DEFAULTS)).rejects.toThrow(
+                await expect(orderApi.fillAsync(toCancelDebtOrder, TX_DEFAULTS)).rejects.toThrow(
                     OrderAPIErrors.ORDER_CANCELLED(),
                 );
             });
@@ -254,11 +254,11 @@ describe("Order API (Integration Tests)", () => {
                     },
                 );
 
-                await orderApi.fill(filledDebtOrder);
+                await orderApi.fillAsync(filledDebtOrder);
             });
 
             test("throws DEBT_ORDER_ALREADY_ISSUED", async () => {
-                await expect(orderApi.fill(filledDebtOrder)).rejects.toThrow(
+                await expect(orderApi.fillAsync(filledDebtOrder)).rejects.toThrow(
                     OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED(),
                 );
             });
@@ -286,7 +286,7 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws ISSUANCE_CANCELLED", async () => {
-                await expect(orderApi.fill(toCancelIssuance)).rejects.toThrow(
+                await expect(orderApi.fillAsync(toCancelIssuance)).rejects.toThrow(
                     OrderAPIErrors.ISSUANCE_CANCELLED(),
                 );
             });
@@ -314,7 +314,7 @@ describe("Order API (Integration Tests)", () => {
 
             test("throws INVALID_DEBTOR_SIGNATURE error", async () => {
                 await expect(
-                    orderApi.fill(debtOrderSansDebtorSignature, {
+                    orderApi.fillAsync(debtOrderSansDebtorSignature, {
                         from: debtOrderSansDebtorSignature.creditor,
                     }),
                 ).rejects.toThrow(OrderAPIErrors.INVALID_DEBTOR_SIGNATURE());
@@ -339,7 +339,7 @@ describe("Order API (Integration Tests)", () => {
 
             test("throws INVALID_CREDITOR_SIGNATURE error", async () => {
                 await expect(
-                    orderApi.fill(debtOrderSansCreditorSignature, {
+                    orderApi.fillAsync(debtOrderSansCreditorSignature, {
                         from: debtOrderSansCreditorSignature.debtor,
                     }),
                 ).rejects.toThrow(OrderAPIErrors.INVALID_CREDITOR_SIGNATURE());
@@ -364,7 +364,7 @@ describe("Order API (Integration Tests)", () => {
 
             test("throws INVALID_UNDERWRITER_SIGNATURE error", async () => {
                 await expect(
-                    orderApi.fill(debtOrderSansUnderwriterSignature, {
+                    orderApi.fillAsync(debtOrderSansUnderwriterSignature, {
                         from: debtOrderSansUnderwriterSignature.creditor,
                     }),
                 ).rejects.toThrow(OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE());
@@ -402,9 +402,9 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws CREDITOR_BALANCE_INSUFFICIENT error", async () => {
-                await expect(orderApi.fill(debtOrderInsufficientCreditorBalance)).rejects.toThrow(
-                    OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT(),
-                );
+                await expect(
+                    orderApi.fillAsync(debtOrderInsufficientCreditorBalance),
+                ).rejects.toThrow(OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT());
             });
         });
 
@@ -439,9 +439,9 @@ describe("Order API (Integration Tests)", () => {
             });
 
             test("throws CREDITOR_ALLOWANCE_INSUFFICIENT error", async () => {
-                await expect(orderApi.fill(debtOrderInsufficientCreditorAllowance)).rejects.toThrow(
-                    OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
-                );
+                await expect(
+                    orderApi.fillAsync(debtOrderInsufficientCreditorAllowance),
+                ).rejects.toThrow(OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT());
             });
         });
     });

@@ -70,7 +70,7 @@ export class OrderAssertions {
     }
 
     // Debt cannot already have been issued
-    public async notAlreadyIssued(
+    public async notAlreadyIssuedAsync(
         debtOrder: DebtOrder,
         debtToken: DebtTokenContract,
         errorMessage: string,
@@ -86,7 +86,7 @@ export class OrderAssertions {
     }
 
     // Debt order cannot have been cancelled
-    public async debtOrderNotCancelled(
+    public async debtOrderNotCancelledAsync(
         debtOrder: DebtOrder,
         debtKernel: DebtKernelContract,
         errorMessage: string,
@@ -102,7 +102,7 @@ export class OrderAssertions {
     }
 
     // Issuance cannot have been cancelled
-    public async issuanceNotCancelled(
+    public async issuanceNotCancelledAsync(
         debtOrder: DebtOrder,
         debtKernel: DebtKernelContract,
         errorMessage: string,
@@ -186,7 +186,7 @@ export class OrderAssertions {
     */
 
     // Creditor balance > principal + fee
-    public async sufficientCreditorBalance(
+    public async sufficientCreditorBalanceAsync(
         debtOrder: DebtOrder,
         principalToken: ERC20Contract,
         errorMessage: string,
@@ -198,7 +198,7 @@ export class OrderAssertions {
     }
 
     // Creditor Allowance to TokenTransferProxy >= principal + creditorFee
-    public async sufficientCreditorAllowance(
+    public async sufficientCreditorAllowanceAsync(
         debtOrder: DebtOrder,
         principalToken: ERC20Contract,
         tokenTransferProxy: TokenTransferProxyContract,
