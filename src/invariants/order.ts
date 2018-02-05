@@ -1,7 +1,7 @@
-import Web3 from 'web3'
-import { DebtOrder, TxData } from '../types'
-import { BigNumber } from 'bignumber.js'
-import { NULL_ADDRESS } from 'utils/constants'
+import Web3 from "web3";
+import { DebtOrder, TxData } from "../types";
+import { BigNumber } from "bignumber.js";
+import { NULL_ADDRESS } from "utils/constants";
 import {
     DebtTokenContract,
     DebtOrderWrapper,
@@ -10,16 +10,16 @@ import {
     DummyTokenRegistryContract,
     TokenTransferProxyContract,
     ERC20Contract,
-} from 'src/wrappers'
-import { signatureUtils } from 'utils/signature_utils'
-import moment from 'moment'
-import ABIDecoder from 'abi-decoder'
+} from "src/wrappers";
+import { signatureUtils } from "utils/signature_utils";
+import moment from "moment";
+import ABIDecoder from "abi-decoder";
 
 export class OrderAssertions {
-    private web3: Web3
+    private web3: Web3;
 
     public constructor(web3: Web3) {
-        this.web3 = web3
+        this.web3 = web3;
     }
 
     /*
@@ -29,7 +29,7 @@ export class OrderAssertions {
     // principal >= debtor fee
     public validDebtorFee(debtOrder: DebtOrder, errorMessage: string) {
         if (debtOrder.principalAmount.lt(debtOrder.debtorFee)) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -39,7 +39,7 @@ export class OrderAssertions {
             (!debtOrder.underwriter || debtOrder.underwriter === NULL_ADDRESS) &&
             debtOrder.underwriterFee.gt(0)
         ) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -49,23 +49,23 @@ export class OrderAssertions {
             (!debtOrder.relayer || debtOrder.relayer === NULL_ADDRESS) &&
             debtOrder.relayerFee.gt(0)
         ) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
     // creditorFee + debtorFee == relayerFee + underwriterFee
     public validFees(debtOrder: DebtOrder, errorMessage: string) {
-        const feesContributed = debtOrder.creditorFee.add(debtOrder.debtorFee)
-        const feesDistributed = debtOrder.relayerFee.add(debtOrder.underwriterFee)
+        const feesContributed = debtOrder.creditorFee.add(debtOrder.debtorFee);
+        const feesDistributed = debtOrder.relayerFee.add(debtOrder.underwriterFee);
         if (!feesContributed.eq(feesDistributed)) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
     // Debt order must not be expired
     public notExpired(debtOrder: DebtOrder, errorMessage: string) {
         if (debtOrder.expirationTimestampInSec.lt(moment().unix())) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -75,13 +75,13 @@ export class OrderAssertions {
         debtToken: DebtTokenContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         const getOwnerAddress = await debtToken.ownerOf.callAsync(
             new BigNumber(debtOrderWrapped.getIssuanceCommitmentHash()),
-        )
+        );
         if (getOwnerAddress !== NULL_ADDRESS) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -91,13 +91,13 @@ export class OrderAssertions {
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
         if (
             await debtKernel.debtOrderCancelled.callAsync(
                 debtOrderWrapped.getDebtorCommitmentHash(),
             )
         ) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -107,13 +107,13 @@ export class OrderAssertions {
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
         if (
             await debtKernel.issuanceCancelled.callAsync(
                 debtOrderWrapped.getIssuanceCommitmentHash(),
             )
         ) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -127,7 +127,7 @@ export class OrderAssertions {
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
         if (transactionOptions.from !== debtOrder.debtor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -136,7 +136,7 @@ export class OrderAssertions {
                     debtOrder.debtor,
                 )
             ) {
-                throw new Error(errorMessage)
+                throw new Error(errorMessage);
             }
         }
     }
@@ -147,7 +147,7 @@ export class OrderAssertions {
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
         if (transactionOptions.from !== debtOrder.creditor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -156,7 +156,7 @@ export class OrderAssertions {
                     debtOrder.creditor,
                 )
             ) {
-                throw new Error(errorMessage)
+                throw new Error(errorMessage);
             }
         }
     }
@@ -167,7 +167,7 @@ export class OrderAssertions {
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder)
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
         if (transactionOptions.from !== debtOrder.underwriter) {
             if (
                 !signatureUtils.isValidSignature(
@@ -176,7 +176,7 @@ export class OrderAssertions {
                     debtOrder.underwriter,
                 )
             ) {
-                throw new Error(errorMessage)
+                throw new Error(errorMessage);
             }
         }
     }
@@ -191,9 +191,9 @@ export class OrderAssertions {
         principalToken: ERC20Contract,
         errorMessage: string,
     ) {
-        const creditorBalance = await principalToken.balanceOf.callAsync(debtOrder.creditor)
+        const creditorBalance = await principalToken.balanceOf.callAsync(debtOrder.creditor);
         if (creditorBalance.lt(debtOrder.principalAmount.add(debtOrder.creditorFee))) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 
@@ -207,10 +207,10 @@ export class OrderAssertions {
         const creditorAllowance = await principalToken.allowance.callAsync(
             debtOrder.creditor,
             tokenTransferProxy.address,
-        )
+        );
 
         if (creditorAllowance.lt(debtOrder.principalAmount.add(debtOrder.creditorFee))) {
-            throw new Error(errorMessage)
+            throw new Error(errorMessage);
         }
     }
 }

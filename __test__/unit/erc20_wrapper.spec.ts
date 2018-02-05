@@ -2,8 +2,8 @@ import promisify from "tiny-promisify";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
 import { ERC20Contract, DummyTokenRegistryContract } from "src/wrappers";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
-import { ACCOUNTS } from '../accounts';
-import Web3 from 'web3'
+import { ACCOUNTS } from "../accounts";
+import Web3 from "web3";
 
 // We use the mocked version of "fs-extra" defined in __mocks__/fs-extra.ts
 import * as mockFs from "fs-extra";
@@ -12,14 +12,14 @@ import * as mockFs from "fs-extra";
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(provider)
+const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+const web3 = new Web3(provider);
 const web3Wrapper = new Web3Wrapper(provider);
 
 const ERC20_ARTIFACTS_PATH = "src/artifacts/ERC20.json";
 const DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH = "src/artifacts/DummyTokenRegistry.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 }
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 describe("ERC20 Token Contract Wrapper (Unit)", () => {
     let networkId: number;
@@ -41,20 +41,24 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
         // artifacts, and then finally are able to retrieve a wrapped DummyTokenRegistry
         // contract.  This allows us to retrieve the address of a deployed DummyToken
         // listed in the registry for testing purposes.
-        const dummyTokenRegistryArtifacts = await readFilePromise(DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH);
-        const { abi: registryAbi, networks: registryNetworks } = JSON.parse(dummyTokenRegistryArtifacts);
+        const dummyTokenRegistryArtifacts = await readFilePromise(
+            DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH,
+        );
+        const { abi: registryAbi, networks: registryNetworks } = JSON.parse(
+            dummyTokenRegistryArtifacts,
+        );
         const registryAddress = registryNetworks[networkId].address;
 
         let mockFilesystem = {};
         let mockNetworks = {};
 
         mockNetworks[networkId] = {
-            address: registryAddress
+            address: registryAddress,
         };
 
         mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
             networks: mockNetworks,
-            abi: registryAbi
+            abi: registryAbi,
         });
 
         mockFs.mockFilesystem(mockFilesystem);
@@ -71,8 +75,9 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
+                await expect(
+                    ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS),
+                ).rejects.toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
             });
         });
 
@@ -85,8 +90,9 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
+                await expect(
+                    ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS),
+                ).rejects.toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
             });
         });
 
@@ -96,19 +102,22 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[ERC20_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: erc20TokenContractAbi
+                    abi: erc20TokenContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                await expect(ERC20Contract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ERC20", networkId));
+                await expect(
+                    ERC20Contract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ERC20", networkId),
+                );
             });
         });
 
@@ -118,18 +127,22 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[ERC20_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: erc20TokenContractAbi
+                    abi: erc20TokenContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
-                const contractWrapper = await ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS);
+                const contractWrapper = await ERC20Contract.at(
+                    dummyREPTokenAddress,
+                    web3,
+                    TX_DEFAULTS,
+                );
 
                 expect(contractWrapper.address).toBe(dummyREPTokenAddress);
                 expect(contractWrapper.abi).toEqual(erc20TokenContractAbi);

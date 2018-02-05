@@ -2,8 +2,8 @@ import promisify from "tiny-promisify";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
 import { DummyTokenRegistryContract } from "src/wrappers";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
-import { ACCOUNTS } from '../accounts';
-import Web3 from 'web3'
+import { ACCOUNTS } from "../accounts";
+import Web3 from "web3";
 
 // We use the mocked version of "fs-extra" defined in __mocks__/fs-extra.ts
 import * as mockFs from "fs-extra";
@@ -12,13 +12,13 @@ import * as mockFs from "fs-extra";
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(provider)
+const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+const web3 = new Web3(provider);
 const web3Wrapper = new Web3Wrapper(provider);
 
 const DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH = "src/artifacts/DummyTokenRegistry.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 }
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
     let networkId: number;
@@ -45,8 +45,11 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"));
+                await expect(
+                    DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"),
+                );
             });
         });
 
@@ -59,8 +62,11 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"));
+                await expect(
+                    DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"),
+                );
             });
         });
 
@@ -68,7 +74,7 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             beforeAll(() => {
                 let mockFilesystem = {};
                 mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
-                    networks: {}
+                    networks: {},
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
@@ -76,8 +82,14 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
                 const networkId = await web3Wrapper.getNetworkIdAsync();
-                await expect(DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DummyTokenRegistry", networkId));
+                await expect(
+                    DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "DummyTokenRegistry",
+                        networkId,
+                    ),
+                );
             });
         });
 
@@ -87,19 +99,25 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: dummyTokenRegistryContractAbi
+                    abi: dummyTokenRegistryContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                await expect(DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DummyTokenRegistry", networkId));
+                await expect(
+                    DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "DummyTokenRegistry",
+                        networkId,
+                    ),
+                );
             });
         });
 
@@ -109,18 +127,21 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: dummyTokenRegistryContractAddress
-                }
+                    address: dummyTokenRegistryContractAddress,
+                };
                 mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: dummyTokenRegistryContractAbi
+                    abi: dummyTokenRegistryContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
-                const contractWrapper = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS);
+                const contractWrapper = await DummyTokenRegistryContract.deployed(
+                    web3,
+                    TX_DEFAULTS,
+                );
 
                 expect(contractWrapper.address).toBe(dummyTokenRegistryContractAddress);
                 expect(contractWrapper.abi).toEqual(dummyTokenRegistryContractAbi);
@@ -135,8 +156,15 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(DummyTokenRegistryContract.at(dummyTokenRegistryContractAddress, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"));
+                await expect(
+                    DummyTokenRegistryContract.at(
+                        dummyTokenRegistryContractAddress,
+                        web3,
+                        TX_DEFAULTS,
+                    ),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"),
+                );
             });
         });
 
@@ -149,8 +177,15 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(DummyTokenRegistryContract.at(dummyTokenRegistryContractAddress, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"));
+                await expect(
+                    DummyTokenRegistryContract.at(
+                        dummyTokenRegistryContractAddress,
+                        web3,
+                        TX_DEFAULTS,
+                    ),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"),
+                );
             });
         });
 
@@ -160,19 +195,25 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: dummyTokenRegistryContractAbi
+                    abi: dummyTokenRegistryContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                await expect(DummyTokenRegistryContract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DummyTokenRegistry", networkId));
+                await expect(
+                    DummyTokenRegistryContract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "DummyTokenRegistry",
+                        networkId,
+                    ),
+                );
             });
         });
 
@@ -182,18 +223,22 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: dummyTokenRegistryContractAbi
+                    abi: dummyTokenRegistryContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
-                const contractWrapper = await DummyTokenRegistryContract.at(dummyTokenRegistryContractAddress, web3, TX_DEFAULTS);
+                const contractWrapper = await DummyTokenRegistryContract.at(
+                    dummyTokenRegistryContractAddress,
+                    web3,
+                    TX_DEFAULTS,
+                );
 
                 expect(contractWrapper.address).toBe(dummyTokenRegistryContractAddress);
                 expect(contractWrapper.abi).toEqual(dummyTokenRegistryContractAbi);

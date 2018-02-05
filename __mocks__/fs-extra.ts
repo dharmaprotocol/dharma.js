@@ -5,7 +5,7 @@ let filesystem = {};
 
 const mockFilesystem = (mockedFilesystem: object) => {
     filesystem = mockedFilesystem;
-}
+};
 
 const readFile = (path: string, encoding: string): Promise<string> => {
     if (path in filesystem) {
@@ -13,6 +13,6 @@ const readFile = (path: string, encoding: string): Promise<string> => {
     } else {
         throw new Error("Couldn't read file");
     }
-}
+};
 
 export { mockFilesystem, readFile };

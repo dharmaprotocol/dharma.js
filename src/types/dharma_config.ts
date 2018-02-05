@@ -1,5 +1,5 @@
 export interface DharmaConfig {
-    kernelAddress?: string
-    tokenTransferProxyAddress?: string
-    tokenAddress?: string
+    kernelAddress?: string;
+    tokenTransferProxyAddress?: string;
+    tokenAddress?: string;
 }

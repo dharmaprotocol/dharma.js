@@ -2,8 +2,8 @@ import promisify from "tiny-promisify";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
 import { TokenTransferProxyContract } from "src/wrappers";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
-import { ACCOUNTS } from '../accounts';
-import Web3 from 'web3'
+import { ACCOUNTS } from "../accounts";
+import Web3 from "web3";
 
 // We use the mocked version of "fs-extra" defined in __mocks__/fs-extra.ts
 import * as mockFs from "fs-extra";
@@ -12,13 +12,13 @@ import * as mockFs from "fs-extra";
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(provider)
+const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+const web3 = new Web3(provider);
 const web3Wrapper = new Web3Wrapper(provider);
 
 const TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH = "src/artifacts/TokenTransferProxy.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 }
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
     let networkId: number;
@@ -45,8 +45,11 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(TokenTransferProxyContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"));
+                await expect(
+                    TokenTransferProxyContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"),
+                );
             });
         });
 
@@ -59,8 +62,11 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(TokenTransferProxyContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"));
+                await expect(
+                    TokenTransferProxyContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"),
+                );
             });
         });
 
@@ -68,7 +74,7 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             beforeAll(() => {
                 let mockFilesystem = {};
                 mockFilesystem[TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH] = JSON.stringify({
-                    networks: {}
+                    networks: {},
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
@@ -76,8 +82,14 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
                 const networkId = await web3Wrapper.getNetworkIdAsync();
-                await expect(TokenTransferProxyContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("TokenTransferProxy", networkId));
+                await expect(
+                    TokenTransferProxyContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "TokenTransferProxy",
+                        networkId,
+                    ),
+                );
             });
         });
 
@@ -87,19 +99,25 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: tokenTransferProxyContractAbi
+                    abi: tokenTransferProxyContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                await expect(TokenTransferProxyContract.deployed(web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("TokenTransferProxy", networkId));
+                await expect(
+                    TokenTransferProxyContract.deployed(web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "TokenTransferProxy",
+                        networkId,
+                    ),
+                );
             });
         });
 
@@ -109,18 +127,21 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: tokenTransferProxyContractAddress
-                }
+                    address: tokenTransferProxyContractAddress,
+                };
                 mockFilesystem[TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: tokenTransferProxyContractAbi
+                    abi: tokenTransferProxyContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
-                const contractWrapper = await TokenTransferProxyContract.deployed(web3, TX_DEFAULTS);
+                const contractWrapper = await TokenTransferProxyContract.deployed(
+                    web3,
+                    TX_DEFAULTS,
+                );
 
                 expect(contractWrapper.address).toBe(tokenTransferProxyContractAddress);
                 expect(contractWrapper.abi).toEqual(tokenTransferProxyContractAbi);
@@ -135,8 +156,15 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(TokenTransferProxyContract.at(tokenTransferProxyContractAddress, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"));
+                await expect(
+                    TokenTransferProxyContract.at(
+                        tokenTransferProxyContractAddress,
+                        web3,
+                        TX_DEFAULTS,
+                    ),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"),
+                );
             });
         });
 
@@ -149,8 +177,15 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
             });
 
             test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(TokenTransferProxyContract.at(tokenTransferProxyContractAddress, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"));
+                await expect(
+                    TokenTransferProxyContract.at(
+                        tokenTransferProxyContractAddress,
+                        web3,
+                        TX_DEFAULTS,
+                    ),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenTransferProxy"),
+                );
             });
         });
 
@@ -160,19 +195,25 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: tokenTransferProxyContractAbi
+                    abi: tokenTransferProxyContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                await expect(TokenTransferProxyContract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS)).rejects
-                    .toThrowError(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("TokenTransferProxy", networkId));
+                await expect(
+                    TokenTransferProxyContract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS),
+                ).rejects.toThrowError(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "TokenTransferProxy",
+                        networkId,
+                    ),
+                );
             });
         });
 
@@ -182,18 +223,22 @@ describe("Dummy Token Registry Contract Wrapper (Unit)", () => {
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
-                    address: ACCOUNTS[0].address
-                }
+                    address: ACCOUNTS[0].address,
+                };
                 mockFilesystem[TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH] = JSON.stringify({
                     networks: mockNetworks,
-                    abi: tokenTransferProxyContractAbi
+                    abi: tokenTransferProxyContractAbi,
                 });
 
                 mockFs.mockFilesystem(mockFilesystem);
             });
 
             test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
-                const contractWrapper = await TokenTransferProxyContract.at(tokenTransferProxyContractAddress, web3, TX_DEFAULTS);
+                const contractWrapper = await TokenTransferProxyContract.at(
+                    tokenTransferProxyContractAddress,
+                    web3,
+                    TX_DEFAULTS,
+                );
 
                 expect(contractWrapper.address).toBe(tokenTransferProxyContractAddress);
                 expect(contractWrapper.abi).toEqual(tokenTransferProxyContractAbi);

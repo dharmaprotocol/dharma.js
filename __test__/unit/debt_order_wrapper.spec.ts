@@ -1,12 +1,12 @@
-import { BigNumber } from 'bignumber.js'
-import { DebtOrderWrapper } from 'src/wrappers'
-import * as Units from 'utils/units'
-import moment from 'moment'
-import Web3Utils from 'web3-utils'
+import { BigNumber } from "bignumber.js";
+import { DebtOrderWrapper } from "src/wrappers";
+import * as Units from "utils/units";
+import moment from "moment";
+import Web3Utils from "web3-utils";
 
-import { ACCOUNTS } from '../accounts'
+import { ACCOUNTS } from "../accounts";
 
-let debtOrderWrapper: DebtOrderWrapper
+let debtOrderWrapper: DebtOrderWrapper;
 
 // For the unit test's purposes, we use arbitrary
 // addresses for all debt order fields that expect addresses.
@@ -28,15 +28,15 @@ let debtOrder = {
     termsContractParameters: ACCOUNTS[8].address,
     expirationTimestampInSec: new BigNumber(moment().seconds()),
     salt: new BigNumber(0),
-}
+};
 
-describe('Debt Order Wrapper (Unit Tests)', () => {
+describe("Debt Order Wrapper (Unit Tests)", () => {
     beforeAll(() => {
-        debtOrderWrapper = new DebtOrderWrapper(debtOrder)
-    })
+        debtOrderWrapper = new DebtOrderWrapper(debtOrder);
+    });
 
-    describe('#getIssuanceCommitment', () => {
-        test('returna correct subset of debt order as defined in whitepaper', () => {
+    describe("#getIssuanceCommitment", () => {
+        test("returna correct subset of debt order as defined in whitepaper", () => {
             expect(debtOrderWrapper.getIssuanceCommitment()).toEqual({
                 issuanceVersion: debtOrder.issuanceVersion,
                 debtor: debtOrder.debtor,
@@ -44,13 +44,13 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                 underwriterRiskRating: debtOrder.underwriterRiskRating,
                 termsContract: debtOrder.termsContract,
                 termsContractParameters: debtOrder.termsContractParameters,
-                salt: debtOrder.salt
-            })
-        })
-    })
+                salt: debtOrder.salt,
+            });
+        });
+    });
 
-    describe('#getIssuanceCommitmentHash', () => {
-        test('returns correctly hashed issuance commitment as defined in whitepaper', () => {
+    describe("#getIssuanceCommitmentHash", () => {
+        test("returns correctly hashed issuance commitment as defined in whitepaper", () => {
             expect(debtOrderWrapper.getIssuanceCommitmentHash()).toBe(
                 Web3Utils.soliditySha3(
                     debtOrder.issuanceVersion,
@@ -59,14 +59,14 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                     debtOrder.underwriterRiskRating,
                     debtOrder.termsContract,
                     debtOrder.termsContractParameters,
-                    debtOrder.salt
-                )
-            )
-        })
-    })
+                    debtOrder.salt,
+                ),
+            );
+        });
+    });
 
-    describe('#getHash', () => {
-        test('returns correctly hashed debt order as defined in whitepaper', () => {
+    describe("#getHash", () => {
+        test("returns correctly hashed debt order as defined in whitepaper", () => {
             expect(debtOrderWrapper.getHash()).toBe(
                 Web3Utils.soliditySha3(
                     debtOrder.kernelVersion,
@@ -77,7 +77,7 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                         debtOrder.underwriterRiskRating,
                         debtOrder.termsContract,
                         debtOrder.termsContractParameters,
-                        debtOrder.salt
+                        debtOrder.salt,
                     ),
                     debtOrder.underwriterFee,
                     debtOrder.principalAmount,
@@ -86,34 +86,34 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                     debtOrder.creditorFee,
                     debtOrder.relayer,
                     debtOrder.relayerFee,
-                    debtOrder.expirationTimestampInSec
-                )
-            )
-        })
-    })
+                    debtOrder.expirationTimestampInSec,
+                ),
+            );
+        });
+    });
 
-    describe('#getDebtAgreementId', () => {
-        test('returns issuance commitment hash cast to BigNumber', () => {
+    describe("#getDebtAgreementId", () => {
+        test("returns issuance commitment hash cast to BigNumber", () => {
             expect(debtOrderWrapper.getDebtAgreementId()).toEqual(
-                new BigNumber(debtOrderWrapper.getHash())
-            )
-        })
-    })
+                new BigNumber(debtOrderWrapper.getHash()),
+            );
+        });
+    });
 
-    describe('#getDebtorCommitmentHash', () => {
-        test('returns #getHash alias', () => {
-            expect(debtOrderWrapper.getDebtorCommitmentHash()).toBe(debtOrderWrapper.getHash())
-        })
-    })
+    describe("#getDebtorCommitmentHash", () => {
+        test("returns #getHash alias", () => {
+            expect(debtOrderWrapper.getDebtorCommitmentHash()).toBe(debtOrderWrapper.getHash());
+        });
+    });
 
-    describe('#getCreditorCommitmentHash', () => {
-        test('returns #getHash alias', () => {
-            expect(debtOrderWrapper.getCreditorCommitmentHash()).toBe(debtOrderWrapper.getHash())
-        })
-    })
+    describe("#getCreditorCommitmentHash", () => {
+        test("returns #getHash alias", () => {
+            expect(debtOrderWrapper.getCreditorCommitmentHash()).toBe(debtOrderWrapper.getHash());
+        });
+    });
 
-    describe('#getUnderwriterCommitmentHash', () => {
-        test('returns correctly hashed underwriter commitment as defined in whitepaper', () => {
+    describe("#getUnderwriterCommitmentHash", () => {
+        test("returns correctly hashed underwriter commitment as defined in whitepaper", () => {
             expect(debtOrderWrapper.getUnderwriterCommitmentHash()).toEqual(
                 Web3Utils.soliditySha3(
                     debtOrder.kernelVersion,
@@ -124,14 +124,14 @@ describe('Debt Order Wrapper (Unit Tests)', () => {
                         debtOrder.underwriterRiskRating,
                         debtOrder.termsContract,
                         debtOrder.termsContractParameters,
-                        debtOrder.salt
+                        debtOrder.salt,
                     ),
                     debtOrder.underwriterFee,
                     debtOrder.principalAmount,
                     debtOrder.principalToken,
-                    debtOrder.expirationTimestampInSec
-                )
-            )
-        })
-    })
-})
+                    debtOrder.expirationTimestampInSec,
+                ),
+            );
+        });
+    });
+});

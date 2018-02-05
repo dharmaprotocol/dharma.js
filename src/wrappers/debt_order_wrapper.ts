@@ -1,17 +1,17 @@
-import { BigNumber } from 'bignumber.js'
-import { ECDSASignature, DebtOrder, IssuanceCommitment } from '../types'
-import Web3Utils from 'web3-utils'
-import { NULL_ECDSA_SIGNATURE } from 'utils/constants'
+import { BigNumber } from "bignumber.js";
+import { ECDSASignature, DebtOrder, IssuanceCommitment } from "../types";
+import Web3Utils from "web3-utils";
+import { NULL_ECDSA_SIGNATURE } from "utils/constants";
 
 export class DebtOrderWrapper {
-    private debtOrder: DebtOrder
+    private debtOrder: DebtOrder;
 
     constructor(debtOrder: DebtOrder) {
-        this.debtOrder = debtOrder
+        this.debtOrder = debtOrder;
     }
 
     public getCreditor(): string {
-        return this.debtOrder.creditor
+        return this.debtOrder.creditor;
     }
 
     /**
@@ -28,8 +28,8 @@ export class DebtOrderWrapper {
             underwriterRiskRating: this.debtOrder.underwriterRiskRating,
             termsContract: this.debtOrder.termsContract,
             termsContractParameters: this.debtOrder.termsContractParameters,
-            salt: this.debtOrder.salt
-        }
+            salt: this.debtOrder.salt,
+        };
     }
 
     /**
@@ -39,7 +39,7 @@ export class DebtOrderWrapper {
      * @return Hash of the issuance commitment associated with this debt order.
      */
     public getIssuanceCommitmentHash(): string {
-        const issuanceCommitment = this.getIssuanceCommitment()
+        const issuanceCommitment = this.getIssuanceCommitment();
         return Web3Utils.soliditySha3(
             issuanceCommitment.issuanceVersion,
             issuanceCommitment.debtor,
@@ -47,8 +47,8 @@ export class DebtOrderWrapper {
             issuanceCommitment.underwriterRiskRating,
             issuanceCommitment.termsContract,
             issuanceCommitment.termsContractParameters,
-            issuanceCommitment.salt
-        )
+            issuanceCommitment.salt,
+        );
     }
 
     /**
@@ -69,8 +69,8 @@ export class DebtOrderWrapper {
             this.debtOrder.creditorFee,
             this.debtOrder.relayer,
             this.debtOrder.relayerFee,
-            this.debtOrder.expirationTimestampInSec
-        )
+            this.debtOrder.expirationTimestampInSec,
+        );
     }
 
     /**
@@ -80,7 +80,7 @@ export class DebtOrderWrapper {
      * @return Debt agreement id.
      */
     public getDebtAgreementId(): BigNumber {
-        return new BigNumber(this.getHash())
+        return new BigNumber(this.getHash());
     }
 
     /**
@@ -91,7 +91,7 @@ export class DebtOrderWrapper {
      * @return Debtor commitment hash
      */
     public getDebtorCommitmentHash(): string {
-        return this.getHash()
+        return this.getHash();
     }
 
     /**
@@ -103,7 +103,7 @@ export class DebtOrderWrapper {
      * creditor commitment hash
      */
     public getCreditorCommitmentHash(): string {
-        return this.getHash()
+        return this.getHash();
     }
 
     /**
@@ -122,8 +122,8 @@ export class DebtOrderWrapper {
             this.debtOrder.underwriterFee,
             this.debtOrder.principalAmount,
             this.debtOrder.principalToken,
-            this.debtOrder.expirationTimestampInSec
-        )
+            this.debtOrder.expirationTimestampInSec,
+        );
     }
 
     public getOrderAddresses(): string[] {
@@ -133,8 +133,8 @@ export class DebtOrderWrapper {
             this.debtOrder.underwriter,
             this.debtOrder.termsContract,
             this.debtOrder.principalToken,
-            this.debtOrder.relayer
-        ]
+            this.debtOrder.relayer,
+        ];
     }
 
     public getOrderValues(): BigNumber[] {
@@ -146,39 +146,39 @@ export class DebtOrderWrapper {
             this.debtOrder.relayerFee,
             this.debtOrder.creditorFee,
             this.debtOrder.debtorFee,
-            this.debtOrder.expirationTimestampInSec
-        ]
+            this.debtOrder.expirationTimestampInSec,
+        ];
     }
 
     public getOrderBytes32(): string[] {
-        return [this.debtOrder.termsContractParameters]
+        return [this.debtOrder.termsContractParameters];
     }
 
     public getSignaturesR(): string[] {
-        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures()
+        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures();
 
-        return [debtorSignature.r, creditorSignature.r, underwriterSignature.r]
+        return [debtorSignature.r, creditorSignature.r, underwriterSignature.r];
     }
 
     public getSignaturesS(): string[] {
-        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures()
+        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures();
 
-        return [debtorSignature.s, creditorSignature.s, underwriterSignature.s]
+        return [debtorSignature.s, creditorSignature.s, underwriterSignature.s];
     }
 
     public getSignaturesV(): number[] {
-        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures()
+        const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures();
 
-        return [debtorSignature.v, creditorSignature.v, underwriterSignature.v]
+        return [debtorSignature.v, creditorSignature.v, underwriterSignature.v];
     }
 
     private getSignatures(): ECDSASignature[] {
-        let { debtorSignature, creditorSignature, underwriterSignature } = this.debtOrder
+        let { debtorSignature, creditorSignature, underwriterSignature } = this.debtOrder;
 
-        debtorSignature = debtorSignature || NULL_ECDSA_SIGNATURE
-        creditorSignature = creditorSignature || NULL_ECDSA_SIGNATURE
-        underwriterSignature = underwriterSignature || NULL_ECDSA_SIGNATURE
+        debtorSignature = debtorSignature || NULL_ECDSA_SIGNATURE;
+        creditorSignature = creditorSignature || NULL_ECDSA_SIGNATURE;
+        underwriterSignature = underwriterSignature || NULL_ECDSA_SIGNATURE;
 
-        return [debtorSignature, creditorSignature, underwriterSignature]
+        return [debtorSignature, creditorSignature, underwriterSignature];
     }
 }
