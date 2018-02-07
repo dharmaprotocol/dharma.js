@@ -1,4 +1,5 @@
+import { ContractsAPI } from "./contracts_api";
 import { OrderAPI } from "./order_api";
 import { SignerAPI } from "./signer_api";
 
-export { OrderAPI, SignerAPI };
+export { ContractsAPI, OrderAPI, SignerAPI };

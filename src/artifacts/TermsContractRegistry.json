@@ -1,5 +1,5 @@
 {
-  "contractName": "DummyTokenRegistry",
+  "contractName": "TermsContractRegistry",
   "abi": [
     {
       "constant": false,
@@ -9,11 +9,11 @@
           "type": "string"
         },
         {
-          "name": "token",
+          "name": "termsContract",
           "type": "address"
         }
       ],
-      "name": "setTokenAddress",
+      "name": "setSimpleInterestTermsContractAddress",
       "outputs": [],
       "payable": false,
       "stateMutability": "nonpayable",
@@ -27,7 +27,7 @@
           "type": "bytes32"
         }
       ],
-      "name": "symbolToTokenAddress",
+      "name": "symbolToTermsContractAddress",
       "outputs": [
         {
           "name": "",
@@ -46,7 +46,7 @@
           "type": "string"
         }
       ],
-      "name": "getTokenAddress",
+      "name": "getSimpleInterestTermsContractAddress",
       "outputs": [
         {
           "name": "",
@@ -58,18 +58,18 @@
       "type": "function"
     }
   ],
-  "bytecode": "0x6060604052341561000f57600080fd5b6103a08061001e6000396000f300606060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806317456e561461005c578063202b9688146100d8578063c40912361461013f575b600080fd5b341561006757600080fd5b6100d6600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506101dc565b005b34156100e357600080fd5b6100fd60048080356000191690602001909190505061029b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561014a57600080fd5b61019a600480803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919050506102ce565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b80600080846040518082805190602001908083835b60208310151561021657805182526020820191506020810190506020830392506101f1565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405180910390206000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505050565b60006020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000806000836040518082805190602001908083835b60208310151561030957805182526020820191506020810190506020830392506102e4565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405180910390206000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690509190505600a165627a7a72305820074e0d4228827f2a60d5c1e63e3bafbc87f3ed3f4bc4395884b0256c31979b420029",
-  "deployedBytecode": "0x606060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806317456e561461005c578063202b9688146100d8578063c40912361461013f575b600080fd5b341561006757600080fd5b6100d6600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506101dc565b005b34156100e357600080fd5b6100fd60048080356000191690602001909190505061029b565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561014a57600080fd5b61019a600480803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919050506102ce565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b80600080846040518082805190602001908083835b60208310151561021657805182526020820191506020810190506020830392506101f1565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405180910390206000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505050565b60006020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000806000836040518082805190602001908083835b60208310151561030957805182526020820191506020810190506020830392506102e4565b6001836020036101000a03801982511681845116808217855250505050505090500191505060405180910390206000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690509190505600a165627a7a72305820074e0d4228827f2a60d5c1e63e3bafbc87f3ed3f4bc4395884b0256c31979b420029",
-  "sourceMap": "26:364:12:-;;;;;;;;;;;;;;;;;",
-  "deployedSourceMap": "26:364:12:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;123:126;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;60:56;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;255:133;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;123:126;237:5;195:20;:39;226:6;216:17;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:2;51:6;36:153;;;182:3;176:5;171:3;164:6;98:2;93:3;89;82:19;;123:2;118:3;114;107:19;;148:2;143:3;139;132:19;;36:153;;;274:1;267:3;263:2;259:3;254;250;246;315:4;311:3;305;299:5;295:3;356:4;350:3;344:5;340:3;389:7;380;377:2;372:3;365:6;3:399;;;;;;;;;;;;;;;;;;;195:39:12;;;;;;;;;;;;;;;;;;:47;;;;;;;;;;;;;;;;;;123:126;;:::o;60:56::-;;;;;;;;;;;;;;;;;;;;;;:::o;255:133::-;316:7;342:20;:39;373:6;363:17;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:2;51:6;36:153;;;182:3;176:5;171:3;164:6;98:2;93:3;89;82:19;;123:2;118:3;114;107:19;;148:2;143:3;139;132:19;;36:153;;;274:1;267:3;263:2;259:3;254;250;246;315:4;311:3;305;299:5;295:3;356:4;350:3;344:5;340:3;389:7;380;377:2;372:3;365:6;3:399;;;;;;;;;;;;;;;;;;;342:39:12;;;;;;;;;;;;;;;;;;;;;;;;;;;335:46;;255:133;;;:::o",
-  "source": "pragma solidity 0.4.18;\n\n\ncontract DummyTokenRegistry {\n    mapping (bytes32 => address) public symbolToTokenAddress;\n\n    function setTokenAddress(string symbol, address token) public {\n        symbolToTokenAddress[keccak256(symbol)] = token;\n    }\n\n    function getTokenAddress(string symbol) public view returns (address) {\n        return symbolToTokenAddress[keccak256(symbol)];\n    }\n}\n",
-  "sourcePath": "/Users/nadavhollander/Documents/Dharma/Development/dharma.js/node_modules/charta/contracts/test/dummy_tokens/DummyTokenRegistry.sol",
+  "bytecode": "0x6060604052341561000f57600080fd5b6103f08061001e6000396000f300606060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806335329b1b1461005c5780639ef3daf6146100d8578063d3e5cd921461013f575b600080fd5b341561006757600080fd5b6100d6600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506101dc565b005b34156100e357600080fd5b6100fd6004808035600019169060200190919050506102c3565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561014a57600080fd5b61019a600480803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919050506102f6565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b80600080846040518082805190602001908083835b60208310151561021657805182526020820191506020810190506020830392506101f1565b6001836020036101000a038019825116818451168082178552505050505050905001807f53696d706c65496e7465726573745465726d73436f6e74726163740000000000815250601b0191505060405180910390206000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505050565b60006020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000806000836040518082805190602001908083835b602083101515610331578051825260208201915060208101905060208303925061030c565b6001836020036101000a038019825116818451168082178552505050505050905001807f53696d706c65496e7465726573745465726d73436f6e74726163740000000000815250601b0191505060405180910390206000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690509190505600a165627a7a72305820fddfe50d8104960046a2c72d9327acbb9c82ad150c9054b6bfb754011820ff190029",
+  "deployedBytecode": "0x606060405260043610610057576000357c0100000000000000000000000000000000000000000000000000000000900463ffffffff16806335329b1b1461005c5780639ef3daf6146100d8578063d3e5cd921461013f575b600080fd5b341561006757600080fd5b6100d6600480803590602001908201803590602001908080601f0160208091040260200160405190810160405280939291908181526020018383808284378201915050505050509190803573ffffffffffffffffffffffffffffffffffffffff169060200190919050506101dc565b005b34156100e357600080fd5b6100fd6004808035600019169060200190919050506102c3565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b341561014a57600080fd5b61019a600480803590602001908201803590602001908080601f016020809104026020016040519081016040528093929190818152602001838380828437820191505050505050919050506102f6565b604051808273ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b80600080846040518082805190602001908083835b60208310151561021657805182526020820191506020810190506020830392506101f1565b6001836020036101000a038019825116818451168082178552505050505050905001807f53696d706c65496e7465726573745465726d73436f6e74726163740000000000815250601b0191505060405180910390206000191660001916815260200190815260200160002060006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff1602179055505050565b60006020528060005260406000206000915054906101000a900473ffffffffffffffffffffffffffffffffffffffff1681565b6000806000836040518082805190602001908083835b602083101515610331578051825260208201915060208101905060208303925061030c565b6001836020036101000a038019825116818451168082178552505050505050905001807f53696d706c65496e7465726573745465726d73436f6e74726163740000000000815250601b0191505060405180910390206000191660001916815260200190815260200160002060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1690509190505600a165627a7a72305820fddfe50d8104960046a2c72d9327acbb9c82ad150c9054b6bfb754011820ff190029",
+  "sourceMap": "26:581:0:-;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "26:581:0:-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;134:237;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;63:64;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;377:228;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;134:237;351:13;236:28;:112;288:6;265:82;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:2;51:6;36:153;;;182:3;176:5;171:3;164:6;98:2;93:3;89;82:19;;123:2;118:3;114;107:19;;148:2;143:3;139;132:19;;36:153;;;274:1;267:3;263:2;259:3;254;250;246;315:4;311:3;305;299:5;295:3;356:4;350:3;344:5;340:3;389:7;380;377:2;372:3;365:6;3:399;;;;;;;;;;;;;;;;;;;;;;;;;;236:112:0;;;;;;;;;;;;;;;;;;:128;;;;;;;;;;;;;;;;;;134:237;;:::o;63:64::-;;;;;;;;;;;;;;;;;;;;;;:::o;377:228::-;460:7;486:28;:112;538:6;515:82;;;;;;;;;;;;;36:153:-1;66:2;61:3;58:2;51:6;36:153;;;182:3;176:5;171:3;164:6;98:2;93:3;89;82:19;;123:2;118:3;114;107:19;;148:2;143:3;139;132:19;;36:153;;;274:1;267:3;263:2;259:3;254;250;246;315:4;311:3;305;299:5;295:3;356:4;350:3;344:5;340:3;389:7;380;377:2;372:3;365:6;3:399;;;;;;;;;;;;;;;;;;;;;;;;;;486:112:0;;;;;;;;;;;;;;;;;;;;;;;;;;;479:119;;377:228;;;:::o",
+  "source": "pragma solidity 0.4.18;\n\n\ncontract TermsContractRegistry {\n    mapping (bytes32 => address) public symbolToTermsContractAddress;\n\n    function setSimpleInterestTermsContractAddress(string symbol, address termsContract) public {\n        symbolToTermsContractAddress[keccak256(\n            symbol,\n            \"SimpleInterestTermsContract\"\n        )] = termsContract;\n    }\n\n    function getSimpleInterestTermsContractAddress(string symbol) public view returns (address) {\n        return symbolToTermsContractAddress[keccak256(\n            symbol,\n            \"SimpleInterestTermsContract\"\n        )];\n    }\n}\n",
+  "sourcePath": "/Users/nadavhollander/Documents/Dharma/Development/charta/contracts/examples/TermsContractRegistry.sol",
   "ast": {
     "attributes": {
-      "absolutePath": "/Users/nadavhollander/Documents/Dharma/Development/dharma.js/node_modules/charta/contracts/test/dummy_tokens/DummyTokenRegistry.sol",
+      "absolutePath": "/Users/nadavhollander/Documents/Dharma/Development/charta/contracts/examples/TermsContractRegistry.sol",
       "exportedSymbols": {
-        "DummyTokenRegistry": [
-          3027
+        "TermsContractRegistry": [
+          38
         ]
       }
     },
@@ -82,9 +82,9 @@
             ".18"
           ]
         },
-        "id": 2992,
+        "id": 1,
         "name": "PragmaDirective",
-        "src": "0:23:12"
+        "src": "0:23:0"
       },
       {
         "attributes": {
@@ -98,17 +98,17 @@
           "documentation": null,
           "fullyImplemented": true,
           "linearizedBaseContracts": [
-            3027
+            38
           ],
-          "name": "DummyTokenRegistry",
-          "scope": 3028
+          "name": "TermsContractRegistry",
+          "scope": 39
         },
         "children": [
           {
             "attributes": {
               "constant": false,
-              "name": "symbolToTokenAddress",
-              "scope": 3027,
+              "name": "symbolToTermsContractAddress",
+              "scope": 38,
               "stateVariable": true,
               "storageLocation": "default",
               "type": "mapping(bytes32 => address)",
@@ -126,28 +126,28 @@
                       "name": "bytes32",
                       "type": "bytes32"
                     },
-                    "id": 2993,
+                    "id": 2,
                     "name": "ElementaryTypeName",
-                    "src": "69:7:12"
+                    "src": "72:7:0"
                   },
                   {
                     "attributes": {
                       "name": "address",
                       "type": "address"
                     },
-                    "id": 2994,
+                    "id": 3,
                     "name": "ElementaryTypeName",
-                    "src": "80:7:12"
+                    "src": "83:7:0"
                   }
                 ],
-                "id": 2995,
+                "id": 4,
                 "name": "Mapping",
-                "src": "60:28:12"
+                "src": "63:28:0"
               }
             ],
-            "id": 2996,
+            "id": 5,
             "name": "VariableDeclaration",
-            "src": "60:56:12"
+            "src": "63:64:0"
           },
           {
             "attributes": {
@@ -157,9 +157,9 @@
               "modifiers": [
                 null
               ],
-              "name": "setTokenAddress",
+              "name": "setSimpleInterestTermsContractAddress",
               "payable": false,
-              "scope": 3027,
+              "scope": 38,
               "stateMutability": "nonpayable",
               "superFunction": null,
               "visibility": "public"
@@ -171,7 +171,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "symbol",
-                      "scope": 3012,
+                      "scope": 22,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -184,20 +184,20 @@
                           "name": "string",
                           "type": "string storage pointer"
                         },
-                        "id": 2997,
+                        "id": 6,
                         "name": "ElementaryTypeName",
-                        "src": "148:6:12"
+                        "src": "181:6:0"
                       }
                     ],
-                    "id": 2998,
+                    "id": 7,
                     "name": "VariableDeclaration",
-                    "src": "148:13:12"
+                    "src": "181:13:0"
                   },
                   {
                     "attributes": {
                       "constant": false,
-                      "name": "token",
-                      "scope": 3012,
+                      "name": "termsContract",
+                      "scope": 22,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -210,19 +210,19 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 2999,
+                        "id": 8,
                         "name": "ElementaryTypeName",
-                        "src": "163:7:12"
+                        "src": "196:7:0"
                       }
                     ],
-                    "id": 3000,
+                    "id": 9,
                     "name": "VariableDeclaration",
-                    "src": "163:13:12"
+                    "src": "196:21:0"
                   }
                 ],
-                "id": 3001,
+                "id": 10,
                 "name": "ParameterList",
-                "src": "147:30:12"
+                "src": "180:38:0"
               },
               {
                 "attributes": {
@@ -231,9 +231,9 @@
                   ]
                 },
                 "children": [],
-                "id": 3002,
+                "id": 11,
                 "name": "ParameterList",
-                "src": "185:0:12"
+                "src": "226:0:0"
               },
               {
                 "children": [
@@ -266,13 +266,13 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 2996,
+                                  "referencedDeclaration": 5,
                                   "type": "mapping(bytes32 => address)",
-                                  "value": "symbolToTokenAddress"
+                                  "value": "symbolToTermsContractAddress"
                                 },
-                                "id": 3003,
+                                "id": 12,
                                 "name": "Identifier",
-                                "src": "195:20:12"
+                                "src": "236:28:0"
                               },
                               {
                                 "attributes": {
@@ -295,18 +295,22 @@
                                         {
                                           "typeIdentifier": "t_string_memory_ptr",
                                           "typeString": "string memory"
+                                        },
+                                        {
+                                          "typeIdentifier": "t_stringliteral_8b4cb97860a0dbe2b88011c128ededd7ecf3885dfbcfa754c7192f454c8d53ae",
+                                          "typeString": "literal_string \"SimpleInterestTermsContract\""
                                         }
                                       ],
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 5987,
+                                      "referencedDeclaration": 44,
                                       "type": "function () pure returns (bytes32)",
                                       "value": "keccak256"
                                     },
-                                    "id": 3004,
+                                    "id": 13,
                                     "name": "Identifier",
-                                    "src": "216:9:12"
+                                    "src": "265:9:0"
                                   },
                                   {
                                     "attributes": {
@@ -314,23 +318,40 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 2998,
+                                      "referencedDeclaration": 7,
                                       "type": "string memory",
                                       "value": "symbol"
                                     },
-                                    "id": 3005,
+                                    "id": 14,
                                     "name": "Identifier",
-                                    "src": "226:6:12"
+                                    "src": "288:6:0"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "hexvalue": "53696d706c65496e7465726573745465726d73436f6e7472616374",
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": true,
+                                      "lValueRequested": false,
+                                      "subdenomination": null,
+                                      "token": "string",
+                                      "type": "literal_string \"SimpleInterestTermsContract\"",
+                                      "value": "SimpleInterestTermsContract"
+                                    },
+                                    "id": 15,
+                                    "name": "Literal",
+                                    "src": "308:29:0"
                                   }
                                 ],
-                                "id": 3006,
+                                "id": 16,
                                 "name": "FunctionCall",
-                                "src": "216:17:12"
+                                "src": "265:82:0"
                               }
                             ],
-                            "id": 3007,
+                            "id": 17,
                             "name": "IndexAccess",
-                            "src": "195:39:12"
+                            "src": "236:112:0"
                           },
                           {
                             "attributes": {
@@ -338,33 +359,33 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 3000,
+                              "referencedDeclaration": 9,
                               "type": "address",
-                              "value": "token"
+                              "value": "termsContract"
                             },
-                            "id": 3008,
+                            "id": 18,
                             "name": "Identifier",
-                            "src": "237:5:12"
+                            "src": "351:13:0"
                           }
                         ],
-                        "id": 3009,
+                        "id": 19,
                         "name": "Assignment",
-                        "src": "195:47:12"
+                        "src": "236:128:0"
                       }
                     ],
-                    "id": 3010,
+                    "id": 20,
                     "name": "ExpressionStatement",
-                    "src": "195:47:12"
+                    "src": "236:128:0"
                   }
                 ],
-                "id": 3011,
+                "id": 21,
                 "name": "Block",
-                "src": "185:64:12"
+                "src": "226:145:0"
               }
             ],
-            "id": 3012,
+            "id": 22,
             "name": "FunctionDefinition",
-            "src": "123:126:12"
+            "src": "134:237:0"
           },
           {
             "attributes": {
@@ -374,9 +395,9 @@
               "modifiers": [
                 null
               ],
-              "name": "getTokenAddress",
+              "name": "getSimpleInterestTermsContractAddress",
               "payable": false,
-              "scope": 3027,
+              "scope": 38,
               "stateMutability": "view",
               "superFunction": null,
               "visibility": "public"
@@ -388,7 +409,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "symbol",
-                      "scope": 3026,
+                      "scope": 37,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "string memory",
@@ -401,19 +422,19 @@
                           "name": "string",
                           "type": "string storage pointer"
                         },
-                        "id": 3013,
+                        "id": 23,
                         "name": "ElementaryTypeName",
-                        "src": "280:6:12"
+                        "src": "424:6:0"
                       }
                     ],
-                    "id": 3014,
+                    "id": 24,
                     "name": "VariableDeclaration",
-                    "src": "280:13:12"
+                    "src": "424:13:0"
                   }
                 ],
-                "id": 3015,
+                "id": 25,
                 "name": "ParameterList",
-                "src": "279:15:12"
+                "src": "423:15:0"
               },
               {
                 "children": [
@@ -421,7 +442,7 @@
                     "attributes": {
                       "constant": false,
                       "name": "",
-                      "scope": 3026,
+                      "scope": 37,
                       "stateVariable": false,
                       "storageLocation": "default",
                       "type": "address",
@@ -434,25 +455,25 @@
                           "name": "address",
                           "type": "address"
                         },
-                        "id": 3016,
+                        "id": 26,
                         "name": "ElementaryTypeName",
-                        "src": "316:7:12"
+                        "src": "460:7:0"
                       }
                     ],
-                    "id": 3017,
+                    "id": 27,
                     "name": "VariableDeclaration",
-                    "src": "316:7:12"
+                    "src": "460:7:0"
                   }
                 ],
-                "id": 3018,
+                "id": 28,
                 "name": "ParameterList",
-                "src": "315:9:12"
+                "src": "459:9:0"
               },
               {
                 "children": [
                   {
                     "attributes": {
-                      "functionReturnParameters": 3018
+                      "functionReturnParameters": 28
                     },
                     "children": [
                       {
@@ -471,13 +492,13 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 2996,
+                              "referencedDeclaration": 5,
                               "type": "mapping(bytes32 => address)",
-                              "value": "symbolToTokenAddress"
+                              "value": "symbolToTermsContractAddress"
                             },
-                            "id": 3019,
+                            "id": 29,
                             "name": "Identifier",
-                            "src": "342:20:12"
+                            "src": "486:28:0"
                           },
                           {
                             "attributes": {
@@ -500,18 +521,22 @@
                                     {
                                       "typeIdentifier": "t_string_memory_ptr",
                                       "typeString": "string memory"
+                                    },
+                                    {
+                                      "typeIdentifier": "t_stringliteral_8b4cb97860a0dbe2b88011c128ededd7ecf3885dfbcfa754c7192f454c8d53ae",
+                                      "typeString": "literal_string \"SimpleInterestTermsContract\""
                                     }
                                   ],
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 5987,
+                                  "referencedDeclaration": 44,
                                   "type": "function () pure returns (bytes32)",
                                   "value": "keccak256"
                                 },
-                                "id": 3020,
+                                "id": 30,
                                 "name": "Identifier",
-                                "src": "363:9:12"
+                                "src": "515:9:0"
                               },
                               {
                                 "attributes": {
@@ -519,48 +544,65 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 3014,
+                                  "referencedDeclaration": 24,
                                   "type": "string memory",
                                   "value": "symbol"
                                 },
-                                "id": 3021,
+                                "id": 31,
                                 "name": "Identifier",
-                                "src": "373:6:12"
+                                "src": "538:6:0"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "hexvalue": "53696d706c65496e7465726573745465726d73436f6e7472616374",
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": true,
+                                  "lValueRequested": false,
+                                  "subdenomination": null,
+                                  "token": "string",
+                                  "type": "literal_string \"SimpleInterestTermsContract\"",
+                                  "value": "SimpleInterestTermsContract"
+                                },
+                                "id": 32,
+                                "name": "Literal",
+                                "src": "558:29:0"
                               }
                             ],
-                            "id": 3022,
+                            "id": 33,
                             "name": "FunctionCall",
-                            "src": "363:17:12"
+                            "src": "515:82:0"
                           }
                         ],
-                        "id": 3023,
+                        "id": 34,
                         "name": "IndexAccess",
-                        "src": "342:39:12"
+                        "src": "486:112:0"
                       }
                     ],
-                    "id": 3024,
+                    "id": 35,
                     "name": "Return",
-                    "src": "335:46:12"
+                    "src": "479:119:0"
                   }
                 ],
-                "id": 3025,
+                "id": 36,
                 "name": "Block",
-                "src": "325:63:12"
+                "src": "469:136:0"
               }
             ],
-            "id": 3026,
+            "id": 37,
             "name": "FunctionDefinition",
-            "src": "255:133:12"
+            "src": "377:228:0"
           }
         ],
-        "id": 3027,
+        "id": 38,
         "name": "ContractDefinition",
-        "src": "26:364:12"
+        "src": "26:581:0"
       }
     ],
-    "id": 3028,
+    "id": 39,
     "name": "SourceUnit",
-    "src": "0:391:12"
+    "src": "0:608:0"
   },
   "compiler": {
     "name": "solc",
@@ -570,9 +612,9 @@
     "70": {
       "events": {},
       "links": {},
-      "address": "0xf2db1e84d6dc8fa1ccf709abe4375afef51ba27a"
+      "address": "0xd0693a1eb16d6822e32b8f0dc62797e060a688ec"
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-02-06T21:02:42.079Z"
+  "updatedAt": "2018-02-06T04:59:25.195Z"
 }

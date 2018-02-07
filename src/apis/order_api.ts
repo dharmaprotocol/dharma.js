@@ -1,11 +1,11 @@
 import Web3 from "web3";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
-import { DebtOrder, DharmaConfig, TxData } from "../types";
+import { DebtOrder, TxData } from "../types";
+import { ContractsAPI } from ".";
 import {
     DebtKernelContract,
     DebtOrderWrapper,
     DebtTokenContract,
-    ERC20Contract,
     TokenTransferProxyContract,
 } from "../wrappers";
 import { Assertions } from "../invariants";
@@ -55,13 +55,14 @@ export const OrderAPIErrors = {
 
 export class OrderAPI {
     private web3: Web3;
-    private config: DharmaConfig;
     private assert: Assertions;
+    private contracts: ContractsAPI;
 
-    public constructor(web3: Web3, config?: DharmaConfig) {
+    public constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
+        this.contracts = contracts;
+
         this.assert = new Assertions(this.web3);
-        this.config = config || {};
     }
 
     public async fillAsync(debtOrder: DebtOrder, options?: TxData): Promise<string> {
@@ -69,9 +70,11 @@ export class OrderAPI {
 
         Object.assign(transactionOptions, options);
 
-        const [debtKernel, debtToken, tokenTransferProxy] = await this.loadDharmaContractsAsync(
-            transactionOptions,
-        );
+        const {
+            debtKernel,
+            debtToken,
+            tokenTransferProxy,
+        } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
 
         await this.assertValidityInvariantsAsync(debtOrder, debtKernel, debtToken);
         this.assertConsensualityInvariants(debtOrder, transactionOptions);
@@ -150,7 +153,7 @@ export class OrderAPI {
         tokenTransferProxy: TokenTransferProxyContract,
         transactionOptions: object,
     ): Promise<void> {
-        const principalToken = await this.loadERC20TokenAsync(
+        const principalToken = await this.contracts.loadERC20TokenAsync(
             debtOrder.principalToken,
             transactionOptions,
         );
@@ -167,59 +170,6 @@ export class OrderAPI {
             tokenTransferProxy,
             OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
         );
-    }
-
-    private async loadDharmaContractsAsync(
-        transactionOptions: object,
-    ): Promise<[DebtKernelContract, DebtTokenContract, TokenTransferProxyContract]> {
-        const debtKernel = await this.loadDebtKernelAsync(transactionOptions);
-        const debtToken = await this.loadDebtTokenAsync(transactionOptions);
-        const tokenTransferProxy = await this.loadTokenTransferProxyAsync(transactionOptions);
-
-        return [debtKernel, debtToken, tokenTransferProxy];
-    }
-
-    // TODO: Provide mechanism for user to specify what debt kernel contract they want to interact
-    //  with, probably best done in the initialization of dharma.js
-    private async loadDebtKernelAsync(transactionOptions: object): Promise<DebtKernelContract> {
-        if (this.config.kernelAddress) {
-            return DebtKernelContract.at(this.config.kernelAddress, this.web3, transactionOptions);
-        }
-
-        return DebtKernelContract.deployed(this.web3, transactionOptions);
-    }
-
-    // TODO: Provide mechanism for user to specify what debt token contract they want to interact
-    //  with, probably best done in the initialization of dharma.js
-    private async loadDebtTokenAsync(transactionOptions: object): Promise<DebtTokenContract> {
-        if (this.config.tokenAddress) {
-            return DebtTokenContract.at(this.config.tokenAddress, this.web3, transactionOptions);
-        }
-
-        return DebtTokenContract.deployed(this.web3, transactionOptions);
-    }
-
-    // TODO: Provide mechanism for user to specify what token transfer proxy contract they want to interact
-    //  with, probably best done in the initialization of dharma.js
-    private async loadTokenTransferProxyAsync(
-        transactionOptions: object,
-    ): Promise<TokenTransferProxyContract> {
-        if (this.config.tokenTransferProxyAddress) {
-            return TokenTransferProxyContract.at(
-                this.config.tokenTransferProxyAddress,
-                this.web3,
-                transactionOptions,
-            );
-        }
-
-        return TokenTransferProxyContract.deployed(this.web3, transactionOptions);
-    }
-
-    private async loadERC20TokenAsync(
-        tokenAddress: string,
-        transactionOptions: object,
-    ): Promise<ERC20Contract> {
-        return ERC20Contract.at(tokenAddress, this.web3, transactionOptions);
     }
 
     private async getTxDefaultOptions(): Promise<object> {
