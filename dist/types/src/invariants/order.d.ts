@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
-import { DebtTokenContract, DebtKernelContract, TokenTransferProxyContract, ERC20Contract } from "src/wrappers";
+import { DebtTokenContract, DebtKernelContract, TokenTransferProxyContract, ERC20Contract } from "../wrappers";
 export declare class OrderAssertions {
     private web3;
     constructor(web3: Web3);

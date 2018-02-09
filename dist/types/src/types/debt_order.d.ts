@@ -1,4 +1,4 @@
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 import { ECDSASignature } from "./ecdsa_signature";
 export interface DebtOrder {
     kernelVersion?: string;

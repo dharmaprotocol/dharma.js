@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var bignumber_1 = require("utils/bignumber");
+var bignumber_1 = require("./bignumber");
 var ether = function (decimalAmount) {
     return new bignumber_1.BigNumber(decimalAmount * (Math.pow(10, 18)));
 };

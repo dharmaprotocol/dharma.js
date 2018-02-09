@@ -1,5 +1,5 @@
 import { BaseContract, TxData } from "./base_contract_wrapper";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
 export declare class DebtKernelContract extends BaseContract {
     cancelDebtOrder: {

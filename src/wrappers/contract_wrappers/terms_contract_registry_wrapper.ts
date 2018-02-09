@@ -3,10 +3,10 @@
  * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
  */
 // tslint:disable-next-line:no-unused-variable
-import { TxData, TxDataPayable } from "src/types";
+import { TxData, TxDataPayable } from "../../types";
 import promisify from "tiny-promisify";
-import { classUtils } from "utils/class_utils";
-import { BigNumber } from "utils/bignumber";
+import { classUtils } from "../../../utils/class_utils";
+import { BigNumber } from "../../../utils/bignumber";
 import * as fs from "fs-extra";
 import * as Web3 from "web3";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";

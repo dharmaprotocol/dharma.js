@@ -35,10 +35,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var bignumber_1 = require("utils/bignumber");
-var constants_1 = require("utils/constants");
-var wrappers_1 = require("src/wrappers");
-var signature_utils_1 = require("utils/signature_utils");
+var bignumber_1 = require("../../utils/bignumber");
+var constants_1 = require("../../utils/constants");
+var wrappers_1 = require("../wrappers");
+var signature_utils_1 = require("../../utils/signature_utils");
 var moment_1 = require("moment");
 var OrderAssertions = (function () {
     function OrderAssertions(web3) {

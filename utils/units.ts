@@ -1,4 +1,4 @@
-import {BigNumber} from "utils/bignumber";
+import {BigNumber} from "./bignumber";
 import * as crypto from "crypto";
 import ethUtil from "ethereumjs-util";
 

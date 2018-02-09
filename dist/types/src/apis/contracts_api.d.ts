@@ -1,6 +1,6 @@
-import { DebtKernelContract, DebtTokenContract, TokenTransferProxyContract, ERC20Contract, RepaymentRouterContract, SimpleInterestTermsContractContract, TermsContractRegistryContract } from "src/wrappers";
+import { DebtKernelContract, DebtTokenContract, TokenTransferProxyContract, ERC20Contract, RepaymentRouterContract, SimpleInterestTermsContractContract, TermsContractRegistryContract } from "../wrappers";
 import Web3 from "web3";
-import { DharmaConfig } from "src/types";
+import { DharmaConfig } from "../types";
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
     debtToken: DebtTokenContract;

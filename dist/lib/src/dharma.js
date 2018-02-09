@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var web3_1 = require("web3");
 var apis_1 = require("./apis");
-var adapters_1 = require("src/adapters");
+var adapters_1 = require("./adapters");
 var Dharma = (function () {
     function Dharma(web3Provider, config) {
         this.web3 = new web3_1.default(web3Provider);

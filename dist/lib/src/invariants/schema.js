@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var schemas_1 = require("src/schemas");
+var schemas_1 = require("../schemas");
 var outdent_1 = require("outdent");
 exports.SchemaAssertionsError = {
     DOES_NOT_CONFORM_TO_SCHEMA: function (variableName, schemaId, value, validationResult) {

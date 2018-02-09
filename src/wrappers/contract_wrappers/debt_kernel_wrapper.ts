@@ -1,7 +1,7 @@
 import { BaseContract, CONTRACT_WRAPPER_ERRORS, TxData } from "./base_contract_wrapper";
 import promisify from "tiny-promisify";
-import { classUtils } from "utils/class_utils";
-import { BigNumber } from "utils/bignumber";
+import { classUtils } from "../../../utils/class_utils";
+import { BigNumber } from "../../../utils/bignumber";
 import * as fs from "fs-extra";
 import * as Web3 from "web3";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";

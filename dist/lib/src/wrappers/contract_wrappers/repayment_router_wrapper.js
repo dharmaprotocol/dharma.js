@@ -46,7 +46,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tiny_promisify_1 = require("tiny-promisify");
-var class_utils_1 = require("utils/class_utils");
+var class_utils_1 = require("../../../utils/class_utils");
 var fs = require("fs-extra");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");

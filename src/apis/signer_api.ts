@@ -1,15 +1,15 @@
 import Web3 from "web3";
 import { ECDSASignature, DebtOrder } from "../types";
 import promisify from "tiny-promisify";
-import { DebtOrderWrapper } from "src/wrappers/debt_order_wrapper";
-import { signatureUtils } from "utils/signature_utils";
+import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
+import { signatureUtils } from "../../utils/signature_utils";
 import { Assertions } from "../invariants";
 import singleLineString from "single-line-string";
 import {
     WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_ACCOUNT_NOT_FOUND,
     WEB3_ERROR_NO_PRIVATE_KEY,
-} from "utils/constants";
+} from "../../utils/constants";
 
 export const SignerAPIErrors = {
     INVALID_SIGNING_KEY: (unavailableKey: string) =>

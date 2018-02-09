@@ -35,8 +35,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var wrappers_1 = require("src/wrappers");
-var constants_1 = require("utils/constants");
+var wrappers_1 = require("../wrappers");
+var constants_1 = require("../../utils/constants");
 var outdent_1 = require("outdent");
 exports.ContractsError = {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: function (principalToken) {

@@ -1,4 +1,4 @@
-import { SchemaValidator, Schema, Schemas, ValidatorResult } from "src/schemas";
+import { SchemaValidator, Schema, Schemas, ValidatorResult } from "../schemas";
 import outdent from "outdent";
 
 export const SchemaAssertionsError = {

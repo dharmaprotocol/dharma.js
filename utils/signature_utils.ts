@@ -1,6 +1,6 @@
 import * as ethUtil from 'ethereumjs-util';
 
-import { ECDSASignature } from 'src/types';
+import { ECDSASignature } from '../src/types';
 
 /*
  * Ver batim copied, with slight modifications, from the wonderful 0x.js project codebase:

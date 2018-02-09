@@ -44,9 +44,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
-var bignumber_1 = require("utils/bignumber");
-var constants_1 = require("utils/constants");
-var invariants_1 = require("src/invariants");
+var bignumber_1 = require("../../utils/bignumber");
+var constants_1 = require("../../utils/constants");
+var invariants_1 = require("../invariants");
 var single_line_string_1 = require("single-line-string");
 var AmortizationUnitCodes = ["hours", "days", "weeks", "months", "years"];
 var AmortizationUnitCode;

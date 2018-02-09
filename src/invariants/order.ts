@@ -1,19 +1,16 @@
 import Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
-import { BigNumber } from "utils/bignumber";
-import { NULL_ADDRESS } from "utils/constants";
+import { BigNumber } from "../../utils/bignumber";
+import { NULL_ADDRESS } from "../../utils/constants";
 import {
     DebtTokenContract,
     DebtOrderWrapper,
     DebtKernelContract,
-    DummyTokenContract,
-    DummyTokenRegistryContract,
     TokenTransferProxyContract,
     ERC20Contract,
-} from "src/wrappers";
-import { signatureUtils } from "utils/signature_utils";
+} from "../wrappers";
+import { signatureUtils } from "../../utils/signature_utils";
 import moment from "moment";
-import ABIDecoder from "abi-decoder";
 
 export class OrderAssertions {
     private web3: Web3;

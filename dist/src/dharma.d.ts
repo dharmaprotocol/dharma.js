@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import { ContractsAPI, OrderAPI, SignerAPI } from "./apis";
-import { DharmaConfig } from "src/types";
-import { SimpleInterestLoanAdapter } from "src/adapters/simple_interest_loan_adapter";
+import { DharmaConfig } from "./types";
+import { SimpleInterestLoanAdapter } from "./adapters/simple_interest_loan_adapter";
 export default class Dharma {
     static adapters: {
         SimpleInterestLoanAdapter: typeof SimpleInterestLoanAdapter;

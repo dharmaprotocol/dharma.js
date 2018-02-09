@@ -1,9 +1,9 @@
 import * as _ from "lodash";
-import { DebtOrder } from "src/types";
-import { ContractsAPI } from "src/apis";
-import { BigNumber } from "utils/bignumber";
-import { NULL_ADDRESS } from "utils/constants";
-import { Assertions } from "src/invariants";
+import { DebtOrder } from "../types";
+import { ContractsAPI } from "../apis";
+import { BigNumber } from "../../utils/bignumber";
+import { NULL_ADDRESS } from "../../utils/constants";
+import { Assertions } from "../invariants";
 import Web3 from "web3";
 import singleLineString from "single-line-string";
 

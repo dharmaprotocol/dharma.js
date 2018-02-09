@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { NULL_ADDRESS } from "utils/constants";
+import { NULL_ADDRESS } from "../../utils/constants";
 
 export class AccountAssertions {
     private web3: Web3;

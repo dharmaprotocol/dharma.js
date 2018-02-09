@@ -7,9 +7,9 @@ import {
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
     TermsContractRegistryContract,
-} from "src/wrappers";
+} from "../wrappers";
 import Web3 from "web3";
-import { DharmaConfig } from "src/types";
+import { DharmaConfig } from "../types";
 import {
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
@@ -17,7 +17,7 @@ import {
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
     TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
-} from "utils/constants";
+} from "../../utils/constants";
 import outdent from "outdent";
 
 export interface DharmaContracts {

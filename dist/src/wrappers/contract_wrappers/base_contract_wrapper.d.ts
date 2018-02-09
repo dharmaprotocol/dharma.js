@@ -1,4 +1,4 @@
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
 export interface TxData {
     from?: string;

@@ -36,11 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var tiny_promisify_1 = require("tiny-promisify");
-var debt_order_wrapper_1 = require("src/wrappers/debt_order_wrapper");
-var signature_utils_1 = require("utils/signature_utils");
+var debt_order_wrapper_1 = require("../wrappers/debt_order_wrapper");
+var signature_utils_1 = require("../../utils/signature_utils");
 var invariants_1 = require("../invariants");
 var single_line_string_1 = require("single-line-string");
-var constants_1 = require("utils/constants");
+var constants_1 = require("../../utils/constants");
 exports.SignerAPIErrors = {
     INVALID_SIGNING_KEY: function (unavailableKey) {
         return (_a = ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], _a.raw = ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], single_line_string_1.default(_a, unavailableKey));
