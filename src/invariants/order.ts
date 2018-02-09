@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { NULL_ADDRESS } from "utils/constants";
 import {
     DebtTokenContract,

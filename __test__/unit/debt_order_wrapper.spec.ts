@@ -1,4 +1,4 @@
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { DebtOrderWrapper } from "src/wrappers";
 import * as Units from "utils/units";
 import moment from "moment";

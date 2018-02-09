@@ -1,3 +1,3 @@
-import { SimpleInterestAdapter, AmortizationUnitType } from "./simple_interest_adapter";
+import { SimpleInterestLoanAdapter } from "./simple_interest_loan_adapter";
 
-export { SimpleInterestAdapter, AmortizationUnitType };
+export { SimpleInterestLoanAdapter };

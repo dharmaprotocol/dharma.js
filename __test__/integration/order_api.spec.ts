@@ -1,7 +1,8 @@
 jest.unmock("fs-extra");
 
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { OrderAPI, OrderAPIErrors } from "src/apis/order_api";
+import { ContractsAPI } from "src/apis/contracts_api";
 import { SignerAPI } from "src/apis/signer_api";
 import moment from "moment";
 import * as Units from "utils/units";
@@ -32,7 +33,8 @@ const generateSalt = () => {
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Wrapper = new Web3Wrapper(provider);
-const orderApi = new OrderAPI(web3);
+const contractsApi = new ContractsAPI(web3);
+const orderApi = new OrderAPI(web3, contractsApi);
 const orderSigner = new SignerAPI(web3);
 
 let debtOrder: DebtOrder;

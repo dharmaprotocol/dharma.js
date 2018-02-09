@@ -1,4 +1,4 @@
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 export interface IssuanceCommitment {
     issuanceVersion: string;

@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import * as Web3 from "web3";
 import singleLineString from "single-line-string";
 

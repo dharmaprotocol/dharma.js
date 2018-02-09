@@ -6,7 +6,7 @@
 import { TxData, TxDataPayable } from "src/types";
 import promisify from "tiny-promisify";
 import { classUtils } from "utils/class_utils";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import * as fs from "fs-extra";
 import * as Web3 from "web3";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
@@ -16,7 +16,7 @@ import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 export class TermsContractRegistryContract extends BaseContract {
     public setSimpleInterestTermsContractAddress = {
         async sendTransactionAsync(
-            symbol: string,
+            tokenAddress: string,
             termsContract: string,
             txData: TxData = {},
         ): Promise<string> {
@@ -25,18 +25,18 @@ export class TermsContractRegistryContract extends BaseContract {
                 txData,
                 self.setSimpleInterestTermsContractAddress.estimateGasAsync.bind(
                     self,
-                    symbol,
+                    tokenAddress,
                     termsContract,
                 ),
             );
             const txHash = await promisify<string>(
                 self.web3ContractInstance.setSimpleInterestTermsContractAddress,
                 self.web3ContractInstance,
-            )(symbol, termsContract, txDataWithDefaults);
+            )(tokenAddress, termsContract, txDataWithDefaults);
             return txHash;
         },
         async estimateGasAsync(
-            symbol: string,
+            tokenAddress: string,
             termsContract: string,
             txData: TxData = {},
         ): Promise<number> {
@@ -45,11 +45,11 @@ export class TermsContractRegistryContract extends BaseContract {
             const gas = await promisify<number>(
                 self.web3ContractInstance.setSimpleInterestTermsContractAddress.estimateGas,
                 self.web3ContractInstance,
-            )(symbol, termsContract, txDataWithDefaults);
+            )(tokenAddress, termsContract, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(
-            symbol: string,
+            tokenAddress: string,
             termsContract: string,
             txData: TxData = {},
         ): string {
@@ -69,12 +69,12 @@ export class TermsContractRegistryContract extends BaseContract {
         },
     };
     public getSimpleInterestTermsContractAddress = {
-        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<string> {
+        async callAsync(tokenAddress: string, defaultBlock?: Web3.BlockParam): Promise<string> {
             const self = this as TermsContractRegistryContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.getSimpleInterestTermsContractAddress.call,
                 self.web3ContractInstance,
-            )(symbol);
+            )(tokenAddress);
             return result;
         },
     };

@@ -1,8 +1,11 @@
 import Web3 from "web3";
 import { ContractsAPI, OrderAPI, SignerAPI } from "./apis";
 import { DharmaConfig } from "src/types";
+import Adapters from "src/adapters";
 
 export default class Dharma {
+    public static adapters = Adapters;
+
     public sign: SignerAPI;
     public order: OrderAPI;
     public contracts: ContractsAPI;

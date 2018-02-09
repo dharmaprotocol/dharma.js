@@ -16,7 +16,9 @@ import {
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
     TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
+    NULL_ADDRESS,
 } from "utils/constants";
+import outdent from "outdent";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -25,13 +27,19 @@ export interface DharmaContracts {
     tokenTransferProxy: TokenTransferProxyContract;
 }
 
+export const ContractsError = {
+    SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) =>
+        outdent`SimpleInterestTermsContract not supported for principal token at
+                address ${principalToken}`,
+};
+
 export class ContractsAPI {
     private web3: Web3;
     private config: DharmaConfig;
 
     private cache: { [contractName: string]: ContractWrapper };
 
-    public constructor(web3: Web3, config?: DharmaConfig) {
+    public constructor(web3: Web3, config: DharmaConfig = {}) {
         this.web3 = web3;
         this.config = config;
 
@@ -191,11 +199,23 @@ export class ContractsAPI {
         if (cacheKey in this.cache) {
             return this.cache[cacheKey] as SimpleInterestTermsContractContract;
         } else {
-            const simpleInterestTermsContract = await SimpleInterestTermsContractContract.at(
+            const termsContractRegistry = await this.loadTermsContractRegistry(transactionOptions);
+            const simpleInterestTermsContractAddress = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
                 tokenAddress,
+            );
+
+            if (simpleInterestTermsContractAddress === NULL_ADDRESS) {
+                throw new Error(
+                    ContractsError.SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED(tokenAddress),
+                );
+            }
+
+            const simpleInterestTermsContract = await SimpleInterestTermsContractContract.at(
+                simpleInterestTermsContractAddress,
                 this.web3,
                 transactionOptions,
             );
+
             this.cache[cacheKey] = simpleInterestTermsContract;
             return simpleInterestTermsContract;
         }
