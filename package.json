@@ -119,7 +119,7 @@
   "dependencies": {
     "@0xproject/types": "^0.1.8",
     "@0xproject/web3-wrapper": "^0.1.9",
-    "utils/bignumber": "^5.0.0",
+    "bignumber.js": "^5.0.0",
     "ethereumjs-abi": "^0.6.5",
     "ethereumjs-util": "^5.1.3",
     "global": "^4.3.2",
