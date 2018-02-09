@@ -5,7 +5,7 @@
   "keywords": [],
   "main": "dist/dharma.umd.js",
   "module": "dist/dharma.es5.js",
-  "typings": "dist/src/types/dharma.d.ts",
+  "typings": "dist/types/src/dharma.d.ts",
   "files": [
     "dist"
   ],
