@@ -19,6 +19,7 @@
   "include": [
     "node_modules/web3-typescript-typings/index.d.ts",
     "src",
+    "dist",
     "__test__",
     "__mocks__",
     "utils"

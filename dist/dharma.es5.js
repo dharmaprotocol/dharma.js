@@ -86387,7 +86387,14 @@ var templateObject_2$2;
 var templateObject_3$1;
 var templateObject_4$1;
 
-var Adapters = { SimpleInterestLoanAdapter: SimpleInterestLoanAdapter };
+var AdaptersAPI = /** @class */ (function () {
+    function AdaptersAPI(web3, contractsApi) {
+        this.web3 = web3;
+        this.contracts = contractsApi;
+        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.web3, this.contracts);
+    }
+    return AdaptersAPI;
+}());
 
 var Dharma = /** @class */ (function () {
     function Dharma(web3Provider, config) {
@@ -86395,8 +86402,8 @@ var Dharma = /** @class */ (function () {
         this.sign = new SignerAPI(this.web3);
         this.contracts = new ContractsAPI(this.web3, config);
         this.order = new OrderAPI(this.web3, this.contracts);
+        this.adapters = new AdaptersAPI(this.web3, this.contracts);
     }
-    Dharma.adapters = Adapters;
     return Dharma;
 }());
 

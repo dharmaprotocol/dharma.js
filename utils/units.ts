@@ -1,6 +1,4 @@
 import {BigNumber} from "./bignumber";
-import * as crypto from "crypto";
-import ethUtil from "ethereumjs-util";
 
 const ether = (decimalAmount: number): BigNumber => {
     return new BigNumber(decimalAmount * (10 ** 18));

@@ -1,15 +1,12 @@
 import Web3 from "web3";
-import { ContractsAPI, OrderAPI, SignerAPI } from "./apis";
+import { ContractsAPI, OrderAPI, SignerAPI, AdaptersAPI } from "./apis";
 import { DharmaConfig } from "./types";
-import { SimpleInterestLoanAdapter } from "./adapters/simple_interest_loan_adapter";
-import Adapters from "./adapters";
 
 export default class Dharma {
-    public static adapters = Adapters;
-
     public sign: SignerAPI;
     public order: OrderAPI;
     public contracts: ContractsAPI;
+    public adapters: AdaptersAPI;
 
     private web3: Web3;
 
@@ -20,5 +17,6 @@ export default class Dharma {
         this.contracts = new ContractsAPI(this.web3, config);
 
         this.order = new OrderAPI(this.web3, this.contracts);
+        this.adapters = new AdaptersAPI(this.web3, this.contracts);
     }
 }
