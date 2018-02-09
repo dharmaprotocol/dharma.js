@@ -21,7 +21,7 @@
   "scripts": {
     "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
-    "build": "tsc --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src",
+    "build": "tsc -p tsconfig.prod.json --module commonjs --outDir dist/lib && rollup -c rollup.config.ts && typedoc --out dist/docs --target es6 --theme minimal --mode file src",
     "start": "rollup -c rollup.config.ts -w",
     "chain": "bash scripts/init_chain.sh",
     "test": "jest",
@@ -99,6 +99,7 @@
     "rimraf": "^2.6.1",
     "rollup": "^0.53.0",
     "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-json": "^2.3.0",
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-typescript2": "^0.9.0",

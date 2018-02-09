@@ -10,7 +10,7 @@
     "@0xproject/json-schemas" "^0.7.0"
     "@0xproject/utils" "^0.1.1"
     "@0xproject/web3-wrapper" "^0.1.1"
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
     bintrees "^1.0.2"
     bn.js "^4.11.8"
     compare-versions "^3.0.1"
@@ -29,7 +29,7 @@
   dependencies:
     "@0xproject/json-schemas" "^0.7.0"
     "@0xproject/utils" "^0.1.1"
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
     lodash "^4.17.4"
     valid-url "^1.0.9"
 
@@ -44,14 +44,14 @@
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/@0xproject/types/-/types-0.1.8.tgz#efbe46444c77f70f114e5ed88e03a0c2dea04ee1"
   dependencies:
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
     web3 "^0.20.0"
 
 "@0xproject/utils@^0.1.0", "@0xproject/utils@^0.1.1":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.1.3.tgz#58a9c7e19ab7710e0af17a0c2f1c7fc1b3140e85"
   dependencies:
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
     js-sha3 "^0.7.0"
     lodash "^4.17.4"
 
@@ -59,7 +59,7 @@
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.2.2.tgz#1c5fd8a8dcd7ea846ac5f6bd33452b59f39f0cdc"
   dependencies:
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
     js-sha3 "^0.7.0"
     lodash "^4.17.4"
 
@@ -67,7 +67,7 @@
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@0xproject/utils/-/utils-0.2.4.tgz#d84d0737f47730e5724a76797d30e716b587a0cf"
   dependencies:
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
     js-sha3 "^0.7.0"
     lodash "^4.17.4"
     web3 "^0.20.0"
@@ -182,19 +182,9 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
-"@types/utils/bignumber@^4.0.3":
+"@types/bignumber.js@^4.0.3":
   version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@types/utils/bignumber/-/utils/bignumber-4.0.3.tgz#e8ce5f28c3025a01c6af7fc6d944494903a9e348"
-
-"@types/chai-as-promised@^7.1.0":
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/@types/chai-as-promised/-/chai-as-promised-7.1.0.tgz#010b04cde78eacfb6e72bfddb3e58fe23c2e78b9"
-  dependencies:
-    "@types/chai" "*"
-
-"@types/chai@*", "@types/chai@^4.0.5":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.2.tgz#f1af664769cfb50af805431c407425ed619daa21"
+  resolved "https://registry.yarnpkg.com/@types/bignumber.js/-/bignumber.js-4.0.3.tgz#e8ce5f28c3025a01c6af7fc6d944494903a9e348"
 
 "@types/fs-extra@4.0.0":
   version "4.0.0"
@@ -233,10 +223,6 @@
 "@types/minimatch@2.0.29":
   version "2.0.29"
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-2.0.29.tgz#5002e14f75e2d71e564281df0431c8c1b4a2a36a"
-
-"@types/mocha@^2.2.47":
-  version "2.2.47"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-2.2.47.tgz#30bbd880834d4af0f609025f282a69b8d4458f06"
 
 "@types/node@*":
   version "9.4.0"
@@ -1173,25 +1159,25 @@ big.js@^3.1.3:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-3.2.0.tgz#a5fc298b81b9e0dca2e458824784b65c52ba588e"
 
-utils/bignumber@^4.0.2, utils/bignumber@^4.1.0, utils/bignumber@~4.1.0:
+bignumber.js@^4.0.2, bignumber.js@^4.1.0, bignumber.js@~4.1.0:
   version "4.1.0"
-  resolved "https://registry.yarnpkg.com/utils/bignumber/-/utils/bignumber-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.1.0.tgz#db6f14067c140bd46624815a7916c92d9b6c24b1"
 
-utils/bignumber@^5.0.0:
+bignumber.js@^5.0.0:
   version "5.0.0"
-  resolved "https://registry.yarnpkg.com/utils/bignumber/-/utils/bignumber-5.0.0.tgz#fbce63f09776b3000a83185badcde525daf34833"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-5.0.0.tgz#fbce63f09776b3000a83185badcde525daf34833"
 
-"utils/bignumber@git+https://github.com/debris/utils/bignumber#master":
+"bignumber.js@git+https://github.com/debris/bignumber.js#master":
   version "2.0.7"
-  resolved "git+https://github.com/debris/utils/bignumber#c7a38de919ed75e6fb6ba38051986e294b328df9"
+  resolved "git+https://github.com/debris/bignumber.js#c7a38de919ed75e6fb6ba38051986e294b328df9"
 
-"utils/bignumber@git+https://github.com/debris/utils/bignumber.git#94d7146671b9719e00a09c29b01a691bc85048c2":
+"bignumber.js@git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2":
   version "2.0.7"
-  resolved "git+https://github.com/debris/utils/bignumber.git#94d7146671b9719e00a09c29b01a691bc85048c2"
+  resolved "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
 
-"utils/bignumber@git+https://github.com/frozeman/utils/bignumber-nolookahead.git":
+"bignumber.js@git+https://github.com/frozeman/bignumber.js-nolookahead.git":
   version "2.0.7"
-  resolved "git+https://github.com/frozeman/utils/bignumber-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934"
+  resolved "git+https://github.com/frozeman/bignumber.js-nolookahead.git#57692b3ecfc98bbdd6b3a516cb2353652ea49934"
 
 binary-extensions@^1.0.0:
   version "1.11.0"
@@ -1489,16 +1475,6 @@ center-align@^0.1.1:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
 
-chai-as-promised@^7.1.1:
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/chai-as-promised/-/chai-as-promised-7.1.1.tgz#08645d825deb8696ee61725dbf590c012eb00ca0"
-  dependencies:
-    check-error "^1.0.2"
-
-chai-bignumber@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/chai-bignumber/-/chai-bignumber-2.0.2.tgz#de6c219c690b2d66b646ad6930096f9ba2199643"
-
 chai@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-3.5.0.tgz#4d02637b067fe958bdbfdd3a40ec56fef7373247"
@@ -1506,17 +1482,6 @@ chai@^3.5.0:
     assertion-error "^1.0.1"
     deep-eql "^0.1.3"
     type-detect "^1.0.0"
-
-chai@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/chai/-/chai-4.1.2.tgz#0f64584ba642f0f2ace2806279f4f06ca23ad73c"
-  dependencies:
-    assertion-error "^1.0.1"
-    check-error "^1.0.1"
-    deep-eql "^3.0.0"
-    get-func-name "^2.0.0"
-    pathval "^1.0.0"
-    type-detect "^4.0.0"
 
 chalk@1.1.3, chalk@^1.0.0, chalk@^1.1.1, chalk@^1.1.3:
   version "1.1.3"
@@ -1542,22 +1507,16 @@ chardet@^0.4.0:
 
 "charta@git://github.com/dharmaprotocol/charta.git#terms-contract-sandbox-transpiled":
   version "0.0.1"
-  resolved "git://github.com/dharmaprotocol/charta.git#2eaa169d225c6fb55878ed75d7b3c39a23444075"
+  resolved "git://github.com/dharmaprotocol/charta.git#a3a72eaacda57deae7f7945dc189224aed5d2b94"
   dependencies:
     "0x.js" "^0.28.0"
     "@0xproject/utils" "^0.1.0"
-    "@types/utils/bignumber" "^4.0.3"
-    "@types/chai" "^4.0.5"
-    "@types/chai-as-promised" "^7.1.0"
+    "@types/bignumber.js" "^4.0.3"
     "@types/json-stable-stringify" "^1.0.32"
     "@types/lodash" "^4.14.86"
-    "@types/mocha" "^2.2.47"
     NonFungibleToken "https://github.com/dharmaprotocol/NonFungibleToken.git"
     abi-decoder "^1.0.9"
-    utils/bignumber "^4.1.0"
-    chai "^4.1.2"
-    chai-as-promised "^7.1.1"
-    chai-bignumber "^2.0.2"
+    bignumber.js "^4.1.0"
     copyfiles "^1.2.0"
     ethereumjs-abi "^0.6.4"
     ethereumjs-util "^5.1.2"
@@ -1573,10 +1532,6 @@ chardet@^0.4.0:
     web3 "0.19.0"
     web3-typescript-typings "^0.7.2"
     zeppelin-solidity "^1.6.0"
-
-check-error@^1.0.1, check-error@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/check-error/-/check-error-1.0.2.tgz#574d312edd88bb5dd8912e9286dd6c0aed4aac82"
 
 chokidar@^1.6.0, chokidar@^1.6.1, chokidar@^1.7.0:
   version "1.7.0"
@@ -2132,12 +2087,6 @@ deep-eql@^0.1.3:
   resolved "https://registry.yarnpkg.com/deep-eql/-/deep-eql-0.1.3.tgz#ef558acab8de25206cd713906d74e56930eb69f2"
   dependencies:
     type-detect "0.1.1"
-
-deep-eql@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/deep-eql/-/deep-eql-3.0.1.tgz#dfc9404400ad1c8fe023e7da1df1c147c4b444df"
-  dependencies:
-    type-detect "^4.0.0"
 
 deep-equal@~0.2.0, deep-equal@~0.2.1:
   version "0.2.2"
@@ -3117,10 +3066,6 @@ gauge@~2.7.3:
 get-caller-file@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-1.0.2.tgz#f702e63127e7e231c160a80c1554acb70d5047e5"
-
-get-func-name@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/get-func-name/-/get-func-name-2.0.0.tgz#ead774abee72e20409433a066366023dd6887a41"
 
 get-own-enumerable-property-symbols@^2.0.1:
   version "2.0.1"
@@ -5432,10 +5377,6 @@ path-type@^3.0.0:
   dependencies:
     pify "^3.0.0"
 
-pathval@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/pathval/-/pathval-1.1.0.tgz#b942e6d4bde653005ef6b71361def8727d0645e0"
-
 pbkdf2@^3.0.3:
   version "3.0.14"
   resolved "https://registry.yarnpkg.com/pbkdf2/-/pbkdf2-3.0.14.tgz#a35e13c64799b06ce15320f459c230e68e73bade"
@@ -6078,6 +6019,12 @@ rollup-plugin-commonjs@^8.0.2:
     estree-walker "^0.5.0"
     magic-string "^0.22.4"
     resolve "^1.4.0"
+    rollup-pluginutils "^2.0.1"
+
+rollup-plugin-json@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/rollup-plugin-json/-/rollup-plugin-json-2.3.0.tgz#3c07a452c1b5391be28006fbfff3644056ce0add"
+  dependencies:
     rollup-pluginutils "^2.0.1"
 
 rollup-plugin-node-resolve@^3.0.0:
@@ -6995,10 +6942,6 @@ type-detect@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-1.0.0.tgz#762217cc06db258ec48908a1298e8b95121e8ea2"
 
-type-detect@^4.0.0:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/type-detect/-/type-detect-4.0.7.tgz#862bd2cf6058ad92799ff5a5b8cf7b6cec726198"
-
 type-is@~1.6.15:
   version "1.6.15"
   resolved "https://registry.yarnpkg.com/type-is/-/type-is-1.6.15.tgz#cab10fb4909e441c82842eafe1ad646c81804410"
@@ -7405,13 +7348,13 @@ web3-typescript-typings@^0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/web3-typescript-typings/-/web3-typescript-typings-0.7.2.tgz#5312bb786936a9c91381eee7af3d02ac21cf13b3"
   dependencies:
-    utils/bignumber "^4.0.2"
+    bignumber.js "^4.0.2"
 
 web3-typescript-typings@^0.9.5:
   version "0.9.6"
   resolved "https://registry.yarnpkg.com/web3-typescript-typings/-/web3-typescript-typings-0.9.6.tgz#1655b2e20fb168a0ef71c595ac707d7d1de29c90"
   dependencies:
-    utils/bignumber "~4.1.0"
+    bignumber.js "~4.1.0"
 
 web3-utils@1.0.0-beta.29:
   version "1.0.0-beta.29"
@@ -7429,7 +7372,7 @@ web3@0.19.0:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.19.0.tgz#8b18fba24421a59d2884859bcb9b718c2665524e"
   dependencies:
-    utils/bignumber "git+https://github.com/debris/utils/bignumber.git#94d7146671b9719e00a09c29b01a691bc85048c2"
+    bignumber.js "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
     crypto-js "^3.1.4"
     utf8 "^2.1.1"
     xhr2 "*"
@@ -7439,7 +7382,7 @@ web3@0.20.4, web3@^0.20.0:
   version "0.20.4"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.20.4.tgz#400e6579a65bb4a3dde71a6ebf6509afadc33a04"
   dependencies:
-    utils/bignumber "git+https://github.com/frozeman/utils/bignumber-nolookahead.git"
+    bignumber.js "git+https://github.com/frozeman/bignumber.js-nolookahead.git"
     crypto-js "^3.1.4"
     utf8 "^2.1.1"
     xhr2 "*"
@@ -7449,7 +7392,7 @@ web3@^0.16.0:
   version "0.16.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.16.0.tgz#a4554175cd462943035b1f1d39432f741c6b6019"
   dependencies:
-    utils/bignumber "git+https://github.com/debris/utils/bignumber#master"
+    bignumber.js "git+https://github.com/debris/bignumber.js#master"
     crypto-js "^3.1.4"
     utf8 "^2.1.1"
     xmlhttprequest "*"
@@ -7458,7 +7401,7 @@ web3@^0.18.4:
   version "0.18.4"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.18.4.tgz#81ec1784145491f2eaa8955b31c06049e07c5e7d"
   dependencies:
-    utils/bignumber "git+https://github.com/debris/utils/bignumber.git#94d7146671b9719e00a09c29b01a691bc85048c2"
+    bignumber.js "git+https://github.com/debris/bignumber.js.git#94d7146671b9719e00a09c29b01a691bc85048c2"
     crypto-js "^3.1.4"
     utf8 "^2.1.1"
     xhr2 "*"

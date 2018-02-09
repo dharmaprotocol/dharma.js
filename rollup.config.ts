@@ -3,6 +3,7 @@ import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
 import typescript from 'rollup-plugin-typescript2'
+import json from 'rollup-plugin-json';
 
 const pkg = require('./package.json')
 
@@ -16,13 +17,15 @@ export default {
   ],
   sourcemap: true,
   // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
-  external: [],
+  external: [ "web3" ],
   watch: {
     include: 'src/**',
   },
   plugins: [
     // Compile TypeScript files
-    typescript(),
+    typescript({
+        tsconfig: "tsconfig.prod.json",
+    }),
     // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
     commonjs(),
     // Allow node_modules resolution, so you can use 'external' to control
@@ -32,5 +35,8 @@ export default {
 
     // Resolve source maps to the original source
     sourceMaps(),
+
+    // Resolve error that's making me claw my eyes out currently.
+    json(),
   ],
 }
