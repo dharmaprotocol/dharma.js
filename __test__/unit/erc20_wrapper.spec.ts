@@ -1,6 +1,6 @@
 import promisify from "tiny-promisify";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
-import { ERC20Contract, DummyTokenRegistryContract } from "src/wrappers";
+import { ERC20Contract, TokenRegistryContract } from "src/wrappers";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
 import Web3 from "web3";
@@ -17,7 +17,7 @@ const web3 = new Web3(provider);
 const web3Wrapper = new Web3Wrapper(provider);
 
 const ERC20_ARTIFACTS_PATH = "src/artifacts/ERC20.json";
-const DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH = "src/artifacts/DummyTokenRegistry.json";
+const DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH = "src/artifacts/TokenRegistry.json";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -36,9 +36,9 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
         erc20TokenContractAbi = abi;
 
         // HACK: Since we cannot disable jest mocking on a line-by-line
-        // basis, we manually pull the DummyTokenRegistry abi and address,
-        // mock the filesystem to correctly return them in the DummyTokenRegistry's
-        // artifacts, and then finally are able to retrieve a wrapped DummyTokenRegistry
+        // basis, we manually pull the TokenRegistry abi and address,
+        // mock the filesystem to correctly return them in the TokenRegistry's
+        // artifacts, and then finally are able to retrieve a wrapped TokenRegistry
         // contract.  This allows us to retrieve the address of a deployed DummyToken
         // listed in the registry for testing purposes.
         const dummyTokenRegistryArtifacts = await readFilePromise(
@@ -63,7 +63,7 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
 
         mockFs.mockFilesystem(mockFilesystem);
 
-        const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS);
+        const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
         dummyREPTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
     });
 

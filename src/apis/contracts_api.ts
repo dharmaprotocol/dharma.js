@@ -3,6 +3,7 @@ import {
     DebtKernelContract,
     DebtTokenContract,
     TokenTransferProxyContract,
+    TokenRegistryContract,
     ERC20Contract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
@@ -14,6 +15,7 @@ import {
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
+    TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
     TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
@@ -31,6 +33,8 @@ export const ContractsError = {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) =>
         outdent`SimpleInterestTermsContract not supported for principal token at
                 address ${principalToken}`,
+    CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) =>
+        outdent`Could not find token associated with symbol ${symbol}.`,
 };
 
 export class ContractsAPI {
@@ -219,6 +223,52 @@ export class ContractsAPI {
             this.cache[cacheKey] = simpleInterestTermsContract;
             return simpleInterestTermsContract;
         }
+    }
+
+    public async loadTokenRegistry(transactionOptions: object): Promise<TokenRegistryContract> {
+        if (TOKEN_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[TOKEN_REGISTRY_CONTRACT_CACHE_KEY] as TokenRegistryContract;
+        }
+
+        let tokenRegistryContract: TokenRegistryContract;
+
+        if (this.config.tokenRegistryAddress) {
+            tokenRegistryContract = await TokenRegistryContract.at(
+                this.config.tokenRegistryAddress,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            tokenRegistryContract = await TokenRegistryContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+        }
+
+        this.cache[TOKEN_REGISTRY_CONTRACT_CACHE_KEY] = tokenRegistryContract;
+
+        return tokenRegistryContract;
+    }
+
+    public async getTokenAddressBySymbolAsync(symbol: string): Promise<string> {
+        const tokenRegistryContract = await this.loadTokenRegistry({});
+
+        const tokenAddress = await tokenRegistryContract.getTokenAddress.callAsync(symbol);
+
+        if (tokenAddress === NULL_ADDRESS) {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));
+        }
+
+        return tokenAddress;
+    }
+
+    public async loadTokenBySymbolAsync(
+        symbol: string,
+        transactionOptions: object,
+    ): Promise<ERC20Contract> {
+        const tokenAddress = await this.getTokenAddressBySymbolAsync(symbol);
+
+        return this.loadERC20TokenAsync(tokenAddress, transactionOptions);
     }
 
     private getERC20TokenCacheKey(tokenAddress: string): string {

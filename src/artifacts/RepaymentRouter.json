@@ -329,7 +329,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2341,
+          "SourceUnit": 2383,
           "absolutePath": "/Users/nadavhollander/Documents/Dharma/Development/dharma.js/node_modules/charta/contracts/TokenTransferProxy.sol",
           "file": "./TokenTransferProxy.sol",
           "scope": 2207,
@@ -344,7 +344,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 5744,
+          "SourceUnit": 5749,
           "absolutePath": "zeppelin-solidity/contracts/token/ERC20/ERC20.sol",
           "file": "zeppelin-solidity/contracts/token/ERC20/ERC20.sol",
           "scope": 2207,
@@ -359,7 +359,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 5451,
+          "SourceUnit": 5456,
           "absolutePath": "zeppelin-solidity/contracts/lifecycle/Pausable.sol",
           "file": "zeppelin-solidity/contracts/lifecycle/Pausable.sol",
           "scope": 2207,
@@ -374,7 +374,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 4769,
+          "SourceUnit": 4774,
           "absolutePath": "NonFungibleToken/contracts/ERC721.sol",
           "file": "NonFungibleToken/contracts/ERC721.sol",
           "scope": 2207,
@@ -390,16 +390,16 @@
       {
         "attributes": {
           "contractDependencies": [
-            5450,
-            5604
+            5455,
+            5609
           ],
           "contractKind": "contract",
           "documentation": "The RepaymentRouter routes allowers payers to make repayments on any\ngiven debt agreement in any given token by routing the payments to\nthe debt agreement's beneficiary.  Additionally, the router acts\nas a trusted oracle to the debt agreement's terms contract, informing\nit of exactly what payments have been made in what quantity and in what token.\n * Authors: Jaynti Kanani -- Github: jdkanani, Nadav Hollander -- Github: nadavhollander",
           "fullyImplemented": true,
           "linearizedBaseContracts": [
             2206,
-            5450,
-            5604
+            5455,
+            5609
           ],
           "name": "RepaymentRouter",
           "scope": 2207
@@ -416,7 +416,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "Pausable",
-                  "referencedDeclaration": 5450,
+                  "referencedDeclaration": 5455,
                   "type": "contract Pausable"
                 },
                 "id": 1870,
@@ -472,7 +472,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "TokenTransferProxy",
-                  "referencedDeclaration": 2340,
+                  "referencedDeclaration": 2382,
                   "type": "contract TokenTransferProxy"
                 },
                 "id": 1874,
@@ -1136,7 +1136,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 2340,
+                                  "referencedDeclaration": 2382,
                                   "type": "type(contract TokenTransferProxy)",
                                   "value": "TokenTransferProxy"
                                 },
@@ -1327,7 +1327,7 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 5411,
+                      "referencedDeclaration": 5416,
                       "type": "modifier ()",
                       "value": "whenNotPaused"
                     },
@@ -1370,7 +1370,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6131,
+                              "referencedDeclaration": 6136,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -1506,7 +1506,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6131,
+                              "referencedDeclaration": 6136,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -2014,7 +2014,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "balanceOf",
-                                      "referencedDeclaration": 5757,
+                                      "referencedDeclaration": 5762,
                                       "type": "function (address) view external returns (uint256)"
                                     },
                                     "children": [
@@ -2044,7 +2044,7 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 5743,
+                                              "referencedDeclaration": 5748,
                                               "type": "type(contract ERC20)",
                                               "value": "ERC20"
                                             },
@@ -2094,7 +2094,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 6128,
+                                          "referencedDeclaration": 6133,
                                           "type": "msg",
                                           "value": "msg"
                                         },
@@ -2169,7 +2169,7 @@
                                           "typeString": "address"
                                         },
                                         {
-                                          "typeIdentifier": "t_contract$_TokenTransferProxy_$2340",
+                                          "typeIdentifier": "t_contract$_TokenTransferProxy_$2382",
                                           "typeString": "contract TokenTransferProxy"
                                         }
                                       ],
@@ -2178,7 +2178,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "allowance",
-                                      "referencedDeclaration": 5714,
+                                      "referencedDeclaration": 5719,
                                       "type": "function (address,address) view external returns (uint256)"
                                     },
                                     "children": [
@@ -2208,7 +2208,7 @@
                                               "overloadedDeclarations": [
                                                 null
                                               ],
-                                              "referencedDeclaration": 5743,
+                                              "referencedDeclaration": 5748,
                                               "type": "type(contract ERC20)",
                                               "value": "ERC20"
                                             },
@@ -2258,7 +2258,7 @@
                                           "overloadedDeclarations": [
                                             null
                                           ],
-                                          "referencedDeclaration": 6128,
+                                          "referencedDeclaration": 6133,
                                           "type": "msg",
                                           "value": "msg"
                                         },
@@ -2750,7 +2750,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 6128,
+                                      "referencedDeclaration": 6133,
                                       "type": "msg",
                                       "value": "msg"
                                     },
@@ -3016,7 +3016,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6131,
+                              "referencedDeclaration": 6136,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -3064,7 +3064,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "transferFrom",
-                                  "referencedDeclaration": 2339,
+                                  "referencedDeclaration": 2381,
                                   "type": "function (address,address,address,uint256) external returns (bool)"
                                 },
                                 "children": [
@@ -3119,7 +3119,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 6128,
+                                      "referencedDeclaration": 6133,
                                       "type": "msg",
                                       "value": "msg"
                                     },
@@ -3259,7 +3259,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 6128,
+                                  "referencedDeclaration": 6133,
                                   "type": "msg",
                                   "value": "msg"
                                 },
@@ -3502,7 +3502,7 @@
                       "overloadedDeclarations": [
                         null
                       ],
-                      "referencedDeclaration": 5411,
+                      "referencedDeclaration": 5416,
                       "type": "modifier ()",
                       "value": "whenNotPaused"
                     },
@@ -3545,7 +3545,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6131,
+                              "referencedDeclaration": 6136,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -4052,7 +4052,7 @@
                             "attributes": {
                               "contractScope": null,
                               "name": "ERC721",
-                              "referencedDeclaration": 4768,
+                              "referencedDeclaration": 4773,
                               "type": "contract ERC721"
                             },
                             "id": 2112,
@@ -4090,7 +4090,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 4768,
+                              "referencedDeclaration": 4773,
                               "type": "type(contract ERC721)",
                               "value": "ERC721"
                             },
@@ -4150,7 +4150,7 @@
                               "overloadedDeclarations": [
                                 null
                               ],
-                              "referencedDeclaration": 6131,
+                              "referencedDeclaration": 6136,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -4186,7 +4186,7 @@
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "member_name": "implementsERC721",
-                                  "referencedDeclaration": 4751,
+                                  "referencedDeclaration": 4756,
                                   "type": "function () view external returns (bool)"
                                 },
                                 "children": [
@@ -4287,7 +4287,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "ownerOf",
-                                      "referencedDeclaration": 4716,
+                                      "referencedDeclaration": 4721,
                                       "type": "function (uint256) view external returns (address)"
                                     },
                                     "children": [
@@ -4347,7 +4347,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 6128,
+                                      "referencedDeclaration": 6133,
                                       "type": "msg",
                                       "value": "msg"
                                     },
@@ -4408,7 +4408,7 @@
                                       "isPure": false,
                                       "lValueRequested": false,
                                       "member_name": "getApproved",
-                                      "referencedDeclaration": 4730,
+                                      "referencedDeclaration": 4735,
                                       "type": "function (uint256) view external returns (address)"
                                     },
                                     "children": [
@@ -4469,7 +4469,7 @@
                                     "attributes": {
                                       "argumentTypes": [
                                         {
-                                          "typeIdentifier": "t_contract$_TokenTransferProxy_$2340",
+                                          "typeIdentifier": "t_contract$_TokenTransferProxy_$2382",
                                           "typeString": "contract TokenTransferProxy"
                                         }
                                       ],
@@ -4949,7 +4949,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 6128,
+                                      "referencedDeclaration": 6133,
                                       "type": "msg",
                                       "value": "msg"
                                     },
@@ -5229,7 +5229,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "transferFrom",
-                              "referencedDeclaration": 2339,
+                              "referencedDeclaration": 2381,
                               "type": "function (address,address,address,uint256) external returns (bool)"
                             },
                             "children": [
@@ -5284,7 +5284,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 6128,
+                                  "referencedDeclaration": 6133,
                                   "type": "msg",
                                   "value": "msg"
                                 },
@@ -5419,7 +5419,7 @@
                                   "overloadedDeclarations": [
                                     null
                                   ],
-                                  "referencedDeclaration": 6128,
+                                  "referencedDeclaration": 6133,
                                   "type": "msg",
                                   "value": "msg"
                                 },
@@ -5540,5 +5540,5 @@
     }
   },
   "schemaVersion": "1.0.1",
-  "updatedAt": "2018-02-09T00:23:38.866Z"
+  "updatedAt": "2018-02-10T00:40:32.730Z"
 }

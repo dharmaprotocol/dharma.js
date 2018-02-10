@@ -28,7 +28,7 @@ echo -e "\n"
 cd build/contracts/
 
 echo -e "${CYAN}Copying Dharma smart contract artifacts to local artifacts folder...${NO_COLOR}"
-for f in "DebtKernel.json" "DebtToken.json" "TokenTransferProxy.json" "DummyToken.json" "DummyTokenRegistry.json" \
+for f in "DebtKernel.json" "DebtToken.json" "TokenTransferProxy.json" "DummyToken.json" "TokenRegistry.json" \
     "ERC20.json" "RepaymentRouter.json" "SimpleInterestTermsContract.json" "TermsContractRegistry.json"; do cp -- "$f" "$CHARTA_REPO/src/artifacts/$f"; done
 
 echo -e "${CYAN}Dependency contract migrations complete, test chain is ready for use!${NO_COLOR}"

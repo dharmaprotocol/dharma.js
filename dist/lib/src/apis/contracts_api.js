@@ -43,6 +43,10 @@ exports.ContractsError = {
         return (_a = ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], _a.raw = ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], outdent_1.default(_a, principalToken));
         var _a;
     },
+    CANNOT_FIND_TOKEN_WITH_SYMBOL: function (symbol) {
+        return (_a = ["Could not find token associated with symbol ", "."], _a.raw = ["Could not find token associated with symbol ", "."], outdent_1.default(_a, symbol));
+        var _a;
+    },
 };
 var ContractsAPI = (function () {
     function ContractsAPI(web3, config) {
@@ -232,6 +236,63 @@ var ContractsAPI = (function () {
                         simpleInterestTermsContract = _a.sent();
                         this.cache[cacheKey] = simpleInterestTermsContract;
                         return [2 /*return*/, simpleInterestTermsContract];
+                }
+            });
+        });
+    };
+    ContractsAPI.prototype.loadTokenRegistry = function (transactionOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tokenRegistryContract;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (constants_1.TOKEN_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+                            return [2 /*return*/, this.cache[constants_1.TOKEN_REGISTRY_CONTRACT_CACHE_KEY]];
+                        }
+                        if (!this.config.tokenRegistryAddress) return [3 /*break*/, 2];
+                        return [4 /*yield*/, wrappers_1.TokenRegistryContract.at(this.config.tokenRegistryAddress, this.web3, transactionOptions)];
+                    case 1:
+                        tokenRegistryContract = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, wrappers_1.TokenRegistryContract.deployed(this.web3, transactionOptions)];
+                    case 3:
+                        tokenRegistryContract = _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        this.cache[constants_1.TOKEN_REGISTRY_CONTRACT_CACHE_KEY] = tokenRegistryContract;
+                        return [2 /*return*/, tokenRegistryContract];
+                }
+            });
+        });
+    };
+    ContractsAPI.prototype.getTokenAddressBySymbolAsync = function (symbol) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tokenRegistryContract, tokenAddress;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.loadTokenRegistry({})];
+                    case 1:
+                        tokenRegistryContract = _a.sent();
+                        return [4 /*yield*/, tokenRegistryContract.getTokenAddress.callAsync(symbol)];
+                    case 2:
+                        tokenAddress = _a.sent();
+                        if (tokenAddress === constants_1.NULL_ADDRESS) {
+                            throw new Error(exports.ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));
+                        }
+                        return [2 /*return*/, tokenAddress];
+                }
+            });
+        });
+    };
+    ContractsAPI.prototype.loadTokenBySymbolAsync = function (symbol, transactionOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tokenAddress;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getTokenAddressBySymbolAsync(symbol)];
+                    case 1:
+                        tokenAddress = _a.sent();
+                        return [2 /*return*/, this.loadERC20TokenAsync(tokenAddress, transactionOptions)];
                 }
             });
         });

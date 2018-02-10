@@ -35344,6 +35344,7 @@ var WEB3_ERROR_NO_PRIVATE_KEY = "cannot sign data; no private key";
 var DEBT_KERNEL_CONTRACT_CACHE_KEY = "DebtKernel";
 var DEBT_TOKEN_CONTRACT_CACHE_KEY = "DebtToken";
 var REPAYMENT_ROUTER_CONTRACT_CACHE_KEY = "RepaymentRouter";
+var TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "TokenRegistry";
 var TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY = "TokenTransferProxy";
 var TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry";
 
@@ -52596,7 +52597,7 @@ var CONTRACT_WRAPPER_ERRORS = {
         return dist(templateObject_1$1 || (templateObject_1$1 = __makeTemplateObject(["Unable to find address for contract ", "\n                         on network with id ", ""], ["Unable to find address for contract ", "\n                         on network with id ", ""])), contractName, networkId);
     },
     ARTIFACTS_NOT_READABLE: function (contractName) {
-        return dist(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Artifacts for contract ", " either malformed\n                         or nonexistent."], ["Artifacts for contract ", " either malformed\n                         or nonexistent."])), contractName);
+        return dist(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject(["Artifacts for contract ", " either malformed\n                         or nonexistent."], ["Artifacts for contract ", " either malformed\n                         or nonexistent."])), contractName);
     },
 };
 var BaseContract = /** @class */ (function () {
@@ -52628,7 +52629,7 @@ var BaseContract = /** @class */ (function () {
     return BaseContract;
 }());
 var templateObject_1$1;
-var templateObject_2;
+var templateObject_2$1;
 
 // 7.1.4 ToInteger
 var ceil = Math.ceil;
@@ -63853,9 +63854,9 @@ var DummyTokenContract = /** @class */ (function (_super) {
     return DummyTokenContract;
 }(BaseContract)); // tslint:disable:max-file-line-count
 
-var DummyTokenRegistryContract = /** @class */ (function (_super) {
-    __extends(DummyTokenRegistryContract, _super);
-    function DummyTokenRegistryContract(web3ContractInstance, defaults) {
+var TokenRegistryContract = /** @class */ (function (_super) {
+    __extends(TokenRegistryContract, _super);
+    function TokenRegistryContract(web3ContractInstance, defaults) {
         var _this = _super.call(this, web3ContractInstance, defaults) || this;
         _this.setTokenAddress = {
             sendTransactionAsync: function (symbol, token, txData) {
@@ -63940,7 +63941,7 @@ var DummyTokenRegistryContract = /** @class */ (function (_super) {
         classUtils.bindAll(_this, ["web3ContractInstance", "defaults"]);
         return _this;
     }
-    DummyTokenRegistryContract.deployed = function (web3, defaults) {
+    TokenRegistryContract.deployed = function (web3, defaults) {
         return __awaiter(this, void 0, void 0, function () {
             var web3Wrapper, currentNetwork, _a, abi, networks, contractAddress, contractExists, web3ContractInstance;
             return __generator(this, function (_b) {
@@ -63960,19 +63961,19 @@ var DummyTokenRegistryContract = /** @class */ (function (_super) {
                         contractExists = _b.sent();
                         if (contractExists) {
                             web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
-                            return [2 /*return*/, new DummyTokenRegistryContract(web3ContractInstance, defaults)];
+                            return [2 /*return*/, new TokenRegistryContract(web3ContractInstance, defaults)];
                         }
                         else {
-                            throw new Error(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DummyTokenRegistry", currentNetwork));
+                            throw new Error(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("TokenRegistry", currentNetwork));
                         }
                         return [3 /*break*/, 5];
-                    case 4: throw new Error(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DummyTokenRegistry", currentNetwork));
+                    case 4: throw new Error(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("TokenRegistry", currentNetwork));
                     case 5: return [2 /*return*/];
                 }
             });
         });
     };
-    DummyTokenRegistryContract.at = function (address, web3, defaults) {
+    TokenRegistryContract.at = function (address, web3, defaults) {
         return __awaiter(this, void 0, void 0, function () {
             var web3Wrapper, abi, contractExists, currentNetwork, web3ContractInstance;
             return __generator(this, function (_a) {
@@ -63990,37 +63991,37 @@ var DummyTokenRegistryContract = /** @class */ (function (_super) {
                         currentNetwork = _a.sent();
                         if (contractExists) {
                             web3ContractInstance = web3.eth.contract(abi).at(address);
-                            return [2 /*return*/, new DummyTokenRegistryContract(web3ContractInstance, defaults)];
+                            return [2 /*return*/, new TokenRegistryContract(web3ContractInstance, defaults)];
                         }
                         else {
-                            throw new Error(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DummyTokenRegistry", currentNetwork));
+                            throw new Error(CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("TokenRegistry", currentNetwork));
                         }
                         return [2 /*return*/];
                 }
             });
         });
     };
-    DummyTokenRegistryContract.getArtifactsData = function () {
+    TokenRegistryContract.getArtifactsData = function () {
         return __awaiter(this, void 0, void 0, function () {
             var artifact, _a, abi, networks, e_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, undefined("src/artifacts/DummyTokenRegistry.json", "utf8")];
+                        return [4 /*yield*/, undefined("src/artifacts/TokenRegistry.json", "utf8")];
                     case 1:
                         artifact = _b.sent();
                         _a = JSON.parse(artifact), abi = _a.abi, networks = _a.networks;
                         return [2 /*return*/, { abi: abi, networks: networks }];
                     case 2:
                         e_1 = _b.sent();
-                        throw new Error(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DummyTokenRegistry"));
+                        throw new Error(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TokenRegistry"));
                     case 3: return [2 /*return*/];
                 }
             });
         });
     };
-    return DummyTokenRegistryContract;
+    return TokenRegistryContract;
 }(BaseContract)); // tslint:disable:max-file-line-count
 
 var TokenTransferProxyContract = /** @class */ (function (_super) {
@@ -65643,6 +65644,9 @@ var ContractsError = {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: function (principalToken) {
         return outdent(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""])), principalToken);
     },
+    CANNOT_FIND_TOKEN_WITH_SYMBOL: function (symbol) {
+        return outdent(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Could not find token associated with symbol ", "."], ["Could not find token associated with symbol ", "."])), symbol);
+    },
 };
 var ContractsAPI = /** @class */ (function () {
     function ContractsAPI(web3, config) {
@@ -65836,6 +65840,63 @@ var ContractsAPI = /** @class */ (function () {
             });
         });
     };
+    ContractsAPI.prototype.loadTokenRegistry = function (transactionOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tokenRegistryContract;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (TOKEN_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+                            return [2 /*return*/, this.cache[TOKEN_REGISTRY_CONTRACT_CACHE_KEY]];
+                        }
+                        if (!this.config.tokenRegistryAddress) return [3 /*break*/, 2];
+                        return [4 /*yield*/, TokenRegistryContract.at(this.config.tokenRegistryAddress, this.web3, transactionOptions)];
+                    case 1:
+                        tokenRegistryContract = _a.sent();
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, TokenRegistryContract.deployed(this.web3, transactionOptions)];
+                    case 3:
+                        tokenRegistryContract = _a.sent();
+                        _a.label = 4;
+                    case 4:
+                        this.cache[TOKEN_REGISTRY_CONTRACT_CACHE_KEY] = tokenRegistryContract;
+                        return [2 /*return*/, tokenRegistryContract];
+                }
+            });
+        });
+    };
+    ContractsAPI.prototype.getTokenAddressBySymbolAsync = function (symbol) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tokenRegistryContract, tokenAddress;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.loadTokenRegistry({})];
+                    case 1:
+                        tokenRegistryContract = _a.sent();
+                        return [4 /*yield*/, tokenRegistryContract.getTokenAddress.callAsync(symbol)];
+                    case 2:
+                        tokenAddress = _a.sent();
+                        if (tokenAddress === NULL_ADDRESS) {
+                            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));
+                        }
+                        return [2 /*return*/, tokenAddress];
+                }
+            });
+        });
+    };
+    ContractsAPI.prototype.loadTokenBySymbolAsync = function (symbol, transactionOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var tokenAddress;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getTokenAddressBySymbolAsync(symbol)];
+                    case 1:
+                        tokenAddress = _a.sent();
+                        return [2 /*return*/, this.loadERC20TokenAsync(tokenAddress, transactionOptions)];
+                }
+            });
+        });
+    };
     ContractsAPI.prototype.getERC20TokenCacheKey = function (tokenAddress) {
         return "ERC20_" + tokenAddress;
     };
@@ -65845,6 +65906,7 @@ var ContractsAPI = /** @class */ (function () {
     return ContractsAPI;
 }());
 var templateObject_1;
+var templateObject_2;
 
 var AccountAssertions = /** @class */ (function () {
     function AccountAssertions(web3) {
@@ -85971,7 +86033,7 @@ var OrderAPIErrors = {
         return dist(templateObject_1$2 || (templateObject_1$2 = __makeTemplateObject(["Unable to fill debt order because\n                        the order has expired"], ["Unable to fill debt order because\n                        the order has expired"])));
     },
     INVALID_UNDERWRITER_FEE: function () {
-        return dist(templateObject_2$1 || (templateObject_2$1 = __makeTemplateObject(["Debt order has an underwriter\n                        fee but has no assigned underwriter "], ["Debt order has an underwriter\n                        fee but has no assigned underwriter "])));
+        return dist(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject(["Debt order has an underwriter\n                        fee but has no assigned underwriter "], ["Debt order has an underwriter\n                        fee but has no assigned underwriter "])));
     },
     INVALID_RELAYER_FEE: function () {
         return dist(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Debt order has a relayer fee\n                        but has no assigned relayer"], ["Debt order has a relayer fee\n                        but has no assigned relayer"])));
@@ -86096,7 +86158,7 @@ var OrderAPI = /** @class */ (function () {
     return OrderAPI;
 }());
 var templateObject_1$2;
-var templateObject_2$1;
+var templateObject_2$2;
 var templateObject_3;
 var templateObject_4;
 var templateObject_5;
@@ -86230,7 +86292,7 @@ var SimpleInterestAdapterErrors = {
         return dist(templateObject_1$5 || (templateObject_1$5 = __makeTemplateObject(["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."], ["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."])));
     },
     INVALID_AMORTIZATION_UNIT_TYPE: function () {
-        return dist(templateObject_2$2 || (templateObject_2$2 = __makeTemplateObject(["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."])));
+        return dist(templateObject_2$3 || (templateObject_2$3 = __makeTemplateObject(["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."])));
     },
     INVALID_TERM_LENGTH: function () {
         return dist(templateObject_3$1 || (templateObject_3$1 = __makeTemplateObject(["Term length value cannot be negative or greater\n                         than 2^120 - 1"], ["Term length value cannot be negative or greater\n                         than 2^120 - 1"])));
@@ -86389,7 +86451,7 @@ var SimpleInterestLoanAdapter = /** @class */ (function () {
     return SimpleInterestLoanAdapter;
 }());
 var templateObject_1$5;
-var templateObject_2$2;
+var templateObject_2$3;
 var templateObject_3$1;
 var templateObject_4$1;
 

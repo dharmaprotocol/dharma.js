@@ -16,7 +16,7 @@ import ethUtil from "ethereumjs-util";
 
 import {
     DummyTokenContract,
-    DummyTokenRegistryContract,
+    TokenRegistryContract,
     DebtKernelContract,
     DebtOrderWrapper,
     TokenTransferProxyContract,
@@ -48,7 +48,7 @@ describe("Order API (Integration Tests)", () => {
 
     // Example of how to initialize new tokens
     beforeAll(async () => {
-        const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS);
+        const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
         const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
         principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);
 

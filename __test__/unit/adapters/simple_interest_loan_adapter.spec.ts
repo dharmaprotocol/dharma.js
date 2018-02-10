@@ -8,7 +8,7 @@ import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
 import Web3 from "web3";
 import { BigNumber } from "utils/bignumber";
 import * as Units from "utils/units";
-import { DummyTokenRegistryContract, TermsContractRegistryContract } from "src/wrappers";
+import { TokenRegistryContract, TermsContractRegistryContract } from "src/wrappers";
 import { ACCOUNTS } from "../../accounts";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
@@ -20,7 +20,7 @@ const simpleInterestLoanTerms = new SimpleInterestLoanTerms();
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 // Unmock the "fs-extra" package in order to give us
-// access to the deployed DummyTokenRegistry on the
+// access to the deployed TokenRegistry on the
 // test chain.
 jest.unmock("fs-extra");
 
@@ -230,7 +230,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
     let principalTokenAddress: string;
 
     beforeAll(async () => {
-        const dummyTokenRegistry = await DummyTokenRegistryContract.deployed(web3, TX_DEFAULTS);
+        const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
         principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
     });
 

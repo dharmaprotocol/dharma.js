@@ -10,5 +10,6 @@ export declare const WEB3_ERROR_NO_PRIVATE_KEY = "cannot sign data; no private k
 export declare const DEBT_KERNEL_CONTRACT_CACHE_KEY = "DebtKernel";
 export declare const DEBT_TOKEN_CONTRACT_CACHE_KEY = "DebtToken";
 export declare const REPAYMENT_ROUTER_CONTRACT_CACHE_KEY = "RepaymentRouter";
+export declare const TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "TokenRegistry";
 export declare const TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY = "TokenTransferProxy";
 export declare const TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry";

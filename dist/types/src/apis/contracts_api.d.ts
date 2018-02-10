@@ -1,4 +1,4 @@
-import { DebtKernelContract, DebtTokenContract, TokenTransferProxyContract, ERC20Contract, RepaymentRouterContract, SimpleInterestTermsContractContract, TermsContractRegistryContract } from "../wrappers";
+import { DebtKernelContract, DebtTokenContract, TokenTransferProxyContract, TokenRegistryContract, ERC20Contract, RepaymentRouterContract, SimpleInterestTermsContractContract, TermsContractRegistryContract } from "../wrappers";
 import Web3 from "web3";
 import { DharmaConfig } from "../types";
 export interface DharmaContracts {
@@ -9,6 +9,7 @@ export interface DharmaContracts {
 }
 export declare const ContractsError: {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) => string;
+    CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) => string;
 };
 export declare class ContractsAPI {
     private web3;
@@ -23,6 +24,9 @@ export declare class ContractsAPI {
     loadERC20TokenAsync(tokenAddress: string, transactionOptions: object): Promise<ERC20Contract>;
     loadTermsContractRegistry(transactionOptions: object): Promise<TermsContractRegistryContract>;
     loadSimpleInterestTermsContract(tokenAddress: string, transactionOptions: object): Promise<SimpleInterestTermsContractContract>;
+    loadTokenRegistry(transactionOptions: object): Promise<TokenRegistryContract>;
+    getTokenAddressBySymbolAsync(symbol: string): Promise<string>;
+    loadTokenBySymbolAsync(symbol: string, transactionOptions: object): Promise<ERC20Contract>;
     private getERC20TokenCacheKey(tokenAddress);
     private getSimpleInterestTermsContractCacheKey(tokenAddress);
 }

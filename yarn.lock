@@ -1507,7 +1507,7 @@ chardet@^0.4.0:
 
 "charta@git://github.com/dharmaprotocol/charta.git#terms-contract-sandbox-transpiled":
   version "0.0.1"
-  resolved "git://github.com/dharmaprotocol/charta.git#a3a72eaacda57deae7f7945dc189224aed5d2b94"
+  resolved "git://github.com/dharmaprotocol/charta.git#65d636786bf1e5e808aa24ff025406bc3ab5fcd2"
   dependencies:
     "0x.js" "^0.28.0"
     "@0xproject/utils" "^0.1.0"
