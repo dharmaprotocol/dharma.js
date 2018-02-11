@@ -2,7 +2,7 @@ import { BaseContract, CONTRACT_WRAPPER_ERRORS, TxData } from "./base_contract_w
 import promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { BigNumber } from "../../../utils/bignumber";
-import * as fs from "fs-extra";
+import { DebtKernel as ContractArtifacts } from "../../artifacts/ts/DebtKernel";
 import * as Web3 from "web3";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
 
@@ -424,7 +424,7 @@ export class DebtKernelContract extends BaseContract {
         const web3Wrapper = new Web3Wrapper(web3.currentProvider);
 
         const currentNetwork = await web3Wrapper.getNetworkIdAsync();
-        const { abi, networks } = await this.getArtifactsData();
+        const { abi, networks }: { abi: any; networks: any } = ContractArtifacts;
 
         if (networks[currentNetwork]) {
             const { address: contractAddress } = networks[currentNetwork];
@@ -458,7 +458,8 @@ export class DebtKernelContract extends BaseContract {
     ): Promise<DebtKernelContract> {
         const web3Wrapper = new Web3Wrapper(web3.currentProvider);
 
-        const { abi } = await this.getArtifactsData();
+        const { abi }: { abi: any } = ContractArtifacts;
+
         const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(address);
         const currentNetwork = await web3Wrapper.getNetworkIdAsync();
 
@@ -470,16 +471,6 @@ export class DebtKernelContract extends BaseContract {
             throw new Error(
                 CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DebtKernel", currentNetwork),
             );
-        }
-    }
-
-    private static async getArtifactsData(): Promise<any> {
-        try {
-            const artifact = await fs.readFile("src/artifacts/DebtKernel.json", "utf8");
-            const { abi, networks } = JSON.parse(artifact);
-            return { abi, networks };
-        } catch (e) {
-            throw new Error(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("DebtKernel"));
         }
     }
 } // tslint:disable:max-file-line-count

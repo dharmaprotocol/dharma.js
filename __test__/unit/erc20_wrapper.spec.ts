@@ -1,6 +1,9 @@
+jest.mock("src/artifacts/ts/ERC20");
+
 import promisify from "tiny-promisify";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
 import { ERC20Contract, TokenRegistryContract } from "src/wrappers";
+import { ERC20 as MockContractArtifacts } from "src/artifacts/ts/ERC20";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
 import Web3 from "web3";
@@ -16,8 +19,7 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Wrapper = new Web3Wrapper(provider);
 
-const ERC20_ARTIFACTS_PATH = "src/artifacts/ERC20.json";
-const DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH = "src/artifacts/TokenRegistry.json";
+const ERC20_ARTIFACTS_PATH = "src/artifacts/json/ERC20.json";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -35,81 +37,21 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
 
         erc20TokenContractAbi = abi;
 
-        // HACK: Since we cannot disable jest mocking on a line-by-line
-        // basis, we manually pull the TokenRegistry abi and address,
-        // mock the filesystem to correctly return them in the TokenRegistry's
-        // artifacts, and then finally are able to retrieve a wrapped TokenRegistry
-        // contract.  This allows us to retrieve the address of a deployed DummyToken
-        // listed in the registry for testing purposes.
-        const dummyTokenRegistryArtifacts = await readFilePromise(
-            DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH,
-        );
-        const { abi: registryAbi, networks: registryNetworks } = JSON.parse(
-            dummyTokenRegistryArtifacts,
-        );
-        const registryAddress = registryNetworks[networkId].address;
-
-        let mockFilesystem = {};
-        let mockNetworks = {};
-
-        mockNetworks[networkId] = {
-            address: registryAddress,
-        };
-
-        mockFilesystem[DUMMY_TOKEN_REGISTRY_ARTIFACTS_PATH] = JSON.stringify({
-            networks: mockNetworks,
-            abi: registryAbi,
-        });
-
-        mockFs.mockFilesystem(mockFilesystem);
-
         const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
         dummyREPTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
     });
 
     // TODO: Create tests for general solidity method calls on the Debt Token contract
     describe("#at()", () => {
-        describe("local artifacts are nonexistent", () => {
-            beforeAll(() => {
-                mockFs.mockFilesystem({});
-            });
-
-            test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(
-                    ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS),
-                ).rejects.toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
-            });
-        });
-
-        describe("local artifacts are malformed", () => {
-            beforeAll(() => {
-                let mockFilesystem = {};
-                mockFilesystem[ERC20_ARTIFACTS_PATH] = "{ incomplete JSON :(";
-
-                mockFs.mockFilesystem(mockFilesystem);
-            });
-
-            test("throws ARTIFACTS_NOT_READABLE error", async () => {
-                await expect(
-                    ERC20Contract.at(dummyREPTokenAddress, web3, TX_DEFAULTS),
-                ).rejects.toThrowError(CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
-            });
-        });
-
         describe("contract address does not point to contract", () => {
             beforeAll(async () => {
-                let mockFilesystem = {};
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
                     address: ACCOUNTS[0].address,
                 };
-                mockFilesystem[ERC20_ARTIFACTS_PATH] = JSON.stringify({
-                    networks: mockNetworks,
-                    abi: erc20TokenContractAbi,
-                });
 
-                mockFs.mockFilesystem(mockFilesystem);
+                MockContractArtifacts.mock(erc20TokenContractAbi, mockNetworks);
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
@@ -123,18 +65,13 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
 
         describe("local artifacts readable and contract address associated w/ network id is valid", () => {
             beforeAll(async () => {
-                let mockFilesystem = {};
                 let mockNetworks = {};
 
                 mockNetworks[networkId] = {
                     address: ACCOUNTS[0].address,
                 };
-                mockFilesystem[ERC20_ARTIFACTS_PATH] = JSON.stringify({
-                    networks: mockNetworks,
-                    abi: erc20TokenContractAbi,
-                });
 
-                mockFs.mockFilesystem(mockFilesystem);
+                MockContractArtifacts.mock(erc20TokenContractAbi, mockNetworks);
             });
 
             test("returns new DebtKernelWrapper w/ current address correctly set", async () => {

@@ -7,7 +7,7 @@ import { TxData, TxDataPayable } from "../../types";
 import promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { BigNumber } from "../../../utils/bignumber";
-import * as fs from "fs-extra";
+import { TermsContractRegistry as ContractArtifacts } from "../../artifacts/ts/TermsContractRegistry";
 import * as Web3 from "web3";
 import { Web3Wrapper } from "@0xproject/web3-wrapper";
 
@@ -91,7 +91,7 @@ export class TermsContractRegistryContract extends BaseContract {
         const web3Wrapper = new Web3Wrapper(web3.currentProvider);
 
         const currentNetwork = await web3Wrapper.getNetworkIdAsync();
-        const { abi, networks } = await this.getArtifactsData();
+        const { abi, networks }: { abi: any; networks: any } = ContractArtifacts;
 
         if (networks[currentNetwork]) {
             const { address: contractAddress } = networks[currentNetwork];
@@ -128,7 +128,7 @@ export class TermsContractRegistryContract extends BaseContract {
     ): Promise<TermsContractRegistryContract> {
         const web3Wrapper = new Web3Wrapper(web3.currentProvider);
 
-        const { abi } = await this.getArtifactsData();
+        const { abi }: { abi: any } = ContractArtifacts;
         const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(address);
         const currentNetwork = await web3Wrapper.getNetworkIdAsync();
 
@@ -142,18 +142,6 @@ export class TermsContractRegistryContract extends BaseContract {
                     "TermsContractRegistry",
                     currentNetwork,
                 ),
-            );
-        }
-    }
-
-    private static async getArtifactsData(): Promise<any> {
-        try {
-            const artifact = await fs.readFile("src/artifacts/TermsContractRegistry.json", "utf8");
-            const { abi, networks } = JSON.parse(artifact);
-            return { abi, networks };
-        } catch (e) {
-            throw new Error(
-                CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("TermsContractRegistry"),
             );
         }
     }
