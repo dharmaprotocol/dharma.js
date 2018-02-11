@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var BaseAdapter = (function () {
+var BaseAdapter = /** @class */ (function () {
     function BaseAdapter() {
     }
     return BaseAdapter;

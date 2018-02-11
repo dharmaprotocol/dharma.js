@@ -40,7 +40,7 @@ var constants_1 = require("../../utils/constants");
 var wrappers_1 = require("../wrappers");
 var signature_utils_1 = require("../../utils/signature_utils");
 var moment_1 = require("moment");
-var OrderAssertions = (function () {
+var OrderAssertions = /** @class */ (function () {
     function OrderAssertions(web3) {
         this.web3 = web3;
     }

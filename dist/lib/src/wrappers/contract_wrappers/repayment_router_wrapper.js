@@ -50,7 +50,7 @@ var class_utils_1 = require("../../../utils/class_utils");
 var RepaymentRouter_1 = require("../../artifacts/ts/RepaymentRouter");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
-var RepaymentRouterContract = (function (_super) {
+var RepaymentRouterContract = /** @class */ (function (_super) {
     __extends(RepaymentRouterContract, _super);
     function RepaymentRouterContract(web3ContractInstance, defaults) {
         var _this = _super.call(this, web3ContractInstance, defaults) || this;

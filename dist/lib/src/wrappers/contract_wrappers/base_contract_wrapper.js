@@ -1,4 +1,8 @@
 "use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -43,19 +47,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = require("lodash");
+var lodash_pickby_1 = require("lodash.pickby");
+var lodash_isundefined_1 = require("lodash.isundefined");
 var single_line_string_1 = require("single-line-string");
 exports.CONTRACT_WRAPPER_ERRORS = {
     CONTRACT_NOT_FOUND_ON_NETWORK: function (contractName, networkId) {
-        return (_a = ["Unable to find address for contract ", "\n                         on network with id ", ""], _a.raw = ["Unable to find address for contract ", "\n                         on network with id ", ""], single_line_string_1.default(_a, contractName, networkId));
-        var _a;
+        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to find address for contract ", "\n                         on network with id ", ""], ["Unable to find address for contract ", "\n                         on network with id ", ""])), contractName, networkId);
     },
     ARTIFACTS_NOT_READABLE: function (contractName) {
-        return (_a = ["Artifacts for contract ", " either malformed\n                         or nonexistent."], _a.raw = ["Artifacts for contract ", " either malformed\n                         or nonexistent."], single_line_string_1.default(_a, contractName));
-        var _a;
+        return single_line_string_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Artifacts for contract ", " either malformed\n                         or nonexistent."], ["Artifacts for contract ", " either malformed\n                         or nonexistent."])), contractName);
     },
 };
-var BaseContract = (function () {
+var BaseContract = /** @class */ (function () {
     function BaseContract(web3ContractInstance, defaults) {
         this.web3ContractInstance = web3ContractInstance;
         this.address = web3ContractInstance.address;
@@ -68,9 +71,9 @@ var BaseContract = (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        removeUndefinedProperties = _.pickBy;
+                        removeUndefinedProperties = lodash_pickby_1.default;
                         txDataWithDefaults = __assign({}, removeUndefinedProperties(this.defaults), removeUndefinedProperties(txData));
-                        if (!(_.isUndefined(txDataWithDefaults.gas) && !_.isUndefined(estimateGasAsync))) return [3 /*break*/, 2];
+                        if (!(lodash_isundefined_1.default(txDataWithDefaults.gas) && !lodash_isundefined_1.default(estimateGasAsync))) return [3 /*break*/, 2];
                         return [4 /*yield*/, estimateGasAsync(txData)];
                     case 1:
                         estimatedGas = _a.sent();
@@ -84,4 +87,5 @@ var BaseContract = (function () {
     return BaseContract;
 }());
 exports.BaseContract = BaseContract;
+var templateObject_1, templateObject_2;
 //# sourceMappingURL=base_contract_wrapper.js.map

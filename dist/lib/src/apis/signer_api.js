@@ -1,4 +1,8 @@
 "use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -43,11 +47,10 @@ var single_line_string_1 = require("single-line-string");
 var constants_1 = require("../../utils/constants");
 exports.SignerAPIErrors = {
     INVALID_SIGNING_KEY: function (unavailableKey) {
-        return (_a = ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], _a.raw = ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], single_line_string_1.default(_a, unavailableKey));
-        var _a;
+        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"])), unavailableKey);
     },
 };
-var SignerAPI = (function () {
+var SignerAPI = /** @class */ (function () {
     function SignerAPI(web3) {
         this.web3 = web3;
         this.assert = new invariants_1.Assertions(this.web3);
@@ -148,4 +151,5 @@ var SignerAPI = (function () {
     return SignerAPI;
 }());
 exports.SignerAPI = SignerAPI;
+var templateObject_1;
 //# sourceMappingURL=signer_api.js.map

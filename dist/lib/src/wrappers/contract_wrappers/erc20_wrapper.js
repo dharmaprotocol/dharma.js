@@ -50,7 +50,7 @@ var class_utils_1 = require("../../../utils/class_utils");
 var ERC20_1 = require("../../artifacts/ts/ERC20");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
-var ERC20Contract = (function (_super) {
+var ERC20Contract = /** @class */ (function (_super) {
     __extends(ERC20Contract, _super);
     function ERC20Contract(web3ContractInstance, defaults) {
         var _this = _super.call(this, web3ContractInstance, defaults) || this;

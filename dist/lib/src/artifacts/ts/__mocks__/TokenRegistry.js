@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var MockContract_1 = require("./MockContract");
-var TokenRegistry = (function (_super) {
+var TokenRegistry = /** @class */ (function (_super) {
     __extends(TokenRegistry, _super);
     function TokenRegistry() {
         return _super !== null && _super.apply(this, arguments) || this;

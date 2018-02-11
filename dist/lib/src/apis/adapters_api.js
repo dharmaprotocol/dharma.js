@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var adapters_1 = require("../adapters");
-var AdaptersAPI = (function () {
+var AdaptersAPI = /** @class */ (function () {
     function AdaptersAPI(web3, contractsApi) {
         this.web3 = web3;
         this.contracts = contractsApi;

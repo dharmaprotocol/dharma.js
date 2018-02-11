@@ -6,10 +6,10 @@
 import { TxData, TxDataPayable } from "../../types";
 import promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
+import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
 import { TermsContractRegistry as ContractArtifacts } from "../../artifacts/ts/TermsContractRegistry";
 import * as Web3 from "web3";
-import { Web3Wrapper } from "@0xproject/web3-wrapper";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
@@ -88,17 +88,15 @@ export class TermsContractRegistryContract extends BaseContract {
         web3: Web3,
         defaults: Partial<TxData>,
     ): Promise<TermsContractRegistryContract> {
-        const web3Wrapper = new Web3Wrapper(web3.currentProvider);
+        const web3Utils = new Web3Utils(web3);
 
-        const currentNetwork = await web3Wrapper.getNetworkIdAsync();
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
         const { abi, networks }: { abi: any; networks: any } = ContractArtifacts;
 
         if (networks[currentNetwork]) {
             const { address: contractAddress } = networks[currentNetwork];
 
-            const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(
-                contractAddress,
-            );
+            const contractExists = await web3Utils.doesContractExistAtAddressAsync(contractAddress);
 
             if (contractExists) {
                 const web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
@@ -126,11 +124,11 @@ export class TermsContractRegistryContract extends BaseContract {
         web3: Web3,
         defaults: Partial<TxData>,
     ): Promise<TermsContractRegistryContract> {
-        const web3Wrapper = new Web3Wrapper(web3.currentProvider);
+        const web3Utils = new Web3Utils(web3);
 
         const { abi }: { abi: any } = ContractArtifacts;
-        const contractExists = await web3Wrapper.doesContractExistAtAddressAsync(address);
-        const currentNetwork = await web3Wrapper.getNetworkIdAsync();
+        const contractExists = await web3Utils.doesContractExistAtAddressAsync(address);
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
 
         if (contractExists) {
             const web3ContractInstance = web3.eth.contract(abi).at(address);

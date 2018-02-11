@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var MockContract_1 = require("./MockContract");
-var TokenTransferProxy = (function (_super) {
+var TokenTransferProxy = /** @class */ (function (_super) {
     __extends(TokenTransferProxy, _super);
     function TokenTransferProxy() {
         return _super !== null && _super.apply(this, arguments) || this;

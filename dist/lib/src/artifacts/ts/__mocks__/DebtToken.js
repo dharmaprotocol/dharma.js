@@ -11,7 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var MockContract_1 = require("./MockContract");
-var DebtToken = (function (_super) {
+var DebtToken = /** @class */ (function (_super) {
     __extends(DebtToken, _super);
     function DebtToken() {
         return _super !== null && _super.apply(this, arguments) || this;

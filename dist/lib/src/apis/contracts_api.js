@@ -1,4 +1,8 @@
 "use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -40,15 +44,13 @@ var constants_1 = require("../../utils/constants");
 var outdent_1 = require("outdent");
 exports.ContractsError = {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: function (principalToken) {
-        return (_a = ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], _a.raw = ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], outdent_1.default(_a, principalToken));
-        var _a;
+        return outdent_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""])), principalToken);
     },
     CANNOT_FIND_TOKEN_WITH_SYMBOL: function (symbol) {
-        return (_a = ["Could not find token associated with symbol ", "."], _a.raw = ["Could not find token associated with symbol ", "."], outdent_1.default(_a, symbol));
-        var _a;
+        return outdent_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Could not find token associated with symbol ", "."], ["Could not find token associated with symbol ", "."])), symbol);
     },
 };
-var ContractsAPI = (function () {
+var ContractsAPI = /** @class */ (function () {
     function ContractsAPI(web3, config) {
         if (config === void 0) { config = {}; }
         this.web3 = web3;
@@ -306,4 +308,5 @@ var ContractsAPI = (function () {
     return ContractsAPI;
 }());
 exports.ContractsAPI = ContractsAPI;
+var templateObject_1, templateObject_2;
 //# sourceMappingURL=contracts_api.js.map

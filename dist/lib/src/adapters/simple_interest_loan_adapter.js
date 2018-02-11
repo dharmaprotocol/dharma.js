@@ -1,4 +1,8 @@
 "use strict";
+var __makeTemplateObject = (this && this.__makeTemplateObject) || function (cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -43,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = require("lodash");
+var lodash_omit_1 = require("lodash.omit");
 var bignumber_1 = require("../../utils/bignumber");
 var constants_1 = require("../../utils/constants");
 var invariants_1 = require("../invariants");
@@ -59,26 +63,22 @@ var AmortizationUnitCode;
 })(AmortizationUnitCode || (AmortizationUnitCode = {}));
 exports.SimpleInterestAdapterErrors = {
     INVALID_EXPECTED_REPAYMENT_VALUE: function () {
-        return (_a = ["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."], _a.raw = ["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."], single_line_string_1.default(_a));
-        var _a;
+        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."], ["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."])));
     },
     INVALID_AMORTIZATION_UNIT_TYPE: function () {
-        return (_a = ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], _a.raw = ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], single_line_string_1.default(_a));
-        var _a;
+        return single_line_string_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."])));
     },
     INVALID_TERM_LENGTH: function () {
-        return (_a = ["Term length value cannot be negative or greater\n                         than 2^120 - 1"], _a.raw = ["Term length value cannot be negative or greater\n                         than 2^120 - 1"], single_line_string_1.default(_a));
-        var _a;
+        return single_line_string_1.default(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Term length value cannot be negative or greater\n                         than 2^120 - 1"], ["Term length value cannot be negative or greater\n                         than 2^120 - 1"])));
     },
     INVALID_TERMS_CONTRACT: function (principalToken, termsContract) {
-        return (_a = ["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""], _a.raw = ["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""], single_line_string_1.default(_a, termsContract, principalToken));
-        var _a;
+        return single_line_string_1.default(templateObject_4 || (templateObject_4 = __makeTemplateObject(["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""], ["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""])), termsContract, principalToken);
     },
 };
 var TX_DEFAULTS = { from: constants_1.NULL_ADDRESS, gas: 0 };
 var MAX_EXPECTED_REPAYMENT_VALUE_HEX = "0xffffffffffffffffffffffffffffffff";
 var MAX_TERM_LENGTH_VALUE_HEX = "0xffffffffffffffffffffffffffffff";
-var SimpleInterestLoanTerms = (function () {
+var SimpleInterestLoanTerms = /** @class */ (function () {
     function SimpleInterestLoanTerms() {
     }
     SimpleInterestLoanTerms.prototype.packParameters = function (termsContractParameters) {
@@ -141,7 +141,7 @@ var SimpleInterestLoanTerms = (function () {
     return SimpleInterestLoanTerms;
 }());
 exports.SimpleInterestLoanTerms = SimpleInterestLoanTerms;
-var SimpleInterestLoanAdapter = (function () {
+var SimpleInterestLoanAdapter = /** @class */ (function () {
     function SimpleInterestLoanAdapter(web3, contracts) {
         this.assert = new invariants_1.Assertions(web3);
         this.contracts = contracts;
@@ -155,7 +155,7 @@ var SimpleInterestLoanAdapter = (function () {
                     case 0:
                         this.assert.schema.simpleInterestLoanOrder("simpleInterestLoanOrder", simpleInterestLoanOrder);
                         principalToken = simpleInterestLoanOrder.principalToken, principalAmount = simpleInterestLoanOrder.principalAmount, interestRate = simpleInterestLoanOrder.interestRate, amortizationUnit = simpleInterestLoanOrder.amortizationUnit, termLength = simpleInterestLoanOrder.termLength;
-                        debtOrder = _.omit(simpleInterestLoanOrder, [
+                        debtOrder = lodash_omit_1.default(simpleInterestLoanOrder, [
                             "interestRate",
                             "amortizationUnit",
                             "termLength",
@@ -226,4 +226,5 @@ var SimpleInterestLoanAdapter = (function () {
     return SimpleInterestLoanAdapter;
 }());
 exports.SimpleInterestLoanAdapter = SimpleInterestLoanAdapter;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4;
 //# sourceMappingURL=simple_interest_loan_adapter.js.map

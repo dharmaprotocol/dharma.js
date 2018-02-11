@@ -1,4 +1,6 @@
 import resolve from 'rollup-plugin-node-resolve'
+import builtins from 'rollup-plugin-node-builtins'
+import globals from 'rollup-plugin-node-globals'
 import commonjs from 'rollup-plugin-commonjs'
 import sourceMaps from 'rollup-plugin-sourcemaps'
 import camelCase from 'lodash.camelcase'
@@ -32,6 +34,9 @@ export default {
     // which external modules to include in the bundle
     // https://github.com/rollup/rollup-plugin-node-resolve#usage
     resolve(),
+    
+    globals(),
+
 
     // Resolve source maps to the original source
     sourceMaps(),

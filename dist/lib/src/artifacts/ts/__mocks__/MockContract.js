@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var MockContract = (function () {
+var MockContract = /** @class */ (function () {
     function MockContract() {
     }
     MockContract.mock = function (abi, networks) {

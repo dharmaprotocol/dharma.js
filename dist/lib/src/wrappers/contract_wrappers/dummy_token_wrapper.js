@@ -50,7 +50,7 @@ var class_utils_1 = require("../../../utils/class_utils");
 var DummyToken_1 = require("../../artifacts/ts/DummyToken");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
-var DummyTokenContract = (function (_super) {
+var DummyTokenContract = /** @class */ (function (_super) {
     __extends(DummyTokenContract, _super);
     function DummyTokenContract(web3ContractInstance, defaults) {
         var _this = _super.call(this, web3ContractInstance, defaults) || this;

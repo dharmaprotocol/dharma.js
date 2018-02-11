@@ -50,7 +50,7 @@ var class_utils_1 = require("../../../utils/class_utils");
 var DebtToken_1 = require("../../artifacts/ts/DebtToken");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
-var DebtTokenContract = (function (_super) {
+var DebtTokenContract = /** @class */ (function (_super) {
     __extends(DebtTokenContract, _super);
     function DebtTokenContract(web3ContractInstance, defaults) {
         var _this = _super.call(this, web3ContractInstance, defaults) || this;

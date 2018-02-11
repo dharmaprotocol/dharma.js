@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var bignumber_1 = require("../../utils/bignumber");
 var web3_utils_1 = require("web3-utils");
 var constants_1 = require("../../utils/constants");
-var DebtOrderWrapper = (function () {
+var DebtOrderWrapper = /** @class */ (function () {
     function DebtOrderWrapper(debtOrder) {
         this.debtOrder = debtOrder;
     }

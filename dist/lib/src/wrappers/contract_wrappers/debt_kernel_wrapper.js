@@ -50,7 +50,7 @@ var tiny_promisify_1 = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
 var DebtKernel_1 = require("../../artifacts/ts/DebtKernel");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
-var DebtKernelContract = (function (_super) {
+var DebtKernelContract = /** @class */ (function (_super) {
     __extends(DebtKernelContract, _super);
     function DebtKernelContract(web3ContractInstance, defaults) {
         var _this = _super.call(this, web3ContractInstance, defaults) || this;
