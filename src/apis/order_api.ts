@@ -1,6 +1,6 @@
 import Web3 from "web3";
-import { Web3Wrapper } from "@0xproject/web3-wrapper";
 import { DebtOrder, TxData } from "../types";
+import { Web3Utils } from "../../utils/web3_utils";
 import { ContractsAPI } from ".";
 import {
     DebtKernelContract,
@@ -173,9 +173,9 @@ export class OrderAPI {
     }
 
     private async getTxDefaultOptions(): Promise<object> {
-        const web3Wrapper = new Web3Wrapper(this.web3.currentProvider);
+        const web3Utils = new Web3Utils(this.web3);
 
-        const accounts = await web3Wrapper.getAvailableAddressesAsync();
+        const accounts = await web3Utils.getAvailableAddressesAsync();
 
         // TODO: Add fault tolerance to scenario in which not addresses are available
 

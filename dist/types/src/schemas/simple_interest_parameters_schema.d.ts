@@ -2,6 +2,8 @@ export declare const simpleInterestLoanOrderSchema: {
     id: string;
     allOf: ({
         $ref: string;
+        properties?: undefined;
+        required?: undefined;
     } | {
         properties: {
             interestRate: {
@@ -16,5 +18,6 @@ export declare const simpleInterestLoanOrderSchema: {
             };
         };
         required: string[];
+        $ref?: undefined;
     })[];
 };

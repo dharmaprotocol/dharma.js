@@ -47,8 +47,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tiny_promisify_1 = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
+var web3_utils_1 = require("../../../utils/web3_utils");
 var SimpleInterestTermsContract_1 = require("../../artifacts/ts/SimpleInterestTermsContract");
-var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
 var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
     __extends(SimpleInterestTermsContractContract, _super);
@@ -258,16 +258,16 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
     }
     SimpleInterestTermsContractContract.at = function (address, web3, defaults) {
         return __awaiter(this, void 0, void 0, function () {
-            var web3Wrapper, abi, contractExists, currentNetwork, web3ContractInstance;
+            var web3Utils, abi, contractExists, currentNetwork, web3ContractInstance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        web3Wrapper = new web3_wrapper_1.Web3Wrapper(web3.currentProvider);
+                        web3Utils = new web3_utils_1.Web3Utils(web3);
                         abi = SimpleInterestTermsContract_1.SimpleInterestTermsContract.abi;
-                        return [4 /*yield*/, web3Wrapper.doesContractExistAtAddressAsync(address)];
+                        return [4 /*yield*/, web3Utils.doesContractExistAtAddressAsync(address)];
                     case 1:
                         contractExists = _a.sent();
-                        return [4 /*yield*/, web3Wrapper.getNetworkIdAsync()];
+                        return [4 /*yield*/, web3Utils.getNetworkIdAsync()];
                     case 2:
                         currentNetwork = _a.sent();
                         if (contractExists) {

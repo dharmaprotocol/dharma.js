@@ -14,6 +14,7 @@ export declare const DebtToken: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        anonymous?: undefined;
     } | {
         inputs: {
             name: string;
@@ -22,6 +23,10 @@ export declare const DebtToken: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        constant?: undefined;
+        name?: undefined;
+        outputs?: undefined;
+        anonymous?: undefined;
     } | {
         anonymous: boolean;
         inputs: {
@@ -31,6 +36,10 @@ export declare const DebtToken: {
         }[];
         name: string;
         type: string;
+        constant?: undefined;
+        outputs?: undefined;
+        payable?: undefined;
+        stateMutability?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -48,10 +57,23 @@ export declare const DebtToken: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -60,10 +82,18 @@ export declare const DebtToken: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 contractDependencies: number[];
@@ -73,10 +103,30 @@ export declare const DebtToken: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 attributes: {
                     arguments: any[];
+                    constant?: undefined;
+                    name?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    visibility?: undefined;
+                    value?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -107,6 +157,7 @@ export declare const DebtToken: {
                 id: number;
                 name: string;
                 src: string;
+                attributes?: undefined;
             } | {
                 attributes: {
                     constant: boolean;
@@ -116,11 +167,28 @@ export declare const DebtToken: {
                     storageLocation: string;
                     type: string;
                     visibility: string;
+                    arguments?: undefined;
+                    value?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: ({
                     attributes: {
                         name: string;
                         type: string;
+                        argumentTypes?: undefined;
+                        hexvalue?: undefined;
+                        isConstant?: undefined;
+                        isLValue?: undefined;
+                        isPure?: undefined;
+                        lValueRequested?: undefined;
+                        subdenomination?: undefined;
+                        token?: undefined;
+                        value?: undefined;
                     };
                     id: number;
                     name: string;
@@ -137,6 +205,7 @@ export declare const DebtToken: {
                         token: string;
                         type: string;
                         value: string;
+                        name?: undefined;
                     };
                     id: number;
                     name: string;
@@ -155,6 +224,13 @@ export declare const DebtToken: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -180,6 +256,13 @@ export declare const DebtToken: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -205,6 +288,11 @@ export declare const DebtToken: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -234,6 +322,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
@@ -261,10 +350,18 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -276,6 +373,9 @@ export declare const DebtToken: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -307,6 +407,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -322,6 +423,12 @@ export declare const DebtToken: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -351,6 +458,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         arguments: any[];
@@ -394,10 +502,18 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -409,6 +525,9 @@ export declare const DebtToken: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -451,9 +570,11 @@ export declare const DebtToken: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -465,6 +586,14 @@ export declare const DebtToken: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -489,6 +618,13 @@ export declare const DebtToken: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -503,6 +639,8 @@ export declare const DebtToken: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -526,10 +664,16 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -561,10 +705,18 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -576,6 +728,9 @@ export declare const DebtToken: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -589,6 +744,8 @@ export declare const DebtToken: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -600,6 +757,10 @@ export declare const DebtToken: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -616,9 +777,11 @@ export declare const DebtToken: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
                         };
                         children: {
                             attributes: {
@@ -644,6 +807,8 @@ export declare const DebtToken: {
                                     lValueRequested: boolean;
                                     type: string;
                                     value: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -655,6 +820,10 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -671,6 +840,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -687,6 +857,11 @@ export declare const DebtToken: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     attributes: {
@@ -733,6 +908,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     children: {
                         attributes: {
@@ -789,6 +965,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -804,6 +981,12 @@ export declare const DebtToken: {
                     stateMutability: string;
                     superFunction: number;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -833,9 +1016,11 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
+                        arguments?: undefined;
                     };
                     children: any[];
                     id: number;
@@ -844,6 +1029,7 @@ export declare const DebtToken: {
                 } | {
                     attributes: {
                         arguments: any[];
+                        parameters?: undefined;
                     };
                     children: {
                         attributes: {
@@ -887,6 +1073,8 @@ export declare const DebtToken: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -910,10 +1098,16 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -926,6 +1120,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -942,6 +1137,11 @@ export declare const DebtToken: {
                     stateMutability: string;
                     superFunction: number;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -971,6 +1171,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
@@ -1009,6 +1210,9 @@ export declare const DebtToken: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1023,6 +1227,9 @@ export declare const DebtToken: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        isStructConstructorCall?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -1050,6 +1257,8 @@ export declare const DebtToken: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        member_name?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -1063,6 +1272,8 @@ export declare const DebtToken: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -1074,6 +1285,10 @@ export declare const DebtToken: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -1093,10 +1308,18 @@ export declare const DebtToken: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -1128,6 +1351,11 @@ export declare const DebtToken: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -1155,6 +1383,10 @@ export declare const DebtToken: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            member_name?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1168,6 +1400,8 @@ export declare const DebtToken: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
@@ -1179,6 +1413,10 @@ export declare const DebtToken: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
                                             };
                                             id: number;
                                             name: string;
@@ -1194,10 +1432,19 @@ export declare const DebtToken: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -1210,6 +1457,7 @@ export declare const DebtToken: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -1218,6 +1466,7 @@ export declare const DebtToken: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -1234,6 +1483,11 @@ export declare const DebtToken: {
                     stateMutability: string;
                     superFunction: number;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -1293,6 +1547,9 @@ export declare const DebtToken: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    isStructConstructorCall?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1320,6 +1577,8 @@ export declare const DebtToken: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    member_name?: undefined;
+                                    referencedDeclaration?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1333,6 +1592,8 @@ export declare const DebtToken: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -1344,6 +1605,10 @@ export declare const DebtToken: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
                                     };
                                     id: number;
                                     name: string;

@@ -22,6 +22,10 @@ export class Web3Utils {
         return promisify(this.web3.version.getNetwork)();
     }
 
+    public async getAvailableAddressesAsync(): Promise<string[]> {
+        return promisify(this.web3.eth.getAccounts)();
+    }
+
     public async doesContractExistAtAddressAsync(address: string): Promise<boolean> {
         const code = await promisify(this.web3.eth.getCode)(address);
 

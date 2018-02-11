@@ -14,6 +14,7 @@ export declare const TokenTransferProxy: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        anonymous?: undefined;
     } | {
         anonymous: boolean;
         inputs: {
@@ -23,6 +24,10 @@ export declare const TokenTransferProxy: {
         }[];
         name: string;
         type: string;
+        constant?: undefined;
+        outputs?: undefined;
+        payable?: undefined;
+        stateMutability?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -40,10 +45,23 @@ export declare const TokenTransferProxy: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -52,10 +70,18 @@ export declare const TokenTransferProxy: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 contractDependencies: number[];
@@ -65,10 +91,30 @@ export declare const TokenTransferProxy: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 attributes: {
                     arguments: any[];
+                    constant?: undefined;
+                    name?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
+                    modifiers?: undefined;
                 };
                 children: {
                     attributes: {
@@ -99,6 +145,7 @@ export declare const TokenTransferProxy: {
                 id: number;
                 name: string;
                 src: string;
+                attributes?: undefined;
             } | {
                 attributes: {
                     constant: boolean;
@@ -109,6 +156,13 @@ export declare const TokenTransferProxy: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
+                    modifiers?: undefined;
                 };
                 children: {
                     attributes: {
@@ -135,6 +189,12 @@ export declare const TokenTransferProxy: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -164,9 +224,11 @@ export declare const TokenTransferProxy: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
+                        arguments?: undefined;
                     };
                     children: any[];
                     id: number;
@@ -175,6 +237,7 @@ export declare const TokenTransferProxy: {
                 } | {
                     attributes: {
                         arguments: any[];
+                        parameters?: undefined;
                     };
                     children: {
                         attributes: {
@@ -218,6 +281,8 @@ export declare const TokenTransferProxy: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -241,10 +306,16 @@ export declare const TokenTransferProxy: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -257,6 +328,7 @@ export declare const TokenTransferProxy: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -273,6 +345,11 @@ export declare const TokenTransferProxy: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     attributes: {
@@ -319,6 +396,7 @@ export declare const TokenTransferProxy: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     children: {
                         attributes: {
@@ -375,6 +453,7 @@ export declare const TokenTransferProxy: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -391,6 +470,11 @@ export declare const TokenTransferProxy: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -444,10 +528,18 @@ export declare const TokenTransferProxy: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -459,6 +551,9 @@ export declare const TokenTransferProxy: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -501,6 +596,7 @@ export declare const TokenTransferProxy: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
@@ -530,6 +626,8 @@ export declare const TokenTransferProxy: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -572,10 +670,16 @@ export declare const TokenTransferProxy: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;

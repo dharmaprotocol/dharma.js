@@ -75,14 +75,18 @@ export declare const Schemas: {
         id: string;
         allOf: ({
             $ref: string;
+            required?: undefined;
         } | {
             required: string[];
+            $ref?: undefined;
         })[];
     };
     simpleInterestLoanOrderSchema: {
         id: string;
         allOf: ({
             $ref: string;
+            properties?: undefined;
+            required?: undefined;
         } | {
             properties: {
                 interestRate: {
@@ -97,6 +101,7 @@ export declare const Schemas: {
                 };
             };
             required: string[];
+            $ref?: undefined;
         })[];
     };
 };

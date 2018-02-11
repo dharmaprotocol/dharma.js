@@ -31,10 +31,19 @@ export declare const TermsContractRegistry: {
         children: ({
             attributes: {
                 literals: string[];
+                baseContracts?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
+                scope?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 baseContracts: any[];
@@ -45,6 +54,7 @@ export declare const TermsContractRegistry: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
             };
             children: ({
                 attributes: {
@@ -56,6 +66,12 @@ export declare const TermsContractRegistry: {
                     type: string;
                     value: any;
                     visibility: string;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -89,6 +105,10 @@ export declare const TermsContractRegistry: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -118,6 +138,7 @@ export declare const TermsContractRegistry: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
@@ -146,6 +167,9 @@ export declare const TermsContractRegistry: {
                                     isPure: boolean;
                                     lValueRequested: boolean;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -154,10 +178,18 @@ export declare const TermsContractRegistry: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -169,6 +201,9 @@ export declare const TermsContractRegistry: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -180,6 +215,13 @@ export declare const TermsContractRegistry: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            hexvalue?: undefined;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            subdenomination?: undefined;
+                                            token?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -196,6 +238,8 @@ export declare const TermsContractRegistry: {
                                             token: string;
                                             type: string;
                                             value: string;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -215,10 +259,15 @@ export declare const TermsContractRegistry: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -231,6 +280,7 @@ export declare const TermsContractRegistry: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -247,6 +297,10 @@ export declare const TermsContractRegistry: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -297,10 +351,18 @@ export declare const TermsContractRegistry: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -312,6 +374,9 @@ export declare const TermsContractRegistry: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -323,6 +388,13 @@ export declare const TermsContractRegistry: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -339,6 +411,8 @@ export declare const TermsContractRegistry: {
                                         token: string;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;

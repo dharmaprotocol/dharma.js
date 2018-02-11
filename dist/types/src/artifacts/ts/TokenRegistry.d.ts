@@ -14,6 +14,7 @@ export declare const TokenRegistry: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        anonymous?: undefined;
     } | {
         anonymous: boolean;
         inputs: {
@@ -23,6 +24,10 @@ export declare const TokenRegistry: {
         }[];
         name: string;
         type: string;
+        constant?: undefined;
+        outputs?: undefined;
+        payable?: undefined;
+        stateMutability?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -40,10 +45,23 @@ export declare const TokenRegistry: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -52,10 +70,18 @@ export declare const TokenRegistry: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 contractDependencies: number[];
@@ -65,10 +91,30 @@ export declare const TokenRegistry: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 attributes: {
                     arguments: any[];
+                    constant?: undefined;
+                    name?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
+                    modifiers?: undefined;
                 };
                 children: {
                     attributes: {
@@ -94,6 +140,13 @@ export declare const TokenRegistry: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
+                    modifiers?: undefined;
                 };
                 children: {
                     attributes: {
@@ -126,6 +179,12 @@ export declare const TokenRegistry: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -155,9 +214,11 @@ export declare const TokenRegistry: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
+                        arguments?: undefined;
                     };
                     children: any[];
                     id: number;
@@ -166,6 +227,7 @@ export declare const TokenRegistry: {
                 } | {
                     attributes: {
                         arguments: any[];
+                        parameters?: undefined;
                     };
                     children: {
                         attributes: {
@@ -202,6 +264,9 @@ export declare const TokenRegistry: {
                                     isPure: boolean;
                                     lValueRequested: boolean;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -210,10 +275,18 @@ export declare const TokenRegistry: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -225,6 +298,9 @@ export declare const TokenRegistry: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -255,10 +331,15 @@ export declare const TokenRegistry: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -271,6 +352,7 @@ export declare const TokenRegistry: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -287,6 +369,11 @@ export declare const TokenRegistry: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -337,10 +424,18 @@ export declare const TokenRegistry: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -352,6 +447,9 @@ export declare const TokenRegistry: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {

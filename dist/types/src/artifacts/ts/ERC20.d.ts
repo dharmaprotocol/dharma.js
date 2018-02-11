@@ -14,6 +14,7 @@ export declare const ERC20: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        anonymous?: undefined;
     } | {
         anonymous: boolean;
         inputs: {
@@ -23,6 +24,10 @@ export declare const ERC20: {
         }[];
         name: string;
         type: string;
+        constant?: undefined;
+        outputs?: undefined;
+        payable?: undefined;
+        stateMutability?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -40,10 +45,23 @@ export declare const ERC20: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -52,10 +70,18 @@ export declare const ERC20: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 contractDependencies: number[];
@@ -65,10 +91,28 @@ export declare const ERC20: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 attributes: {
                     arguments: any[];
+                    body?: undefined;
+                    constant?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    name?: undefined;
+                    payable?: undefined;
+                    scope?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
+                    visibility?: undefined;
+                    anonymous?: undefined;
                 };
                 children: {
                     attributes: {
@@ -97,6 +141,8 @@ export declare const ERC20: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    anonymous?: undefined;
                 };
                 children: {
                     children: {
@@ -134,6 +180,17 @@ export declare const ERC20: {
                 attributes: {
                     anonymous: boolean;
                     name: string;
+                    arguments?: undefined;
+                    body?: undefined;
+                    constant?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    scope?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
+                    visibility?: undefined;
                 };
                 children: {
                     children: {

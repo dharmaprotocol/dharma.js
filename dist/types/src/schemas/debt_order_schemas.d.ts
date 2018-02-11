@@ -59,7 +59,9 @@ export declare const debtOrderWithTermsSpecifiedSchema: {
     id: string;
     allOf: ({
         $ref: string;
+        required?: undefined;
     } | {
         required: string[];
+        $ref?: undefined;
     })[];
 };

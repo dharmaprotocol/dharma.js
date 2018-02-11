@@ -14,6 +14,7 @@ export declare const DebtKernel: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        anonymous?: undefined;
     } | {
         inputs: {
             name: string;
@@ -22,6 +23,10 @@ export declare const DebtKernel: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        constant?: undefined;
+        name?: undefined;
+        outputs?: undefined;
+        anonymous?: undefined;
     } | {
         anonymous: boolean;
         inputs: {
@@ -31,6 +36,10 @@ export declare const DebtKernel: {
         }[];
         name: string;
         type: string;
+        constant?: undefined;
+        outputs?: undefined;
+        payable?: undefined;
+        stateMutability?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -48,10 +57,23 @@ export declare const DebtKernel: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -60,10 +82,18 @@ export declare const DebtKernel: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 contractDependencies: number[];
@@ -73,10 +103,32 @@ export declare const DebtKernel: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 attributes: {
                     arguments: any[];
+                    canonicalName?: undefined;
+                    name?: undefined;
+                    constant?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -107,6 +159,8 @@ export declare const DebtKernel: {
                     attributes: {
                         name: string;
                         type: string;
+                        contractScope?: undefined;
+                        referencedDeclaration?: undefined;
                     };
                     id: number;
                     name: string;
@@ -115,10 +169,26 @@ export declare const DebtKernel: {
                 id: number;
                 name: string;
                 src: string;
+                attributes?: undefined;
             } | {
                 attributes: {
                     canonicalName: string;
                     name: string;
+                    arguments?: undefined;
+                    constant?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -141,6 +211,15 @@ export declare const DebtKernel: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -166,6 +245,15 @@ export declare const DebtKernel: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -188,15 +276,34 @@ export declare const DebtKernel: {
                     storageLocation: string;
                     type: string;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: ({
                     attributes: {
                         name: string;
                         type: string;
+                        argumentTypes?: undefined;
+                        isConstant?: undefined;
+                        isLValue?: undefined;
+                        isPure?: undefined;
+                        isStructConstructorCall?: undefined;
+                        lValueRequested?: undefined;
+                        names?: undefined;
+                        type_conversion?: undefined;
                     };
                     id: number;
                     name: string;
                     src: string;
+                    children?: undefined;
                 } | {
                     attributes: {
                         argumentTypes: any;
@@ -208,6 +315,7 @@ export declare const DebtKernel: {
                         names: any[];
                         type: string;
                         type_conversion: boolean;
+                        name?: undefined;
                     };
                     children: ({
                         attributes: {
@@ -221,6 +329,9 @@ export declare const DebtKernel: {
                             lValueRequested: boolean;
                             type: string;
                             value: string;
+                            hexvalue?: undefined;
+                            subdenomination?: undefined;
+                            token?: undefined;
                         };
                         id: number;
                         name: string;
@@ -258,11 +369,30 @@ export declare const DebtKernel: {
                     storageLocation: string;
                     type: string;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: ({
                     attributes: {
                         name: string;
                         type: string;
+                        argumentTypes?: undefined;
+                        hexvalue?: undefined;
+                        isConstant?: undefined;
+                        isLValue?: undefined;
+                        isPure?: undefined;
+                        lValueRequested?: undefined;
+                        subdenomination?: undefined;
+                        token?: undefined;
+                        value?: undefined;
                     };
                     id: number;
                     name: string;
@@ -279,6 +409,7 @@ export declare const DebtKernel: {
                         token: string;
                         type: string;
                         value: string;
+                        name?: undefined;
                     };
                     id: number;
                     name: string;
@@ -297,6 +428,15 @@ export declare const DebtKernel: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -322,6 +462,21 @@ export declare const DebtKernel: {
                 attributes: {
                     anonymous: boolean;
                     name: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    constant?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     children: {
@@ -362,6 +517,19 @@ export declare const DebtKernel: {
                     name: string;
                     scope: number;
                     visibility: string;
+                    arguments?: undefined;
+                    constant?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: ({
                     attributes: {
@@ -427,6 +595,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -456,6 +631,7 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
@@ -499,6 +675,7 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -514,6 +691,14 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -543,9 +728,11 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
+                        arguments?: undefined;
                     };
                     children: any[];
                     id: number;
@@ -554,6 +741,7 @@ export declare const DebtKernel: {
                 } | {
                     attributes: {
                         arguments: any[];
+                        parameters?: undefined;
                     };
                     children: {
                         attributes: {
@@ -589,10 +777,18 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -604,6 +800,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -635,6 +834,7 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -650,6 +850,14 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: ({
@@ -694,6 +902,15 @@ export declare const DebtKernel: {
                                 attributes: {
                                     name: string;
                                     type: string;
+                                    argumentTypes?: undefined;
+                                    hexvalue?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -710,6 +927,7 @@ export declare const DebtKernel: {
                                     token: string;
                                     type: string;
                                     value: string;
+                                    name?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -726,6 +944,7 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         arguments: any[];
@@ -749,6 +968,8 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            falseBody?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -760,6 +981,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -786,6 +1015,13 @@ export declare const DebtKernel: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -812,6 +1048,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -840,6 +1078,7 @@ export declare const DebtKernel: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    prefix?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -900,6 +1139,7 @@ export declare const DebtKernel: {
                                     operator: string;
                                     prefix: boolean;
                                     type: string;
+                                    commonType?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -963,6 +1203,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -970,6 +1211,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -995,6 +1238,10 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    hexvalue?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1023,10 +1270,13 @@ export declare const DebtKernel: {
                                     token: string;
                                     type: string;
                                     value: string;
+                                    member_name?: undefined;
+                                    referencedDeclaration?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -1055,10 +1305,18 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -1070,6 +1328,9 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1081,10 +1342,19 @@ export declare const DebtKernel: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
+                                                member_name?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -1095,6 +1365,11 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -1121,6 +1396,11 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -1163,6 +1443,10 @@ export declare const DebtKernel: {
                                                 names: any[];
                                                 type: string;
                                                 type_conversion: boolean;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
+                                                value?: undefined;
+                                                member_name?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -1254,6 +1538,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -1281,10 +1566,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1295,6 +1586,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1336,6 +1629,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1360,9 +1655,12 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -1413,6 +1711,7 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -1428,6 +1727,14 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -1457,9 +1764,11 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
+                        arguments?: undefined;
                     };
                     children: any[];
                     id: number;
@@ -1468,6 +1777,7 @@ export declare const DebtKernel: {
                 } | {
                     attributes: {
                         arguments: any[];
+                        parameters?: undefined;
                     };
                     children: {
                         attributes: {
@@ -1508,10 +1818,17 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    commonType?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    operator?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1525,6 +1842,9 @@ export declare const DebtKernel: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1550,6 +1870,8 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: any;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -1573,10 +1895,16 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -1593,6 +1921,7 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             assignments: number[];
@@ -1607,6 +1936,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -1633,6 +1970,13 @@ export declare const DebtKernel: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -1675,6 +2019,10 @@ export declare const DebtKernel: {
                                     isPure: boolean;
                                     lValueRequested: boolean;
                                     type: string;
+                                    hexvalue?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1683,10 +2031,16 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        member_name?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -1697,6 +2051,8 @@ export declare const DebtKernel: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -1733,6 +2089,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -1741,6 +2098,7 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         children: {
                             attributes: {
@@ -1764,10 +2122,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1778,6 +2142,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1802,10 +2168,12 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     })[];
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -1821,6 +2189,14 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -1842,6 +2218,15 @@ export declare const DebtKernel: {
                                 attributes: {
                                     name: string;
                                     type: string;
+                                    argumentTypes?: undefined;
+                                    hexvalue?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -1858,6 +2243,7 @@ export declare const DebtKernel: {
                                     token: string;
                                     type: string;
                                     value: string;
+                                    name?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -1874,9 +2260,11 @@ export declare const DebtKernel: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
+                        arguments?: undefined;
                     };
                     children: any[];
                     id: number;
@@ -1885,6 +2273,7 @@ export declare const DebtKernel: {
                 } | {
                     attributes: {
                         arguments: any[];
+                        parameters?: undefined;
                     };
                     children: {
                         attributes: {
@@ -1916,6 +2305,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -1942,6 +2339,13 @@ export declare const DebtKernel: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -1988,10 +2392,17 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    commonType?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    operator?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -2005,6 +2416,9 @@ export declare const DebtKernel: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -2085,6 +2499,7 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         children: {
                             attributes: {
@@ -2104,6 +2519,10 @@ export declare const DebtKernel: {
                                     isPure: boolean;
                                     lValueRequested: boolean;
                                     type: string;
+                                    hexvalue?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -2112,10 +2531,16 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        member_name?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -2126,6 +2551,8 @@ export declare const DebtKernel: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -2162,6 +2589,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -2170,6 +2598,7 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         children: {
                             attributes: {
@@ -2193,10 +2622,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -2207,6 +2642,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -2231,10 +2668,12 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     })[];
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -2251,6 +2690,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: ({
@@ -2309,6 +2755,7 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -2320,6 +2767,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -2344,6 +2799,13 @@ export declare const DebtKernel: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -2358,6 +2820,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -2381,10 +2845,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -2416,10 +2886,17 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    commonType?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    operator?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -2433,6 +2910,9 @@ export declare const DebtKernel: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -2441,10 +2921,18 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -2456,6 +2944,9 @@ export declare const DebtKernel: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -2469,10 +2960,13 @@ export declare const DebtKernel: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            member_name?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -2483,6 +2977,7 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -2515,9 +3010,11 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
                         };
                         children: {
                             attributes: {
@@ -2569,6 +3066,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: ({
@@ -2638,6 +3142,15 @@ export declare const DebtKernel: {
                                 attributes: {
                                     name: string;
                                     type: string;
+                                    argumentTypes?: undefined;
+                                    hexvalue?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -2654,6 +3167,7 @@ export declare const DebtKernel: {
                                     token: string;
                                     type: string;
                                     value: string;
+                                    name?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -2674,6 +3188,7 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             falseBody: any;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -2798,10 +3313,16 @@ export declare const DebtKernel: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
+                                                member_name?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -2812,6 +3333,8 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -2853,6 +3376,8 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -2877,6 +3402,10 @@ export declare const DebtKernel: {
                                                 isPure: boolean;
                                                 lValueRequested: boolean;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
+                                                value?: undefined;
+                                                member_name?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -2885,6 +3414,13 @@ export declare const DebtKernel: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    hexvalue?: undefined;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    subdenomination?: undefined;
+                                                    token?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -2901,6 +3437,8 @@ export declare const DebtKernel: {
                                                     token: string;
                                                     type: string;
                                                     value: string;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -2941,10 +3479,19 @@ export declare const DebtKernel: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
+                                                    member_name?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
                                                 src: string;
+                                                children?: undefined;
                                             } | {
                                                 attributes: {
                                                     argumentTypes: any;
@@ -2956,6 +3503,10 @@ export declare const DebtKernel: {
                                                     names: any[];
                                                     type: string;
                                                     type_conversion: boolean;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
+                                                    value?: undefined;
+                                                    member_name?: undefined;
                                                 };
                                                 children: ({
                                                     attributes: {
@@ -2969,10 +3520,13 @@ export declare const DebtKernel: {
                                                         lValueRequested: boolean;
                                                         type: string;
                                                         value: string;
+                                                        member_name?: undefined;
+                                                        referencedDeclaration?: undefined;
                                                     };
                                                     id: number;
                                                     name: string;
                                                     src: string;
+                                                    children?: undefined;
                                                 } | {
                                                     attributes: {
                                                         argumentTypes: any;
@@ -2983,6 +3537,7 @@ export declare const DebtKernel: {
                                                         member_name: string;
                                                         referencedDeclaration: any;
                                                         type: string;
+                                                        value?: undefined;
                                                     };
                                                     children: {
                                                         attributes: {
@@ -3013,6 +3568,11 @@ export declare const DebtKernel: {
                                                     member_name: string;
                                                     referencedDeclaration: number;
                                                     type: string;
+                                                    overloadedDeclarations?: undefined;
+                                                    value?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
                                                 };
                                                 children: {
                                                     attributes: {
@@ -3037,6 +3597,7 @@ export declare const DebtKernel: {
                                         id: number;
                                         name: string;
                                         src: string;
+                                        attributes?: undefined;
                                     } | {
                                         attributes: {
                                             functionReturnParameters: number;
@@ -3065,6 +3626,7 @@ export declare const DebtKernel: {
                                     id: number;
                                     name: string;
                                     src: string;
+                                    attributes?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -3073,6 +3635,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -3080,6 +3643,7 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -3105,6 +3669,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: any;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -3128,10 +3694,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -3174,10 +3746,16 @@ export declare const DebtKernel: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
+                                                member_name?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -3188,6 +3766,8 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -3212,6 +3792,10 @@ export declare const DebtKernel: {
                                                 isPure: boolean;
                                                 lValueRequested: boolean;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
+                                                value?: undefined;
+                                                member_name?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -3220,6 +3804,13 @@ export declare const DebtKernel: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    hexvalue?: undefined;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    subdenomination?: undefined;
+                                                    token?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -3236,6 +3827,8 @@ export declare const DebtKernel: {
                                                     token: string;
                                                     type: string;
                                                     value: string;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -3276,10 +3869,19 @@ export declare const DebtKernel: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
+                                                    member_name?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
                                                 src: string;
+                                                children?: undefined;
                                             } | {
                                                 attributes: {
                                                     argumentTypes: any;
@@ -3291,6 +3893,10 @@ export declare const DebtKernel: {
                                                     names: any[];
                                                     type: string;
                                                     type_conversion: boolean;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
+                                                    value?: undefined;
+                                                    member_name?: undefined;
                                                 };
                                                 children: ({
                                                     attributes: {
@@ -3304,10 +3910,13 @@ export declare const DebtKernel: {
                                                         lValueRequested: boolean;
                                                         type: string;
                                                         value: string;
+                                                        member_name?: undefined;
+                                                        referencedDeclaration?: undefined;
                                                     };
                                                     id: number;
                                                     name: string;
                                                     src: string;
+                                                    children?: undefined;
                                                 } | {
                                                     attributes: {
                                                         argumentTypes: any;
@@ -3318,6 +3927,7 @@ export declare const DebtKernel: {
                                                         member_name: string;
                                                         referencedDeclaration: any;
                                                         type: string;
+                                                        value?: undefined;
                                                     };
                                                     children: {
                                                         attributes: {
@@ -3348,6 +3958,11 @@ export declare const DebtKernel: {
                                                     member_name: string;
                                                     referencedDeclaration: number;
                                                     type: string;
+                                                    overloadedDeclarations?: undefined;
+                                                    value?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
                                                 };
                                                 children: {
                                                     attributes: {
@@ -3372,6 +3987,7 @@ export declare const DebtKernel: {
                                         id: number;
                                         name: string;
                                         src: string;
+                                        attributes?: undefined;
                                     } | {
                                         attributes: {
                                             functionReturnParameters: number;
@@ -3400,6 +4016,7 @@ export declare const DebtKernel: {
                                     id: number;
                                     name: string;
                                     src: string;
+                                    attributes?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -3408,6 +4025,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -3415,6 +4033,7 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -3454,6 +4073,9 @@ export declare const DebtKernel: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        isStructConstructorCall?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -3496,6 +4118,8 @@ export declare const DebtKernel: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        member_name?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -3509,6 +4133,9 @@ export declare const DebtKernel: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            hexvalue?: undefined;
+                                            subdenomination?: undefined;
+                                            token?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -3664,10 +4291,19 @@ export declare const DebtKernel: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
+                                                member_name?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -3678,6 +4314,11 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -3720,6 +4361,10 @@ export declare const DebtKernel: {
                                                 names: any[];
                                                 type: string;
                                                 type_conversion: boolean;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
+                                                value?: undefined;
+                                                member_name?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -3747,6 +4392,13 @@ export declare const DebtKernel: {
                                                 isPure: boolean;
                                                 lValueRequested: boolean;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
+                                                value?: undefined;
+                                                member_name?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -3755,6 +4407,13 @@ export declare const DebtKernel: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    hexvalue?: undefined;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    subdenomination?: undefined;
+                                                    token?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -3771,6 +4430,8 @@ export declare const DebtKernel: {
                                                     token: string;
                                                     type: string;
                                                     value: string;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -3811,10 +4472,19 @@ export declare const DebtKernel: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
+                                                    member_name?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
                                                 src: string;
+                                                children?: undefined;
                                             } | {
                                                 attributes: {
                                                     argumentTypes: any;
@@ -3826,6 +4496,10 @@ export declare const DebtKernel: {
                                                     names: any[];
                                                     type: string;
                                                     type_conversion: boolean;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
+                                                    value?: undefined;
+                                                    member_name?: undefined;
                                                 };
                                                 children: ({
                                                     attributes: {
@@ -3839,10 +4513,13 @@ export declare const DebtKernel: {
                                                         lValueRequested: boolean;
                                                         type: string;
                                                         value: string;
+                                                        member_name?: undefined;
+                                                        referencedDeclaration?: undefined;
                                                     };
                                                     id: number;
                                                     name: string;
                                                     src: string;
+                                                    children?: undefined;
                                                 } | {
                                                     attributes: {
                                                         argumentTypes: any;
@@ -3853,6 +4530,7 @@ export declare const DebtKernel: {
                                                         member_name: string;
                                                         referencedDeclaration: any;
                                                         type: string;
+                                                        value?: undefined;
                                                     };
                                                     children: {
                                                         attributes: {
@@ -3883,6 +4561,11 @@ export declare const DebtKernel: {
                                                     member_name: string;
                                                     referencedDeclaration: number;
                                                     type: string;
+                                                    overloadedDeclarations?: undefined;
+                                                    value?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
                                                 };
                                                 children: {
                                                     attributes: {
@@ -3907,6 +4590,7 @@ export declare const DebtKernel: {
                                         id: number;
                                         name: string;
                                         src: string;
+                                        attributes?: undefined;
                                     } | {
                                         attributes: {
                                             functionReturnParameters: number;
@@ -3935,6 +4619,7 @@ export declare const DebtKernel: {
                                     id: number;
                                     name: string;
                                     src: string;
+                                    attributes?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -3943,6 +4628,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -3950,6 +4636,7 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -3991,6 +4678,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -4054,6 +4748,8 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            falseBody?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -4065,6 +4761,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -4089,6 +4793,13 @@ export declare const DebtKernel: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -4171,6 +4882,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -4193,10 +4906,18 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -4208,6 +4929,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -4311,10 +5035,19 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -4326,6 +5059,10 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -4339,10 +5076,13 @@ export declare const DebtKernel: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -4353,6 +5093,7 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -4383,6 +5124,11 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -4407,6 +5153,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -4435,6 +5182,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -4442,6 +5190,234 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
+                        };
+                        children: ({
+                            attributes: {
+                                argumentTypes: any;
+                                commonType: {
+                                    typeIdentifier: string;
+                                    typeString: string;
+                                };
+                                isConstant: boolean;
+                                isLValue: boolean;
+                                isPure: boolean;
+                                lValueRequested: boolean;
+                                operator: string;
+                                type: string;
+                            };
+                            children: {
+                                attributes: {
+                                    argumentTypes: any;
+                                    isConstant: boolean;
+                                    isLValue: boolean;
+                                    isPure: boolean;
+                                    lValueRequested: boolean;
+                                    member_name: string;
+                                    referencedDeclaration: number;
+                                    type: string;
+                                };
+                                children: {
+                                    attributes: {
+                                        argumentTypes: any;
+                                        overloadedDeclarations: any[];
+                                        referencedDeclaration: number;
+                                        type: string;
+                                        value: string;
+                                    };
+                                    id: number;
+                                    name: string;
+                                    src: string;
+                                }[];
+                                id: number;
+                                name: string;
+                                src: string;
+                            }[];
+                            id: number;
+                            name: string;
+                            src: string;
+                        } | {
+                            children: ({
+                                children: {
+                                    attributes: {
+                                        argumentTypes: any;
+                                        isConstant: boolean;
+                                        isLValue: boolean;
+                                        isPure: boolean;
+                                        isStructConstructorCall: boolean;
+                                        lValueRequested: boolean;
+                                        names: any[];
+                                        type: string;
+                                        type_conversion: boolean;
+                                    };
+                                    children: ({
+                                        attributes: {
+                                            argumentTypes: {
+                                                typeIdentifier: string;
+                                                typeString: string;
+                                            }[];
+                                            overloadedDeclarations: any[];
+                                            referencedDeclaration: number;
+                                            type: string;
+                                            value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
+                                        };
+                                        id: number;
+                                        name: string;
+                                        src: string;
+                                        children?: undefined;
+                                    } | {
+                                        attributes: {
+                                            argumentTypes: any;
+                                            isConstant: boolean;
+                                            isLValue: boolean;
+                                            isPure: boolean;
+                                            isStructConstructorCall: boolean;
+                                            lValueRequested: boolean;
+                                            names: any[];
+                                            type: string;
+                                            type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
+                                        };
+                                        children: ({
+                                            attributes: {
+                                                argumentTypes: {
+                                                    typeIdentifier: string;
+                                                    typeString: string;
+                                                }[];
+                                                isConstant: boolean;
+                                                isLValue: boolean;
+                                                isPure: boolean;
+                                                lValueRequested: boolean;
+                                                type: string;
+                                                value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
+                                            };
+                                            id: number;
+                                            name: string;
+                                            src: string;
+                                            children?: undefined;
+                                        } | {
+                                            attributes: {
+                                                argumentTypes: any;
+                                                isConstant: boolean;
+                                                isLValue: boolean;
+                                                isPure: boolean;
+                                                lValueRequested: boolean;
+                                                member_name: string;
+                                                referencedDeclaration: any;
+                                                type: string;
+                                                value?: undefined;
+                                            };
+                                            children: {
+                                                attributes: {
+                                                    argumentTypes: any;
+                                                    overloadedDeclarations: any[];
+                                                    referencedDeclaration: number;
+                                                    type: string;
+                                                    value: string;
+                                                };
+                                                id: number;
+                                                name: string;
+                                                src: string;
+                                            }[];
+                                            id: number;
+                                            name: string;
+                                            src: string;
+                                        })[];
+                                        id: number;
+                                        name: string;
+                                        src: string;
+                                    } | {
+                                        attributes: {
+                                            argumentTypes: any;
+                                            isConstant: boolean;
+                                            isLValue: boolean;
+                                            isPure: boolean;
+                                            lValueRequested: boolean;
+                                            member_name: string;
+                                            referencedDeclaration: number;
+                                            type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                        };
+                                        children: {
+                                            attributes: {
+                                                argumentTypes: any;
+                                                overloadedDeclarations: any[];
+                                                referencedDeclaration: number;
+                                                type: string;
+                                                value: string;
+                                            };
+                                            id: number;
+                                            name: string;
+                                            src: string;
+                                        }[];
+                                        id: number;
+                                        name: string;
+                                        src: string;
+                                    })[];
+                                    id: number;
+                                    name: string;
+                                    src: string;
+                                }[];
+                                id: number;
+                                name: string;
+                                src: string;
+                                attributes?: undefined;
+                            } | {
+                                attributes: {
+                                    functionReturnParameters: number;
+                                };
+                                children: {
+                                    attributes: {
+                                        argumentTypes: any;
+                                        hexvalue: string;
+                                        isConstant: boolean;
+                                        isLValue: boolean;
+                                        isPure: boolean;
+                                        lValueRequested: boolean;
+                                        subdenomination: any;
+                                        token: string;
+                                        type: string;
+                                        value: string;
+                                    };
+                                    id: number;
+                                    name: string;
+                                    src: string;
+                                }[];
+                                id: number;
+                                name: string;
+                                src: string;
+                            })[];
+                            id: number;
+                            name: string;
+                            src: string;
+                            attributes?: undefined;
+                        })[];
+                        id: number;
+                        name: string;
+                        src: string;
+                    } | {
+                        attributes: {
+                            falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -4505,6 +5481,9 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -4547,6 +5526,8 @@ export declare const DebtKernel: {
                                                 names: any[];
                                                 type: string;
                                                 type_conversion: boolean;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -4560,6 +5541,9 @@ export declare const DebtKernel: {
                                                     lValueRequested: boolean;
                                                     type: string;
                                                     value: string;
+                                                    hexvalue?: undefined;
+                                                    subdenomination?: undefined;
+                                                    token?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -4612,6 +5596,10 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                hexvalue?: undefined;
+                                                subdenomination?: undefined;
+                                                token?: undefined;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -4640,10 +5628,13 @@ export declare const DebtKernel: {
                                                 token: string;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         })[];
                                         id: number;
                                         name: string;
@@ -4704,6 +5695,9 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                isStructConstructorCall?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -4731,6 +5725,8 @@ export declare const DebtKernel: {
                                                 names: any[];
                                                 type: string;
                                                 type_conversion: boolean;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -4744,6 +5740,9 @@ export declare const DebtKernel: {
                                                     lValueRequested: boolean;
                                                     type: string;
                                                     value: string;
+                                                    hexvalue?: undefined;
+                                                    subdenomination?: undefined;
+                                                    token?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
@@ -4793,10 +5792,16 @@ export declare const DebtKernel: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
+                                                member_name?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -4807,6 +5812,8 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -4863,10 +5870,19 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -4878,6 +5894,10 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -4891,10 +5911,13 @@ export declare const DebtKernel: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -4905,6 +5928,7 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -4935,6 +5959,11 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -4959,6 +5988,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -4987,6 +6017,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -4994,6 +6025,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -5034,6 +6067,9 @@ export declare const DebtKernel: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        isStructConstructorCall?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -5061,6 +6097,8 @@ export declare const DebtKernel: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        member_name?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -5074,10 +6112,13 @@ export declare const DebtKernel: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            member_name?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -5088,6 +6129,7 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -5151,6 +6193,9 @@ export declare const DebtKernel: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -5203,10 +6248,19 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -5218,6 +6272,10 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -5231,10 +6289,13 @@ export declare const DebtKernel: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -5245,6 +6306,7 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -5275,6 +6337,11 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -5299,6 +6366,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -5327,6 +6395,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -5334,6 +6403,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -5351,10 +6422,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -5365,6 +6442,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -5424,10 +6503,19 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -5439,6 +6527,10 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -5452,10 +6544,13 @@ export declare const DebtKernel: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -5466,6 +6561,7 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -5496,6 +6592,11 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -5520,6 +6621,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -5548,6 +6650,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -5555,6 +6658,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -5572,10 +6677,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -5586,6 +6697,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -5630,10 +6743,19 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -5645,6 +6767,10 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -5658,10 +6784,13 @@ export declare const DebtKernel: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -5672,6 +6801,7 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -5702,6 +6832,11 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -5726,6 +6861,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -5754,6 +6890,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -5761,6 +6898,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -5802,6 +6941,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: ({
@@ -5860,6 +7006,8 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            falseBody?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -5871,6 +7019,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -5895,6 +7051,13 @@ export declare const DebtKernel: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -5977,6 +7140,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -6017,6 +7182,9 @@ export declare const DebtKernel: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -6028,10 +7196,16 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -6042,6 +7216,8 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -6069,10 +7245,18 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -6105,10 +7289,19 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -6120,6 +7313,10 @@ export declare const DebtKernel: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
+                                            member_name?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -6133,10 +7330,13 @@ export declare const DebtKernel: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -6147,6 +7347,7 @@ export declare const DebtKernel: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -6177,6 +7378,11 @@ export declare const DebtKernel: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -6201,6 +7407,7 @@ export declare const DebtKernel: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -6229,6 +7436,7 @@ export declare const DebtKernel: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -6236,6 +7444,8 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -6277,6 +7487,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -6336,6 +7553,8 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -6378,10 +7597,16 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -6410,6 +7635,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -6473,6 +7705,7 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -6484,6 +7717,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -6510,6 +7751,13 @@ export declare const DebtKernel: {
                                 names: string[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -6518,10 +7766,18 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -6533,6 +7789,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -6563,6 +7822,7 @@ export declare const DebtKernel: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
                         };
                         children: {
                             attributes: {
@@ -6599,6 +7859,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -6620,6 +7887,15 @@ export declare const DebtKernel: {
                                 attributes: {
                                     name: string;
                                     type: string;
+                                    argumentTypes?: undefined;
+                                    hexvalue?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    subdenomination?: undefined;
+                                    token?: undefined;
+                                    value?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -6636,6 +7912,7 @@ export declare const DebtKernel: {
                                     token: string;
                                     type: string;
                                     value: string;
+                                    name?: undefined;
                                 };
                                 id: number;
                                 name: string;
@@ -6686,6 +7963,7 @@ export declare const DebtKernel: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -6697,6 +7975,14 @@ export declare const DebtKernel: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -6723,6 +8009,13 @@ export declare const DebtKernel: {
                                 names: string[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -6731,10 +8024,18 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -6746,6 +8047,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -6757,10 +8061,15 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -6769,6 +8078,9 @@ export declare const DebtKernel: {
                                         isPure: boolean;
                                         lValueRequested: boolean;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -6777,6 +8089,13 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            hexvalue?: undefined;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            subdenomination?: undefined;
+                                            token?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -6793,6 +8112,8 @@ export declare const DebtKernel: {
                                             token: string;
                                             type: string;
                                             value: string;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -6813,6 +8134,12 @@ export declare const DebtKernel: {
                                     isPure: boolean;
                                     lValueRequested: boolean;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -6821,6 +8148,13 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -6837,6 +8171,8 @@ export declare const DebtKernel: {
                                         token: string;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -6856,6 +8192,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -6869,6 +8208,9 @@ export declare const DebtKernel: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -6922,6 +8264,9 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    isStructConstructorCall?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -6949,6 +8294,8 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    member_name?: undefined;
+                                    referencedDeclaration?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -6976,9 +8323,11 @@ export declare const DebtKernel: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
                         };
                         children: {
                             attributes: {
@@ -7015,6 +8364,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -7101,10 +8457,19 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -7116,6 +8481,10 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
+                                    member_name?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -7129,6 +8498,8 @@ export declare const DebtKernel: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -7140,6 +8511,10 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -7158,6 +8533,11 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -7199,6 +8579,11 @@ export declare const DebtKernel: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -7243,6 +8628,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -7298,10 +8690,18 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -7313,6 +8713,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -7324,10 +8727,18 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -7339,6 +8750,9 @@ export declare const DebtKernel: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -7350,6 +8764,13 @@ export declare const DebtKernel: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            hexvalue?: undefined;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            subdenomination?: undefined;
+                                            token?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -7366,6 +8787,8 @@ export declare const DebtKernel: {
                                             token: string;
                                             type: string;
                                             value: string;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -7406,6 +8829,13 @@ export declare const DebtKernel: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -7466,6 +8896,9 @@ export declare const DebtKernel: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -7480,6 +8913,8 @@ export declare const DebtKernel: {
                                         member_name: string;
                                         referencedDeclaration: any;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -7537,10 +8972,16 @@ export declare const DebtKernel: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        member_name?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -7552,10 +8993,18 @@ export declare const DebtKernel: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;

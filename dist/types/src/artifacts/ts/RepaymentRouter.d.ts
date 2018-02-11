@@ -14,6 +14,7 @@ export declare const RepaymentRouter: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        anonymous?: undefined;
     } | {
         inputs: {
             name: string;
@@ -22,6 +23,10 @@ export declare const RepaymentRouter: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        constant?: undefined;
+        name?: undefined;
+        outputs?: undefined;
+        anonymous?: undefined;
     } | {
         anonymous: boolean;
         inputs: {
@@ -31,6 +36,10 @@ export declare const RepaymentRouter: {
         }[];
         name: string;
         type: string;
+        constant?: undefined;
+        outputs?: undefined;
+        payable?: undefined;
+        stateMutability?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -48,10 +57,23 @@ export declare const RepaymentRouter: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -60,10 +82,18 @@ export declare const RepaymentRouter: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 contractDependencies: number[];
@@ -73,10 +103,32 @@ export declare const RepaymentRouter: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 attributes: {
                     arguments: any[];
+                    constant?: undefined;
+                    name?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -102,6 +154,15 @@ export declare const RepaymentRouter: {
                     type: string;
                     value: any;
                     visibility: string;
+                    arguments?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -121,6 +182,21 @@ export declare const RepaymentRouter: {
                 attributes: {
                     canonicalName: string;
                     name: string;
+                    arguments?: undefined;
+                    constant?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    anonymous?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -137,6 +213,21 @@ export declare const RepaymentRouter: {
                 attributes: {
                     anonymous: boolean;
                     name: string;
+                    arguments?: undefined;
+                    constant?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    visibility?: undefined;
+                    canonicalName?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     children: {
@@ -183,6 +274,13 @@ export declare const RepaymentRouter: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
                 };
                 children: ({
                     children: {
@@ -212,6 +310,7 @@ export declare const RepaymentRouter: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
@@ -239,10 +338,18 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -254,6 +361,9 @@ export declare const RepaymentRouter: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -285,6 +395,7 @@ export declare const RepaymentRouter: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -300,6 +411,14 @@ export declare const RepaymentRouter: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -329,6 +448,7 @@ export declare const RepaymentRouter: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         arguments: any[];
@@ -372,10 +492,17 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    commonType?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    operator?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -389,6 +516,9 @@ export declare const RepaymentRouter: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -397,10 +527,18 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -412,6 +550,9 @@ export declare const RepaymentRouter: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -425,6 +566,9 @@ export declare const RepaymentRouter: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            hexvalue?: undefined;
+                                            subdenomination?: undefined;
+                                            token?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -461,6 +605,7 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         children: {
                             attributes: {
@@ -484,10 +629,17 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    commonType?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    operator?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -501,6 +653,9 @@ export declare const RepaymentRouter: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -509,6 +664,13 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -525,6 +687,8 @@ export declare const RepaymentRouter: {
                                         token: string;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -541,9 +705,12 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             assignments: number[];
+                            falseBody?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -555,6 +722,14 @@ export declare const RepaymentRouter: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -579,6 +754,13 @@ export declare const RepaymentRouter: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -593,6 +775,8 @@ export declare const RepaymentRouter: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -616,10 +800,16 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -631,6 +821,8 @@ export declare const RepaymentRouter: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -653,10 +845,18 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -668,6 +868,9 @@ export declare const RepaymentRouter: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -681,6 +884,9 @@ export declare const RepaymentRouter: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -733,10 +939,18 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -748,6 +962,9 @@ export declare const RepaymentRouter: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -761,10 +978,13 @@ export declare const RepaymentRouter: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -775,6 +995,7 @@ export declare const RepaymentRouter: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -803,6 +1024,7 @@ export declare const RepaymentRouter: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -831,6 +1053,7 @@ export declare const RepaymentRouter: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -838,6 +1061,8 @@ export declare const RepaymentRouter: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -878,6 +1103,9 @@ export declare const RepaymentRouter: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -892,6 +1120,8 @@ export declare const RepaymentRouter: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -937,6 +1167,8 @@ export declare const RepaymentRouter: {
                                             member_name: string;
                                             referencedDeclaration: any;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -960,10 +1192,16 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -975,10 +1213,18 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -1011,10 +1257,18 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -1026,6 +1280,9 @@ export declare const RepaymentRouter: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1039,10 +1296,13 @@ export declare const RepaymentRouter: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -1053,6 +1313,7 @@ export declare const RepaymentRouter: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -1081,6 +1342,7 @@ export declare const RepaymentRouter: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -1109,6 +1371,7 @@ export declare const RepaymentRouter: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -1116,6 +1379,8 @@ export declare const RepaymentRouter: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -1153,6 +1418,8 @@ export declare const RepaymentRouter: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -1195,10 +1462,16 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        member_name?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -1209,6 +1482,8 @@ export declare const RepaymentRouter: {
                                         member_name: string;
                                         referencedDeclaration: any;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -1257,10 +1532,18 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -1272,6 +1555,9 @@ export declare const RepaymentRouter: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1285,10 +1571,13 @@ export declare const RepaymentRouter: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -1299,6 +1588,7 @@ export declare const RepaymentRouter: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -1327,6 +1617,7 @@ export declare const RepaymentRouter: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -1355,6 +1646,7 @@ export declare const RepaymentRouter: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -1382,10 +1674,18 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1397,6 +1697,9 @@ export declare const RepaymentRouter: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1411,6 +1714,8 @@ export declare const RepaymentRouter: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -1434,10 +1739,16 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        member_name?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
@@ -1450,6 +1761,7 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         children: {
                             attributes: {
@@ -1473,10 +1785,16 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1487,6 +1805,8 @@ export declare const RepaymentRouter: {
                                     member_name: string;
                                     referencedDeclaration: any;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1511,9 +1831,12 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -1534,6 +1857,7 @@ export declare const RepaymentRouter: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -1549,6 +1873,14 @@ export declare const RepaymentRouter: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    arguments?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
+                    canonicalName?: undefined;
+                    anonymous?: undefined;
+                    modifiers?: undefined;
                 };
                 children: ({
                     children: {
@@ -1578,6 +1910,7 @@ export declare const RepaymentRouter: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         arguments: any[];
@@ -1621,10 +1954,17 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    commonType?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    operator?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1638,6 +1978,9 @@ export declare const RepaymentRouter: {
                                     lValueRequested: boolean;
                                     operator: string;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1646,10 +1989,18 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -1661,6 +2012,9 @@ export declare const RepaymentRouter: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -1674,6 +2028,9 @@ export declare const RepaymentRouter: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            hexvalue?: undefined;
+                                            subdenomination?: undefined;
+                                            token?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -1710,9 +2067,12 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             assignments: number[];
+                            falseBody?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -1724,6 +2084,14 @@ export declare const RepaymentRouter: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -1748,6 +2116,13 @@ export declare const RepaymentRouter: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -1762,6 +2137,8 @@ export declare const RepaymentRouter: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1785,10 +2162,16 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -1800,6 +2183,8 @@ export declare const RepaymentRouter: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -1822,10 +2207,18 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1837,6 +2230,9 @@ export declare const RepaymentRouter: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1850,6 +2246,9 @@ export declare const RepaymentRouter: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        hexvalue?: undefined;
+                                        subdenomination?: undefined;
+                                        token?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -1902,10 +2301,18 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -1917,6 +2324,9 @@ export declare const RepaymentRouter: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1930,10 +2340,13 @@ export declare const RepaymentRouter: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -1944,6 +2357,7 @@ export declare const RepaymentRouter: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -1972,6 +2386,7 @@ export declare const RepaymentRouter: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -2000,6 +2415,7 @@ export declare const RepaymentRouter: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -2007,6 +2423,8 @@ export declare const RepaymentRouter: {
                     } | {
                         attributes: {
                             assignments: number[];
+                            falseBody?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -2018,6 +2436,14 @@ export declare const RepaymentRouter: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -2044,6 +2470,13 @@ export declare const RepaymentRouter: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -2090,10 +2523,19 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    arguments?: undefined;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -2106,6 +2548,9 @@ export declare const RepaymentRouter: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -2145,9 +2590,12 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -2188,6 +2636,8 @@ export declare const RepaymentRouter: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        member_name?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -2202,6 +2652,8 @@ export declare const RepaymentRouter: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -2225,10 +2677,16 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -2243,6 +2701,9 @@ export declare const RepaymentRouter: {
                                         member_name: string;
                                         referencedDeclaration: any;
                                         type: string;
+                                        isStructConstructorCall?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -2302,6 +2763,8 @@ export declare const RepaymentRouter: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -2325,10 +2788,16 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -2357,6 +2826,8 @@ export declare const RepaymentRouter: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -2368,6 +2839,10 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
                                         };
                                         id: number;
                                         name: string;
@@ -2408,10 +2883,18 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -2423,6 +2906,9 @@ export declare const RepaymentRouter: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -2436,10 +2922,13 @@ export declare const RepaymentRouter: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -2450,6 +2939,7 @@ export declare const RepaymentRouter: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -2478,6 +2968,7 @@ export declare const RepaymentRouter: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -2506,6 +2997,7 @@ export declare const RepaymentRouter: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -2513,6 +3005,8 @@ export declare const RepaymentRouter: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            assignments?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -2550,6 +3044,8 @@ export declare const RepaymentRouter: {
                                         member_name: string;
                                         referencedDeclaration: number;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -2592,10 +3088,16 @@ export declare const RepaymentRouter: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
+                                        member_name?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -2606,6 +3108,8 @@ export declare const RepaymentRouter: {
                                         member_name: string;
                                         referencedDeclaration: any;
                                         type: string;
+                                        overloadedDeclarations?: undefined;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -2654,10 +3158,18 @@ export declare const RepaymentRouter: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -2669,6 +3181,9 @@ export declare const RepaymentRouter: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -2682,10 +3197,13 @@ export declare const RepaymentRouter: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -2696,6 +3214,7 @@ export declare const RepaymentRouter: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -2724,6 +3243,7 @@ export declare const RepaymentRouter: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -2752,6 +3272,7 @@ export declare const RepaymentRouter: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -2782,6 +3303,8 @@ export declare const RepaymentRouter: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -2805,10 +3328,16 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -2817,6 +3346,7 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         children: {
                             attributes: {
@@ -2840,10 +3370,16 @@ export declare const RepaymentRouter: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -2854,6 +3390,8 @@ export declare const RepaymentRouter: {
                                     member_name: string;
                                     referencedDeclaration: any;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -2878,9 +3416,12 @@ export declare const RepaymentRouter: {
                         id: number;
                         name: string;
                         src: string;
+                        attributes?: undefined;
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -2901,6 +3442,7 @@ export declare const RepaymentRouter: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;

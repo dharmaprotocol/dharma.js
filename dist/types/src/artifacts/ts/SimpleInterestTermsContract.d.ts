@@ -22,6 +22,9 @@ export declare const SimpleInterestTermsContract: {
         payable: boolean;
         stateMutability: string;
         type: string;
+        constant?: undefined;
+        name?: undefined;
+        outputs?: undefined;
     })[];
     bytecode: string;
     deployedBytecode: string;
@@ -39,10 +42,24 @@ export declare const SimpleInterestTermsContract: {
         children: ({
             attributes: {
                 literals: string[];
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                scope?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
+                baseContracts?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 SourceUnit: number;
@@ -51,10 +68,19 @@ export declare const SimpleInterestTermsContract: {
                 scope: number;
                 symbolAliases: any[];
                 unitAlias: string;
+                literals?: undefined;
+                baseContracts?: undefined;
+                contractDependencies?: undefined;
+                contractKind?: undefined;
+                documentation?: undefined;
+                fullyImplemented?: undefined;
+                linearizedBaseContracts?: undefined;
+                name?: undefined;
             };
             id: number;
             name: string;
             src: string;
+            children?: undefined;
         } | {
             attributes: {
                 baseContracts: any[];
@@ -65,6 +91,12 @@ export declare const SimpleInterestTermsContract: {
                 linearizedBaseContracts: number[];
                 name: string;
                 scope: number;
+                literals?: undefined;
+                SourceUnit?: undefined;
+                absolutePath?: undefined;
+                file?: undefined;
+                symbolAliases?: undefined;
+                unitAlias?: undefined;
             };
             children: ({
                 children: ({
@@ -81,6 +113,8 @@ export declare const SimpleInterestTermsContract: {
                     attributes: {
                         name: string;
                         type: string;
+                        contractScope?: undefined;
+                        referencedDeclaration?: undefined;
                     };
                     id: number;
                     name: string;
@@ -89,10 +123,24 @@ export declare const SimpleInterestTermsContract: {
                 id: number;
                 name: string;
                 src: string;
+                attributes?: undefined;
             } | {
                 attributes: {
                     canonicalName: string;
                     name: string;
+                    constant?: undefined;
+                    scope?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    visibility?: undefined;
+                    value?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -114,11 +162,28 @@ export declare const SimpleInterestTermsContract: {
                     storageLocation: string;
                     type: string;
                     visibility: string;
+                    canonicalName?: undefined;
+                    value?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: ({
                     attributes: {
                         name: string;
                         type: string;
+                        argumentTypes?: undefined;
+                        hexvalue?: undefined;
+                        isConstant?: undefined;
+                        isLValue?: undefined;
+                        isPure?: undefined;
+                        lValueRequested?: undefined;
+                        subdenomination?: undefined;
+                        token?: undefined;
+                        value?: undefined;
                     };
                     id: number;
                     name: string;
@@ -135,6 +200,7 @@ export declare const SimpleInterestTermsContract: {
                         token: string;
                         type: string;
                         value: string;
+                        name?: undefined;
                     };
                     id: number;
                     name: string;
@@ -153,6 +219,13 @@ export declare const SimpleInterestTermsContract: {
                     type: string;
                     value: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -184,6 +257,13 @@ export declare const SimpleInterestTermsContract: {
                     type: string;
                     value: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -209,6 +289,13 @@ export declare const SimpleInterestTermsContract: {
                     type: string;
                     value: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    implemented?: undefined;
+                    isConstructor?: undefined;
+                    modifiers?: undefined;
+                    payable?: undefined;
+                    stateMutability?: undefined;
+                    superFunction?: undefined;
                 };
                 children: {
                     attributes: {
@@ -234,6 +321,11 @@ export declare const SimpleInterestTermsContract: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -263,6 +355,7 @@ export declare const SimpleInterestTermsContract: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 } | {
                     attributes: {
                         parameters: any[];
@@ -290,10 +383,18 @@ export declare const SimpleInterestTermsContract: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -305,6 +406,9 @@ export declare const SimpleInterestTermsContract: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -336,6 +440,7 @@ export declare const SimpleInterestTermsContract: {
                     id: number;
                     name: string;
                     src: string;
+                    attributes?: undefined;
                 })[];
                 id: number;
                 name: string;
@@ -352,6 +457,11 @@ export declare const SimpleInterestTermsContract: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -385,6 +495,7 @@ export declare const SimpleInterestTermsContract: {
                     children: ({
                         attributes: {
                             falseBody: any;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -410,6 +521,8 @@ export declare const SimpleInterestTermsContract: {
                                     member_name: string;
                                     referencedDeclaration: any;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -433,10 +546,16 @@ export declare const SimpleInterestTermsContract: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -470,6 +589,7 @@ export declare const SimpleInterestTermsContract: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -477,6 +597,7 @@ export declare const SimpleInterestTermsContract: {
                     } | {
                         attributes: {
                             falseBody: any;
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -527,6 +648,9 @@ export declare const SimpleInterestTermsContract: {
                                             isPure: boolean;
                                             lValueRequested: boolean;
                                             type: string;
+                                            isStructConstructorCall?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -568,6 +692,8 @@ export declare const SimpleInterestTermsContract: {
                                                 member_name: string;
                                                 referencedDeclaration: number;
                                                 type: string;
+                                                overloadedDeclarations?: undefined;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -604,10 +730,16 @@ export declare const SimpleInterestTermsContract: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                lValueRequested?: undefined;
+                                                member_name?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         })[];
                                         id: number;
                                         name: string;
@@ -620,6 +752,7 @@ export declare const SimpleInterestTermsContract: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 attributes: {
                                     functionReturnParameters: number;
@@ -648,6 +781,7 @@ export declare const SimpleInterestTermsContract: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;
@@ -655,6 +789,7 @@ export declare const SimpleInterestTermsContract: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            falseBody?: undefined;
                         };
                         children: {
                             attributes: {
@@ -696,6 +831,11 @@ export declare const SimpleInterestTermsContract: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -729,6 +869,7 @@ export declare const SimpleInterestTermsContract: {
                     children: ({
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -740,6 +881,14 @@ export declare const SimpleInterestTermsContract: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -764,6 +913,13 @@ export declare const SimpleInterestTermsContract: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -778,6 +934,8 @@ export declare const SimpleInterestTermsContract: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -801,10 +959,16 @@ export declare const SimpleInterestTermsContract: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -816,6 +980,7 @@ export declare const SimpleInterestTermsContract: {
                     } | {
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -825,18 +990,19 @@ export declare const SimpleInterestTermsContract: {
                                 stateVariable: boolean;
                                 storageLocation: string;
                                 type: string;
+                                typeName: any;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
-                            children: {
-                                attributes: {
-                                    name: string;
-                                    type: string;
-                                };
-                                id: number;
-                                name: string;
-                                src: string;
-                            }[];
+                            children: any[];
                             id: number;
                             name: string;
                             src: string;
@@ -851,6 +1017,14 @@ export declare const SimpleInterestTermsContract: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                typeName?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -877,6 +1051,7 @@ export declare const SimpleInterestTermsContract: {
                     } | {
                         attributes: {
                             assignments: number[];
+                            functionReturnParameters?: undefined;
                         };
                         children: ({
                             attributes: {
@@ -888,6 +1063,14 @@ export declare const SimpleInterestTermsContract: {
                                 type: string;
                                 value: any;
                                 visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
                             };
                             children: {
                                 attributes: {
@@ -912,6 +1095,90 @@ export declare const SimpleInterestTermsContract: {
                                 names: any[];
                                 type: string;
                                 type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
+                            };
+                            children: {
+                                attributes: {
+                                    argumentTypes: {
+                                        typeIdentifier: string;
+                                        typeString: string;
+                                    }[];
+                                    overloadedDeclarations: any[];
+                                    referencedDeclaration: number;
+                                    type: string;
+                                    value: string;
+                                };
+                                id: number;
+                                name: string;
+                                src: string;
+                            }[];
+                            id: number;
+                            name: string;
+                            src: string;
+                        })[];
+                        id: number;
+                        name: string;
+                        src: string;
+                    } | {
+                        attributes: {
+                            assignments: number[];
+                            functionReturnParameters?: undefined;
+                        };
+                        children: ({
+                            attributes: {
+                                constant: boolean;
+                                name: string;
+                                scope: number;
+                                stateVariable: boolean;
+                                storageLocation: string;
+                                type: string;
+                                value: any;
+                                visibility: string;
+                                argumentTypes?: undefined;
+                                isConstant?: undefined;
+                                isLValue?: undefined;
+                                isPure?: undefined;
+                                isStructConstructorCall?: undefined;
+                                lValueRequested?: undefined;
+                                names?: undefined;
+                                type_conversion?: undefined;
+                            };
+                            children: {
+                                attributes: {
+                                    name: string;
+                                    type: string;
+                                };
+                                id: number;
+                                name: string;
+                                src: string;
+                            }[];
+                            id: number;
+                            name: string;
+                            src: string;
+                        } | {
+                            attributes: {
+                                argumentTypes: any;
+                                isConstant: boolean;
+                                isLValue: boolean;
+                                isPure: boolean;
+                                isStructConstructorCall: boolean;
+                                lValueRequested: boolean;
+                                names: any[];
+                                type: string;
+                                type_conversion: boolean;
+                                constant?: undefined;
+                                name?: undefined;
+                                scope?: undefined;
+                                stateVariable?: undefined;
+                                storageLocation?: undefined;
+                                value?: undefined;
+                                visibility?: undefined;
                             };
                             children: ({
                                 attributes: {
@@ -926,6 +1193,8 @@ export declare const SimpleInterestTermsContract: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -952,6 +1221,8 @@ export declare const SimpleInterestTermsContract: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -975,10 +1246,16 @@ export declare const SimpleInterestTermsContract: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -994,10 +1271,16 @@ export declare const SimpleInterestTermsContract: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -1009,6 +1292,7 @@ export declare const SimpleInterestTermsContract: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
                         };
                         children: {
                             attributes: {
@@ -1035,6 +1319,8 @@ export declare const SimpleInterestTermsContract: {
                                     member_name: string;
                                     referencedDeclaration: number;
                                     type: string;
+                                    overloadedDeclarations?: undefined;
+                                    value?: undefined;
                                 };
                                 children: {
                                     attributes: {
@@ -1061,6 +1347,8 @@ export declare const SimpleInterestTermsContract: {
                                             member_name: string;
                                             referencedDeclaration: number;
                                             type: string;
+                                            overloadedDeclarations?: undefined;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -1084,10 +1372,16 @@ export declare const SimpleInterestTermsContract: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            member_name?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     })[];
                                     id: number;
                                     name: string;
@@ -1103,10 +1397,16 @@ export declare const SimpleInterestTermsContract: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    lValueRequested?: undefined;
+                                    member_name?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             })[];
                             id: number;
                             name: string;
@@ -1135,6 +1435,11 @@ export declare const SimpleInterestTermsContract: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -1217,6 +1522,11 @@ export declare const SimpleInterestTermsContract: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -1251,6 +1561,9 @@ export declare const SimpleInterestTermsContract: {
                         attributes: {
                             assignments: any[];
                             initialValue: any;
+                            externalReferences?: undefined;
+                            operations?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: {
                             attributes: {
@@ -1289,6 +1602,8 @@ export declare const SimpleInterestTermsContract: {
                                     src: string;
                                     valueSize: number;
                                 };
+                                amortizationUnitType?: undefined;
+                                termLengthInAmortizationUnits?: undefined;
                             } | {
                                 amortizationUnitType: {
                                     declaration: number;
@@ -1297,6 +1612,8 @@ export declare const SimpleInterestTermsContract: {
                                     src: string;
                                     valueSize: number;
                                 };
+                                principalPlusInterest?: undefined;
+                                termLengthInAmortizationUnits?: undefined;
                             } | {
                                 termLengthInAmortizationUnits: {
                                     declaration: number;
@@ -1305,8 +1622,13 @@ export declare const SimpleInterestTermsContract: {
                                     src: string;
                                     valueSize: number;
                                 };
+                                principalPlusInterest?: undefined;
+                                amortizationUnitType?: undefined;
                             })[];
                             operations: string;
+                            assignments?: undefined;
+                            initialValue?: undefined;
+                            functionReturnParameters?: undefined;
                         };
                         children: any[];
                         id: number;
@@ -1315,6 +1637,10 @@ export declare const SimpleInterestTermsContract: {
                     } | {
                         attributes: {
                             functionReturnParameters: number;
+                            assignments?: undefined;
+                            initialValue?: undefined;
+                            externalReferences?: undefined;
+                            operations?: undefined;
                         };
                         children: {
                             attributes: {
@@ -1350,6 +1676,8 @@ export declare const SimpleInterestTermsContract: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -1361,6 +1689,10 @@ export declare const SimpleInterestTermsContract: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        lValueRequested?: undefined;
                                     };
                                     id: number;
                                     name: string;
@@ -1397,6 +1729,11 @@ export declare const SimpleInterestTermsContract: {
                     stateMutability: string;
                     superFunction: any;
                     visibility: string;
+                    canonicalName?: undefined;
+                    stateVariable?: undefined;
+                    storageLocation?: undefined;
+                    type?: undefined;
+                    value?: undefined;
                 };
                 children: ({
                     children: {
@@ -1449,10 +1786,18 @@ export declare const SimpleInterestTermsContract: {
                                     referencedDeclaration: number;
                                     type: string;
                                     value: string;
+                                    isConstant?: undefined;
+                                    isLValue?: undefined;
+                                    isPure?: undefined;
+                                    isStructConstructorCall?: undefined;
+                                    lValueRequested?: undefined;
+                                    names?: undefined;
+                                    type_conversion?: undefined;
                                 };
                                 id: number;
                                 name: string;
                                 src: string;
+                                children?: undefined;
                             } | {
                                 attributes: {
                                     argumentTypes: any;
@@ -1464,6 +1809,9 @@ export declare const SimpleInterestTermsContract: {
                                     names: any[];
                                     type: string;
                                     type_conversion: boolean;
+                                    overloadedDeclarations?: undefined;
+                                    referencedDeclaration?: undefined;
+                                    value?: undefined;
                                 };
                                 children: ({
                                     attributes: {
@@ -1477,10 +1825,13 @@ export declare const SimpleInterestTermsContract: {
                                         lValueRequested: boolean;
                                         type: string;
                                         value: string;
+                                        member_name?: undefined;
+                                        referencedDeclaration?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -1491,6 +1842,7 @@ export declare const SimpleInterestTermsContract: {
                                         member_name: string;
                                         referencedDeclaration: any;
                                         type: string;
+                                        value?: undefined;
                                     };
                                     children: {
                                         attributes: {
@@ -1539,6 +1891,7 @@ export declare const SimpleInterestTermsContract: {
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         } | {
                             children: ({
                                 attributes: {
@@ -1561,10 +1914,18 @@ export declare const SimpleInterestTermsContract: {
                                         referencedDeclaration: number;
                                         type: string;
                                         value: string;
+                                        isConstant?: undefined;
+                                        isLValue?: undefined;
+                                        isPure?: undefined;
+                                        isStructConstructorCall?: undefined;
+                                        lValueRequested?: undefined;
+                                        names?: undefined;
+                                        type_conversion?: undefined;
                                     };
                                     id: number;
                                     name: string;
                                     src: string;
+                                    children?: undefined;
                                 } | {
                                     attributes: {
                                         argumentTypes: any;
@@ -1576,6 +1937,9 @@ export declare const SimpleInterestTermsContract: {
                                         names: any[];
                                         type: string;
                                         type_conversion: boolean;
+                                        overloadedDeclarations?: undefined;
+                                        referencedDeclaration?: undefined;
+                                        value?: undefined;
                                     };
                                     children: ({
                                         attributes: {
@@ -1589,10 +1953,13 @@ export declare const SimpleInterestTermsContract: {
                                             lValueRequested: boolean;
                                             type: string;
                                             value: string;
+                                            member_name?: undefined;
+                                            referencedDeclaration?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -1603,6 +1970,7 @@ export declare const SimpleInterestTermsContract: {
                                             member_name: string;
                                             referencedDeclaration: any;
                                             type: string;
+                                            value?: undefined;
                                         };
                                         children: {
                                             attributes: {
@@ -1651,6 +2019,7 @@ export declare const SimpleInterestTermsContract: {
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             } | {
                                 children: ({
                                     attributes: {
@@ -1673,10 +2042,18 @@ export declare const SimpleInterestTermsContract: {
                                             referencedDeclaration: number;
                                             type: string;
                                             value: string;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            isStructConstructorCall?: undefined;
+                                            lValueRequested?: undefined;
+                                            names?: undefined;
+                                            type_conversion?: undefined;
                                         };
                                         id: number;
                                         name: string;
                                         src: string;
+                                        children?: undefined;
                                     } | {
                                         attributes: {
                                             argumentTypes: any;
@@ -1688,6 +2065,9 @@ export declare const SimpleInterestTermsContract: {
                                             names: any[];
                                             type: string;
                                             type_conversion: boolean;
+                                            overloadedDeclarations?: undefined;
+                                            referencedDeclaration?: undefined;
+                                            value?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1701,10 +2081,13 @@ export declare const SimpleInterestTermsContract: {
                                                 lValueRequested: boolean;
                                                 type: string;
                                                 value: string;
+                                                member_name?: undefined;
+                                                referencedDeclaration?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -1715,6 +2098,7 @@ export declare const SimpleInterestTermsContract: {
                                                 member_name: string;
                                                 referencedDeclaration: any;
                                                 type: string;
+                                                value?: undefined;
                                             };
                                             children: {
                                                 attributes: {
@@ -1763,6 +2147,7 @@ export declare const SimpleInterestTermsContract: {
                                     id: number;
                                     name: string;
                                     src: string;
+                                    attributes?: undefined;
                                 } | {
                                     children: ({
                                         attributes: {
@@ -1777,6 +2162,7 @@ export declare const SimpleInterestTermsContract: {
                                             lValueRequested: boolean;
                                             operator: string;
                                             type: string;
+                                            falseBody?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1785,10 +2171,18 @@ export declare const SimpleInterestTermsContract: {
                                                 referencedDeclaration: number;
                                                 type: string;
                                                 value: string;
+                                                isConstant?: undefined;
+                                                isLValue?: undefined;
+                                                isPure?: undefined;
+                                                isStructConstructorCall?: undefined;
+                                                lValueRequested?: undefined;
+                                                names?: undefined;
+                                                type_conversion?: undefined;
                                             };
                                             id: number;
                                             name: string;
                                             src: string;
+                                            children?: undefined;
                                         } | {
                                             attributes: {
                                                 argumentTypes: any;
@@ -1800,6 +2194,9 @@ export declare const SimpleInterestTermsContract: {
                                                 names: any[];
                                                 type: string;
                                                 type_conversion: boolean;
+                                                overloadedDeclarations?: undefined;
+                                                referencedDeclaration?: undefined;
+                                                value?: undefined;
                                             };
                                             children: ({
                                                 attributes: {
@@ -1813,10 +2210,13 @@ export declare const SimpleInterestTermsContract: {
                                                     lValueRequested: boolean;
                                                     type: string;
                                                     value: string;
+                                                    member_name?: undefined;
+                                                    referencedDeclaration?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
                                                 src: string;
+                                                children?: undefined;
                                             } | {
                                                 attributes: {
                                                     argumentTypes: any;
@@ -1827,6 +2227,7 @@ export declare const SimpleInterestTermsContract: {
                                                     member_name: string;
                                                     referencedDeclaration: any;
                                                     type: string;
+                                                    value?: undefined;
                                                 };
                                                 children: {
                                                     attributes: {
@@ -1875,9 +2276,18 @@ export declare const SimpleInterestTermsContract: {
                                         id: number;
                                         name: string;
                                         src: string;
+                                        attributes?: undefined;
                                     } | {
                                         attributes: {
                                             falseBody: any;
+                                            argumentTypes?: undefined;
+                                            commonType?: undefined;
+                                            isConstant?: undefined;
+                                            isLValue?: undefined;
+                                            isPure?: undefined;
+                                            lValueRequested?: undefined;
+                                            operator?: undefined;
+                                            type?: undefined;
                                         };
                                         children: ({
                                             attributes: {
@@ -1900,10 +2310,18 @@ export declare const SimpleInterestTermsContract: {
                                                     referencedDeclaration: number;
                                                     type: string;
                                                     value: string;
+                                                    isConstant?: undefined;
+                                                    isLValue?: undefined;
+                                                    isPure?: undefined;
+                                                    isStructConstructorCall?: undefined;
+                                                    lValueRequested?: undefined;
+                                                    names?: undefined;
+                                                    type_conversion?: undefined;
                                                 };
                                                 id: number;
                                                 name: string;
                                                 src: string;
+                                                children?: undefined;
                                             } | {
                                                 attributes: {
                                                     argumentTypes: any;
@@ -1915,6 +2333,9 @@ export declare const SimpleInterestTermsContract: {
                                                     names: any[];
                                                     type: string;
                                                     type_conversion: boolean;
+                                                    overloadedDeclarations?: undefined;
+                                                    referencedDeclaration?: undefined;
+                                                    value?: undefined;
                                                 };
                                                 children: ({
                                                     attributes: {
@@ -1928,10 +2349,13 @@ export declare const SimpleInterestTermsContract: {
                                                         lValueRequested: boolean;
                                                         type: string;
                                                         value: string;
+                                                        member_name?: undefined;
+                                                        referencedDeclaration?: undefined;
                                                     };
                                                     id: number;
                                                     name: string;
                                                     src: string;
+                                                    children?: undefined;
                                                 } | {
                                                     attributes: {
                                                         argumentTypes: any;
@@ -1942,6 +2366,7 @@ export declare const SimpleInterestTermsContract: {
                                                         member_name: string;
                                                         referencedDeclaration: any;
                                                         type: string;
+                                                        value?: undefined;
                                                     };
                                                     children: {
                                                         attributes: {
@@ -1990,6 +2415,7 @@ export declare const SimpleInterestTermsContract: {
                                             id: number;
                                             name: string;
                                             src: string;
+                                            attributes?: undefined;
                                         })[];
                                         id: number;
                                         name: string;
@@ -1998,14 +2424,17 @@ export declare const SimpleInterestTermsContract: {
                                     id: number;
                                     name: string;
                                     src: string;
+                                    attributes?: undefined;
                                 })[];
                                 id: number;
                                 name: string;
                                 src: string;
+                                attributes?: undefined;
                             })[];
                             id: number;
                             name: string;
                             src: string;
+                            attributes?: undefined;
                         })[];
                         id: number;
                         name: string;

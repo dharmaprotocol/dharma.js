@@ -48,8 +48,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
 var tiny_promisify_1 = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
+var web3_utils_1 = require("../../../utils/web3_utils");
 var DebtKernel_1 = require("../../artifacts/ts/DebtKernel");
-var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var DebtKernelContract = /** @class */ (function (_super) {
     __extends(DebtKernelContract, _super);
     function DebtKernelContract(web3ContractInstance, defaults) {
@@ -517,18 +517,18 @@ var DebtKernelContract = /** @class */ (function (_super) {
     }
     DebtKernelContract.deployed = function (web3, defaults) {
         return __awaiter(this, void 0, void 0, function () {
-            var web3Wrapper, currentNetwork, abi, networks, contractAddress, contractExists, web3ContractInstance;
+            var web3Utils, currentNetwork, abi, networks, contractAddress, contractExists, web3ContractInstance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        web3Wrapper = new web3_wrapper_1.Web3Wrapper(web3.currentProvider);
-                        return [4 /*yield*/, web3Wrapper.getNetworkIdAsync()];
+                        web3Utils = new web3_utils_1.Web3Utils(web3);
+                        return [4 /*yield*/, web3Utils.getNetworkIdAsync()];
                     case 1:
                         currentNetwork = _a.sent();
                         abi = DebtKernel_1.DebtKernel.abi, networks = DebtKernel_1.DebtKernel.networks;
                         if (!networks[currentNetwork]) return [3 /*break*/, 3];
                         contractAddress = networks[currentNetwork].address;
-                        return [4 /*yield*/, web3Wrapper.doesContractExistAtAddressAsync(contractAddress)];
+                        return [4 /*yield*/, web3Utils.doesContractExistAtAddressAsync(contractAddress)];
                     case 2:
                         contractExists = _a.sent();
                         if (contractExists) {
@@ -547,16 +547,16 @@ var DebtKernelContract = /** @class */ (function (_super) {
     };
     DebtKernelContract.at = function (address, web3, defaults) {
         return __awaiter(this, void 0, void 0, function () {
-            var web3Wrapper, abi, contractExists, currentNetwork, web3ContractInstance;
+            var web3Utils, abi, contractExists, currentNetwork, web3ContractInstance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        web3Wrapper = new web3_wrapper_1.Web3Wrapper(web3.currentProvider);
+                        web3Utils = new web3_utils_1.Web3Utils(web3);
                         abi = DebtKernel_1.DebtKernel.abi;
-                        return [4 /*yield*/, web3Wrapper.doesContractExistAtAddressAsync(address)];
+                        return [4 /*yield*/, web3Utils.doesContractExistAtAddressAsync(address)];
                     case 1:
                         contractExists = _a.sent();
-                        return [4 /*yield*/, web3Wrapper.getNetworkIdAsync()];
+                        return [4 /*yield*/, web3Utils.getNetworkIdAsync()];
                     case 2:
                         currentNetwork = _a.sent();
                         if (contractExists) {

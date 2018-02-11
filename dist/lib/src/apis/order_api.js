@@ -39,7 +39,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var web3_wrapper_1 = require("@0xproject/web3-wrapper");
+var web3_utils_1 = require("../../utils/web3_utils");
 var wrappers_1 = require("../wrappers");
 var invariants_1 = require("../invariants");
 var single_line_string_1 = require("single-line-string");
@@ -154,12 +154,12 @@ var OrderAPI = /** @class */ (function () {
     };
     OrderAPI.prototype.getTxDefaultOptions = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var web3Wrapper, accounts;
+            var web3Utils, accounts;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        web3Wrapper = new web3_wrapper_1.Web3Wrapper(this.web3.currentProvider);
-                        return [4 /*yield*/, web3Wrapper.getAvailableAddressesAsync()];
+                        web3Utils = new web3_utils_1.Web3Utils(this.web3);
+                        return [4 /*yield*/, web3Utils.getAvailableAddressesAsync()];
                     case 1:
                         accounts = _a.sent();
                         // TODO: Add fault tolerance to scenario in which not addresses are available
