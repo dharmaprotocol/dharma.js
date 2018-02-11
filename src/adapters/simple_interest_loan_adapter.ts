@@ -1,4 +1,4 @@
-import * as _ from "lodash";
+import omit from "lodash.omit";
 import { DebtOrder } from "../types";
 import { ContractsAPI } from "../apis";
 import { BigNumber } from "../../utils/bignumber";
@@ -171,7 +171,7 @@ export class SimpleInterestLoanAdapter {
             termLength,
         } = simpleInterestLoanOrder;
 
-        let debtOrder: DebtOrder = _.omit(simpleInterestLoanOrder, [
+        let debtOrder: DebtOrder = omit(simpleInterestLoanOrder, [
             "interestRate",
             "amortizationUnit",
             "termLength",

@@ -78,5 +78,4 @@ export declare class DummyTokenContract extends BaseContract {
     };
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>);
     static at(address: string, web3: Web3, defaults: Partial<TxData>): Promise<DummyTokenContract>;
-    private static getArtifactsData();
 }

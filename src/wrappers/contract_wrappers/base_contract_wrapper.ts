@@ -1,4 +1,5 @@
-import * as _ from "lodash";
+import pickBy from "lodash.pickby";
+import isUndefined from "lodash.isundefined";
 import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
 import singleLineString from "single-line-string";
@@ -46,14 +47,14 @@ export class BaseContract {
         // 1. Optional param passed in to public method call
         // 2. Global config passed in at library instantiation
         // 3. Gas estimate calculation + safety margin
-        const removeUndefinedProperties = _.pickBy;
+        const removeUndefinedProperties = pickBy;
         const txDataWithDefaults = {
             ...removeUndefinedProperties(this.defaults),
             ...removeUndefinedProperties(txData as any),
             // HACK: TS can't prove that T is spreadable.
             // Awaiting https://github.com/Microsoft/TypeScript/pull/13288 to be merged
         } as TxData;
-        if (_.isUndefined(txDataWithDefaults.gas) && !_.isUndefined(estimateGasAsync)) {
+        if (isUndefined(txDataWithDefaults.gas) && !isUndefined(estimateGasAsync)) {
             const estimatedGas = await estimateGasAsync(txData);
             txDataWithDefaults.gas = estimatedGas;
         }

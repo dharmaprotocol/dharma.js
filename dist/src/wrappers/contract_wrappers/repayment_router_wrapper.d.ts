@@ -47,5 +47,4 @@ export declare class RepaymentRouterContract extends BaseContract {
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>);
     static deployed(web3: Web3, defaults: Partial<TxData>): Promise<RepaymentRouterContract>;
     static at(address: string, web3: Web3, defaults: Partial<TxData>): Promise<RepaymentRouterContract>;
-    private static getArtifactsData();
 }

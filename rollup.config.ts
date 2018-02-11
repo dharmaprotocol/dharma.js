@@ -37,6 +37,6 @@ export default {
     sourceMaps(),
 
     // Resolve error that's making me claw my eyes out currently.
-    json(),
+    json()
   ],
 }

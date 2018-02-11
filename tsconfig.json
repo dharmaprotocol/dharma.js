@@ -22,7 +22,7 @@
     "src",
     "dist",
     "__test__",
-    "__mocks__",
-    "utils"
+    "utils",
+    "rollup.config.ts"
   ]
 }

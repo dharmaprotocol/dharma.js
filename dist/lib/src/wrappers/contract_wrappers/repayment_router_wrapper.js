@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tiny_promisify_1 = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
-var fs = require("fs-extra");
+var RepaymentRouter_1 = require("../../artifacts/ts/RepaymentRouter");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
 var RepaymentRouterContract = (function (_super) {
@@ -357,22 +357,20 @@ var RepaymentRouterContract = (function (_super) {
     }
     RepaymentRouterContract.deployed = function (web3, defaults) {
         return __awaiter(this, void 0, void 0, function () {
-            var web3Wrapper, currentNetwork, _a, abi, networks, contractAddress, contractExists, web3ContractInstance;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var web3Wrapper, currentNetwork, abi, networks, contractAddress, contractExists, web3ContractInstance;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         web3Wrapper = new web3_wrapper_1.Web3Wrapper(web3.currentProvider);
                         return [4 /*yield*/, web3Wrapper.getNetworkIdAsync()];
                     case 1:
-                        currentNetwork = _b.sent();
-                        return [4 /*yield*/, this.getArtifactsData()];
-                    case 2:
-                        _a = _b.sent(), abi = _a.abi, networks = _a.networks;
-                        if (!networks[currentNetwork]) return [3 /*break*/, 4];
+                        currentNetwork = _a.sent();
+                        abi = RepaymentRouter_1.RepaymentRouter.abi, networks = RepaymentRouter_1.RepaymentRouter.networks;
+                        if (!networks[currentNetwork]) return [3 /*break*/, 3];
                         contractAddress = networks[currentNetwork].address;
                         return [4 /*yield*/, web3Wrapper.doesContractExistAtAddressAsync(contractAddress)];
-                    case 3:
-                        contractExists = _b.sent();
+                    case 2:
+                        contractExists = _a.sent();
                         if (contractExists) {
                             web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
                             return [2 /*return*/, new RepaymentRouterContract(web3ContractInstance, defaults)];
@@ -380,9 +378,9 @@ var RepaymentRouterContract = (function (_super) {
                         else {
                             throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("RepaymentRouter", currentNetwork));
                         }
-                        return [3 /*break*/, 5];
-                    case 4: throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("RepaymentRouter", currentNetwork));
-                    case 5: return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 3: throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("RepaymentRouter", currentNetwork));
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -394,14 +392,12 @@ var RepaymentRouterContract = (function (_super) {
                 switch (_a.label) {
                     case 0:
                         web3Wrapper = new web3_wrapper_1.Web3Wrapper(web3.currentProvider);
-                        return [4 /*yield*/, this.getArtifactsData()];
-                    case 1:
-                        abi = (_a.sent()).abi;
+                        abi = RepaymentRouter_1.RepaymentRouter.abi;
                         return [4 /*yield*/, web3Wrapper.doesContractExistAtAddressAsync(address)];
-                    case 2:
+                    case 1:
                         contractExists = _a.sent();
                         return [4 /*yield*/, web3Wrapper.getNetworkIdAsync()];
-                    case 3:
+                    case 2:
                         currentNetwork = _a.sent();
                         if (contractExists) {
                             web3ContractInstance = web3.eth.contract(abi).at(address);
@@ -411,26 +407,6 @@ var RepaymentRouterContract = (function (_super) {
                             throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("RepaymentRouter", currentNetwork));
                         }
                         return [2 /*return*/];
-                }
-            });
-        });
-    };
-    RepaymentRouterContract.getArtifactsData = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var artifact, _a, abi, networks, e_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, fs.readFile("src/artifacts/RepaymentRouter.json", "utf8")];
-                    case 1:
-                        artifact = _b.sent();
-                        _a = JSON.parse(artifact), abi = _a.abi, networks = _a.networks;
-                        return [2 /*return*/, { abi: abi, networks: networks }];
-                    case 2:
-                        e_1 = _b.sent();
-                        throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("RepaymentRouter"));
-                    case 3: return [2 /*return*/];
                 }
             });
         });

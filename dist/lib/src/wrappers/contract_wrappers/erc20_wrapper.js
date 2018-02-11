@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var tiny_promisify_1 = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
-var fs = require("fs-extra");
+var ERC20_1 = require("../../artifacts/ts/ERC20");
 var web3_wrapper_1 = require("@0xproject/web3-wrapper");
 var base_contract_wrapper_1 = require("./base_contract_wrapper");
 var ERC20Contract = (function (_super) {
@@ -253,14 +253,12 @@ var ERC20Contract = (function (_super) {
                 switch (_a.label) {
                     case 0:
                         web3Wrapper = new web3_wrapper_1.Web3Wrapper(web3.currentProvider);
-                        return [4 /*yield*/, this.getArtifactsData()];
-                    case 1:
-                        abi = (_a.sent()).abi;
+                        abi = ERC20_1.ERC20.abi;
                         return [4 /*yield*/, web3Wrapper.doesContractExistAtAddressAsync(address)];
-                    case 2:
+                    case 1:
                         contractExists = _a.sent();
                         return [4 /*yield*/, web3Wrapper.getNetworkIdAsync()];
-                    case 3:
+                    case 2:
                         currentNetwork = _a.sent();
                         if (contractExists) {
                             web3ContractInstance = web3.eth.contract(abi).at(address);
@@ -270,26 +268,6 @@ var ERC20Contract = (function (_super) {
                             throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ERC20", currentNetwork));
                         }
                         return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ERC20Contract.getArtifactsData = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var artifact, _a, abi, networks, e_1;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _b.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, fs.readFile("src/artifacts/ERC20.json", "utf8")];
-                    case 1:
-                        artifact = _b.sent();
-                        _a = JSON.parse(artifact), abi = _a.abi, networks = _a.networks;
-                        return [2 /*return*/, { abi: abi, networks: networks }];
-                    case 2:
-                        e_1 = _b.sent();
-                        throw new Error(base_contract_wrapper_1.CONTRACT_WRAPPER_ERRORS.ARTIFACTS_NOT_READABLE("ERC20"));
-                    case 3: return [2 /*return*/];
                 }
             });
         });

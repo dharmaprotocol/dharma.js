@@ -20,5 +20,4 @@ export declare class TokenRegistryContract extends BaseContract {
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>);
     static deployed(web3: Web3, defaults: Partial<TxData>): Promise<TokenRegistryContract>;
     static at(address: string, web3: Web3, defaults: Partial<TxData>): Promise<TokenRegistryContract>;
-    private static getArtifactsData();
 }

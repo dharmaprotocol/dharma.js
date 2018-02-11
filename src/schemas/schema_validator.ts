@@ -1,5 +1,5 @@
 import { Schema, Validator, ValidatorResult } from "jsonschema";
-import * as _ from "lodash";
+import values from "lodash.values";
 
 import { Schemas } from "./schemas";
 
@@ -12,7 +12,7 @@ export class SchemaValidator {
 
     constructor() {
         this._validator = new Validator();
-        for (const schema of _.values(Schemas)) {
+        for (const schema of values(Schemas)) {
             this._validator.addSchema(schema, schema.id);
         }
     }
