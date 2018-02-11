@@ -20,7 +20,7 @@ import {
     TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
 } from "../../utils/constants";
-import outdent from "outdent";
+import singleLineString from "single-line-string";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -31,10 +31,10 @@ export interface DharmaContracts {
 
 export const ContractsError = {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) =>
-        outdent`SimpleInterestTermsContract not supported for principal token at
+        singleLineString`SimpleInterestTermsContract not supported for principal token at
                 address ${principalToken}`,
     CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) =>
-        outdent`Could not find token associated with symbol ${symbol}.`,
+        singleLineString`Could not find token associated with symbol ${symbol}.`,
 };
 
 export class ContractsAPI {

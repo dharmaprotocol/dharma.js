@@ -131,7 +131,6 @@
     "lodash.omit": "^4.5.0",
     "lodash.pickby": "^4.6.0",
     "lodash.values": "^4.3.0",
-    "outdent": "^0.4.1",
     "single-line-string": "^0.0.2",
     "tiny-promisify": "^1.0.0",
     "web3-eth-personal": "1.0.0-beta.29",

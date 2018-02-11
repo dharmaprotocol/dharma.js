@@ -1,5 +1,5 @@
 import { SchemaValidator, Schema, Schemas, ValidatorResult } from "../schemas";
-import outdent from "outdent";
+import singleLineString from "single-line-string";
 
 export const SchemaAssertionsError = {
     DOES_NOT_CONFORM_TO_SCHEMA: (
@@ -7,7 +7,7 @@ export const SchemaAssertionsError = {
         schemaId: string,
         value: any,
         validationResult: ValidatorResult,
-    ) => outdent`
+    ) => singleLineString`
             Expected ${variableName} to conform to schema ${schemaId}
 
             Encountered: ${JSON.stringify(value, null, "\t")}
