@@ -39,7 +39,7 @@ var bignumber_1 = require("../../utils/bignumber");
 var constants_1 = require("../../utils/constants");
 var wrappers_1 = require("../wrappers");
 var signature_utils_1 = require("../../utils/signature_utils");
-var moment_1 = require("moment");
+var moment = require("moment");
 var OrderAssertions = /** @class */ (function () {
     function OrderAssertions(web3) {
         this.web3 = web3;
@@ -77,7 +77,7 @@ var OrderAssertions = /** @class */ (function () {
     };
     // Debt order must not be expired
     OrderAssertions.prototype.notExpired = function (debtOrder, errorMessage) {
-        if (debtOrder.expirationTimestampInSec.lt(moment_1.default().unix())) {
+        if (debtOrder.expirationTimestampInSec.lt(moment().unix())) {
             throw new Error(errorMessage);
         }
     };

@@ -1,5 +1,5 @@
 import { Schema, Validator, ValidatorResult } from "jsonschema";
-import values from "lodash.values";
+import * as values from "lodash.values";
 
 import { Schemas } from "./schemas";
 

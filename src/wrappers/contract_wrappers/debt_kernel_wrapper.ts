@@ -1,5 +1,5 @@
 import { BaseContract, CONTRACT_WRAPPER_ERRORS, TxData } from "./base_contract_wrapper";
-import promisify from "tiny-promisify";
+import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";

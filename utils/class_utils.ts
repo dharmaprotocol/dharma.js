@@ -1,6 +1,6 @@
-import includes from "lodash.includes";
-import isObject from "lodash.isobject";
-import isFunction from "lodash.isfunction";
+import * as includes from "lodash.includes";
+import * as isObject from "lodash.isobject";
+import * as isFunction from "lodash.isfunction";
 
 /**
  * Useful class utility functions, borrowed from the 0x.js codebase repo:

@@ -1,8 +1,9 @@
 import { BigNumber } from "utils/bignumber";
 import { DebtOrderWrapper } from "src/wrappers";
 import * as Units from "utils/units";
-import moment from "moment";
-import Web3Utils from "web3-utils";
+import * as moment from "moment";
+import * as Web3 from "web3";
+import { Web3Utils } from "utils/web3_utils";
 
 import { ACCOUNTS } from "../accounts";
 
@@ -52,7 +53,7 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
     describe("#getIssuanceCommitmentHash", () => {
         test("returns correctly hashed issuance commitment as defined in whitepaper", () => {
             expect(debtOrderWrapper.getIssuanceCommitmentHash()).toBe(
-                Web3Utils.soliditySha3(
+                Web3Utils.soliditySHA3(
                     debtOrder.issuanceVersion,
                     debtOrder.debtor,
                     debtOrder.underwriter,
@@ -68,9 +69,9 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
     describe("#getHash", () => {
         test("returns correctly hashed debt order as defined in whitepaper", () => {
             expect(debtOrderWrapper.getHash()).toBe(
-                Web3Utils.soliditySha3(
+                Web3Utils.soliditySHA3(
                     debtOrder.kernelVersion,
-                    Web3Utils.soliditySha3(
+                    Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
                         debtOrder.debtor,
                         debtOrder.underwriter,
@@ -115,9 +116,9 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
     describe("#getUnderwriterCommitmentHash", () => {
         test("returns correctly hashed underwriter commitment as defined in whitepaper", () => {
             expect(debtOrderWrapper.getUnderwriterCommitmentHash()).toEqual(
-                Web3Utils.soliditySha3(
+                Web3Utils.soliditySHA3(
                     debtOrder.kernelVersion,
-                    Web3Utils.soliditySha3(
+                    Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
                         debtOrder.debtor,
                         debtOrder.underwriter,

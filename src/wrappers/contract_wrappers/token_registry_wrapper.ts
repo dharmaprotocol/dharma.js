@@ -4,7 +4,7 @@
  */
 // tslint:disable-next-line:no-unused-variable
 import { TxData, TxDataPayable } from "../../types";
-import promisify from "tiny-promisify";
+import * as promisify from "tiny-promisify";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { classUtils } from "../../../utils/class_utils";
 import { TokenRegistry as ContractArtifacts } from "../../artifacts/ts/TokenRegistry";

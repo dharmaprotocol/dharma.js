@@ -1,7 +1,9 @@
 import {
     ContractWrapper,
     DebtKernelContract,
+    DebtRegistryContract,
     DebtTokenContract,
+    TermsContract,
     TokenTransferProxyContract,
     TokenRegistryContract,
     ERC20Contract,
@@ -9,10 +11,11 @@ import {
     SimpleInterestTermsContractContract,
     TermsContractRegistryContract,
 } from "../wrappers";
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { DharmaConfig } from "../types";
 import {
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
+    DEBT_REGISTRY_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
@@ -20,10 +23,11 @@ import {
     TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
 } from "../../utils/constants";
-import singleLineString from "single-line-string";
+import * as singleLineString from "single-line-string";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
+    debtRegistry: DebtRegistryContract;
     debtToken: DebtTokenContract;
     repaymentRouter: RepaymentRouterContract;
     tokenTransferProxy: TokenTransferProxyContract;
@@ -50,16 +54,19 @@ export class ContractsAPI {
         this.cache = {};
     }
 
-    public async loadDharmaContractsAsync(transactionOptions: object): Promise<DharmaContracts> {
+    public async loadDharmaContractsAsync(
+        transactionOptions: object = {},
+    ): Promise<DharmaContracts> {
         const debtKernel = await this.loadDebtKernelAsync(transactionOptions);
+        const debtRegistry = await this.loadDebtRegistryAsync(transactionOptions);
         const debtToken = await this.loadDebtTokenAsync(transactionOptions);
         const repaymentRouter = await this.loadRepaymentRouterAsync(transactionOptions);
         const tokenTransferProxy = await this.loadTokenTransferProxyAsync(transactionOptions);
 
-        return { debtKernel, debtToken, repaymentRouter, tokenTransferProxy };
+        return { debtKernel, debtRegistry, debtToken, repaymentRouter, tokenTransferProxy };
     }
 
-    public async loadDebtKernelAsync(transactionOptions: object): Promise<DebtKernelContract> {
+    public async loadDebtKernelAsync(transactionOptions: object = {}): Promise<DebtKernelContract> {
         if (DEBT_KERNEL_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[DEBT_KERNEL_CONTRACT_CACHE_KEY] as DebtKernelContract;
         }
@@ -81,7 +88,21 @@ export class ContractsAPI {
         return debtKernel;
     }
 
-    public async loadDebtTokenAsync(transactionOptions: object): Promise<DebtTokenContract> {
+    public async loadDebtRegistryAsync(
+        transactionOptions: object = {},
+    ): Promise<DebtRegistryContract> {
+        if (DEBT_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[DEBT_REGISTRY_CONTRACT_CACHE_KEY] as DebtRegistryContract;
+        }
+
+        let debtRegistry = await DebtRegistryContract.deployed(this.web3, transactionOptions);
+
+        this.cache[DEBT_REGISTRY_CONTRACT_CACHE_KEY] = debtRegistry;
+
+        return debtRegistry;
+    }
+
+    public async loadDebtTokenAsync(transactionOptions: object = {}): Promise<DebtTokenContract> {
         if (DEBT_TOKEN_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[DEBT_TOKEN_CONTRACT_CACHE_KEY] as DebtTokenContract;
         }
@@ -104,7 +125,7 @@ export class ContractsAPI {
     }
 
     public async loadRepaymentRouterAsync(
-        transactionOptions: object,
+        transactionOptions: object = {},
     ): Promise<RepaymentRouterContract> {
         if (REPAYMENT_ROUTER_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[REPAYMENT_ROUTER_CONTRACT_CACHE_KEY] as RepaymentRouterContract;
@@ -127,8 +148,29 @@ export class ContractsAPI {
         return repaymentRouter;
     }
 
+    public async loadRepaymentRouterAtAsync(
+        address: string,
+        transactionOptions: object = {},
+    ): Promise<RepaymentRouterContract> {
+        const cacheKey = this.getRepaymentRouterCacheKey(address);
+
+        if (cacheKey in this.cache) {
+            return this.cache[cacheKey] as RepaymentRouterContract;
+        }
+
+        let repaymentRouter = await RepaymentRouterContract.at(
+            address,
+            this.web3,
+            transactionOptions,
+        );
+
+        this.cache[cacheKey] = repaymentRouter;
+
+        return repaymentRouter;
+    }
+
     public async loadTokenTransferProxyAsync(
-        transactionOptions: object,
+        transactionOptions: object = {},
     ): Promise<TokenTransferProxyContract> {
         if (TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
@@ -158,7 +200,7 @@ export class ContractsAPI {
 
     public async loadERC20TokenAsync(
         tokenAddress: string,
-        transactionOptions: object,
+        transactionOptions: object = {},
     ): Promise<ERC20Contract> {
         const cacheKey = this.getERC20TokenCacheKey(tokenAddress);
 
@@ -175,8 +217,27 @@ export class ContractsAPI {
         }
     }
 
+    public async loadTermsContractAsync(
+        termsContractAddress: string,
+        transactionOptions: object = {},
+    ): Promise<TermsContract> {
+        const cacheKey = this.getTermsContractCacheKey(termsContractAddress);
+
+        if (cacheKey in this.cache) {
+            return this.cache[cacheKey] as TermsContract;
+        } else {
+            const termsContract = await TermsContract.at(
+                termsContractAddress,
+                this.web3,
+                transactionOptions,
+            );
+            this.cache[cacheKey] = termsContract;
+            return termsContract;
+        }
+    }
+
     public async loadTermsContractRegistry(
-        transactionOptions: object,
+        transactionOptions: object = {},
     ): Promise<TermsContractRegistryContract> {
         if (TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
@@ -196,7 +257,7 @@ export class ContractsAPI {
 
     public async loadSimpleInterestTermsContract(
         tokenAddress: string,
-        transactionOptions: object,
+        transactionOptions: object = {},
     ): Promise<SimpleInterestTermsContractContract> {
         const cacheKey = this.getSimpleInterestTermsContractCacheKey(tokenAddress);
 
@@ -225,7 +286,9 @@ export class ContractsAPI {
         }
     }
 
-    public async loadTokenRegistry(transactionOptions: object): Promise<TokenRegistryContract> {
+    public async loadTokenRegistry(
+        transactionOptions: object = {},
+    ): Promise<TokenRegistryContract> {
         if (TOKEN_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[TOKEN_REGISTRY_CONTRACT_CACHE_KEY] as TokenRegistryContract;
         }
@@ -273,6 +336,14 @@ export class ContractsAPI {
 
     private getERC20TokenCacheKey(tokenAddress: string): string {
         return `ERC20_${tokenAddress}`;
+    }
+
+    private getTermsContractCacheKey(termsContractAddress: string): string {
+        return `TermsContract_${termsContractAddress}`;
+    }
+
+    private getRepaymentRouterCacheKey(tokenAddress: string): string {
+        return `RepaymentRouter_${tokenAddress}`;
     }
 
     private getSimpleInterestTermsContractCacheKey(tokenAddress: string): string {

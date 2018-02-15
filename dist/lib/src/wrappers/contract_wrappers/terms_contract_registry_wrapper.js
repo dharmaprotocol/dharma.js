@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
 var web3_utils_1 = require("../../../utils/web3_utils");
 var TermsContractRegistry_1 = require("../../artifacts/ts/TermsContractRegistry");
@@ -66,7 +66,7 @@ var TermsContractRegistryContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.setSimpleInterestTermsContractAddress.estimateGasAsync.bind(self, tokenAddress, termsContract))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.setSimpleInterestTermsContractAddress, self.web3ContractInstance)(tokenAddress, termsContract, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.setSimpleInterestTermsContractAddress, self.web3ContractInstance)(tokenAddress, termsContract, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -85,7 +85,7 @@ var TermsContractRegistryContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.setSimpleInterestTermsContractAddress.estimateGas, self.web3ContractInstance)(tokenAddress, termsContract, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.setSimpleInterestTermsContractAddress.estimateGas, self.web3ContractInstance)(tokenAddress, termsContract, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -108,7 +108,7 @@ var TermsContractRegistryContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.symbolToTermsContractAddress.call, self.web3ContractInstance)(index)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.symbolToTermsContractAddress.call, self.web3ContractInstance)(index)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -125,7 +125,7 @@ var TermsContractRegistryContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.getSimpleInterestTermsContractAddress.call, self.web3ContractInstance)(tokenAddress)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getSimpleInterestTermsContractAddress.call, self.web3ContractInstance)(tokenAddress)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];

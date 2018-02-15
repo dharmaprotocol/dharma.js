@@ -1,15 +1,12 @@
 jest.mock("src/artifacts/ts/ERC20");
 
-import promisify from "tiny-promisify";
-import { Web3Wrapper } from "@0xproject/web3-wrapper";
+import * as promisify from "tiny-promisify";
+import { Web3Utils } from "utils/web3_utils";
 import { ERC20Contract, TokenRegistryContract } from "src/wrappers";
 import { ERC20 as MockContractArtifacts } from "src/artifacts/ts/ERC20";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
-import Web3 from "web3";
-
-// We use the mocked version of "fs-extra" defined in __mocks__/fs-extra.ts
-import * as mockFs from "fs-extra";
+import * as Web3 from "web3";
 
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
@@ -17,7 +14,7 @@ import * as fs from "fs";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
-const web3Wrapper = new Web3Wrapper(provider);
+const web3Utils = new Web3Utils(web3);
 
 const ERC20_ARTIFACTS_PATH = "src/artifacts/json/ERC20.json";
 
@@ -29,7 +26,7 @@ describe("ERC20 Token Contract Wrapper (Unit)", () => {
     let dummyREPTokenAddress: string;
 
     beforeAll(async () => {
-        networkId = await web3Wrapper.getNetworkIdAsync();
+        networkId = await web3Utils.getNetworkIdAsync();
 
         const readFilePromise = promisify(fs.readFile);
         const dummyTokenArtifacts = await readFilePromise(ERC20_ARTIFACTS_PATH);

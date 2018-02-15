@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var web3_utils_1 = require("../../../utils/web3_utils");
 var class_utils_1 = require("../../../utils/class_utils");
 var TokenRegistry_1 = require("../../artifacts/ts/TokenRegistry");
@@ -66,7 +66,7 @@ var TokenRegistryContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.setTokenAddress.estimateGasAsync.bind(self, symbol, token))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.setTokenAddress, self.web3ContractInstance)(symbol, token, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.setTokenAddress, self.web3ContractInstance)(symbol, token, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -85,7 +85,7 @@ var TokenRegistryContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.setTokenAddress.estimateGas, self.web3ContractInstance)(symbol, token, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.setTokenAddress.estimateGas, self.web3ContractInstance)(symbol, token, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -108,7 +108,7 @@ var TokenRegistryContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.symbolToTokenAddress.call, self.web3ContractInstance)(index)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.symbolToTokenAddress.call, self.web3ContractInstance)(index)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -125,7 +125,7 @@ var TokenRegistryContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.getTokenAddress.call, self.web3ContractInstance)(symbol)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getTokenAddress.call, self.web3ContractInstance)(symbol)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];

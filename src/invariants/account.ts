@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { NULL_ADDRESS } from "../../utils/constants";
 
 export class AccountAssertions {

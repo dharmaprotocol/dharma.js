@@ -47,15 +47,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var lodash_pickby_1 = require("lodash.pickby");
-var lodash_isundefined_1 = require("lodash.isundefined");
-var single_line_string_1 = require("single-line-string");
+var pickBy = require("lodash.pickby");
+var isUndefined = require("lodash.isundefined");
+var singleLineString = require("single-line-string");
 exports.CONTRACT_WRAPPER_ERRORS = {
     CONTRACT_NOT_FOUND_ON_NETWORK: function (contractName, networkId) {
-        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to find address for contract ", "\n                         on network with id ", ""], ["Unable to find address for contract ", "\n                         on network with id ", ""])), contractName, networkId);
+        return singleLineString(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to find address for contract ", "\n                         on network with id ", ""], ["Unable to find address for contract ", "\n                         on network with id ", ""])), contractName, networkId);
     },
     ARTIFACTS_NOT_READABLE: function (contractName) {
-        return single_line_string_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Artifacts for contract ", " either malformed\n                         or nonexistent."], ["Artifacts for contract ", " either malformed\n                         or nonexistent."])), contractName);
+        return singleLineString(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Artifacts for contract ", " either malformed\n                         or nonexistent."], ["Artifacts for contract ", " either malformed\n                         or nonexistent."])), contractName);
     },
 };
 var BaseContract = /** @class */ (function () {
@@ -71,9 +71,9 @@ var BaseContract = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        removeUndefinedProperties = lodash_pickby_1.default;
+                        removeUndefinedProperties = pickBy;
                         txDataWithDefaults = __assign({}, removeUndefinedProperties(this.defaults), removeUndefinedProperties(txData));
-                        if (!(lodash_isundefined_1.default(txDataWithDefaults.gas) && !lodash_isundefined_1.default(estimateGasAsync))) return [3 /*break*/, 2];
+                        if (!(isUndefined(txDataWithDefaults.gas) && !isUndefined(estimateGasAsync))) return [3 /*break*/, 2];
                         return [4 /*yield*/, estimateGasAsync(txData)];
                     case 1:
                         estimatedGas = _a.sent();

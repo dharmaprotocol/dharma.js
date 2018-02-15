@@ -1,13 +1,59 @@
 import { BigNumber } from "../../utils/bignumber";
 import { ECDSASignature, DebtOrder, IssuanceCommitment } from "../types";
-import Web3Utils from "web3-utils";
-import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+import { Web3Utils } from "../../utils/web3_utils";
+import { NULL_ADDRESS, NULL_BYTES32, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+import { ContractsAPI } from "../apis";
+import * as moment from "moment";
+import * as assignDefaults from "lodash.defaults";
+
+const DEFAULTS = {
+    kernelVersion: NULL_ADDRESS,
+    issuanceVersion: NULL_ADDRESS,
+    principalAmount: new BigNumber(0),
+    principalToken: NULL_ADDRESS,
+    debtor: NULL_ADDRESS,
+    debtorFee: new BigNumber(0),
+    creditor: NULL_ADDRESS,
+    creditorFee: new BigNumber(0),
+    relayer: NULL_ADDRESS,
+    relayerFee: new BigNumber(0),
+    underwriter: NULL_ADDRESS,
+    underwriterFee: new BigNumber(0),
+    underwriterRiskRating: new BigNumber(0),
+    termsContract: NULL_ADDRESS,
+    termsContractParameters: NULL_BYTES32,
+    expirationTimestampInSec: new BigNumber(
+        moment()
+            .add(30, "days")
+            .unix(),
+    ),
+    salt: new BigNumber(0),
+    debtorSignature: NULL_ECDSA_SIGNATURE,
+    creditorSignature: NULL_ECDSA_SIGNATURE,
+    underWriterSignature: NULL_ECDSA_SIGNATURE,
+};
 
 export class DebtOrderWrapper {
     private debtOrder: DebtOrder;
 
     constructor(debtOrder: DebtOrder) {
-        this.debtOrder = debtOrder;
+        this.debtOrder = Object.assign({}, debtOrder);
+
+        assignDefaults(this.debtOrder, DEFAULTS);
+    }
+
+    public static async applyNetworkDefaults(
+        debtOrder: DebtOrder,
+        contracts: ContractsAPI,
+    ): Promise<DebtOrderWrapper> {
+        const debtKernel = await contracts.loadDebtKernelAsync();
+        const repaymentRouter = await contracts.loadRepaymentRouterAsync();
+
+        return new DebtOrderWrapper({
+            kernelVersion: debtOrder.kernelVersion || debtKernel.address,
+            issuanceVersion: debtOrder.issuanceVersion || repaymentRouter.address,
+            ...debtOrder,
+        });
     }
 
     public getCreditor(): string {
@@ -40,7 +86,7 @@ export class DebtOrderWrapper {
      */
     public getIssuanceCommitmentHash(): string {
         const issuanceCommitment = this.getIssuanceCommitment();
-        return Web3Utils.soliditySha3(
+        return Web3Utils.soliditySHA3(
             issuanceCommitment.issuanceVersion,
             issuanceCommitment.debtor,
             issuanceCommitment.underwriter,
@@ -59,7 +105,7 @@ export class DebtOrderWrapper {
      * @return The debt order's hash
      */
     public getHash(): string {
-        return Web3Utils.soliditySha3(
+        return Web3Utils.soliditySHA3(
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
             this.debtOrder.underwriterFee,
@@ -116,7 +162,7 @@ export class DebtOrderWrapper {
      * @return Underwriter commitment hash
      */
     public getUnderwriterCommitmentHash(): string {
-        return Web3Utils.soliditySha3(
+        return Web3Utils.soliditySHA3(
             this.debtOrder.kernelVersion,
             this.getIssuanceCommitmentHash(),
             this.debtOrder.underwriterFee,
@@ -170,6 +216,14 @@ export class DebtOrderWrapper {
         const [debtorSignature, creditorSignature, underwriterSignature] = this.getSignatures();
 
         return [debtorSignature.v, creditorSignature.v, underwriterSignature.v];
+    }
+
+    /*
+     * Getters
+     */
+
+    public getDebtOrder(): DebtOrder {
+        return this.debtOrder;
     }
 
     private getSignatures(): ECDSASignature[] {

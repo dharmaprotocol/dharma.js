@@ -1,5 +1,5 @@
 import { SchemaValidator, Schema, Schemas, ValidatorResult } from "../schemas";
-import singleLineString from "single-line-string";
+import { outdent } from "outdent";
 
 export const SchemaAssertionsError = {
     DOES_NOT_CONFORM_TO_SCHEMA: (
@@ -7,7 +7,7 @@ export const SchemaAssertionsError = {
         schemaId: string,
         value: any,
         validationResult: ValidatorResult,
-    ) => singleLineString`
+    ) => outdent`
             Expected ${variableName} to conform to schema ${schemaId}
 
             Encountered: ${JSON.stringify(value, null, "\t")}
@@ -23,6 +23,18 @@ export class SchemaAssertions {
         this.validator = new SchemaValidator();
     }
 
+    public address(variableName: string, value: any) {
+        this.assertConformsToSchema(variableName, value, Schemas.addressSchema);
+    }
+
+    public bytes32(variableName: string, value: any) {
+        this.assertConformsToSchema(variableName, value, Schemas.bytes32Schema);
+    }
+
+    public number(variableName: string, value: any) {
+        this.assertConformsToSchema(variableName, value, Schemas.numberSchema);
+    }
+
     public simpleInterestLoanOrder(variableName: string, value: any) {
         this.assertConformsToSchema(variableName, value, Schemas.simpleInterestLoanOrderSchema);
     }
@@ -33,6 +45,22 @@ export class SchemaAssertions {
 
     public debtOrderWithTermsSpecified(variableName: string, value: any) {
         this.assertConformsToSchema(variableName, value, Schemas.debtOrderWithTermsSpecifiedSchema);
+    }
+
+    public debtOrderWithTermsAndDebtorSpecified(variableName: string, value: any) {
+        this.assertConformsToSchema(
+            variableName,
+            value,
+            Schemas.debtOrderWithTermsAndDebtorSpecifiedSchema,
+        );
+    }
+
+    public debtOrderWithTermsDebtorAndCreditorSpecified(variableName: string, value: any) {
+        this.assertConformsToSchema(
+            variableName,
+            value,
+            Schemas.debtOrderWithTermsDebtorAndCreditorSpecifiedSchema,
+        );
     }
 
     private assertConformsToSchema(variableName: string, value: any, schema: Schema): void {

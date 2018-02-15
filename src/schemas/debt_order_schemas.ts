@@ -10,7 +10,7 @@ export const debtOrderSchema = {
         creditor: { $ref: "/Address" },
         creditorFee: { $ref: "/Number" },
         relayer: { $ref: "/Address" },
-        relayerFee: { $ref: "/Number " },
+        relayerFee: { $ref: "/Number" },
         underwriter: { $ref: "/Address" },
         underwriterFee: { $ref: "/Number" },
         underwriterRiskRating: { $ref: "/Number" },
@@ -33,6 +33,26 @@ export const debtOrderWithTermsSpecifiedSchema = {
                 "termsContract",
                 "termsContractParameters",
             ],
+        },
+    ],
+};
+
+export const debtOrderWithTermsAndDebtorSpecifiedSchema = {
+    id: "/DebtOrderWithTermsAndDebtorSpecified",
+    allOf: [
+        { $ref: "/DebtOrderWithTermsSpecified" },
+        {
+            required: ["debtor"],
+        },
+    ],
+};
+
+export const debtOrderWithTermsDebtorAndCreditorSpecifiedSchema = {
+    id: "/DebtOrderWithTermsDebtorAndCreditorSpecified",
+    allOf: [
+        { $ref: "/DebtOrderWithTermsAndDebtorSpecified" },
+        {
+            required: ["creditor"],
         },
     ],
 };

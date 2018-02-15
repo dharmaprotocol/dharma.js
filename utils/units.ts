@@ -1,7 +1,10 @@
 import {BigNumber} from "./bignumber";
 
 const ether = (decimalAmount: number): BigNumber => {
-    return new BigNumber(decimalAmount * (10 ** 18));
+    const decimalBigNumber = new BigNumber(decimalAmount);
+    const weiInEther = new BigNumber(10 ** 18);
+
+    return decimalBigNumber.times(weiInEther);
 }
 
 const gwei = (decimalAmount: number): BigNumber => {

@@ -1,11 +1,11 @@
-import omit from "lodash.omit";
+import * as omit from "lodash.omit";
 import { DebtOrder } from "../types";
 import { ContractsAPI } from "../apis";
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
 import { Assertions } from "../invariants";
-import Web3 from "web3";
-import singleLineString from "single-line-string";
+import * as Web3 from "web3";
+import * as singleLineString from "single-line-string";
 
 export interface SimpleInterestLoanOrder extends DebtOrder {
     // Required Debt Order Parameters

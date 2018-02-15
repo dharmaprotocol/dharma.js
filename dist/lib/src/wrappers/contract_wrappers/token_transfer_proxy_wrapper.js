@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
 var web3_utils_1 = require("../../../utils/web3_utils");
 var TokenTransferProxy_1 = require("../../artifacts/ts/TokenTransferProxy");
@@ -66,7 +66,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.addAuthorizedTransferAgent.estimateGasAsync.bind(self, _agent))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.addAuthorizedTransferAgent, self.web3ContractInstance)(_agent, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.addAuthorizedTransferAgent, self.web3ContractInstance)(_agent, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -85,7 +85,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.addAuthorizedTransferAgent.estimateGas, self.web3ContractInstance)(_agent, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.addAuthorizedTransferAgent.estimateGas, self.web3ContractInstance)(_agent, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -112,7 +112,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.transferFrom.estimateGasAsync.bind(self, _token, _from, _to, _amount))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferFrom, self.web3ContractInstance)(_token, _from, _to, _amount, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferFrom, self.web3ContractInstance)(_token, _from, _to, _amount, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -131,7 +131,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferFrom.estimateGas, self.web3ContractInstance)(_token, _from, _to, _amount, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferFrom.estimateGas, self.web3ContractInstance)(_token, _from, _to, _amount, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -158,7 +158,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.unpause.estimateGasAsync.bind(self))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.unpause, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.unpause, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -177,7 +177,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.unpause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.unpause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -200,7 +200,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.paused.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.paused.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -221,7 +221,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.pause.estimateGasAsync.bind(self))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.pause, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.pause, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -240,7 +240,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.pause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.pause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -263,7 +263,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.owner.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.owner.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -284,7 +284,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.revokeTransferAgentAuthorization.estimateGasAsync.bind(self, _agent))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.revokeTransferAgentAuthorization, self.web3ContractInstance)(_agent, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.revokeTransferAgentAuthorization, self.web3ContractInstance)(_agent, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -303,7 +303,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.revokeTransferAgentAuthorization.estimateGas, self.web3ContractInstance)(_agent, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.revokeTransferAgentAuthorization.estimateGas, self.web3ContractInstance)(_agent, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -326,7 +326,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.getAuthorizedTransferAgents.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getAuthorizedTransferAgents.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -347,7 +347,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.transferOwnership.estimateGasAsync.bind(self, newOwner))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferOwnership, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferOwnership, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -366,7 +366,7 @@ var TokenTransferProxyContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferOwnership.estimateGas, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferOwnership.estimateGas, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];

@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
@@ -10,7 +10,7 @@ import {
     ERC20Contract,
 } from "../wrappers";
 import { signatureUtils } from "../../utils/signature_utils";
-import moment from "moment";
+import * as moment from "moment";
 
 export class OrderAssertions {
     private web3: Web3;

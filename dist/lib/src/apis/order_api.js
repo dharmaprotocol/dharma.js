@@ -42,35 +42,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var web3_utils_1 = require("../../utils/web3_utils");
 var wrappers_1 = require("../wrappers");
 var invariants_1 = require("../invariants");
-var single_line_string_1 = require("single-line-string");
+var singleLineString = require("single-line-string");
 var ORDER_FILL_GAS_MAXIMUM = 500000;
 exports.OrderAPIErrors = {
     EXPIRED: function () {
-        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to fill debt order because\n                        the order has expired"], ["Unable to fill debt order because\n                        the order has expired"])));
+        return singleLineString(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to fill debt order because\n                        the order has expired"], ["Unable to fill debt order because\n                        the order has expired"])));
     },
     INVALID_UNDERWRITER_FEE: function () {
-        return single_line_string_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Debt order has an underwriter\n                        fee but has no assigned underwriter "], ["Debt order has an underwriter\n                        fee but has no assigned underwriter "])));
+        return singleLineString(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Debt order has an underwriter\n                        fee but has no assigned underwriter "], ["Debt order has an underwriter\n                        fee but has no assigned underwriter "])));
     },
     INVALID_RELAYER_FEE: function () {
-        return single_line_string_1.default(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Debt order has a relayer fee\n                        but has no assigned relayer"], ["Debt order has a relayer fee\n                        but has no assigned relayer"])));
+        return singleLineString(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Debt order has a relayer fee\n                        but has no assigned relayer"], ["Debt order has a relayer fee\n                        but has no assigned relayer"])));
     },
     INVALID_DEBTOR_FEE: function () {
-        return single_line_string_1.default(templateObject_4 || (templateObject_4 = __makeTemplateObject(["Debt order cannot have a debtor fee\n                        that is greater than the total principal"], ["Debt order cannot have a debtor fee\n                        that is greater than the total principal"])));
+        return singleLineString(templateObject_4 || (templateObject_4 = __makeTemplateObject(["Debt order cannot have a debtor fee\n                        that is greater than the total principal"], ["Debt order cannot have a debtor fee\n                        that is greater than the total principal"])));
     },
     INVALID_FEES: function () {
-        return single_line_string_1.default(templateObject_5 || (templateObject_5 = __makeTemplateObject(["Debt order creditor + debtor fee\n                        does not equal underwriter + relayer fee"], ["Debt order creditor + debtor fee\n                        does not equal underwriter + relayer fee"])));
+        return singleLineString(templateObject_5 || (templateObject_5 = __makeTemplateObject(["Debt order creditor + debtor fee\n                        does not equal underwriter + relayer fee"], ["Debt order creditor + debtor fee\n                        does not equal underwriter + relayer fee"])));
     },
-    ORDER_CANCELLED: function () { return single_line_string_1.default(templateObject_6 || (templateObject_6 = __makeTemplateObject(["Debt order was cancelled"], ["Debt order was cancelled"]))); },
-    CREDITOR_BALANCE_INSUFFICIENT: function () { return single_line_string_1.default(templateObject_7 || (templateObject_7 = __makeTemplateObject(["Creditor balance is insufficient"], ["Creditor balance is insufficient"]))); },
-    CREDITOR_ALLOWANCE_INSUFFICIENT: function () { return single_line_string_1.default(templateObject_8 || (templateObject_8 = __makeTemplateObject(["Creditor allowance is insufficient"], ["Creditor allowance is insufficient"]))); },
-    ISSUANCE_CANCELLED: function () { return single_line_string_1.default(templateObject_9 || (templateObject_9 = __makeTemplateObject(["Issuance was cancelled"], ["Issuance was cancelled"]))); },
-    DEBT_ORDER_ALREADY_ISSUED: function () { return single_line_string_1.default(templateObject_10 || (templateObject_10 = __makeTemplateObject(["Debt order has already been filled"], ["Debt order has already been filled"]))); },
-    INVALID_DEBTOR_SIGNATURE: function () { return single_line_string_1.default(templateObject_11 || (templateObject_11 = __makeTemplateObject(["Debtor signature is not valid for debt order"], ["Debtor signature is not valid for debt order"]))); },
+    ORDER_CANCELLED: function () { return singleLineString(templateObject_6 || (templateObject_6 = __makeTemplateObject(["Debt order was cancelled"], ["Debt order was cancelled"]))); },
+    CREDITOR_BALANCE_INSUFFICIENT: function () { return singleLineString(templateObject_7 || (templateObject_7 = __makeTemplateObject(["Creditor balance is insufficient"], ["Creditor balance is insufficient"]))); },
+    CREDITOR_ALLOWANCE_INSUFFICIENT: function () { return singleLineString(templateObject_8 || (templateObject_8 = __makeTemplateObject(["Creditor allowance is insufficient"], ["Creditor allowance is insufficient"]))); },
+    ISSUANCE_CANCELLED: function () { return singleLineString(templateObject_9 || (templateObject_9 = __makeTemplateObject(["Issuance was cancelled"], ["Issuance was cancelled"]))); },
+    DEBT_ORDER_ALREADY_ISSUED: function () { return singleLineString(templateObject_10 || (templateObject_10 = __makeTemplateObject(["Debt order has already been filled"], ["Debt order has already been filled"]))); },
+    INVALID_DEBTOR_SIGNATURE: function () { return singleLineString(templateObject_11 || (templateObject_11 = __makeTemplateObject(["Debtor signature is not valid for debt order"], ["Debtor signature is not valid for debt order"]))); },
     INVALID_CREDITOR_SIGNATURE: function () {
-        return single_line_string_1.default(templateObject_12 || (templateObject_12 = __makeTemplateObject(["Creditor signature is not valid for debt order"], ["Creditor signature is not valid for debt order"])));
+        return singleLineString(templateObject_12 || (templateObject_12 = __makeTemplateObject(["Creditor signature is not valid for debt order"], ["Creditor signature is not valid for debt order"])));
     },
     INVALID_UNDERWRITER_SIGNATURE: function () {
-        return single_line_string_1.default(templateObject_13 || (templateObject_13 = __makeTemplateObject(["Underwriter signature is not valid for debt order"], ["Underwriter signature is not valid for debt order"])));
+        return singleLineString(templateObject_13 || (templateObject_13 = __makeTemplateObject(["Underwriter signature is not valid for debt order"], ["Underwriter signature is not valid for debt order"])));
     },
 };
 var OrderAPI = /** @class */ (function () {

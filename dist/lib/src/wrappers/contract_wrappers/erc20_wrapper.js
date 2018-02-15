@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
 var web3_utils_1 = require("../../../utils/web3_utils");
 var ERC20_1 = require("../../artifacts/ts/ERC20");
@@ -66,7 +66,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.approve.estimateGasAsync.bind(self, spender, value))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.approve, self.web3ContractInstance)(spender, value, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.approve, self.web3ContractInstance)(spender, value, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -85,7 +85,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.approve.estimateGas, self.web3ContractInstance)(spender, value, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.approve.estimateGas, self.web3ContractInstance)(spender, value, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -108,7 +108,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.totalSupply.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.totalSupply.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -129,7 +129,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.transferFrom.estimateGasAsync.bind(self, from, to, value))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferFrom, self.web3ContractInstance)(from, to, value, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferFrom, self.web3ContractInstance)(from, to, value, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -148,7 +148,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferFrom.estimateGas, self.web3ContractInstance)(from, to, value, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferFrom.estimateGas, self.web3ContractInstance)(from, to, value, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -171,7 +171,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.balanceOf.call, self.web3ContractInstance)(who)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.balanceOf.call, self.web3ContractInstance)(who)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -192,7 +192,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.transfer.estimateGasAsync.bind(self, to, value))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transfer, self.web3ContractInstance)(to, value, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transfer, self.web3ContractInstance)(to, value, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -211,7 +211,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transfer.estimateGas, self.web3ContractInstance)(to, value, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transfer.estimateGas, self.web3ContractInstance)(to, value, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -234,7 +234,7 @@ var ERC20Contract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.allowance.call, self.web3ContractInstance)(owner, spender)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.allowance.call, self.web3ContractInstance)(owner, spender)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];

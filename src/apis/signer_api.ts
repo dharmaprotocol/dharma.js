@@ -1,10 +1,11 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
+import { ContractsAPI } from "./";
 import { ECDSASignature, DebtOrder } from "../types";
-import promisify from "tiny-promisify";
+import * as promisify from "tiny-promisify";
 import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
 import { signatureUtils } from "../../utils/signature_utils";
 import { Assertions } from "../invariants";
-import singleLineString from "single-line-string";
+import * as singleLineString from "single-line-string";
 import {
     WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_ACCOUNT_NOT_FOUND,
@@ -20,10 +21,12 @@ export const SignerAPIErrors = {
 
 export class SignerAPI {
     private web3: Web3;
+    private contracts: ContractsAPI;
     private assert: Assertions;
 
-    constructor(web3: Web3) {
+    constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
+        this.contracts = contracts;
         this.assert = new Assertions(this.web3);
     }
 
@@ -37,7 +40,12 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     async asDebtor(debtOrder: DebtOrder): Promise<ECDSASignature> {
-        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
+        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
+
+        const wrappedDebtOrder = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
 
         return this.signPayloadWithAddress(
             wrappedDebtOrder.getDebtorCommitmentHash(),
@@ -55,7 +63,12 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     async asCreditor(debtOrder: DebtOrder): Promise<ECDSASignature> {
-        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
+        this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
+
+        const wrappedDebtOrder = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
 
         return this.signPayloadWithAddress(
             wrappedDebtOrder.getCreditorCommitmentHash(),
@@ -73,7 +86,12 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     async asUnderwriter(debtOrder: DebtOrder): Promise<ECDSASignature> {
-        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
+        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
+
+        const wrappedDebtOrder = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
 
         return this.signPayloadWithAddress(
             wrappedDebtOrder.getUnderwriterCommitmentHash(),

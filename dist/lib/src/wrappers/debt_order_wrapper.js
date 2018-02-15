@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var bignumber_1 = require("../../utils/bignumber");
-var web3_utils_1 = require("web3-utils");
+var web3_utils_1 = require("../../utils/web3_utils");
 var constants_1 = require("../../utils/constants");
 var DebtOrderWrapper = /** @class */ (function () {
     function DebtOrderWrapper(debtOrder) {
@@ -35,7 +35,7 @@ var DebtOrderWrapper = /** @class */ (function () {
      */
     DebtOrderWrapper.prototype.getIssuanceCommitmentHash = function () {
         var issuanceCommitment = this.getIssuanceCommitment();
-        return web3_utils_1.default.soliditySha3(issuanceCommitment.issuanceVersion, issuanceCommitment.debtor, issuanceCommitment.underwriter, issuanceCommitment.underwriterRiskRating, issuanceCommitment.termsContract, issuanceCommitment.termsContractParameters, issuanceCommitment.salt);
+        return web3_utils_1.Web3Utils.soliditySHA3(issuanceCommitment.issuanceVersion, issuanceCommitment.debtor, issuanceCommitment.underwriter, issuanceCommitment.underwriterRiskRating, issuanceCommitment.termsContract, issuanceCommitment.termsContractParameters, issuanceCommitment.salt);
     };
     /**
      * Returns the hash of the debt order in its entirety, in the order defined
@@ -45,7 +45,7 @@ var DebtOrderWrapper = /** @class */ (function () {
      * @return The debt order's hash
      */
     DebtOrderWrapper.prototype.getHash = function () {
-        return web3_utils_1.default.soliditySha3(this.debtOrder.kernelVersion, this.getIssuanceCommitmentHash(), this.debtOrder.underwriterFee, this.debtOrder.principalAmount, this.debtOrder.principalToken, this.debtOrder.debtorFee, this.debtOrder.creditorFee, this.debtOrder.relayer, this.debtOrder.relayerFee, this.debtOrder.expirationTimestampInSec);
+        return web3_utils_1.Web3Utils.soliditySHA3(this.debtOrder.kernelVersion, this.getIssuanceCommitmentHash(), this.debtOrder.underwriterFee, this.debtOrder.principalAmount, this.debtOrder.principalToken, this.debtOrder.debtorFee, this.debtOrder.creditorFee, this.debtOrder.relayer, this.debtOrder.relayerFee, this.debtOrder.expirationTimestampInSec);
     };
     /**
      * Returns the debt agreement's unique identifier --
@@ -87,7 +87,7 @@ var DebtOrderWrapper = /** @class */ (function () {
      * @return Underwriter commitment hash
      */
     DebtOrderWrapper.prototype.getUnderwriterCommitmentHash = function () {
-        return web3_utils_1.default.soliditySha3(this.debtOrder.kernelVersion, this.getIssuanceCommitmentHash(), this.debtOrder.underwriterFee, this.debtOrder.principalAmount, this.debtOrder.principalToken, this.debtOrder.expirationTimestampInSec);
+        return web3_utils_1.Web3Utils.soliditySHA3(this.debtOrder.kernelVersion, this.getIssuanceCommitmentHash(), this.debtOrder.underwriterFee, this.debtOrder.principalAmount, this.debtOrder.principalToken, this.debtOrder.expirationTimestampInSec);
     };
     DebtOrderWrapper.prototype.getOrderAddresses = function () {
         return [

@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { ContractsAPI } from "./";
 import { SimpleInterestLoanAdapter } from "../adapters";
 export declare class AdaptersAPI {

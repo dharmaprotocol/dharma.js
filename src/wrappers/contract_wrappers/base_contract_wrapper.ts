@@ -1,8 +1,8 @@
-import pickBy from "lodash.pickby";
-import isUndefined from "lodash.isundefined";
+import * as pickBy from "lodash.pickby";
+import * as isUndefined from "lodash.isundefined";
 import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
-import singleLineString from "single-line-string";
+import * as singleLineString from "single-line-string";
 
 export interface TxData {
     from?: string;

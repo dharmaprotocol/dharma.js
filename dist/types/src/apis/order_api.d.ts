@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
 import { ContractsAPI } from ".";
 export declare const OrderAPIErrors: {

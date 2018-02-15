@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
 var web3_utils_1 = require("../../../utils/web3_utils");
 var RepaymentRouter_1 = require("../../artifacts/ts/RepaymentRouter");
@@ -62,7 +62,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.tokenTransferProxy.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.tokenTransferProxy.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -79,7 +79,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.debtRegistry.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.debtRegistry.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -100,7 +100,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.unpause.estimateGasAsync.bind(self))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.unpause, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.unpause, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -119,7 +119,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.unpause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.unpause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -142,7 +142,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.paused.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.paused.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -163,7 +163,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.pause.estimateGasAsync.bind(self))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.pause, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.pause, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -182,7 +182,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.pause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.pause.estimateGas, self.web3ContractInstance)(txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -205,7 +205,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.owner.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.owner.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -226,7 +226,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.repayNFT.estimateGasAsync.bind(self, agreementId, tokenId, tokenAddress))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.repayNFT, self.web3ContractInstance)(agreementId, tokenId, tokenAddress, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.repayNFT, self.web3ContractInstance)(agreementId, tokenId, tokenAddress, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -245,7 +245,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.repayNFT.estimateGas, self.web3ContractInstance)(agreementId, tokenId, tokenAddress, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.repayNFT.estimateGas, self.web3ContractInstance)(agreementId, tokenId, tokenAddress, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -272,7 +272,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.transferOwnership.estimateGasAsync.bind(self, newOwner))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferOwnership, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferOwnership, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -291,7 +291,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.transferOwnership.estimateGas, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.transferOwnership.estimateGas, self.web3ContractInstance)(newOwner, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -318,7 +318,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.repay.estimateGasAsync.bind(self, agreementId, amount, tokenAddress))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.repay, self.web3ContractInstance)(agreementId, amount, tokenAddress, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.repay, self.web3ContractInstance)(agreementId, amount, tokenAddress, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -337,7 +337,7 @@ var RepaymentRouterContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.repay.estimateGas, self.web3ContractInstance)(agreementId, amount, tokenAddress, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.repay.estimateGas, self.web3ContractInstance)(agreementId, amount, tokenAddress, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];

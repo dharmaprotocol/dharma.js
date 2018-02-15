@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsonschema_1 = require("jsonschema");
-var lodash_values_1 = require("lodash.values");
+var values = require("lodash.values");
 var schemas_1 = require("./schemas");
 /**
  * Borrowed, with slight modification, from the wonderful 0x.js project codebase:
@@ -10,7 +10,7 @@ var schemas_1 = require("./schemas");
 var SchemaValidator = /** @class */ (function () {
     function SchemaValidator() {
         this._validator = new jsonschema_1.Validator();
-        for (var _i = 0, _a = lodash_values_1.default(schemas_1.Schemas); _i < _a.length; _i++) {
+        for (var _i = 0, _a = values(schemas_1.Schemas); _i < _a.length; _i++) {
             var schema = _a[_i];
             this._validator.addSchema(schema, schema.id);
         }

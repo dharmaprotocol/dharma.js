@@ -5,7 +5,7 @@ import {
     AmortizationUnit,
 } from "src/adapters/simple_interest_loan_adapter";
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { BigNumber } from "utils/bignumber";
 import * as Units from "utils/units";
 import { TokenRegistryContract, TermsContractRegistryContract } from "src/wrappers";

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var lodash_includes_1 = require("lodash.includes");
-var lodash_isobject_1 = require("lodash.isobject");
-var lodash_isfunction_1 = require("lodash.isfunction");
+var includes = require("lodash.includes");
+var isObject = require("lodash.isobject");
+var isFunction = require("lodash.isfunction");
 /**
  * Useful class utility functions, borrowed from the 0x.js codebase repo:
  * https://github.com/0xProject/0x.js/tree/a0aa21103b51ad287de1579832a4a490ca90175a/packages/utils
@@ -14,11 +14,11 @@ exports.classUtils = {
         for (var _i = 0, _a = Object.getOwnPropertyNames(self); _i < _a.length; _i++) {
             var key = _a[_i];
             var val = self[key];
-            if (!lodash_includes_1.default(exclude, key)) {
-                if (lodash_isfunction_1.default(val)) {
+            if (!includes(exclude, key)) {
+                if (isFunction(val)) {
                     self[key] = val.bind(thisArg || self);
                 }
-                else if (lodash_isobject_1.default(val)) {
+                else if (isObject(val)) {
                     exports.classUtils.bindAll(val, exclude, self);
                 }
             }

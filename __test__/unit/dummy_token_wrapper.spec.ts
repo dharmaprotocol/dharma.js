@@ -1,12 +1,12 @@
 jest.mock("src/artifacts/ts/DummyToken");
 
-import promisify from "tiny-promisify";
-import { Web3Wrapper } from "@0xproject/web3-wrapper";
+import * as promisify from "tiny-promisify";
+import { Web3Utils } from "utils/web3_utils";
 import { DummyTokenContract, TokenRegistryContract } from "src/wrappers";
 import { DummyToken as MockContractArtifacts } from "src/artifacts/ts/DummyToken";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
-import Web3 from "web3";
+import * as Web3 from "web3";
 
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
@@ -14,7 +14,7 @@ import * as fs from "fs";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
-const web3Wrapper = new Web3Wrapper(provider);
+const web3Utils = new Web3Utils(web3);
 
 const DUMMY_TOKEN_ARTIFACTS_PATH = "src/artifacts/json/DummyToken.json";
 
@@ -26,7 +26,7 @@ describe("Dummy Token Contract Wrapper (Unit)", () => {
     let dummyREPTokenAddress: string;
 
     beforeAll(async () => {
-        networkId = await web3Wrapper.getNetworkIdAsync();
+        networkId = await web3Utils.getNetworkIdAsync();
 
         const readFilePromise = promisify(fs.readFile);
         const dummyTokenArtifacts = await readFilePromise(DUMMY_TOKEN_ARTIFACTS_PATH);

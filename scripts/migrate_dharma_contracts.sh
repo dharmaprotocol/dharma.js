@@ -11,6 +11,8 @@ DHARMA_SMART_CONTRACTS=$DHARMA_JS_REPO/node_modules/charta
 
 cd $DHARMA_SMART_CONTRACTS
 
+rm -rf build/contracts
+
 sleep 3
 
 echo -e "${CYAN}Installing Dharma contract deployment dependencies...${NO_COLOR}"
@@ -29,6 +31,7 @@ cd build/contracts/
 
 echo -e "${CYAN}Copying Dharma smart contract artifacts to local artifacts folder...${NO_COLOR}"
 for f in "DebtKernel.json" "DebtToken.json" "TokenTransferProxy.json" "DummyToken.json" "TokenRegistry.json" \
-    "ERC20.json" "RepaymentRouter.json" "SimpleInterestTermsContract.json" "TermsContractRegistry.json"; do cp -- "$f" "$DHARMA_JS_REPO/src/artifacts/json/$f"; done
+    "ERC20.json" "RepaymentRouter.json" "SimpleInterestTermsContract.json" "TermsContractRegistry.json" \
+    "DebtRegistry.json" "TermsContract.json"; do cp -- "$f" "$DHARMA_JS_REPO/src/artifacts/json/$f"; done
 
 echo -e "${CYAN}Dependency contract migrations complete, test chain is ready for use!${NO_COLOR}"

@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { ECDSASignature, DebtOrder } from "../types";
 export declare const SignerAPIErrors: {
     INVALID_SIGNING_KEY: (unavailableKey: string) => any;

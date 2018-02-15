@@ -4,7 +4,7 @@
  */
 // tslint:disable-next-line:no-unused-variable
 import { TxData, TxDataPayable } from "../../types";
-import promisify from "tiny-promisify";
+import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
@@ -108,15 +108,15 @@ export class SimpleInterestTermsContractContract extends BaseContract {
     };
     public getExpectedRepaymentValue = {
         async callAsync(
-            agreementId: string,
-            blockNumber: BigNumber,
+            issuanceHash: string,
+            timestamp: BigNumber,
             defaultBlock?: Web3.BlockParam,
-        ): Promise<BigNumber> {
+        ): Promise<string> {
             const self = this as SimpleInterestTermsContractContract;
             const result = await promisify<BigNumber>(
                 self.web3ContractInstance.getExpectedRepaymentValue.call,
                 self.web3ContractInstance,
-            )(agreementId, blockNumber);
+            )(issuanceHash, timestamp);
             return result;
         },
     };

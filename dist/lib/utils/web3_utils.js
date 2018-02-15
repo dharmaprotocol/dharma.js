@@ -35,30 +35,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 // Web3 1.0.0 and onwards is currently in beta, but has some
 // useful utils builtin we like to leverage -- particularly
 // a function for calculating hashes of tightly packed arguments
 // in a manner that is identical to Solidity's methadology.
-var web3_utils_1 = require("web3-utils");
+var Web3BetaUtils = require("web3-utils");
 var Web3Utils = /** @class */ (function () {
     function Web3Utils(web3) {
         this.web3 = web3;
     }
-    Web3Utils.prototype.soliditySHA3 = function (payload) {
-        return web3_utils_1.default.soliditySHA3(payload);
+    Web3Utils.soliditySHA3 = function () {
+        var payload = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            payload[_i] = arguments[_i];
+        }
+        return Web3BetaUtils.soliditySha3.apply(Web3BetaUtils, payload);
     };
     Web3Utils.prototype.getNetworkIdAsync = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, tiny_promisify_1.default(this.web3.version.getNetwork)()];
+                return [2 /*return*/, promisify(this.web3.version.getNetwork)()];
             });
         });
     };
     Web3Utils.prototype.getAvailableAddressesAsync = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, tiny_promisify_1.default(this.web3.eth.getAccounts)()];
+                return [2 /*return*/, promisify(this.web3.eth.getAccounts)()];
             });
         });
     };
@@ -67,12 +71,19 @@ var Web3Utils = /** @class */ (function () {
             var code, codeIsEmpty;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, tiny_promisify_1.default(this.web3.eth.getCode)(address)];
+                    case 0: return [4 /*yield*/, promisify(this.web3.eth.getCode)(address)];
                     case 1:
                         code = _a.sent();
                         codeIsEmpty = /^0x0{0,40}$/i.test(code);
                         return [2 /*return*/, !codeIsEmpty];
                 }
+            });
+        });
+    };
+    Web3Utils.prototype.getTransactionReceiptAsync = function (txHash) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, promisify(this.web3.eth.getTransactionReceipt)(txHash)];
             });
         });
     };

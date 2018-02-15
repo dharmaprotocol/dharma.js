@@ -1,6 +1,7 @@
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
 import { Web3Utils } from "../../utils/web3_utils";
+import { NULL_ADDRESS } from "../../utils/constants";
 import { ContractsAPI } from ".";
 import {
     DebtKernelContract,
@@ -9,7 +10,7 @@ import {
     TokenTransferProxyContract,
 } from "../wrappers";
 import { Assertions } from "../invariants";
-import singleLineString from "single-line-string";
+import * as singleLineString from "single-line-string";
 
 const ORDER_FILL_GAS_MAXIMUM = 500000;
 
@@ -42,7 +43,7 @@ export const OrderAPIErrors = {
 
     ISSUANCE_CANCELLED: () => singleLineString`Issuance was cancelled`,
 
-    DEBT_ORDER_ALREADY_ISSUED: () => singleLineString`Debt order has already been filled`,
+    DEBT_ORDER_ALREADY_FILLED: () => singleLineString`Debt order has already been filled`,
 
     INVALID_DEBTOR_SIGNATURE: () => singleLineString`Debtor signature is not valid for debt order`,
 
@@ -70,21 +71,28 @@ export class OrderAPI {
 
         Object.assign(transactionOptions, options);
 
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
+
         const {
             debtKernel,
             debtToken,
             tokenTransferProxy,
         } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
 
-        await this.assertValidityInvariantsAsync(debtOrder, debtKernel, debtToken);
-        this.assertConsensualityInvariants(debtOrder, transactionOptions);
+        await this.assertValidityInvariantsAsync(
+            debtOrderWrapped.getDebtOrder(),
+            debtKernel,
+            debtToken,
+        );
+        this.assertConsensualityInvariants(debtOrderWrapped.getDebtOrder(), transactionOptions);
         await this.assertExternalBalanceAndAllowanceInvariantsAsync(
-            debtOrder,
+            debtOrderWrapped.getDebtOrder(),
             tokenTransferProxy,
             transactionOptions,
         );
-
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         return debtKernel.fillDebtOrder.sendTransactionAsync(
             debtOrderWrapped.getCreditor(),
@@ -124,7 +132,7 @@ export class OrderAPI {
         await this.assert.order.notAlreadyIssuedAsync(
             debtOrder,
             debtToken,
-            OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED(),
+            OrderAPIErrors.DEBT_ORDER_ALREADY_FILLED(),
         );
     }
 
@@ -141,11 +149,13 @@ export class OrderAPI {
             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
         );
 
-        this.assert.order.validUnderwriterSignature(
-            debtOrder,
-            transactionOptions,
-            OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
-        );
+        if (debtOrder.underwriter && debtOrder.underwriter !== NULL_ADDRESS) {
+            this.assert.order.validUnderwriterSignature(
+                debtOrder,
+                transactionOptions,
+                OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
+            );
+        }
     }
 
     private async assertExternalBalanceAndAllowanceInvariantsAsync(

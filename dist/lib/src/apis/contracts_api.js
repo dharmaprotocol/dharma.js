@@ -41,13 +41,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var wrappers_1 = require("../wrappers");
 var constants_1 = require("../../utils/constants");
-var outdent_1 = require("outdent");
+var singleLineString = require("single-line-string");
 exports.ContractsError = {
     SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: function (principalToken) {
-        return outdent_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""])), principalToken);
+        return singleLineString(templateObject_1 || (templateObject_1 = __makeTemplateObject(["SimpleInterestTermsContract not supported for principal token at\n                address ", ""], ["SimpleInterestTermsContract not supported for principal token at\n                address ", ""])), principalToken);
     },
     CANNOT_FIND_TOKEN_WITH_SYMBOL: function (symbol) {
-        return outdent_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Could not find token associated with symbol ", "."], ["Could not find token associated with symbol ", "."])), symbol);
+        return singleLineString(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Could not find token associated with symbol ", "."], ["Could not find token associated with symbol ", "."])), symbol);
     },
 };
 var ContractsAPI = /** @class */ (function () {

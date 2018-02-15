@@ -1,12 +1,12 @@
 jest.mock("src/artifacts/ts/TokenTransferProxy");
 
-import promisify from "tiny-promisify";
-import { Web3Wrapper } from "@0xproject/web3-wrapper";
+import * as promisify from "tiny-promisify";
+import { Web3Utils } from "utils/web3_utils";
 import { TokenTransferProxyContract } from "src/wrappers";
 import { TokenTransferProxy as MockContractArtifacts } from "src/artifacts/ts/TokenTransferProxy";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
-import Web3 from "web3";
+import * as Web3 from "web3";
 
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
@@ -14,7 +14,7 @@ import * as fs from "fs";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
-const web3Wrapper = new Web3Wrapper(provider);
+const web3Utils = new Web3Utils(web3);
 
 const TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH = "src/artifacts/json/TokenTransferProxy.json";
 
@@ -26,7 +26,7 @@ describe("Token Transfer Proxy Contract Wrapper (Unit)", () => {
     let tokenTransferProxyContractAbi: Web3.ContractAbi;
 
     beforeAll(async () => {
-        networkId = await web3Wrapper.getNetworkIdAsync();
+        networkId = await web3Utils.getNetworkIdAsync();
 
         const readFilePromise = promisify(fs.readFile);
         const artifact = await readFilePromise(TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH);
@@ -45,7 +45,7 @@ describe("Token Transfer Proxy Contract Wrapper (Unit)", () => {
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                const networkId = await web3Wrapper.getNetworkIdAsync();
+                const networkId = await web3Utils.getNetworkIdAsync();
                 await expect(
                     TokenTransferProxyContract.deployed(web3, TX_DEFAULTS),
                 ).rejects.toThrowError(

@@ -39,15 +39,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var debt_order_wrapper_1 = require("../wrappers/debt_order_wrapper");
 var signature_utils_1 = require("../../utils/signature_utils");
 var invariants_1 = require("../invariants");
-var single_line_string_1 = require("single-line-string");
+var singleLineString = require("single-line-string");
 var constants_1 = require("../../utils/constants");
 exports.SignerAPIErrors = {
     INVALID_SIGNING_KEY: function (unavailableKey) {
-        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"])), unavailableKey);
+        return singleLineString(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"], ["Unable to sign debt order because private key\n                         associated with ", " is invalid\n                         or unavailable"])), unavailableKey);
     },
 };
 var SignerAPI = /** @class */ (function () {
@@ -124,7 +124,7 @@ var SignerAPI = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         this.assert.account.notNull(address, exports.SignerAPIErrors.INVALID_SIGNING_KEY(address));
-                        signPromise = tiny_promisify_1.default(this.web3.eth.sign);
+                        signPromise = promisify(this.web3.eth.sign);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);

@@ -1,7 +1,7 @@
 import { DebtOrder } from "../types";
 import { ContractsAPI } from "../apis";
 import { BigNumber } from "../../utils/bignumber";
-import Web3 from "web3";
+import * as Web3 from "web3";
 export interface SimpleInterestLoanOrder extends DebtOrder {
     principalAmount: BigNumber;
     principalToken: string;

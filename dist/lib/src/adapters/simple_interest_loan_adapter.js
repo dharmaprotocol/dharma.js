@@ -47,11 +47,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var lodash_omit_1 = require("lodash.omit");
+var omit = require("lodash.omit");
 var bignumber_1 = require("../../utils/bignumber");
 var constants_1 = require("../../utils/constants");
 var invariants_1 = require("../invariants");
-var single_line_string_1 = require("single-line-string");
+var singleLineString = require("single-line-string");
 var AmortizationUnitCodes = ["hours", "days", "weeks", "months", "years"];
 var AmortizationUnitCode;
 (function (AmortizationUnitCode) {
@@ -63,16 +63,16 @@ var AmortizationUnitCode;
 })(AmortizationUnitCode || (AmortizationUnitCode = {}));
 exports.SimpleInterestAdapterErrors = {
     INVALID_EXPECTED_REPAYMENT_VALUE: function () {
-        return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."], ["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."])));
+        return singleLineString(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."], ["Total expected repayment value cannot be negative or\n                         greater than 2^128 - 1."])));
     },
     INVALID_AMORTIZATION_UNIT_TYPE: function () {
-        return single_line_string_1.default(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."])));
+        return singleLineString(templateObject_2 || (templateObject_2 = __makeTemplateObject(["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."], ["Amortization unit must be of type HOURS, DAYS,\n                         WEEKS, MONTHS, or YEARS."])));
     },
     INVALID_TERM_LENGTH: function () {
-        return single_line_string_1.default(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Term length value cannot be negative or greater\n                         than 2^120 - 1"], ["Term length value cannot be negative or greater\n                         than 2^120 - 1"])));
+        return singleLineString(templateObject_3 || (templateObject_3 = __makeTemplateObject(["Term length value cannot be negative or greater\n                         than 2^120 - 1"], ["Term length value cannot be negative or greater\n                         than 2^120 - 1"])));
     },
     INVALID_TERMS_CONTRACT: function (principalToken, termsContract) {
-        return single_line_string_1.default(templateObject_4 || (templateObject_4 = __makeTemplateObject(["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""], ["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""])), termsContract, principalToken);
+        return singleLineString(templateObject_4 || (templateObject_4 = __makeTemplateObject(["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""], ["Terms Contract at address ", " does not\n                         correspond to the SimpleInterestTermsContract associated\n                         with the principal token at address ", ""])), termsContract, principalToken);
     },
 };
 var TX_DEFAULTS = { from: constants_1.NULL_ADDRESS, gas: 0 };
@@ -155,7 +155,7 @@ var SimpleInterestLoanAdapter = /** @class */ (function () {
                     case 0:
                         this.assert.schema.simpleInterestLoanOrder("simpleInterestLoanOrder", simpleInterestLoanOrder);
                         principalToken = simpleInterestLoanOrder.principalToken, principalAmount = simpleInterestLoanOrder.principalAmount, interestRate = simpleInterestLoanOrder.interestRate, amortizationUnit = simpleInterestLoanOrder.amortizationUnit, termLength = simpleInterestLoanOrder.termLength;
-                        debtOrder = lodash_omit_1.default(simpleInterestLoanOrder, [
+                        debtOrder = omit(simpleInterestLoanOrder, [
                             "interestRate",
                             "amortizationUnit",
                             "termLength",

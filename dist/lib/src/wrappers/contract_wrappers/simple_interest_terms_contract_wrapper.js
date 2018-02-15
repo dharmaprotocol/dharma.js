@@ -45,7 +45,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var tiny_promisify_1 = require("tiny-promisify");
+var promisify = require("tiny-promisify");
 var class_utils_1 = require("../../../utils/class_utils");
 var web3_utils_1 = require("../../../utils/web3_utils");
 var SimpleInterestTermsContract_1 = require("../../artifacts/ts/SimpleInterestTermsContract");
@@ -62,7 +62,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.unpackParameters.call, self.web3ContractInstance)(parameters)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.unpackParameters.call, self.web3ContractInstance)(parameters)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -79,7 +79,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.HOUR_BLOCK_LENGTH.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.HOUR_BLOCK_LENGTH.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -96,7 +96,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.getAmortizationUnitLengthInBlocks.call, self.web3ContractInstance)(amortizationUnitType)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getAmortizationUnitLengthInBlocks.call, self.web3ContractInstance)(amortizationUnitType)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -117,7 +117,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData, self.registerRepayment.estimateGasAsync.bind(self, agreementId, payer, beneficiary, unitsOfRepayment, tokenAddress))];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.registerRepayment, self.web3ContractInstance)(agreementId, payer, beneficiary, unitsOfRepayment, tokenAddress, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.registerRepayment, self.web3ContractInstance)(agreementId, payer, beneficiary, unitsOfRepayment, tokenAddress, txDataWithDefaults)];
                             case 2:
                                 txHash = _a.sent();
                                 return [2 /*return*/, txHash];
@@ -136,7 +136,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                                 return [4 /*yield*/, self.applyDefaultsToTxDataAsync(txData)];
                             case 1:
                                 txDataWithDefaults = _a.sent();
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.registerRepayment.estimateGas, self.web3ContractInstance)(agreementId, payer, beneficiary, unitsOfRepayment, tokenAddress, txDataWithDefaults)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.registerRepayment.estimateGas, self.web3ContractInstance)(agreementId, payer, beneficiary, unitsOfRepayment, tokenAddress, txDataWithDefaults)];
                             case 2:
                                 gas = _a.sent();
                                 return [2 /*return*/, gas];
@@ -159,7 +159,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.getExpectedRepaymentValue.call, self.web3ContractInstance)(agreementId, blockNumber)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getExpectedRepaymentValue.call, self.web3ContractInstance)(agreementId, blockNumber)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -176,7 +176,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.MONTH_BLOCK_LENGTH.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.MONTH_BLOCK_LENGTH.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -193,7 +193,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.YEAR_BLOCK_LENGTH.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.YEAR_BLOCK_LENGTH.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -210,7 +210,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.DAY_BLOCK_LENGTH.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.DAY_BLOCK_LENGTH.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -227,7 +227,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.WEEK_BLOCK_LENGTH.call, self.web3ContractInstance)()];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.WEEK_BLOCK_LENGTH.call, self.web3ContractInstance)()];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];
@@ -244,7 +244,7 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, tiny_promisify_1.default(self.web3ContractInstance.getValueRepaid.call, self.web3ContractInstance)(agreementId, blockNumber)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getValueRepaid.call, self.web3ContractInstance)(agreementId, blockNumber)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];

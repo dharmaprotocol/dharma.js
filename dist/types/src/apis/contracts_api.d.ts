@@ -1,5 +1,5 @@
 import { DebtKernelContract, DebtTokenContract, TokenTransferProxyContract, TokenRegistryContract, ERC20Contract, RepaymentRouterContract, SimpleInterestTermsContractContract, TermsContractRegistryContract } from "../wrappers";
-import Web3 from "web3";
+import * as Web3 from "web3";
 import { DharmaConfig } from "../types";
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -8,8 +8,8 @@ export interface DharmaContracts {
     tokenTransferProxy: TokenTransferProxyContract;
 }
 export declare const ContractsError: {
-    SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) => string;
-    CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) => string;
+    SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) => any;
+    CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) => any;
 };
 export declare class ContractsAPI {
     private web3;
