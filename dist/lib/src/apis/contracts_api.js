@@ -58,28 +58,33 @@ var ContractsAPI = /** @class */ (function () {
         this.cache = {};
     }
     ContractsAPI.prototype.loadDharmaContractsAsync = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var debtKernel, debtToken, repaymentRouter, tokenTransferProxy;
+            var debtKernel, debtRegistry, debtToken, repaymentRouter, tokenTransferProxy;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.loadDebtKernelAsync(transactionOptions)];
                     case 1:
                         debtKernel = _a.sent();
-                        return [4 /*yield*/, this.loadDebtTokenAsync(transactionOptions)];
+                        return [4 /*yield*/, this.loadDebtRegistryAsync(transactionOptions)];
                     case 2:
+                        debtRegistry = _a.sent();
+                        return [4 /*yield*/, this.loadDebtTokenAsync(transactionOptions)];
+                    case 3:
                         debtToken = _a.sent();
                         return [4 /*yield*/, this.loadRepaymentRouterAsync(transactionOptions)];
-                    case 3:
+                    case 4:
                         repaymentRouter = _a.sent();
                         return [4 /*yield*/, this.loadTokenTransferProxyAsync(transactionOptions)];
-                    case 4:
+                    case 5:
                         tokenTransferProxy = _a.sent();
-                        return [2 /*return*/, { debtKernel: debtKernel, debtToken: debtToken, repaymentRouter: repaymentRouter, tokenTransferProxy: tokenTransferProxy }];
+                        return [2 /*return*/, { debtKernel: debtKernel, debtRegistry: debtRegistry, debtToken: debtToken, repaymentRouter: repaymentRouter, tokenTransferProxy: tokenTransferProxy }];
                 }
             });
         });
     };
     ContractsAPI.prototype.loadDebtKernelAsync = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var debtKernel;
             return __generator(this, function (_a) {
@@ -104,7 +109,27 @@ var ContractsAPI = /** @class */ (function () {
             });
         });
     };
+    ContractsAPI.prototype.loadDebtRegistryAsync = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
+        return __awaiter(this, void 0, void 0, function () {
+            var debtRegistry;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (constants_1.DEBT_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+                            return [2 /*return*/, this.cache[constants_1.DEBT_REGISTRY_CONTRACT_CACHE_KEY]];
+                        }
+                        return [4 /*yield*/, wrappers_1.DebtRegistryContract.deployed(this.web3, transactionOptions)];
+                    case 1:
+                        debtRegistry = _a.sent();
+                        this.cache[constants_1.DEBT_REGISTRY_CONTRACT_CACHE_KEY] = debtRegistry;
+                        return [2 /*return*/, debtRegistry];
+                }
+            });
+        });
+    };
     ContractsAPI.prototype.loadDebtTokenAsync = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var debtToken;
             return __generator(this, function (_a) {
@@ -130,6 +155,7 @@ var ContractsAPI = /** @class */ (function () {
         });
     };
     ContractsAPI.prototype.loadRepaymentRouterAsync = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var repaymentRouter;
             return __generator(this, function (_a) {
@@ -154,7 +180,28 @@ var ContractsAPI = /** @class */ (function () {
             });
         });
     };
+    ContractsAPI.prototype.loadRepaymentRouterAtAsync = function (address, transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
+        return __awaiter(this, void 0, void 0, function () {
+            var cacheKey, repaymentRouter;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        cacheKey = this.getRepaymentRouterCacheKey(address);
+                        if (cacheKey in this.cache) {
+                            return [2 /*return*/, this.cache[cacheKey]];
+                        }
+                        return [4 /*yield*/, wrappers_1.RepaymentRouterContract.at(address, this.web3, transactionOptions)];
+                    case 1:
+                        repaymentRouter = _a.sent();
+                        this.cache[cacheKey] = repaymentRouter;
+                        return [2 /*return*/, repaymentRouter];
+                }
+            });
+        });
+    };
     ContractsAPI.prototype.loadTokenTransferProxyAsync = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var tokenTransferProxy;
             return __generator(this, function (_a) {
@@ -180,6 +227,7 @@ var ContractsAPI = /** @class */ (function () {
         });
     };
     ContractsAPI.prototype.loadERC20TokenAsync = function (tokenAddress, transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var cacheKey, tokenContract;
             return __generator(this, function (_a) {
@@ -197,7 +245,27 @@ var ContractsAPI = /** @class */ (function () {
             });
         });
     };
+    ContractsAPI.prototype.loadTermsContractAsync = function (termsContractAddress, transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
+        return __awaiter(this, void 0, void 0, function () {
+            var cacheKey, termsContract;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        cacheKey = this.getTermsContractCacheKey(termsContractAddress);
+                        if (!(cacheKey in this.cache)) return [3 /*break*/, 1];
+                        return [2 /*return*/, this.cache[cacheKey]];
+                    case 1: return [4 /*yield*/, wrappers_1.TermsContract.at(termsContractAddress, this.web3, transactionOptions)];
+                    case 2:
+                        termsContract = _a.sent();
+                        this.cache[cacheKey] = termsContract;
+                        return [2 /*return*/, termsContract];
+                }
+            });
+        });
+    };
     ContractsAPI.prototype.loadTermsContractRegistry = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var termsContractRegistry;
             return __generator(this, function (_a) {
@@ -216,6 +284,7 @@ var ContractsAPI = /** @class */ (function () {
         });
     };
     ContractsAPI.prototype.loadSimpleInterestTermsContract = function (tokenAddress, transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var cacheKey, termsContractRegistry, simpleInterestTermsContractAddress, simpleInterestTermsContract;
             return __generator(this, function (_a) {
@@ -243,6 +312,7 @@ var ContractsAPI = /** @class */ (function () {
         });
     };
     ContractsAPI.prototype.loadTokenRegistry = function (transactionOptions) {
+        if (transactionOptions === void 0) { transactionOptions = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var tokenRegistryContract;
             return __generator(this, function (_a) {
@@ -301,6 +371,12 @@ var ContractsAPI = /** @class */ (function () {
     };
     ContractsAPI.prototype.getERC20TokenCacheKey = function (tokenAddress) {
         return "ERC20_" + tokenAddress;
+    };
+    ContractsAPI.prototype.getTermsContractCacheKey = function (termsContractAddress) {
+        return "TermsContract_" + termsContractAddress;
+    };
+    ContractsAPI.prototype.getRepaymentRouterCacheKey = function (tokenAddress) {
+        return "RepaymentRouter_" + tokenAddress;
     };
     ContractsAPI.prototype.getSimpleInterestTermsContractCacheKey = function (tokenAddress) {
         return "SimpleInterestTermsContract_" + tokenAddress;

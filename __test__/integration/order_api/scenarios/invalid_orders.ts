@@ -4,7 +4,7 @@ import * as moment from "moment";
 import { DebtOrder } from "types";
 import { DebtOrderWrapper } from "src/wrappers";
 import { BigNumber } from "bignumber.js";
-import { ACCOUNTS } from "../../accounts";
+import { ACCOUNTS } from "__test__/accounts";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
 import { OrderAPIErrors } from "src/apis/order_api";
 

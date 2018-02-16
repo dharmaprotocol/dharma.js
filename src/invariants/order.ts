@@ -114,6 +114,29 @@ export class OrderAssertions {
         }
     }
 
+    public senderAuthorizedToCancelOrder(
+        debtOrder: DebtOrder,
+        transactionOptions: TxData,
+        errorMessage: string,
+    ) {
+        if (debtOrder.debtor !== transactionOptions.from) {
+            throw new Error(errorMessage);
+        }
+    }
+
+    public senderAuthorizedToCancelIssuance(
+        debtOrder: DebtOrder,
+        transactionOptions: TxData,
+        errorMessage: string,
+    ) {
+        if (
+            debtOrder.debtor !== transactionOptions.from &&
+            debtOrder.underwriter !== transactionOptions.from
+        ) {
+            throw new Error(errorMessage);
+        }
+    }
+
     /*
         Consensuality Invariants
     */

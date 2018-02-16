@@ -87,6 +87,44 @@ var Web3Utils = /** @class */ (function () {
             });
         });
     };
+    Web3Utils.prototype.saveTestSnapshot = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sendJsonRpcRequestAsync("evm_snapshot", [])];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, parseInt(response.result, 16)];
+                }
+            });
+        });
+    };
+    Web3Utils.prototype.revertToSnapshot = function (snapshotId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.sendJsonRpcRequestAsync("evm_revert", [snapshotId])];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, response.result];
+                }
+            });
+        });
+    };
+    Web3Utils.prototype.sendJsonRpcRequestAsync = function (method, params) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, promisify(this.web3.currentProvider.sendAsync, { context: this.web3.currentProvider })({
+                        jsonrpc: "2.0",
+                        method: method,
+                        params: params,
+                        id: new Date().getTime()
+                    })];
+            });
+        });
+    };
     return Web3Utils;
 }());
 exports.Web3Utils = Web3Utils;

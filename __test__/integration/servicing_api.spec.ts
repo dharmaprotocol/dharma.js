@@ -96,8 +96,6 @@ describe("Debt Servicing API (Integration Tests)", () => {
         );
         issuanceHash = debtOrderWrapped.getIssuanceCommitmentHash();
 
-        console.log(debtOrder);
-
         await orderApi.fillAsync(debtOrder, { from: CREDITOR });
 
         ABIDecoder.addABI(repaymentRouter.abi);

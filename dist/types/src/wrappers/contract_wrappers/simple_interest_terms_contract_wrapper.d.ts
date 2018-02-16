@@ -22,7 +22,7 @@ export declare class SimpleInterestTermsContractContract extends BaseContract {
         getABIEncodedTransactionData(agreementId: string, payer: string, beneficiary: string, unitsOfRepayment: BigNumber, tokenAddress: string, txData?: TxData): string;
     };
     getExpectedRepaymentValue: {
-        callAsync(agreementId: string, blockNumber: BigNumber, defaultBlock?: Web3.BlockParam): Promise<BigNumber>;
+        callAsync(issuanceHash: string, timestamp: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string>;
     };
     MONTH_BLOCK_LENGTH: {
         callAsync(defaultBlock?: Web3.BlockParam): Promise<BigNumber>;

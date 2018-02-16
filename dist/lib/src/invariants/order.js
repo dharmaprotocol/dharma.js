@@ -136,6 +136,17 @@ var OrderAssertions = /** @class */ (function () {
             });
         });
     };
+    OrderAssertions.prototype.senderAuthorizedToCancelOrder = function (debtOrder, transactionOptions, errorMessage) {
+        if (debtOrder.debtor !== transactionOptions.from) {
+            throw new Error(errorMessage);
+        }
+    };
+    OrderAssertions.prototype.senderAuthorizedToCancelIssuance = function (debtOrder, transactionOptions, errorMessage) {
+        if (debtOrder.debtor !== transactionOptions.from &&
+            debtOrder.underwriter !== transactionOptions.from) {
+            throw new Error(errorMessage);
+        }
+    };
     /*
         Consensuality Invariants
     */

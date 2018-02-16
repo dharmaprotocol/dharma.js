@@ -9,6 +9,8 @@ exports.Schemas = {
     bytes32Schema: basic_type_schemas_1.bytes32Schema,
     debtOrderSchema: debt_order_schemas_1.debtOrderSchema,
     debtOrderWithTermsSpecifiedSchema: debt_order_schemas_1.debtOrderWithTermsSpecifiedSchema,
+    debtOrderWithTermsAndDebtorSpecifiedSchema: debt_order_schemas_1.debtOrderWithTermsAndDebtorSpecifiedSchema,
+    debtOrderWithTermsDebtorAndCreditorSpecifiedSchema: debt_order_schemas_1.debtOrderWithTermsDebtorAndCreditorSpecifiedSchema,
     simpleInterestLoanOrderSchema: simple_interest_parameters_schema_1.simpleInterestLoanOrderSchema,
 };
 //# sourceMappingURL=schemas.js.map

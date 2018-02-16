@@ -12,6 +12,8 @@ export declare class OrderAssertions {
     notAlreadyIssuedAsync(debtOrder: DebtOrder, debtToken: DebtTokenContract, errorMessage: string): Promise<void>;
     debtOrderNotCancelledAsync(debtOrder: DebtOrder, debtKernel: DebtKernelContract, errorMessage: string): Promise<void>;
     issuanceNotCancelledAsync(debtOrder: DebtOrder, debtKernel: DebtKernelContract, errorMessage: string): Promise<void>;
+    senderAuthorizedToCancelOrder(debtOrder: DebtOrder, transactionOptions: TxData, errorMessage: string): void;
+    senderAuthorizedToCancelIssuance(debtOrder: DebtOrder, transactionOptions: TxData, errorMessage: string): void;
     validDebtorSignature(debtOrder: DebtOrder, transactionOptions: TxData, errorMessage: string): void;
     validCreditorSignature(debtOrder: DebtOrder, transactionOptions: TxData, errorMessage: string): void;
     validUnderwriterSignature(debtOrder: DebtOrder, transactionOptions: TxData, errorMessage: string): void;

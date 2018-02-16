@@ -65,3 +65,23 @@ export declare const debtOrderWithTermsSpecifiedSchema: {
         $ref?: undefined;
     })[];
 };
+export declare const debtOrderWithTermsAndDebtorSpecifiedSchema: {
+    id: string;
+    allOf: ({
+        $ref: string;
+        required?: undefined;
+    } | {
+        required: string[];
+        $ref?: undefined;
+    })[];
+};
+export declare const debtOrderWithTermsDebtorAndCreditorSpecifiedSchema: {
+    id: string;
+    allOf: ({
+        $ref: string;
+        required?: undefined;
+    } | {
+        required: string[];
+        $ref?: undefined;
+    })[];
+};

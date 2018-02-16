@@ -1,16 +1,15 @@
+import { OrderCancellationScenario } from "./";
 import { DebtKernelContract, RepaymentRouterContract, DummyTokenContract } from "src/wrappers";
 import * as Units from "utils/units";
+import { ACCOUNTS } from "__test__/accounts";
+import { NULL_BYTES32 } from "utils/constants";
 import * as moment from "moment";
 import { BigNumber } from "bignumber.js";
-import { DebtOrder } from "src/types";
-import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
-import { ACCOUNTS } from "../../accounts";
-import { FillScenario } from "./";
 import { OrderAPIErrors } from "src/apis/order_api";
 
-export const NONCONSENUAL_ORDERS: FillScenario[] = [
+export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     {
-        description: "if message sender not debtor, debtor signature must be valid",
+        description: "Canceller is creditor",
         generateDebtOrder: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
@@ -26,10 +25,7 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 creditor: ACCOUNTS[2].address,
                 creditorFee: Units.ether(0.001),
                 relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.001),
-                underwriter: ACCOUNTS[4].address,
-                underwriterFee: Units.ether(0.001),
-                underwriterRiskRating: Units.percent(0.001),
+                relayerFee: Units.ether(0.002),
                 termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
@@ -40,18 +36,15 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 salt: new BigNumber(0),
             };
         },
-        filler: ACCOUNTS[2].address,
-        signatories: {
-            debtor: false,
-            creditor: false,
-            underwriter: true,
-        },
-        successfullyFills: false,
-        errorType: "INVALID_DEBTOR_SIGNATURE",
-        errorMessage: OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
+        canceller: ACCOUNTS[2].address,
+        successfullyCancels: false,
+        orderAlreadyCancelled: false,
+        issuanceAlreadyCancelled: false,
+        errorType: "UNAUTHORIZED_ORDER_CANCELLATION",
+        errorMessage: OrderAPIErrors.UNAUTHORIZED_ORDER_CANCELLATION(),
     },
     {
-        description: "if message sender not creditor, creditor signature must be valid",
+        description: "Canceller is underwriter",
         generateDebtOrder: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
@@ -66,11 +59,11 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 debtorFee: Units.ether(0.001),
                 creditor: ACCOUNTS[2].address,
                 creditorFee: Units.ether(0.001),
-                relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.001),
-                underwriter: ACCOUNTS[4].address,
+                underwriter: ACCOUNTS[3].address,
                 underwriterFee: Units.ether(0.001),
-                underwriterRiskRating: Units.percent(0.001),
+                underwriterRiskRating: Units.percent(0.4),
+                relayer: ACCOUNTS[4].address,
+                relayerFee: Units.ether(0.001),
                 termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
@@ -81,18 +74,15 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 salt: new BigNumber(0),
             };
         },
-        filler: ACCOUNTS[1].address,
-        signatories: {
-            debtor: true,
-            creditor: false,
-            underwriter: true,
-        },
-        successfullyFills: false,
-        errorType: "INVALID_CREDITOR_SIGNATURE",
-        errorMessage: OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
+        canceller: ACCOUNTS[3].address,
+        successfullyCancels: false,
+        orderAlreadyCancelled: false,
+        issuanceAlreadyCancelled: false,
+        errorType: "UNAUTHORIZED_ORDER_CANCELLATION",
+        errorMessage: OrderAPIErrors.UNAUTHORIZED_ORDER_CANCELLATION(),
     },
     {
-        description: "if message sender not underwriter, underwriter signature must be valid",
+        description: "Canceller is relayer",
         generateDebtOrder: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
@@ -107,11 +97,11 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 debtorFee: Units.ether(0.001),
                 creditor: ACCOUNTS[2].address,
                 creditorFee: Units.ether(0.001),
-                relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.001),
-                underwriter: ACCOUNTS[4].address,
+                underwriter: ACCOUNTS[3].address,
                 underwriterFee: Units.ether(0.001),
-                underwriterRiskRating: Units.percent(0.001),
+                underwriterRiskRating: Units.percent(0.4),
+                relayer: ACCOUNTS[4].address,
+                relayerFee: Units.ether(0.001),
                 termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
@@ -122,64 +112,15 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 salt: new BigNumber(0),
             };
         },
-        filler: ACCOUNTS[1].address,
-        signatories: {
-            debtor: true,
-            creditor: true,
-            underwriter: false,
-        },
-        successfullyFills: false,
-        errorType: "INVALID_UNDERWRITER_SIGNATURE",
-        errorMessage: OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
-    },
-
-    /*
-     * EXTERNAL INVARIANTS
-     */
-    {
-        description: "creditor has insufficient balance",
-        generateDebtOrder: (
-            debtKernel: DebtKernelContract,
-            repaymentRouter: RepaymentRouterContract,
-            principalToken: DummyTokenContract,
-        ) => {
-            return {
-                kernelVersion: debtKernel.address,
-                issuanceVersion: repaymentRouter.address,
-                principalAmount: Units.ether(1),
-                principalToken: principalToken.address,
-                debtor: ACCOUNTS[1].address,
-                debtorFee: Units.ether(0.001),
-                creditor: ACCOUNTS[2].address,
-                creditorFee: Units.ether(0.001),
-                relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.001),
-                underwriter: ACCOUNTS[4].address,
-                underwriterFee: Units.ether(0.001),
-                underwriterRiskRating: Units.percent(0.001),
-                termsContract: ACCOUNTS[5].address,
-                termsContractParameters: NULL_BYTES32,
-                expirationTimestampInSec: new BigNumber(
-                    moment()
-                        .add(7, "days")
-                        .unix(),
-                ),
-                salt: new BigNumber(0),
-            };
-        },
-        creditorBalance: Units.ether(1),
-        filler: ACCOUNTS[1].address,
-        signatories: {
-            debtor: true,
-            creditor: true,
-            underwriter: true,
-        },
-        successfullyFills: false,
-        errorType: "CREDITOR_BALANCE_INSUFFICIENT",
-        errorMessage: OrderAPIErrors.CREDITOR_BALANCE_INSUFFICIENT(),
+        canceller: ACCOUNTS[4].address,
+        successfullyCancels: false,
+        orderAlreadyCancelled: false,
+        issuanceAlreadyCancelled: false,
+        errorType: "UNAUTHORIZED_ORDER_CANCELLATION",
+        errorMessage: OrderAPIErrors.UNAUTHORIZED_ORDER_CANCELLATION(),
     },
     {
-        description: "creditor has insufficient allowance",
+        description: "Debt order has already been cancelled",
         generateDebtOrder: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
@@ -194,11 +135,11 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 debtorFee: Units.ether(0.001),
                 creditor: ACCOUNTS[2].address,
                 creditorFee: Units.ether(0.001),
-                relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.001),
-                underwriter: ACCOUNTS[4].address,
+                underwriter: ACCOUNTS[3].address,
                 underwriterFee: Units.ether(0.001),
-                underwriterRiskRating: Units.percent(0.001),
+                underwriterRiskRating: Units.percent(0.4),
+                relayer: ACCOUNTS[4].address,
+                relayerFee: Units.ether(0.001),
                 termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
@@ -209,15 +150,49 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
                 salt: new BigNumber(0),
             };
         },
-        creditorAllowance: Units.ether(1),
-        filler: ACCOUNTS[1].address,
-        signatories: {
-            debtor: true,
-            creditor: true,
-            underwriter: true,
+        canceller: ACCOUNTS[1].address,
+        successfullyCancels: false,
+        orderAlreadyCancelled: true,
+        issuanceAlreadyCancelled: false,
+        errorType: "ORDER_ALREADY_CANCELLED",
+        errorMessage: OrderAPIErrors.ORDER_ALREADY_CANCELLED(),
+    },
+    {
+        description: "Debt issuance commitment has already been cancelled",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                underwriter: ACCOUNTS[3].address,
+                underwriterFee: Units.ether(0.001),
+                underwriterRiskRating: Units.percent(0.4),
+                relayer: ACCOUNTS[4].address,
+                relayerFee: Units.ether(0.001),
+                termsContract: ACCOUNTS[5].address,
+                termsContractParameters: NULL_BYTES32,
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .add(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
         },
-        successfullyFills: false,
-        errorType: "CREDITOR_ALLOWANCE_INSUFFICIENT",
-        errorMessage: OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
+        canceller: ACCOUNTS[1].address,
+        successfullyCancels: false,
+        orderAlreadyCancelled: false,
+        issuanceAlreadyCancelled: true,
+        errorType: "ISSUANCE_ALREADY_CANCELLED",
+        errorMessage: OrderAPIErrors.ISSUANCE_ALREADY_CANCELLED(),
     },
 ];

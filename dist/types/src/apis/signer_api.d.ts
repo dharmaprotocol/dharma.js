@@ -1,12 +1,14 @@
 import * as Web3 from "web3";
+import { ContractsAPI } from "./";
 import { ECDSASignature, DebtOrder } from "../types";
 export declare const SignerAPIErrors: {
     INVALID_SIGNING_KEY: (unavailableKey: string) => any;
 };
 export declare class SignerAPI {
     private web3;
+    private contracts;
     private assert;
-    constructor(web3: Web3);
+    constructor(web3: Web3, contracts: ContractsAPI);
     /**
      * Given a debt order, produce ECDSA signature of the debtor commitment hash using the debtor's
      * private key.  If current web3 provider is unable to produce a cryptographic signature using

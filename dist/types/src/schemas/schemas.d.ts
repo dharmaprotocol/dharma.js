@@ -81,6 +81,26 @@ export declare const Schemas: {
             $ref?: undefined;
         })[];
     };
+    debtOrderWithTermsAndDebtorSpecifiedSchema: {
+        id: string;
+        allOf: ({
+            $ref: string;
+            required?: undefined;
+        } | {
+            required: string[];
+            $ref?: undefined;
+        })[];
+    };
+    debtOrderWithTermsDebtorAndCreditorSpecifiedSchema: {
+        id: string;
+        allOf: ({
+            $ref: string;
+            required?: undefined;
+        } | {
+            required: string[];
+            $ref?: undefined;
+        })[];
+    };
     simpleInterestLoanOrderSchema: {
         id: string;
         allOf: ({

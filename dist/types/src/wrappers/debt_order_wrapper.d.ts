@@ -1,8 +1,10 @@
 import { BigNumber } from "../../utils/bignumber";
 import { DebtOrder, IssuanceCommitment } from "../types";
+import { ContractsAPI } from "../apis";
 export declare class DebtOrderWrapper {
     private debtOrder;
     constructor(debtOrder: DebtOrder);
+    static applyNetworkDefaults(debtOrder: DebtOrder, contracts: ContractsAPI): Promise<DebtOrderWrapper>;
     getCreditor(): string;
     /**
      * Returns the subset of the debt order we refer to as the "Issuance Commitment".
@@ -66,5 +68,6 @@ export declare class DebtOrderWrapper {
     getSignaturesR(): string[];
     getSignaturesS(): string[];
     getSignaturesV(): number[];
+    getDebtOrder(): DebtOrder;
     private getSignatures();
 }

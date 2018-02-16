@@ -7,4 +7,7 @@ export declare class Web3Utils {
     getAvailableAddressesAsync(): Promise<string[]>;
     doesContractExistAtAddressAsync(address: string): Promise<boolean>;
     getTransactionReceiptAsync(txHash: string): Promise<Web3.TransactionReceipt>;
+    saveTestSnapshot(): Promise<number>;
+    revertToSnapshot(snapshotId: number): Promise<boolean>;
+    private sendJsonRpcRequestAsync(method, params);
 }

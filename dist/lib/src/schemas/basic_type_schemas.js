@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addressSchema = {
     id: "/Address",
     type: "string",
-    pattern: "^0x[0-9a-f]{40}$",
+    pattern: "^0x[0-9a-fA-F]{40}$",
 };
 exports.bytes32Schema = {
     id: "/Bytes32",
     type: "string",
-    pattern: "^0x[0-9a-f]{64}$",
+    pattern: "^0x[0-9a-fA-F]{64}$",
 };
 exports.numberSchema = {
     id: "/Number",

@@ -8,4 +8,6 @@ var signer_api_1 = require("./signer_api");
 exports.SignerAPI = signer_api_1.SignerAPI;
 var adapters_api_1 = require("./adapters_api");
 exports.AdaptersAPI = adapters_api_1.AdaptersAPI;
+var servicing_api_1 = require("./servicing_api");
+exports.ServicingAPI = servicing_api_1.ServicingAPI;
 //# sourceMappingURL=index.js.map

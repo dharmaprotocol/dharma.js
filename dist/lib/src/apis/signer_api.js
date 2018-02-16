@@ -51,8 +51,9 @@ exports.SignerAPIErrors = {
     },
 };
 var SignerAPI = /** @class */ (function () {
-    function SignerAPI(web3) {
+    function SignerAPI(web3, contracts) {
         this.web3 = web3;
+        this.contracts = contracts;
         this.assert = new invariants_1.Assertions(this.web3);
     }
     /**
@@ -68,8 +69,14 @@ var SignerAPI = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var wrappedDebtOrder;
             return __generator(this, function (_a) {
-                wrappedDebtOrder = new debt_order_wrapper_1.DebtOrderWrapper(debtOrder);
-                return [2 /*return*/, this.signPayloadWithAddress(wrappedDebtOrder.getDebtorCommitmentHash(), debtOrder.debtor)];
+                switch (_a.label) {
+                    case 0:
+                        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
+                        return [4 /*yield*/, debt_order_wrapper_1.DebtOrderWrapper.applyNetworkDefaults(debtOrder, this.contracts)];
+                    case 1:
+                        wrappedDebtOrder = _a.sent();
+                        return [2 /*return*/, this.signPayloadWithAddress(wrappedDebtOrder.getDebtorCommitmentHash(), debtOrder.debtor)];
+                }
             });
         });
     };
@@ -86,8 +93,14 @@ var SignerAPI = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var wrappedDebtOrder;
             return __generator(this, function (_a) {
-                wrappedDebtOrder = new debt_order_wrapper_1.DebtOrderWrapper(debtOrder);
-                return [2 /*return*/, this.signPayloadWithAddress(wrappedDebtOrder.getCreditorCommitmentHash(), debtOrder.creditor)];
+                switch (_a.label) {
+                    case 0:
+                        this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
+                        return [4 /*yield*/, debt_order_wrapper_1.DebtOrderWrapper.applyNetworkDefaults(debtOrder, this.contracts)];
+                    case 1:
+                        wrappedDebtOrder = _a.sent();
+                        return [2 /*return*/, this.signPayloadWithAddress(wrappedDebtOrder.getCreditorCommitmentHash(), debtOrder.creditor)];
+                }
             });
         });
     };
@@ -104,8 +117,14 @@ var SignerAPI = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var wrappedDebtOrder;
             return __generator(this, function (_a) {
-                wrappedDebtOrder = new debt_order_wrapper_1.DebtOrderWrapper(debtOrder);
-                return [2 /*return*/, this.signPayloadWithAddress(wrappedDebtOrder.getUnderwriterCommitmentHash(), debtOrder.underwriter)];
+                switch (_a.label) {
+                    case 0:
+                        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
+                        return [4 /*yield*/, debt_order_wrapper_1.DebtOrderWrapper.applyNetworkDefaults(debtOrder, this.contracts)];
+                    case 1:
+                        wrappedDebtOrder = _a.sent();
+                        return [2 /*return*/, this.signPayloadWithAddress(wrappedDebtOrder.getUnderwriterCommitmentHash(), debtOrder.underwriter)];
+                }
             });
         });
     };

@@ -1,5 +1,5 @@
 import * as Web3 from "web3";
-import { DebtOrder, TxData } from "../types";
+import { DebtOrder, IssuanceCommitment, TxData } from "../types";
 import { Web3Utils } from "../../utils/web3_utils";
 import { NULL_ADDRESS } from "../../utils/constants";
 import { ContractsAPI } from ".";
@@ -37,11 +37,23 @@ export const OrderAPIErrors = {
 
     ORDER_CANCELLED: () => singleLineString`Debt order was cancelled`,
 
+    ORDER_ALREADY_CANCELLED: () => singleLineString`Debt order has already been cancelled`,
+
+    UNAUTHORIZED_ORDER_CANCELLATION: () => singleLineString`Debt order can only be cancelled
+                                                            by the specified order's debtor`,
+
+    UNAUTHORIZED_ISSUANCE_CANCELLATION: () => singleLineString`Debt issuance can only be cancelled
+                                                               by either the specified issuance's debtor,
+                                                               or by the underwriter attesting to the
+                                                               issuance's default risk`,
+
     CREDITOR_BALANCE_INSUFFICIENT: () => singleLineString`Creditor balance is insufficient`,
 
     CREDITOR_ALLOWANCE_INSUFFICIENT: () => singleLineString`Creditor allowance is insufficient`,
 
     ISSUANCE_CANCELLED: () => singleLineString`Issuance was cancelled`,
+
+    ISSUANCE_ALREADY_CANCELLED: () => singleLineString`Issuance has already been cancelled`,
 
     DEBT_ORDER_ALREADY_FILLED: () => singleLineString`Debt order has already been filled`,
 
@@ -102,6 +114,74 @@ export class OrderAPI {
             debtOrderWrapped.getSignaturesV(),
             debtOrderWrapped.getSignaturesR(),
             debtOrderWrapped.getSignaturesS(),
+            transactionOptions,
+        );
+    }
+
+    public async cancelOrderAsync(debtOrder: DebtOrder, options?: TxData): Promise<string> {
+        const transactionOptions = await this.getTxDefaultOptions();
+
+        Object.assign(transactionOptions, options);
+
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
+
+        await this.assert.order.debtOrderNotCancelledAsync(
+            debtOrderWrapped.getDebtOrder(),
+            debtKernel,
+            OrderAPIErrors.ORDER_ALREADY_CANCELLED(),
+        );
+
+        await this.assert.order.issuanceNotCancelledAsync(
+            debtOrderWrapped.getIssuanceCommitment(),
+            debtKernel,
+            OrderAPIErrors.ISSUANCE_ALREADY_CANCELLED(),
+        );
+
+        this.assert.order.senderAuthorizedToCancelOrder(
+            debtOrderWrapped.getDebtOrder(),
+            transactionOptions,
+            OrderAPIErrors.UNAUTHORIZED_ORDER_CANCELLATION(),
+        );
+
+        return debtKernel.cancelDebtOrder.sendTransactionAsync(
+            debtOrderWrapped.getOrderAddresses(),
+            debtOrderWrapped.getOrderValues(),
+            debtOrderWrapped.getOrderBytes32(),
+            transactionOptions,
+        );
+    }
+
+    public async cancelIssuanceAsync(
+        issuanceCommitment: IssuanceCommitment,
+        transactionOptions: TxData,
+    ): Promise<string> {
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+
+        await this.assert.order.issuanceNotCancelledAsync(
+            issuanceCommitment,
+            debtKernel,
+            OrderAPIErrors.ISSUANCE_ALREADY_CANCELLED(),
+        );
+
+        this.assert.order.senderAuthorizedToCancelIssuance(
+            issuanceCommitment,
+            transactionOptions,
+            OrderAPIErrors.UNAUTHORIZED_ISSUANCE_CANCELLATION(),
+        );
+
+        return debtKernel.cancelIssuance.sendTransactionAsync(
+            issuanceCommitment.issuanceVersion,
+            issuanceCommitment.debtor,
+            issuanceCommitment.termsContract,
+            issuanceCommitment.termsContractParameters,
+            issuanceCommitment.underwriter,
+            issuanceCommitment.underwriterRiskRating,
+            issuanceCommitment.salt,
             transactionOptions,
         );
     }

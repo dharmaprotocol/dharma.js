@@ -40,6 +40,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var web3_utils_1 = require("../../utils/web3_utils");
+var constants_1 = require("../../utils/constants");
 var wrappers_1 = require("../wrappers");
 var invariants_1 = require("../invariants");
 var singleLineString = require("single-line-string");
@@ -61,16 +62,20 @@ exports.OrderAPIErrors = {
         return singleLineString(templateObject_5 || (templateObject_5 = __makeTemplateObject(["Debt order creditor + debtor fee\n                        does not equal underwriter + relayer fee"], ["Debt order creditor + debtor fee\n                        does not equal underwriter + relayer fee"])));
     },
     ORDER_CANCELLED: function () { return singleLineString(templateObject_6 || (templateObject_6 = __makeTemplateObject(["Debt order was cancelled"], ["Debt order was cancelled"]))); },
-    CREDITOR_BALANCE_INSUFFICIENT: function () { return singleLineString(templateObject_7 || (templateObject_7 = __makeTemplateObject(["Creditor balance is insufficient"], ["Creditor balance is insufficient"]))); },
-    CREDITOR_ALLOWANCE_INSUFFICIENT: function () { return singleLineString(templateObject_8 || (templateObject_8 = __makeTemplateObject(["Creditor allowance is insufficient"], ["Creditor allowance is insufficient"]))); },
-    ISSUANCE_CANCELLED: function () { return singleLineString(templateObject_9 || (templateObject_9 = __makeTemplateObject(["Issuance was cancelled"], ["Issuance was cancelled"]))); },
-    DEBT_ORDER_ALREADY_ISSUED: function () { return singleLineString(templateObject_10 || (templateObject_10 = __makeTemplateObject(["Debt order has already been filled"], ["Debt order has already been filled"]))); },
-    INVALID_DEBTOR_SIGNATURE: function () { return singleLineString(templateObject_11 || (templateObject_11 = __makeTemplateObject(["Debtor signature is not valid for debt order"], ["Debtor signature is not valid for debt order"]))); },
+    ORDER_ALREADY_CANCELLED: function () { return singleLineString(templateObject_7 || (templateObject_7 = __makeTemplateObject(["Debt order has already been cancelled"], ["Debt order has already been cancelled"]))); },
+    UNAUTHORIZED_ORDER_CANCELLATION: function () { return singleLineString(templateObject_8 || (templateObject_8 = __makeTemplateObject(["Debt order can only be cancelled\n                                                            by the specified order's debtor"], ["Debt order can only be cancelled\n                                                            by the specified order's debtor"]))); },
+    UNAUTHORIZED_ISSUANCE_CANCELLATION: function () { return singleLineString(templateObject_9 || (templateObject_9 = __makeTemplateObject(["Debt issuance can only be cancelled\n                                                               by either the specified issuance's debtor,\n                                                               or by the underwriter attesting to the\n                                                               issuance's default risk"], ["Debt issuance can only be cancelled\n                                                               by either the specified issuance's debtor,\n                                                               or by the underwriter attesting to the\n                                                               issuance's default risk"]))); },
+    CREDITOR_BALANCE_INSUFFICIENT: function () { return singleLineString(templateObject_10 || (templateObject_10 = __makeTemplateObject(["Creditor balance is insufficient"], ["Creditor balance is insufficient"]))); },
+    CREDITOR_ALLOWANCE_INSUFFICIENT: function () { return singleLineString(templateObject_11 || (templateObject_11 = __makeTemplateObject(["Creditor allowance is insufficient"], ["Creditor allowance is insufficient"]))); },
+    ISSUANCE_CANCELLED: function () { return singleLineString(templateObject_12 || (templateObject_12 = __makeTemplateObject(["Issuance was cancelled"], ["Issuance was cancelled"]))); },
+    ISSUANCE_ALREADY_CANCELLED: function () { return singleLineString(templateObject_13 || (templateObject_13 = __makeTemplateObject(["Issuance has already been cancelled"], ["Issuance has already been cancelled"]))); },
+    DEBT_ORDER_ALREADY_FILLED: function () { return singleLineString(templateObject_14 || (templateObject_14 = __makeTemplateObject(["Debt order has already been filled"], ["Debt order has already been filled"]))); },
+    INVALID_DEBTOR_SIGNATURE: function () { return singleLineString(templateObject_15 || (templateObject_15 = __makeTemplateObject(["Debtor signature is not valid for debt order"], ["Debtor signature is not valid for debt order"]))); },
     INVALID_CREDITOR_SIGNATURE: function () {
-        return singleLineString(templateObject_12 || (templateObject_12 = __makeTemplateObject(["Creditor signature is not valid for debt order"], ["Creditor signature is not valid for debt order"])));
+        return singleLineString(templateObject_16 || (templateObject_16 = __makeTemplateObject(["Creditor signature is not valid for debt order"], ["Creditor signature is not valid for debt order"])));
     },
     INVALID_UNDERWRITER_SIGNATURE: function () {
-        return singleLineString(templateObject_13 || (templateObject_13 = __makeTemplateObject(["Underwriter signature is not valid for debt order"], ["Underwriter signature is not valid for debt order"])));
+        return singleLineString(templateObject_17 || (templateObject_17 = __makeTemplateObject(["Underwriter signature is not valid for debt order"], ["Underwriter signature is not valid for debt order"])));
     },
 };
 var OrderAPI = /** @class */ (function () {
@@ -81,25 +86,71 @@ var OrderAPI = /** @class */ (function () {
     }
     OrderAPI.prototype.fillAsync = function (debtOrder, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var transactionOptions, _a, debtKernel, debtToken, tokenTransferProxy, debtOrderWrapped;
+            var transactionOptions, debtOrderWrapped, _a, debtKernel, debtToken, tokenTransferProxy;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.getTxDefaultOptions()];
                     case 1:
                         transactionOptions = _b.sent();
                         Object.assign(transactionOptions, options);
-                        return [4 /*yield*/, this.contracts.loadDharmaContractsAsync(transactionOptions)];
+                        return [4 /*yield*/, wrappers_1.DebtOrderWrapper.applyNetworkDefaults(debtOrder, this.contracts)];
                     case 2:
-                        _a = _b.sent(), debtKernel = _a.debtKernel, debtToken = _a.debtToken, tokenTransferProxy = _a.tokenTransferProxy;
-                        return [4 /*yield*/, this.assertValidityInvariantsAsync(debtOrder, debtKernel, debtToken)];
+                        debtOrderWrapped = _b.sent();
+                        return [4 /*yield*/, this.contracts.loadDharmaContractsAsync(transactionOptions)];
                     case 3:
-                        _b.sent();
-                        this.assertConsensualityInvariants(debtOrder, transactionOptions);
-                        return [4 /*yield*/, this.assertExternalBalanceAndAllowanceInvariantsAsync(debtOrder, tokenTransferProxy, transactionOptions)];
+                        _a = _b.sent(), debtKernel = _a.debtKernel, debtToken = _a.debtToken, tokenTransferProxy = _a.tokenTransferProxy;
+                        return [4 /*yield*/, this.assertValidityInvariantsAsync(debtOrderWrapped.getDebtOrder(), debtKernel, debtToken)];
                     case 4:
                         _b.sent();
-                        debtOrderWrapped = new wrappers_1.DebtOrderWrapper(debtOrder);
+                        this.assertConsensualityInvariants(debtOrderWrapped.getDebtOrder(), transactionOptions);
+                        return [4 /*yield*/, this.assertExternalBalanceAndAllowanceInvariantsAsync(debtOrderWrapped.getDebtOrder(), tokenTransferProxy, transactionOptions)];
+                    case 5:
+                        _b.sent();
                         return [2 /*return*/, debtKernel.fillDebtOrder.sendTransactionAsync(debtOrderWrapped.getCreditor(), debtOrderWrapped.getOrderAddresses(), debtOrderWrapped.getOrderValues(), debtOrderWrapped.getOrderBytes32(), debtOrderWrapped.getSignaturesV(), debtOrderWrapped.getSignaturesR(), debtOrderWrapped.getSignaturesS(), transactionOptions)];
+                }
+            });
+        });
+    };
+    OrderAPI.prototype.cancelOrderAsync = function (debtOrder, options) {
+        return __awaiter(this, void 0, void 0, function () {
+            var transactionOptions, debtKernel, debtOrderWrapped;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.getTxDefaultOptions()];
+                    case 1:
+                        transactionOptions = _a.sent();
+                        Object.assign(transactionOptions, options);
+                        return [4 /*yield*/, this.contracts.loadDharmaContractsAsync(transactionOptions)];
+                    case 2:
+                        debtKernel = (_a.sent()).debtKernel;
+                        return [4 /*yield*/, wrappers_1.DebtOrderWrapper.applyNetworkDefaults(debtOrder, this.contracts)];
+                    case 3:
+                        debtOrderWrapped = _a.sent();
+                        return [4 /*yield*/, this.assert.order.debtOrderNotCancelledAsync(debtOrderWrapped.getDebtOrder(), debtKernel, exports.OrderAPIErrors.ORDER_ALREADY_CANCELLED())];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, this.assert.order.issuanceNotCancelledAsync(debtOrderWrapped.getIssuanceCommitment(), debtKernel, exports.OrderAPIErrors.ISSUANCE_ALREADY_CANCELLED())];
+                    case 5:
+                        _a.sent();
+                        this.assert.order.senderAuthorizedToCancelOrder(debtOrderWrapped.getDebtOrder(), transactionOptions, exports.OrderAPIErrors.UNAUTHORIZED_ORDER_CANCELLATION());
+                        return [2 /*return*/, debtKernel.cancelDebtOrder.sendTransactionAsync(debtOrderWrapped.getOrderAddresses(), debtOrderWrapped.getOrderValues(), debtOrderWrapped.getOrderBytes32(), transactionOptions)];
+                }
+            });
+        });
+    };
+    OrderAPI.prototype.cancelIssuanceAsync = function (issuanceCommitment, transactionOptions) {
+        return __awaiter(this, void 0, void 0, function () {
+            var debtKernel;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.contracts.loadDharmaContractsAsync(transactionOptions)];
+                    case 1:
+                        debtKernel = (_a.sent()).debtKernel;
+                        return [4 /*yield*/, this.assert.order.issuanceNotCancelledAsync(issuanceCommitment, debtKernel, exports.OrderAPIErrors.ISSUANCE_ALREADY_CANCELLED())];
+                    case 2:
+                        _a.sent();
+                        this.assert.order.senderAuthorizedToCancelIssuance(issuanceCommitment, transactionOptions, exports.OrderAPIErrors.UNAUTHORIZED_ISSUANCE_CANCELLATION());
+                        return [2 /*return*/, debtKernel.cancelIssuance.sendTransactionAsync(issuanceCommitment.issuanceVersion, issuanceCommitment.debtor, issuanceCommitment.termsContract, issuanceCommitment.termsContractParameters, issuanceCommitment.underwriter, issuanceCommitment.underwriterRiskRating, issuanceCommitment.salt, transactionOptions)];
                 }
             });
         });
@@ -120,7 +171,7 @@ var OrderAPI = /** @class */ (function () {
                         return [4 /*yield*/, this.assert.order.issuanceNotCancelledAsync(debtOrder, debtKernel, exports.OrderAPIErrors.ISSUANCE_CANCELLED())];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, this.assert.order.notAlreadyIssuedAsync(debtOrder, debtToken, exports.OrderAPIErrors.DEBT_ORDER_ALREADY_ISSUED())];
+                        return [4 /*yield*/, this.assert.order.notAlreadyIssuedAsync(debtOrder, debtToken, exports.OrderAPIErrors.DEBT_ORDER_ALREADY_FILLED())];
                     case 3:
                         _a.sent();
                         return [2 /*return*/];
@@ -131,7 +182,9 @@ var OrderAPI = /** @class */ (function () {
     OrderAPI.prototype.assertConsensualityInvariants = function (debtOrder, transactionOptions) {
         this.assert.order.validDebtorSignature(debtOrder, transactionOptions, exports.OrderAPIErrors.INVALID_DEBTOR_SIGNATURE());
         this.assert.order.validCreditorSignature(debtOrder, transactionOptions, exports.OrderAPIErrors.INVALID_CREDITOR_SIGNATURE());
-        this.assert.order.validUnderwriterSignature(debtOrder, transactionOptions, exports.OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE());
+        if (debtOrder.underwriter && debtOrder.underwriter !== constants_1.NULL_ADDRESS) {
+            this.assert.order.validUnderwriterSignature(debtOrder, transactionOptions, exports.OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE());
+        }
     };
     OrderAPI.prototype.assertExternalBalanceAndAllowanceInvariantsAsync = function (debtOrder, tokenTransferProxy, transactionOptions) {
         return __awaiter(this, void 0, void 0, function () {
@@ -174,5 +227,5 @@ var OrderAPI = /** @class */ (function () {
     return OrderAPI;
 }());
 exports.OrderAPI = OrderAPI;
-var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13;
+var templateObject_1, templateObject_2, templateObject_3, templateObject_4, templateObject_5, templateObject_6, templateObject_7, templateObject_8, templateObject_9, templateObject_10, templateObject_11, templateObject_12, templateObject_13, templateObject_14, templateObject_15, templateObject_16, templateObject_17;
 //# sourceMappingURL=order_api.js.map

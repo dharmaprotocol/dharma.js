@@ -1,50 +1,50 @@
 export declare const ERC20: {
-    contractName: string;
-    abi: ({
-        constant: boolean;
-        inputs: {
-            name: string;
-            type: string;
+    "contractName": string;
+    "abi": ({
+        "constant": boolean;
+        "inputs": {
+            "name": string;
+            "type": string;
         }[];
-        name: string;
-        outputs: {
-            name: string;
-            type: string;
+        "name": string;
+        "outputs": {
+            "name": string;
+            "type": string;
         }[];
-        payable: boolean;
-        stateMutability: string;
-        type: string;
+        "payable": boolean;
+        "stateMutability": string;
+        "type": string;
         anonymous?: undefined;
     } | {
-        anonymous: boolean;
-        inputs: {
-            indexed: boolean;
-            name: string;
-            type: string;
+        "anonymous": boolean;
+        "inputs": {
+            "indexed": boolean;
+            "name": string;
+            "type": string;
         }[];
-        name: string;
-        type: string;
+        "name": string;
+        "type": string;
         constant?: undefined;
         outputs?: undefined;
         payable?: undefined;
         stateMutability?: undefined;
     })[];
-    bytecode: string;
-    deployedBytecode: string;
-    sourceMap: string;
-    deployedSourceMap: string;
-    source: string;
-    sourcePath: string;
-    ast: {
-        attributes: {
-            absolutePath: string;
-            exportedSymbols: {
-                ERC20: number[];
+    "bytecode": string;
+    "deployedBytecode": string;
+    "sourceMap": string;
+    "deployedSourceMap": string;
+    "source": string;
+    "sourcePath": string;
+    "ast": {
+        "attributes": {
+            "absolutePath": string;
+            "exportedSymbols": {
+                "ERC20": number[];
             };
         };
-        children: ({
-            attributes: {
-                literals: string[];
+        "children": ({
+            "attributes": {
+                "literals": string[];
                 SourceUnit?: undefined;
                 absolutePath?: undefined;
                 file?: undefined;
@@ -58,18 +58,18 @@ export declare const ERC20: {
                 linearizedBaseContracts?: undefined;
                 name?: undefined;
             };
-            id: number;
-            name: string;
-            src: string;
+            "id": number;
+            "name": string;
+            "src": string;
             children?: undefined;
         } | {
-            attributes: {
-                SourceUnit: number;
-                absolutePath: string;
-                file: string;
-                scope: number;
-                symbolAliases: any[];
-                unitAlias: string;
+            "attributes": {
+                "SourceUnit": number;
+                "absolutePath": string;
+                "file": string;
+                "scope": number;
+                "symbolAliases": any[];
+                "unitAlias": string;
                 literals?: undefined;
                 contractDependencies?: undefined;
                 contractKind?: undefined;
@@ -78,19 +78,19 @@ export declare const ERC20: {
                 linearizedBaseContracts?: undefined;
                 name?: undefined;
             };
-            id: number;
-            name: string;
-            src: string;
+            "id": number;
+            "name": string;
+            "src": string;
             children?: undefined;
         } | {
-            attributes: {
-                contractDependencies: number[];
-                contractKind: string;
-                documentation: string;
-                fullyImplemented: boolean;
-                linearizedBaseContracts: number[];
-                name: string;
-                scope: number;
+            "attributes": {
+                "contractDependencies": number[];
+                "contractKind": string;
+                "documentation": string;
+                "fullyImplemented": boolean;
+                "linearizedBaseContracts": number[];
+                "name": string;
+                "scope": number;
                 literals?: undefined;
                 SourceUnit?: undefined;
                 absolutePath?: undefined;
@@ -98,9 +98,9 @@ export declare const ERC20: {
                 symbolAliases?: undefined;
                 unitAlias?: undefined;
             };
-            children: ({
-                attributes: {
-                    arguments: any[];
+            "children": ({
+                "attributes": {
+                    "arguments": any[];
                     body?: undefined;
                     constant?: undefined;
                     implemented?: undefined;
@@ -114,72 +114,72 @@ export declare const ERC20: {
                     visibility?: undefined;
                     anonymous?: undefined;
                 };
-                children: {
-                    attributes: {
-                        contractScope: any;
-                        name: string;
-                        referencedDeclaration: number;
-                        type: string;
+                "children": {
+                    "attributes": {
+                        "contractScope": any;
+                        "name": string;
+                        "referencedDeclaration": number;
+                        "type": string;
                     };
-                    id: number;
-                    name: string;
-                    src: string;
+                    "id": number;
+                    "name": string;
+                    "src": string;
                 }[];
-                id: number;
-                name: string;
-                src: string;
+                "id": number;
+                "name": string;
+                "src": string;
             } | {
-                attributes: {
-                    body: any;
-                    constant: boolean;
-                    implemented: boolean;
-                    isConstructor: boolean;
-                    modifiers: any[];
-                    name: string;
-                    payable: boolean;
-                    scope: number;
-                    stateMutability: string;
-                    superFunction: any;
-                    visibility: string;
+                "attributes": {
+                    "body": any;
+                    "constant": boolean;
+                    "implemented": boolean;
+                    "isConstructor": boolean;
+                    "modifiers": any[];
+                    "name": string;
+                    "payable": boolean;
+                    "scope": number;
+                    "stateMutability": string;
+                    "superFunction": any;
+                    "visibility": string;
                     arguments?: undefined;
                     anonymous?: undefined;
                 };
-                children: {
-                    children: {
-                        attributes: {
-                            constant: boolean;
-                            name: string;
-                            scope: number;
-                            stateVariable: boolean;
-                            storageLocation: string;
-                            type: string;
-                            value: any;
-                            visibility: string;
+                "children": {
+                    "children": {
+                        "attributes": {
+                            "constant": boolean;
+                            "name": string;
+                            "scope": number;
+                            "stateVariable": boolean;
+                            "storageLocation": string;
+                            "type": string;
+                            "value": any;
+                            "visibility": string;
                         };
-                        children: {
-                            attributes: {
-                                name: string;
-                                type: string;
+                        "children": {
+                            "attributes": {
+                                "name": string;
+                                "type": string;
                             };
-                            id: number;
-                            name: string;
-                            src: string;
+                            "id": number;
+                            "name": string;
+                            "src": string;
                         }[];
-                        id: number;
-                        name: string;
-                        src: string;
+                        "id": number;
+                        "name": string;
+                        "src": string;
                     }[];
-                    id: number;
-                    name: string;
-                    src: string;
+                    "id": number;
+                    "name": string;
+                    "src": string;
                 }[];
-                id: number;
-                name: string;
-                src: string;
+                "id": number;
+                "name": string;
+                "src": string;
             } | {
-                attributes: {
-                    anonymous: boolean;
-                    name: string;
+                "attributes": {
+                    "anonymous": boolean;
+                    "name": string;
                     arguments?: undefined;
                     body?: undefined;
                     constant?: undefined;
@@ -192,53 +192,53 @@ export declare const ERC20: {
                     superFunction?: undefined;
                     visibility?: undefined;
                 };
-                children: {
-                    children: {
-                        attributes: {
-                            constant: boolean;
-                            indexed: boolean;
-                            name: string;
-                            scope: number;
-                            stateVariable: boolean;
-                            storageLocation: string;
-                            type: string;
-                            value: any;
-                            visibility: string;
+                "children": {
+                    "children": {
+                        "attributes": {
+                            "constant": boolean;
+                            "indexed": boolean;
+                            "name": string;
+                            "scope": number;
+                            "stateVariable": boolean;
+                            "storageLocation": string;
+                            "type": string;
+                            "value": any;
+                            "visibility": string;
                         };
-                        children: {
-                            attributes: {
-                                name: string;
-                                type: string;
+                        "children": {
+                            "attributes": {
+                                "name": string;
+                                "type": string;
                             };
-                            id: number;
-                            name: string;
-                            src: string;
+                            "id": number;
+                            "name": string;
+                            "src": string;
                         }[];
-                        id: number;
-                        name: string;
-                        src: string;
+                        "id": number;
+                        "name": string;
+                        "src": string;
                     }[];
-                    id: number;
-                    name: string;
-                    src: string;
+                    "id": number;
+                    "name": string;
+                    "src": string;
                 }[];
-                id: number;
-                name: string;
-                src: string;
+                "id": number;
+                "name": string;
+                "src": string;
             })[];
-            id: number;
-            name: string;
-            src: string;
+            "id": number;
+            "name": string;
+            "src": string;
         })[];
-        id: number;
-        name: string;
-        src: string;
+        "id": number;
+        "name": string;
+        "src": string;
     };
-    compiler: {
-        name: string;
-        version: string;
+    "compiler": {
+        "name": string;
+        "version": string;
     };
-    networks: {};
-    schemaVersion: string;
-    updatedAt: string;
+    "networks": {};
+    "schemaVersion": string;
+    "updatedAt": string;
 };

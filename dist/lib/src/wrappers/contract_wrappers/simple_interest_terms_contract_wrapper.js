@@ -152,14 +152,14 @@ var SimpleInterestTermsContractContract = /** @class */ (function (_super) {
             },
         };
         _this.getExpectedRepaymentValue = {
-            callAsync: function (agreementId, blockNumber, defaultBlock) {
+            callAsync: function (issuanceHash, timestamp, defaultBlock) {
                 return __awaiter(this, void 0, void 0, function () {
                     var self, result;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 self = this;
-                                return [4 /*yield*/, promisify(self.web3ContractInstance.getExpectedRepaymentValue.call, self.web3ContractInstance)(agreementId, blockNumber)];
+                                return [4 /*yield*/, promisify(self.web3ContractInstance.getExpectedRepaymentValue.call, self.web3ContractInstance)(issuanceHash, timestamp)];
                             case 1:
                                 result = _a.sent();
                                 return [2 /*return*/, result];

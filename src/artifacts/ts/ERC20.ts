@@ -721,5 +721,5 @@ export const ERC20 = {
     },
     networks: {},
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-15T23:44:08.736Z",
+    updatedAt: "2018-02-16T01:40:33.415Z",
 };
