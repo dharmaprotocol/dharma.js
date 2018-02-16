@@ -10,5 +10,5 @@ export default class Dharma {
     token: TokenAPI;
     blockchain: BlockchainAPI;
     private web3;
-    constructor(web3Provider: Web3.Provider, config: DharmaConfig);
+    constructor(web3Provider: Web3.Provider, config?: DharmaConfig);
 }

@@ -4,6 +4,7 @@ var Web3 = require("web3");
 var apis_1 = require("./apis");
 var Dharma = /** @class */ (function () {
     function Dharma(web3Provider, config) {
+        if (config === void 0) { config = {}; }
         this.web3 = new Web3(web3Provider);
         this.contracts = new apis_1.ContractsAPI(this.web3, config);
         this.servicing = new apis_1.ServicingAPI(this.web3, this.contracts);
