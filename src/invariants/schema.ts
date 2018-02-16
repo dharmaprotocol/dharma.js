@@ -1,5 +1,5 @@
 import { SchemaValidator, Schema, Schemas, ValidatorResult } from "../schemas";
-import { outdent } from "outdent";
+import outdent from "outdent";
 
 export const SchemaAssertionsError = {
     DOES_NOT_CONFORM_TO_SCHEMA: (

@@ -1764,5 +1764,5 @@ export const DummyToken = {
     },
     networks: {},
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:30:51.274Z",
+    updatedAt: "2018-02-16T12:37:33.988Z",
 };

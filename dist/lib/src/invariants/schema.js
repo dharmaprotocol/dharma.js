@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var schemas_1 = require("../schemas");
 var outdent_1 = require("outdent");
 exports.SchemaAssertionsError = {
-    DOES_NOT_CONFORM_TO_SCHEMA: function (variableName, schemaId, value, validationResult) { return outdent_1.outdent(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n            Expected ", " to conform to schema ", "\n\n            Encountered: ", "\n\n            Validation errors: ", "\n        "], ["\n            Expected ", " to conform to schema ", "\n\n            Encountered: ", "\n\n            Validation errors: ", "\n        "])), variableName, schemaId, JSON.stringify(value, null, "\t"), validationResult.errors.join(", ")); },
+    DOES_NOT_CONFORM_TO_SCHEMA: function (variableName, schemaId, value, validationResult) { return outdent_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n            Expected ", " to conform to schema ", "\n\n            Encountered: ", "\n\n            Validation errors: ", "\n        "], ["\n            Expected ", " to conform to schema ", "\n\n            Encountered: ", "\n\n            Validation errors: ", "\n        "])), variableName, schemaId, JSON.stringify(value, null, "\t"), validationResult.errors.join(", ")); },
 };
 var SchemaAssertions = /** @class */ (function () {
     function SchemaAssertions() {

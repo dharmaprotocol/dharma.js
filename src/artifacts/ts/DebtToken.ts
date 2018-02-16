@@ -3287,5 +3287,5 @@ export const DebtToken = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:30:52.419Z",
+    updatedAt: "2018-02-16T12:37:35.134Z",
 };
