@@ -123,6 +123,14 @@ export class ServicingAPI {
         return termsContract.getValueRepaidToDate.callAsync(issuanceHash);
     }
 
+    /**
+     * Asynchronously determine the expected value of repayments at a given
+     * point in time for a given debt agreement.
+     *
+     * @param  issuanceHash the hash of a debt agreement.
+     * @param  timestamp    the point in time at which the expected value is to be calculated.
+     * @return              the expected value of repayments at the point in time specified.
+     */
     public async getExpectedValueRepaid(
         issuanceHash: string,
         timestamp: number,
