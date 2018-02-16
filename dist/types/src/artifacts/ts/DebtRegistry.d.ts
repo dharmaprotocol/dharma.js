@@ -2307,6 +2307,94 @@ export declare const DebtRegistry: {
         version: string;
     };
     networks: {
+        "42": {
+            events: {
+                "0x10919d8a6bfbd0c46213ad51d6258e42af00bbf36133aada8a058bbe4f4a9240": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+                "0x7afbd1e661f2fdce6222afdac74cd28b1847177e232db3d0f0dcf3739e8d8094": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+                "0x3742184d7c9c1646421a0b618adffa131109c009b2c9f9fab3c8d890e295e5dd": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+                "0x1adcf3642077febc29ae94e96f4b266cd0014c4499a4ad57e1e6935efaf73c5c": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+                "0xc265a0634721cf43fbe76b8ab5c6f79b59fabfc8056dea60d2f0d2612fc70b12": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+                "0xd70b180c6a151902a25cf1e39c2d5d75079bb235362289aa42cd258a7e5af921": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+                "0x6985a02210a168e66602d3235cb6db0e70f92b3ba4d376a33c0f3d9434bff625": {
+                    anonymous: boolean;
+                    inputs: any[];
+                    name: string;
+                    type: string;
+                };
+                "0x7805862f689e2f13df9f062ff482ad3ad112aca9e0847911ed832e158c525b33": {
+                    anonymous: boolean;
+                    inputs: any[];
+                    name: string;
+                    type: string;
+                };
+                "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+                    anonymous: boolean;
+                    inputs: {
+                        indexed: boolean;
+                        name: string;
+                        type: string;
+                    }[];
+                    name: string;
+                    type: string;
+                };
+            };
+            links: {};
+            address: string;
+        };
         "70": {
             events: {
                 "0x10919d8a6bfbd0c46213ad51d6258e42af00bbf36133aada8a058bbe4f4a9240": {

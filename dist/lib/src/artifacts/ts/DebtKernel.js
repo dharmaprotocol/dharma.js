@@ -16546,6 +16546,11 @@ exports.DebtKernel = {
         version: "0.4.18+commit.9cf6e910.Emscripten.clang",
     },
     networks: {
+        "42": {
+            events: {},
+            links: {},
+            address: "0xc074a1ac201b50a3ee937f992776af50992c1965",
+        },
         "70": {
             events: {},
             links: {},
@@ -16553,6 +16558,6 @@ exports.DebtKernel = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T01:40:39.466Z",
+    updatedAt: "2018-02-16T11:14:33.239Z",
 };
 //# sourceMappingURL=DebtKernel.js.map

@@ -45,7 +45,7 @@ var single_line_string_1 = require("single-line-string");
 exports.BlockchainAPIErrors = {
     AWAIT_MINE_TX_TIMED_OUT: function (txHash) {
         return single_line_string_1.default(templateObject_1 || (templateObject_1 = __makeTemplateObject(["Timeout has been exceeded in\n                         awaiting mining of transaction\n                         with hash ", "."], ["Timeout has been exceeded in\n                         awaiting mining of transaction\n                         with hash ", "."])), txHash);
-    }
+    },
 };
 var BlockchainAPI = /** @class */ (function () {
     function BlockchainAPI(web3) {

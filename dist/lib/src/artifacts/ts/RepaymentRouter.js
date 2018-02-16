@@ -3014,6 +3014,11 @@ exports.RepaymentRouter = {
         version: "0.4.18+commit.9cf6e910.Emscripten.clang",
     },
     networks: {
+        "42": {
+            events: {},
+            links: {},
+            address: "0xeeb8d39946886c417925274b16907946628fbde3",
+        },
         "70": {
             events: {},
             links: {},
@@ -3021,6 +3026,6 @@ exports.RepaymentRouter = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T01:40:39.442Z",
+    updatedAt: "2018-02-16T11:14:33.218Z",
 };
 //# sourceMappingURL=RepaymentRouter.js.map

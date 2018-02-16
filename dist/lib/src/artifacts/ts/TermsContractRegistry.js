@@ -579,6 +579,11 @@ exports.TermsContractRegistry = {
         version: "0.4.18+commit.9cf6e910.Emscripten.clang",
     },
     networks: {
+        "42": {
+            events: {},
+            links: {},
+            address: "0x25f47928dd4014d4a375c9397f9ed4ce64bb3c0f",
+        },
         "70": {
             events: {},
             links: {},
@@ -586,6 +591,6 @@ exports.TermsContractRegistry = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T01:40:39.044Z",
+    updatedAt: "2018-02-16T11:14:32.758Z",
 };
 //# sourceMappingURL=TermsContractRegistry.js.map

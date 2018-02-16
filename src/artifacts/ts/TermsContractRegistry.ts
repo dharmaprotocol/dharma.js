@@ -612,5 +612,5 @@ export const TermsContractRegistry = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:14:32.758Z",
+    updatedAt: "2018-02-16T11:30:51.963Z",
 };

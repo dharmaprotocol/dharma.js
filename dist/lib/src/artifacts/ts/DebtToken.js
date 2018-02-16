@@ -3225,6 +3225,11 @@ exports.DebtToken = {
         version: "0.4.18+commit.9cf6e910.Emscripten.clang",
     },
     networks: {
+        "42": {
+            events: {},
+            links: {},
+            address: "0x7bb8be8ba408a541369e61fc41f4f0b1c5db87da",
+        },
         "70": {
             events: {},
             links: {},
@@ -3232,6 +3237,6 @@ exports.DebtToken = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T01:40:39.430Z",
+    updatedAt: "2018-02-16T11:14:33.206Z",
 };
 //# sourceMappingURL=DebtToken.js.map

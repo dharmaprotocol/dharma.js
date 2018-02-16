@@ -451,6 +451,11 @@ export declare const TermsContractRegistry: {
         version: string;
     };
     networks: {
+        "42": {
+            events: {};
+            links: {};
+            address: string;
+        };
         "70": {
             events: {};
             links: {};

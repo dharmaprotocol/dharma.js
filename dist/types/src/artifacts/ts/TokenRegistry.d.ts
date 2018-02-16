@@ -499,6 +499,11 @@ export declare const TokenRegistry: {
         version: string;
     };
     networks: {
+        "42": {
+            events: {};
+            links: {};
+            address: string;
+        };
         "70": {
             events: {};
             links: {};
