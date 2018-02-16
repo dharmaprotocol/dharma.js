@@ -31,6 +31,20 @@ export class ServicingAPI {
         this.assert = new Assertions(web3);
     }
 
+    /**
+     * Asynchronously issue a repayment towards a debt agreement.
+     *
+     * Note that the address of whoever is making the repayment must allot a
+     * sufficient allowance (equal to or greater than the amount specified in
+     * this call) to the `tokenTransferProxy` in order for this transaction to
+     * succeed.
+     *
+     * @param  issuanceHash the hash of the issuance to which the repayment is being made.
+     * @param  amount       the amount that is being repaid.
+     * @param  tokenAddress the address of the token in which the repayment is being made.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
     public async makeRepayment(
         issuanceHash: string,
         amount: BigNumber,
