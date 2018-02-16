@@ -105,8 +105,8 @@ export class ServicingAPI {
     }
 
     /**
-     * Asynchronously retrieve the amount that has been repaid towards a debt
-     * agreement.
+     * Asynchronously retrieve the amount that has been repaid to date towards a
+     * debt agreement.
      *
      * @param  issuanceHash the hash of the debt agreement.
      * @return              the amount that has been repaid to date.
