@@ -78,6 +78,21 @@ export class OrderAPI {
         this.assert = new Assertions(this.web3);
     }
 
+    /**
+     * Asynchronously fills a signed debt order.
+     *
+     * If the order fills successfully, the creditor will be debited the
+     * principal amount, the debtor will receive the principal, and the
+     * underwriter and the relayer will receive their transaction fees
+     * (if applicable).
+     *
+     * The debt order must be signed by all relevant parties and the associated
+     * data must be valid in order for the order to be fulfilled.
+     *
+     * @param  debtOrder a valid, signed debt order.
+     * @param  options   any params needed to modify the Ethereum transaction.
+     * @return           the hash of the ethereum transaction that fulfilled the debt order.
+     */
     public async fillAsync(debtOrder: DebtOrder, options?: TxData): Promise<string> {
         const transactionOptions = await this.getTxDefaultOptions();
 
