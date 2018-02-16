@@ -10,4 +10,6 @@ var adapters_api_1 = require("./adapters_api");
 exports.AdaptersAPI = adapters_api_1.AdaptersAPI;
 var servicing_api_1 = require("./servicing_api");
 exports.ServicingAPI = servicing_api_1.ServicingAPI;
+var token_api_1 = require("./token_api");
+exports.TokenAPI = token_api_1.TokenAPI;
 //# sourceMappingURL=index.js.map

@@ -10,6 +10,7 @@ var Dharma = /** @class */ (function () {
         this.sign = new apis_1.SignerAPI(this.web3, this.contracts);
         this.order = new apis_1.OrderAPI(this.web3, this.contracts);
         this.adapters = new apis_1.AdaptersAPI(this.web3, this.contracts);
+        this.token = new apis_1.TokenAPI(this.web3, this.contracts);
     }
     return Dharma;
 }());

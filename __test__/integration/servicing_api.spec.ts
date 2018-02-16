@@ -308,7 +308,9 @@ describe("Debt Servicing API (Integration Tests)", () => {
                     );
 
                     debtorBalanceBefore = Units.ether(2);
-                    beneficiaryBalanceBefore = new BigNumber(0);
+                    beneficiaryBalanceBefore = await nonPrincipalToken.balanceOf.callAsync(
+                        BENEFICIARY,
+                    );
 
                     txHash = await servicingApi.makeRepayment(
                         issuanceHash,

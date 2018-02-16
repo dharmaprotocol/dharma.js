@@ -1,5 +1,5 @@
 import * as Web3 from "web3";
-import { ContractsAPI, OrderAPI, SignerAPI, AdaptersAPI, ServicingAPI } from "./apis";
+import { ContractsAPI, OrderAPI, SignerAPI, AdaptersAPI, ServicingAPI, TokenAPI } from "./apis";
 import { DharmaConfig } from "./types";
 
 export default class Dharma {
@@ -8,6 +8,7 @@ export default class Dharma {
     public contracts: ContractsAPI;
     public adapters: AdaptersAPI;
     public servicing: ServicingAPI;
+    public token: TokenAPI;
 
     private web3: Web3;
 
@@ -20,5 +21,6 @@ export default class Dharma {
         this.sign = new SignerAPI(this.web3, this.contracts);
         this.order = new OrderAPI(this.web3, this.contracts);
         this.adapters = new AdaptersAPI(this.web3, this.contracts);
+        this.token = new TokenAPI(this.web3, this.contracts);
     }
 }

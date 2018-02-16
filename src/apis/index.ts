@@ -3,5 +3,6 @@ import { OrderAPI } from "./order_api";
 import { SignerAPI } from "./signer_api";
 import { AdaptersAPI } from "./adapters_api";
 import { ServicingAPI } from "./servicing_api";
+import { TokenAPI } from "./token_api";
 
-export { ContractsAPI, OrderAPI, SignerAPI, AdaptersAPI, ServicingAPI };
+export { ContractsAPI, OrderAPI, SignerAPI, AdaptersAPI, ServicingAPI, TokenAPI };
