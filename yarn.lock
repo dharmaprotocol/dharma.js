@@ -1513,36 +1513,9 @@ chardet@^0.4.0:
   version "0.4.2"
   resolved "https://registry.yarnpkg.com/chardet/-/chardet-0.4.2.tgz#b5473b33dc97c424e5d98dc87d55d4d8a29c8bf2"
 
-"charta@git://github.com/dharmaprotocol/charta.git":
-  version "0.0.1"
-  resolved "git://github.com/dharmaprotocol/charta.git#78bacda84e284084f331c65100a09a06c6be892a"
-  dependencies:
-    "@0xproject/utils" "^0.1.0"
-    "@types/bignumber.js" "^4.0.3"
-    "@types/json-stable-stringify" "^1.0.32"
-    "@types/lodash" "^4.14.86"
-    NonFungibleToken "https://github.com/dharmaprotocol/NonFungibleToken.git"
-    abi-decoder "^1.0.9"
-    bignumber.js "^4.1.0"
-    copyfiles "^1.2.0"
-    ethereumjs-abi "^0.6.4"
-    ethereumjs-util "^5.1.2"
-    ganache-cli beta
-    json-stable-stringify "^1.0.1"
-    left-pad "^1.2.0"
-    lodash "^4.17.4"
-    moment "^2.20.1"
-    solhint "^1.1.8"
-    solidity-sha3 "^0.4.1"
-    tslint "^5.8.0"
-    typescript "^2.6.1"
-    web3 "0.19.0"
-    web3-typescript-typings "^0.7.2"
-    zeppelin-solidity "^1.6.0"
-
 "charta@git://github.com/dharmaprotocol/charta.git#fix-unpacking-bug":
   version "0.0.1"
-  resolved "git://github.com/dharmaprotocol/charta.git#14cf9234de5b2c13ecfe19797ddb9eabb2d995cf"
+  resolved "git://github.com/dharmaprotocol/charta.git#3970fdfd26c77a0e65e812ece1a2745e57223ffb"
   dependencies:
     "@0xproject/utils" "^0.1.0"
     "@types/bignumber.js" "^4.0.3"

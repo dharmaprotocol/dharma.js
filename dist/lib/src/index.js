@@ -11,6 +11,7 @@ var Dharma = /** @class */ (function () {
         this.order = new apis_1.OrderAPI(this.web3, this.contracts);
         this.adapters = new apis_1.AdaptersAPI(this.web3, this.contracts);
         this.token = new apis_1.TokenAPI(this.web3, this.contracts);
+        this.blockchain = new apis_1.BlockchainAPI(this.web3);
     }
     return Dharma;
 }());

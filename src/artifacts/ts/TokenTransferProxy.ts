@@ -1254,6 +1254,11 @@ export const TokenTransferProxy = {
         version: "0.4.18+commit.9cf6e910.Emscripten.clang",
     },
     networks: {
+        "42": {
+            events: {},
+            links: {},
+            address: "0x4c00133199e1e294a748cff5ddba7c618ccba447",
+        },
         "70": {
             events: {},
             links: {},
@@ -1261,5 +1266,5 @@ export const TokenTransferProxy = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T01:40:39.428Z",
+    updatedAt: "2018-02-16T11:14:33.216Z",
 };

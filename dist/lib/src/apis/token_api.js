@@ -114,7 +114,7 @@ var TokenAPI = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var unlimitedAllowance;
             return __generator(this, function (_a) {
-                unlimitedAllowance = (new bignumber_js_1.BigNumber(2)).pow(256).sub(1);
+                unlimitedAllowance = new bignumber_js_1.BigNumber(2).pow(256).sub(1);
                 return [2 /*return*/, this.setProxyAllowanceAsync(tokenAddress, unlimitedAllowance, options)];
             });
         });

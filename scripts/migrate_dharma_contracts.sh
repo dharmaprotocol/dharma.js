@@ -11,8 +11,6 @@ DHARMA_SMART_CONTRACTS=$DHARMA_JS_REPO/node_modules/charta
 
 cd $DHARMA_SMART_CONTRACTS
 
-rm -rf build/contracts
-
 sleep 3
 
 echo -e "${CYAN}Installing Dharma contract deployment dependencies...${NO_COLOR}"

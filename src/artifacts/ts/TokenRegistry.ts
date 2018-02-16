@@ -647,6 +647,11 @@ export const TokenRegistry = {
         version: "0.4.18+commit.9cf6e910.Emscripten.clang",
     },
     networks: {
+        "42": {
+            events: {},
+            links: {},
+            address: "0xc282bb053387080a2f40354b6e83e0e00a0c483a",
+        },
         "70": {
             events: {},
             links: {},
@@ -654,5 +659,5 @@ export const TokenRegistry = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T01:40:39.045Z",
+    updatedAt: "2018-02-16T11:14:32.764Z",
 };

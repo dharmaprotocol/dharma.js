@@ -12,4 +12,6 @@ var servicing_api_1 = require("./servicing_api");
 exports.ServicingAPI = servicing_api_1.ServicingAPI;
 var token_api_1 = require("./token_api");
 exports.TokenAPI = token_api_1.TokenAPI;
+var blockchain_api_1 = require("./blockchain_api");
+exports.BlockchainAPI = blockchain_api_1.BlockchainAPI;
 //# sourceMappingURL=index.js.map
