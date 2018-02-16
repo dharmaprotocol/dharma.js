@@ -104,6 +104,13 @@ export class ServicingAPI {
         );
     }
 
+    /**
+     * Asynchronously retrieve the amount that has been repaid towards a debt
+     * agreement.
+     *
+     * @param  issuanceHash the hash of the debt agreement.
+     * @return              the amount that has been repaid to date.
+     */
     public async getValueRepaid(issuanceHash: string): Promise<BigNumber> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
