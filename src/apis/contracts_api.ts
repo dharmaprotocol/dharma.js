@@ -111,7 +111,7 @@ export class ContractsAPI {
 
         if (this.config.kernelAddress) {
             debtToken = await DebtTokenContract.at(
-                this.config.tokenAddress,
+                this.config.debtTokenAddress,
                 this.web3,
                 transactionOptions,
             );

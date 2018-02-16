@@ -659,5 +659,5 @@ export const TokenRegistry = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T12:37:34.637Z",
+    updatedAt: "2018-02-16T21:18:46.481Z",
 };
