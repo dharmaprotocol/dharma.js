@@ -3237,6 +3237,6 @@ exports.DebtToken = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:14:33.206Z",
+    updatedAt: "2018-02-16T11:30:52.419Z",
 };
 //# sourceMappingURL=DebtToken.js.map

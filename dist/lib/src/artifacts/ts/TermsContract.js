@@ -519,6 +519,6 @@ exports.TermsContract = {
     },
     networks: {},
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:14:26.825Z",
+    updatedAt: "2018-02-16T11:30:45.663Z",
 };
 //# sourceMappingURL=TermsContract.js.map

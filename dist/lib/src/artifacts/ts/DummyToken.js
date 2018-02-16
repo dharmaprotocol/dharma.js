@@ -1708,6 +1708,6 @@ exports.DummyToken = {
     },
     networks: {},
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:14:32.031Z",
+    updatedAt: "2018-02-16T11:30:51.274Z",
 };
 //# sourceMappingURL=DummyToken.js.map
