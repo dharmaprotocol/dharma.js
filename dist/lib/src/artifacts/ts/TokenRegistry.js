@@ -648,6 +648,6 @@ exports.TokenRegistry = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:30:51.970Z",
+    updatedAt: "2018-02-16T12:37:34.637Z",
 };
 //# sourceMappingURL=TokenRegistry.js.map

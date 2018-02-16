@@ -1242,6 +1242,6 @@ exports.TokenTransferProxy = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T11:30:52.420Z",
+    updatedAt: "2018-02-16T12:37:35.136Z",
 };
 //# sourceMappingURL=TokenTransferProxy.js.map
