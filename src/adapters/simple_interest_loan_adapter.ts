@@ -157,6 +157,13 @@ export class SimpleInterestLoanAdapter {
         this.termsContractInterface = new SimpleInterestLoanTerms();
     }
 
+    /**
+     * Asynchronously generates a Dharma debt order given an instance of a
+     * simple interest loan order.
+     *
+     * @param  simpleInterestLoanOrder a simple interest loan order instance.
+     * @return                         the generated Dharma debt order.
+     */
     public async toDebtOrder(simpleInterestLoanOrder: SimpleInterestLoanOrder): Promise<DebtOrder> {
         this.assert.schema.simpleInterestLoanOrder(
             "simpleInterestLoanOrder",
