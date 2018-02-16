@@ -245,10 +245,20 @@ export class ContractsAPI {
             ] as TermsContractRegistryContract;
         }
 
-        const termsContractRegistry = await TermsContractRegistryContract.deployed(
-            this.web3,
-            transactionOptions,
-        );
+        let termsContractRegistry: TermsContractRegistryContract;
+
+        if (this.config.termsContractRegistry) {
+            termsContractRegistry = await TermsContractRegistryContract.at(
+                this.config.termsContractRegistry,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            termsContractRegistry = await TermsContractRegistryContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+        }
 
         this.cache[TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY] = termsContractRegistry;
 
