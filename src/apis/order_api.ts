@@ -133,6 +133,13 @@ export class OrderAPI {
         );
     }
 
+    /**
+     * Asynchronously cancel a debt order if it has yet to be fulfilled.
+     *
+     * @param  debtOrder the debt order to be canceled.
+     * @param  options   any params needed to modify the Ethereum transaction.
+     * @return           the hash of the resulting Ethereum transaction.
+     */
     public async cancelOrderAsync(debtOrder: DebtOrder, options?: TxData): Promise<string> {
         const transactionOptions = await this.getTxDefaultOptions();
 
