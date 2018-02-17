@@ -7,6 +7,19 @@ This repository contains the `dharma.js` client application development librarie
 
 Extensive documentation on the libraries can be found [here](#).
 
+##### Installation & Setup:
+```
+yarn add @dharmaprotocol/dharma.js
+```
+
+##### Using ES6 style imports (recommended):
+```javascript
+import Dharma from "@dharmaprotocol/dharma.js"
+
+const dharma = new Dharma(web3.currentProvider);
+```
+
+
 We recommend brushing up on the basics of Dharma protocol before diving in -- a non-techincal primer can be found [here](https://blog.dharma.io/dharma-protocol-in-a-nutshell-a7abcc716429).  For a deeper dive, study the [Dharma whitepaper](https://whitepaper.dharma.io).
 
 [Join us on our chat](https://chat.dharma.io) for any technical or general questions.
