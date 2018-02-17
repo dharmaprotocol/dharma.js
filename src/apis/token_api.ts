@@ -82,7 +82,7 @@ export class TokenAPI {
     }
 
     /**
-     * Asynchronously set a proxy allowance.
+     * Asynchronously set an allowance to the `tokenTransferProxy`.
      *
      * @param  tokenAddress address of the ERC20 token.
      * @param  allowance    the size of the allowance.
@@ -127,11 +127,12 @@ export class TokenAPI {
     }
 
     /**
-     * Asynchronously determine the proxy allowance for a specified address.
+     * Asynchronously determine the allowance afforded to the
+     * `tokenTransferProxy` allotted by the specified owner.
      *
      * @param  tokenAddress address of the ERC20 token.
-     * @param  ownerAddress the address of the owner whose allowance we're querying.
-     * @return              the allowance allotted to the owner specified.
+     * @param  ownerAddress the owner who made the allowance allotment.
+     * @return              the allowance allotted to the `tokenTransferProxy`.
      */
     public async getProxyAllowanceAsync(
         tokenAddress: string,
