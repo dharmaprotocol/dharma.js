@@ -125,6 +125,13 @@ export class TokenAPI {
         return this.setProxyAllowanceAsync(tokenAddress, unlimitedAllowance, options);
     }
 
+    /**
+     * Asynchronously determine the proxy allowance for a specified address.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the address of the owner whose allowance we're querying.
+     * @return              the hash of the resulting transaction.
+     */
     public async getProxyAllowanceAsync(
         tokenAddress: string,
         ownerAddress: string,
