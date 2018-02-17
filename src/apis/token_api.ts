@@ -15,6 +15,16 @@ export class TokenAPI {
         this.contracts = contracts;
     }
 
+    /**
+     * Asynchronously transfer value denominated in the specified ERC20 token to
+     * the address specified.
+     *
+     * @param  tokenAddress the address of the token being used.
+     * @param  to           to whom the transfer is being made.
+     * @param  value        the amount being transferred.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
     public async transferAsync(
         tokenAddress: string,
         to: string,
