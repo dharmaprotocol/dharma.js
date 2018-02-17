@@ -41,8 +41,9 @@ export class TokenAPI {
     }
 
     /**
-     * Asynchronously transfer value from one address to another denominated in
-     * the specified ERC20 token.
+     * Asynchronously transfer the value amount in the token specified so long
+     * as the sender of the message has received sufficient allowance on behalf
+     * of `from` to do so.
      *
      * @param  tokenAddress the address of the token being used.
      * @param  from         from whom are the funds being transferred.
