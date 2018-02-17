@@ -109,7 +109,7 @@ export class TokenAPI {
     }
 
     /**
-     * Asynchronously set an unlimited proxy allowance.
+     * Asynchronously set an unlimited proxy allowance to the `tokenTransferProxy`.
      *
      * @param  tokenAddress address of the ERC20 token.
      * @param  options      any parameters necessary to modify the transaction.
