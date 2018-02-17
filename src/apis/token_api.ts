@@ -80,6 +80,14 @@ export class TokenAPI {
         return tokenContract.balanceOf.callAsync(ownerAddress);
     }
 
+    /**
+     * Asynchronously set a proxy allowance.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  allowance    the size of the allowance.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
     public async setProxyAllowanceAsync(
         tokenAddress: string,
         allowance: BigNumber,
