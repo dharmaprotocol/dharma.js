@@ -107,6 +107,13 @@ export class TokenAPI {
         );
     }
 
+    /**
+     * Asynchronously set an unlimited proxy allowance.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
     public async setUnlimitedProxyAllowanceAsync(
         tokenAddress: string,
         options?: TxData,
