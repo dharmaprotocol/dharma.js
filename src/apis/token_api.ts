@@ -67,6 +67,13 @@ export class TokenAPI {
         return tokenContract.transferFrom.sendTransactionAsync(from, to, value, transactionOptions);
     }
 
+    /**
+     * Asynchronously retrieve the balance of tokens for the owner specified.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress address of the owner for whom the balance is being requested.
+     * @return              the number of tokens the owner is holding.
+     */
     public async getBalanceAsync(tokenAddress: string, ownerAddress: string): Promise<BigNumber> {
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
