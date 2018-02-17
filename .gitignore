@@ -1,3 +1,6 @@
+# generated documentation
+generated_docs/
+
 dist
 node_modules
 coverage
