@@ -130,7 +130,7 @@ export class TokenAPI {
      *
      * @param  tokenAddress address of the ERC20 token.
      * @param  ownerAddress the address of the owner whose allowance we're querying.
-     * @return              the hash of the resulting transaction.
+     * @return              the allowance allotted to the owner specified.
      */
     public async getProxyAllowanceAsync(
         tokenAddress: string,
