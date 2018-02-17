@@ -40,6 +40,17 @@ export class TokenAPI {
         return tokenContract.transfer.sendTransactionAsync(to, value, transactionOptions);
     }
 
+    /**
+     * Asynchronously transfer value from one address to another denominated in
+     * the specified ERC20 token.
+     *
+     * @param  tokenAddress the address of the token being used.
+     * @param  from         from whom are the funds being transferred.
+     * @param  to           to whom are the funds being transferred.
+     * @param  value        the amount to be transferred.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
     public async transferFromAsync(
         tokenAddress: string,
         from: string,
