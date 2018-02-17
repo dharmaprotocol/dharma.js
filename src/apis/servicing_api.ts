@@ -31,6 +31,20 @@ export class ServicingAPI {
         this.assert = new Assertions(web3);
     }
 
+    /**
+     * Asynchronously issue a repayment towards a debt agreement.
+     *
+     * Note that the address of whoever is making the repayment must allot a
+     * sufficient allowance (equal to or greater than the amount specified in
+     * this call) to the `tokenTransferProxy` in order for this transaction to
+     * succeed.
+     *
+     * @param  issuanceHash the hash of the issuance to which the repayment is being made.
+     * @param  amount       the amount that is being repaid.
+     * @param  tokenAddress the address of the token in which the repayment is being made.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
     public async makeRepayment(
         issuanceHash: string,
         amount: BigNumber,
@@ -90,6 +104,13 @@ export class ServicingAPI {
         );
     }
 
+    /**
+     * Asynchronously retrieve the amount that has been repaid to date towards a
+     * debt agreement.
+     *
+     * @param  issuanceHash the hash of the debt agreement.
+     * @return              the amount that has been repaid to date.
+     */
     public async getValueRepaid(issuanceHash: string): Promise<BigNumber> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
@@ -102,6 +123,14 @@ export class ServicingAPI {
         return termsContract.getValueRepaidToDate.callAsync(issuanceHash);
     }
 
+    /**
+     * Asynchronously determine the expected value of repayments at a given
+     * point in time for a given debt agreement.
+     *
+     * @param  issuanceHash the hash of a debt agreement.
+     * @param  timestamp    the point in time at which the expected value is to be calculated.
+     * @return              the expected value of repayments at the point in time specified.
+     */
     public async getExpectedValueRepaid(
         issuanceHash: string,
         timestamp: number,

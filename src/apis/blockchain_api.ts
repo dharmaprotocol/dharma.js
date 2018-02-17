@@ -19,6 +19,16 @@ export class BlockchainAPI {
         this.intervalManager = new IntervalManager();
     }
 
+    /**
+     * Asynchronously polls the Ethereum blockchain until the specified
+     * transaction has been mined or the timeout limit is reached, whichever
+     * occurs first.
+     *
+     * @param  txHash                 the hash of the transaction.
+     * @param  pollingIntervalMs=1000 the interval at which the blockchain should be polled.
+     * @param  timeoutMs              the number of milliseconds until this process times out.
+     * @return                        the transaction receipt resulting from the mining process.
+     */
     public async awaitTransactionMinedAsync(
         txHash: string,
         pollingIntervalMs = 1000,
