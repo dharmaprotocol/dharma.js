@@ -1,28 +1,38 @@
-# Dharma.js (WIP)
+<img src="https://s3-us-west-2.amazonaws.com/dharma-assets/logo+orange.png"  width=300/>
 
-## How to get up and running:
+------------
+### Hello, `dharma.js`!
 
-_Install dependencies:_
-```bash
+This repository contains the `dharma.js` client application development libraries.  `dharma.js` makes it easy for developers who may not be deeply familiar with smart contract development to interact with the various components of Dharma protocol and build hyper-flexible lending applications.
+
+Extensive documentation on the libraries can be found [here](#).
+
+We recommend brushing up on the basics of Dharma protocol before diving in -- a non-techincal primer can be found [here](https://blog.dharma.io/dharma-protocol-in-a-nutshell-a7abcc716429).  For a deeper dive, study the [Dharma whitepaper](https://whitepaper.dharma.io).
+
+[Join us on our chat](https://chat.dharma.io) for any technical or general questions.
+
+> [Dharma](https://dharma.io) is a protocol for generic tokenized debt issuance and fundraising on blockchains supporting requisite smart contract functionality (i.e. EVM blockchains).  For a full description of the protocol's mechanics, a thorough overview can be found in the [Dharma Protocol Whitepaper](https://whitepaper.dharma.io/).  
+
+**Happy Hacking!**
+
+### Contributing
+---------------
+##### Dependencies
+
+Install dependencies:
+```
 yarn
 ```
 
-_Start `testrpc` and migrate Dharma contract dependencies_
-```bash
+##### Compile & Migrate Contracts
+
+Start `testrpc` and setup dependencies:
+```
 yarn chain
 ```
+Wait until the `dependency migration complete` message appears before interacting with the contracts.
 
-**Wait until you see `Dependency contract migrations complete, test chain is ready for use!` before running tests.**
-
-_Testing w/ hot-reloading_
-```bash
-yarn test:watch
+##### Testing
 ```
-
-## Troubleshooting
-
-_Ensure watchman is updated_
-```bash
-brew uninstall watchman
-brew install watchman
+yarn test:watch
 ```
