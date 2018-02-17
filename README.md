@@ -7,6 +7,8 @@ This repository contains the `dharma.js` client application development librarie
 
 Extensive documentation on the libraries can be found [here](#).
 
+For examples of how to integrate `dharma.js` into a client application, we recommend perusing the [Dharma React Starter Kit](https://github.com/dharmaprotocol/dharma-react-starter-kit) repository and playing around with the sample application.
+
 ##### Installation & Setup:
 ```
 yarn add @dharmaprotocol/dharma.js
