@@ -178,6 +178,26 @@ export class OrderAPI {
         );
     }
 
+    /**
+     * Given a complete debt order, asynchronously computes the issuanceHash
+     * (alias of debtAgreementId) of the debt order.
+     *
+     * Note: If the kernelVersion or issuanceVersion are not specified, the
+     * current DebtKernel and RepaymentRouter's addresses will be used
+     * respectively.
+     *
+     * @param debtOrder Debt order for which we'd like to compute the issuance hash
+     * @return The debt order's issuanceHash (alias of debtAgreementId).
+     */
+    public async getIssuanceHash(debtOrder: DebtOrder): Promise<string> {
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
+
+        return debtOrderWrapped.getIssuanceCommitmentHash();
+    }
+
     public async cancelIssuanceAsync(
         issuanceCommitment: IssuanceCommitment,
         transactionOptions: TxData,
