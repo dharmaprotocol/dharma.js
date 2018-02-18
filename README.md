@@ -52,9 +52,9 @@ Wait until the `dependency migration complete` message appears before interactin
 yarn test:watch
 ```
 
-## Dharma.js API Reference
 <a id="api_reference"></a>
----
+## Dharma.js API Reference
+
 
 * Dharma
   * [adapters](docs/classes/adapters.md)
