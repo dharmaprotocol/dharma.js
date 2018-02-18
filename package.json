@@ -25,7 +25,7 @@
     "start": "rollup -c rollup.config.ts -w",
     "chain": "bash scripts/init_chain.sh",
     "test": "jest --runInBand",
-    "docs": "typedoc --theme markdown --excludePrivate --excludeExternals --target ES6 --out generated_docs/ src/apis",
+    "docs": "typedoc --theme markdown --mdHideSources --name dharma.js --excludePrivate --excludeExternals --excludeProtected --hideGenerator --target ES6 --out generated_docs/ src/apis",
     "test:watch": "jest --watch --runInBand",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
     "deploy-docs": "ts-node tools/gh-pages-publish",
