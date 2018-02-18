@@ -4,7 +4,7 @@
 
 ### Properties
 
-* [simpleInterestLoan](_adapters_api_.adaptersapi.md#simpleinterestloan)
+* [simpleInterestLoan](#simpleinterestloan)
 
 ---
 
