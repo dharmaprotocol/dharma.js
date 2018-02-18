@@ -4675,5 +4675,5 @@ export const SimpleInterestTermsContract = {
     },
     networks: {},
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-16T21:18:46.494Z",
+    updatedAt: "2018-02-18T00:06:14.363Z",
 };

@@ -25,7 +25,7 @@
     "start": "rollup -c rollup.config.ts -w",
     "chain": "bash scripts/init_chain.sh",
     "test": "jest --runInBand",
-    "docs": "typedoc --excludePrivate --excludeExternals --target ES6 --out generated_docs/ src/apis",
+    "docs": "typedoc --theme markdown --excludePrivate --excludeExternals --target ES6 --out generated_docs/ src/apis",
     "test:watch": "jest --watch --runInBand",
     "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
     "deploy-docs": "ts-node tools/gh-pages-publish",
@@ -137,6 +137,7 @@
     "moment": "^2.20.1",
     "single-line-string": "^0.0.2",
     "tiny-promisify": "^1.0.0",
+    "typedoc-plugin-markdown": "^1.0.14",
     "web3": "0.20.4",
     "web3-typescript-typings": "^0.9.5",
     "web3-utils": "1.0.0-beta.29"

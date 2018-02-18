@@ -15,3 +15,9 @@ export const numberSchema = {
     type: "string",
     pattern: "^\\d+(\\.\\d+)?$",
 };
+
+export const wholeNumberSchema = {
+    id: "/WholeNumber",
+    type: "string",
+    pattern: "^\\d+$",
+};

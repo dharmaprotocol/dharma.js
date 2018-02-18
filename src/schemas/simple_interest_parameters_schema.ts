@@ -10,7 +10,7 @@ export const simpleInterestLoanOrderSchema = {
                     type: "string",
                     pattern: "^((hours)|(days)|(weeks)|(months)|(years))$",
                 },
-                termLength: { $ref: "/Number" },
+                termLength: { $ref: "/WholeNumber" },
             },
             required: [
                 "principalAmount",

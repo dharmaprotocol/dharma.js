@@ -35,6 +35,10 @@ export class SchemaAssertions {
         this.assertConformsToSchema(variableName, value, Schemas.numberSchema);
     }
 
+    public wholeNumber(variableName: string, value: any) {
+        this.assertConformsToSchema(variableName, value, Schemas.wholeNumberSchema);
+    }
+
     public simpleInterestLoanOrder(variableName: string, value: any) {
         this.assertConformsToSchema(variableName, value, Schemas.simpleInterestLoanOrderSchema);
     }

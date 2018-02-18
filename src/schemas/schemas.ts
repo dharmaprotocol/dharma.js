@@ -1,4 +1,9 @@
-import { addressSchema, numberSchema, bytes32Schema } from "./basic_type_schemas";
+import {
+    addressSchema,
+    numberSchema,
+    bytes32Schema,
+    wholeNumberSchema,
+} from "./basic_type_schemas";
 import {
     debtOrderSchema,
     debtOrderWithTermsSpecifiedSchema,
@@ -16,4 +21,5 @@ export const Schemas = {
     debtOrderWithTermsAndDebtorSpecifiedSchema,
     debtOrderWithTermsDebtorAndCreditorSpecifiedSchema,
     simpleInterestLoanOrderSchema,
+    wholeNumberSchema,
 };

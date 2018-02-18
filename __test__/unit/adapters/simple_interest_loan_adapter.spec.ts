@@ -106,6 +106,22 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
             });
         });
 
+        describe("...with term length not specified in whole numbers", () => {
+            const totalExpectedRepayment = new BigNumber(100);
+            const amortizationUnit = SimpleInterestLoanAdapter.Installments.DAILY;
+            const termLength = new BigNumber(1.3);
+
+            test("should throw INVALID_TERM_LENGTH error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.packParameters({
+                        totalExpectedRepayment,
+                        amortizationUnit,
+                        termLength,
+                    });
+                }).toThrowError(/Expected termLength to conform to schema \/WholeNumber/);
+            });
+        });
+
         describe("...with valid expected repayment, amortization, and term length", () => {
             describe("Scenario #1", () => {
                 const totalExpectedRepayment = new BigNumber(3.456 * 10 ** 18);

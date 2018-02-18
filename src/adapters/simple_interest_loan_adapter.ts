@@ -56,12 +56,18 @@ const MAX_EXPECTED_REPAYMENT_VALUE_HEX = "0xffffffffffffffffffffffffffffffff";
 const MAX_TERM_LENGTH_VALUE_HEX = "0xffffffffffffffffffffffffffffff";
 
 export class SimpleInterestLoanTerms {
+    private assert: Assertions;
+
+    constructor(web3: Web3) {
+        this.assert = new Assertions(web3);
+    }
+
     public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
         const { totalExpectedRepayment, amortizationUnit, termLength } = termsContractParameters;
 
         this.assertTotalExpectedRepaymentWithinBounds(totalExpectedRepayment);
         this.assertValidAmortizationUnit(amortizationUnit);
-        this.assertTermLengthWithinBounds(termLength);
+        this.assertTermLengthWholeAndWithinBounds(termLength);
 
         const totalExpectedRepaymentHex = totalExpectedRepayment.toString(16);
         const amortizationUnitTypeHex = AmortizationUnitCode[
@@ -128,12 +134,14 @@ export class SimpleInterestLoanTerms {
         }
     }
 
-    public assertTermLengthWithinBounds(termLengthInAmortizationUnits: BigNumber) {
+    public assertTermLengthWholeAndWithinBounds(termLengthInAmortizationUnits: BigNumber) {
         if (
             termLengthInAmortizationUnits.lt(0) ||
             termLengthInAmortizationUnits.gt(MAX_TERM_LENGTH_VALUE_HEX)
         ) {
             throw new Error(SimpleInterestAdapterErrors.INVALID_TERM_LENGTH());
+        } else {
+            this.assert.schema.wholeNumber("termLength", termLengthInAmortizationUnits);
         }
     }
 }
@@ -154,7 +162,7 @@ export class SimpleInterestLoanAdapter {
     public constructor(web3: Web3, contracts: ContractsAPI) {
         this.assert = new Assertions(web3);
         this.contracts = contracts;
-        this.termsContractInterface = new SimpleInterestLoanTerms();
+        this.termsContractInterface = new SimpleInterestLoanTerms(web3);
     }
 
     /**
