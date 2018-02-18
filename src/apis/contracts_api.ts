@@ -95,7 +95,17 @@ export class ContractsAPI {
             return this.cache[DEBT_REGISTRY_CONTRACT_CACHE_KEY] as DebtRegistryContract;
         }
 
-        let debtRegistry = await DebtRegistryContract.deployed(this.web3, transactionOptions);
+        let debtRegistry: DebtRegistryContract;
+
+        if (this.config.debtRegistryAddress) {
+            debtRegistry = await DebtRegistryContract.at(
+                this.config.debtRegistryAddress,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            debtRegistry = await DebtRegistryContract.deployed(this.web3, transactionOptions);
+        }
 
         this.cache[DEBT_REGISTRY_CONTRACT_CACHE_KEY] = debtRegistry;
 

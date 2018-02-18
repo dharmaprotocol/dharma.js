@@ -3,6 +3,7 @@ export interface DharmaConfig {
     repaymentRouterAddress?: string;
     tokenTransferProxyAddress?: string;
     tokenRegistryAddress?: string;
+    debtRegistryAddress?: string;
     debtTokenAddress?: string;
     termsContractRegistry?: string;
 }

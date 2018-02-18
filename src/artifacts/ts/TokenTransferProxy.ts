@@ -1266,5 +1266,5 @@ export const TokenTransferProxy = {
         },
     },
     schemaVersion: "1.0.1",
-    updatedAt: "2018-02-18T00:06:14.799Z",
+    updatedAt: "2018-02-18T16:39:59.824Z",
 };
