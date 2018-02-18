@@ -6,9 +6,9 @@
 
 ### Methods
 
-* [cancelIssuanceAsync](_order_api_.orderapi.md#cancelissuanceasync)
-* [cancelOrderAsync](_order_api_.orderapi.md#cancelorderasync)
-* [fillAsync](_order_api_.orderapi.md#fillasync)
+* [cancelIssuanceAsync](#cancelissuanceasync)
+* [cancelOrderAsync](#cancelorderasync)
+* [fillAsync](#fillasync)
 
 
 ---

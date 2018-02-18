@@ -5,7 +5,7 @@
 
 ### Methods
 
-* [awaitTransactionMinedAsync](_blockchain_api_.blockchainapi.md#awaittransactionminedasync)
+* [awaitTransactionMinedAsync](#awaittransactionminedasync)
 
 
 ---

@@ -5,12 +5,12 @@
 
 ### Methods
 
-* [getBalanceAsync](_token_api_.tokenapi.md#getbalanceasync)
-* [getProxyAllowanceAsync](_token_api_.tokenapi.md#getproxyallowanceasync)
-* [setProxyAllowanceAsync](_token_api_.tokenapi.md#setproxyallowanceasync)
-* [setUnlimitedProxyAllowanceAsync](_token_api_.tokenapi.md#setunlimitedproxyallowanceasync)
-* [transferAsync](_token_api_.tokenapi.md#transferasync)
-* [transferFromAsync](_token_api_.tokenapi.md#transferfromasync)
+* [getBalanceAsync](#getbalanceasync)
+* [getProxyAllowanceAsync](#getproxyallowanceasync)
+* [setProxyAllowanceAsync](#setproxyallowanceasync)
+* [setUnlimitedProxyAllowanceAsync](#setunlimitedproxyallowanceasync)
+* [transferAsync](#transferasync)
+* [transferFromAsync](#transferfromasync)
 
 ---
 
