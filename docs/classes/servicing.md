@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Servicing
+[dharma.js](../../README.md#api_reference) > Servicing
 
 # Class: ServicingAPI
 

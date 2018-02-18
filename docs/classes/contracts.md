@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Contracts
+[dharma.js](../../README.md#api_reference) > Contracts
 
 # Class: ContractsAPI
 

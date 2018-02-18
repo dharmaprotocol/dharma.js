@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Adapters
+[dharma.js](../../README.md#api_reference) > Adapters
 
 # Class: AdaptersAPI
 

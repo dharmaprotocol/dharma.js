@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Token
+[dharma.js](../../README.md#api_reference) > Token
 
 
 # Class: TokenAPI

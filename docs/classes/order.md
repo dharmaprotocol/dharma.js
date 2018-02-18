@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Order
+[dharma.js](../../README.md#api_reference) > Order
 
 # Class: OrderAPI
 

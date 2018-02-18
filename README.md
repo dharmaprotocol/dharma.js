@@ -53,7 +53,9 @@ yarn test:watch
 ```
 
 ## Dharma.js API Reference
+<a id="api_reference"></a>
 ---
+
 * Dharma
   * [adapters](docs/classes/adapters.md)
     * [simpleInterestLoan](docs/classes/adapters.md#simpleinterestloan)

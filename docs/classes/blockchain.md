@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Blockchain
+[dharma.js](../../README.md#api_reference) > Blockchain
 
 
 # Class: BlockchainAPI

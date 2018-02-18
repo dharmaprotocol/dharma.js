@@ -1,4 +1,4 @@
-[dharma.js](../../README.md) > Signer
+[dharma.js](../../README.md#api_reference) > Signer
 
 
 # Class: SignerAPI
