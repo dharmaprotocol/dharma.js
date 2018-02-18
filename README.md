@@ -51,3 +51,47 @@ Wait until the `dependency migration complete` message appears before interactin
 ```
 yarn test:watch
 ```
+
+<a id="api_reference"></a>
+## Dharma.js API Reference
+
+
+* Dharma
+  * [adapters](docs/classes/adapters.md)
+    * [simpleInterestLoan](docs/classes/adapters.md#simpleinterestloan)
+  * [blockchain](docs/classes/blockchain)
+    * [awaitTransactionMinedAsync](docs/classes/blockchain.md#awaittransactionminedasync)
+  * [contracts](docs/classes/contracts.md)
+    * [getTokenAddressBySymbolAsync](docs/classes/contracts.md#gettokenaddressbysymbolasync)
+    * [loadDebtKernelAsync](docs/classes/contracts.md#loaddebtkernelasync)
+    * [loadDebtRegistryAsync](docs/classes/contracts.md#loaddebtregistryasync)
+    * [loadDebtTokenAsync](docs/classes/contracts.md#loaddebttokenasync)
+    * [loadDharmaContractsAsync](docs/classes/contracts.md#loaddharmacontractsasync)
+    * [loadERC20TokenAsync](docs/classes/contracts.md#loaderc20tokenasync)
+    * [loadRepaymentRouterAsync](docs/classes/contracts.md#loadrepaymentrouterasync)
+    * [loadRepaymentRouterAtAsync](docs/classes/contracts.md#loadrepaymentrouteratasync)
+    * [loadSimpleInterestTermsContract](docs/classes/contracts.md#loadsimpleinteresttermscontract)
+    * [loadTermsContractAsync](docs/classes/contracts.md#loadtermscontractasync)
+    * [loadTermsContractRegistry](docs/classes/contracts.md#loadtermscontractregistry)
+    * [loadTokenBySymbolAsync](docs/classes/contracts.md#loadtokenbysymbolasync)
+    * [loadTokenRegistry](docs/classes/contracts.md#loadtokenregistry)
+    * [loadTokenTransferProxyAsync](docs/classes/contracts.md#loadtokentransferproxyasync)
+  * [order](docs/classes/order.md)
+    * [cancelIssuanceAsync](docs/classes/order.md#cancelissuanceasync)
+    * [cancelOrderAsync](docs/classes/order.md#cancelorderasync)
+    * [fillAsync](docs/classes/order.md#fillasync)
+  * [servicing](docs/classes/servicing.md)
+    * [getExpectedValueRepaid](docs/classes/servicing.md#getexpectedvaluerepaid)
+    * [getValueRepaid](docs/classes/servicing.md#getvaluerepaid)
+    * [makeRepayment](docs/classes/servicing.md#makerepayment)
+  * [signer](docs/classes/signer.md)
+    * [asCreditor](docs/classes/token.md#ascreditor)
+    * [asDebtor](docs/classes/token.md#asdebtor)
+    * [asUnderwriter](docs/classes/token.md#asunderwriter)
+  * [token](docs/classes/token.md)
+    * [getBalanceAsync](docs/classes/token.md#getbalanceasync)
+    * [getProxyAllowanceAsync](docs/classes/token.md#getproxyallowanceasync)
+    * [setProxyAllowanceAsync](docs/classes/token.md#setproxyallowanceasync)
+    * [setUnlimitedProxyAllowanceAsync](docs/classes/token.md#setunlimitedproxyallowanceasync)
+    * [transferAsync](docs/classes/token.md#transferasync)
+    * [transferFromAsync](docs/classes/token.md#transferfromasync)
