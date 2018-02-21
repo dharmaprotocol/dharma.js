@@ -94,7 +94,6 @@ describe("Order Signer (Unit Tests)", () => {
                 });
             });
 
-            // TODO: Check more precisely for numbers being of type BigNumber
             describe("malformed principal amount", () => {
                 let debtOrderMalformedPrincipal: any = Object.assign({}, debtOrder);
                 debtOrderMalformedPrincipal.principalAmount = 14;
