@@ -1,18 +1,32 @@
 import * as Web3 from "web3";
+import * as singleLineString from "single-line-string";
+
 import { Web3Utils } from "../../utils/web3_utils";
 import { ContractsAPI } from "./";
 import { BigNumber } from "bignumber.js";
+import { Assertions } from "../invariants";
 import { TxData } from "../types";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
+export const TokenAPIErrors = {
+    INSUFFICIENT_SENDER_BALANCE: () =>
+        singleLineString`SENDER does not have sufficient balance in the specified token
+                         to execute this transfer.`,
+    INSUFFICIENT_SENDER_ALLOWANCE: () =>
+        singleLineString`SENDER does not have sufficient allowance in the specified token
+                         to execute this transfer.`,
+};
+
 export class TokenAPI {
     private web3: Web3;
     private contracts: ContractsAPI;
+    private assert: Assertions;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
         this.contracts = contracts;
+        this.assert = new Assertions(this.web3);
     }
 
     /**
@@ -36,6 +50,13 @@ export class TokenAPI {
         Object.assign(transactionOptions, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.hasSufficientBalance(
+            tokenContract,
+            options.from,
+            value,
+            TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
+        );
 
         return tokenContract.transfer.sendTransactionAsync(to, value, transactionOptions);
     }
@@ -65,6 +86,21 @@ export class TokenAPI {
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
+        await this.assert.token.hasSufficientBalance(
+            tokenContract,
+            from,
+            value,
+            TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
+        );
+
+        await this.assert.token.hasSufficientAllowance(
+            tokenContract,
+            from,
+            options.from,
+            value,
+            TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE()
+        );
+
         return tokenContract.transferFrom.sendTransactionAsync(from, to, value, transactionOptions);
     }
 
@@ -77,6 +113,8 @@ export class TokenAPI {
      */
     public async getBalanceAsync(tokenAddress: string, ownerAddress: string): Promise<BigNumber> {
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
 
         return tokenContract.balanceOf.callAsync(ownerAddress);
     }

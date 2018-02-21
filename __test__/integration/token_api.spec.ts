@@ -1,5 +1,8 @@
 import { ContractsAPI, TokenAPI } from "src/apis";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
+import { TokenAPIErrors } from "src/apis/token_api";
+import { TokenAssertionErrors } from "../../src/invariants/token";
+
 import * as Web3 from "web3";
 import { Web3Utils } from "utils/web3_utils";
 import { DummyTokenContract, TokenTransferProxyContract } from "src/wrappers";
@@ -96,6 +99,22 @@ describe("Token API (Integration Tests)", () => {
         });
 
         describe("contract exists at token address", () => {
+            describe("the sender has insufficient balance", async () => {
+                beforeEach(async () => {
+                    await dummyREPToken.setBalance.sendTransactionAsync(SPENDER, Units.ether(0), {
+                        from: CONTRACT_OWNER,
+                    });
+                });
+
+                test("should throw INSUFFICIENT_SENDER_BALANCE", async () => {
+                    await expect(
+                        tokenApi.transferAsync(dummyREPToken.address, RECIPIENT, new BigNumber(10), { from: SPENDER }),
+                    ).rejects.toThrow(
+                        TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
+                    );
+                });
+            });
+
             describe("sender transfers 10 tokens to recipient", () => {
                 let txHash: string;
                 let spenderBalanceBefore: BigNumber;
@@ -160,6 +179,44 @@ describe("Token API (Integration Tests)", () => {
         });
 
         describe("contract exists at token address", () => {
+            describe("sender has insufficient balance", () => {
+                beforeEach(async () => {
+                    await dummyZRXToken.approve.sendTransactionAsync(OPERATOR, new BigNumber(10), {
+                        from: SPENDER,
+                    });
+
+                    await dummyZRXToken.setBalance.sendTransactionAsync(SPENDER, Units.ether(0), {
+                        from: CONTRACT_OWNER,
+                    });
+                });
+
+                test("should throw INSUFFICIENT_SENDER_BALANCE", async () => {
+                    await expect(tokenApi.transferFromAsync(
+                        dummyZRXToken.address,
+                        SPENDER,
+                        RECIPIENT,
+                        new BigNumber(10),
+                        { from: OPERATOR },
+                    )).rejects.toThrow(
+                        TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
+                    );
+                });
+            });
+
+            describe("sender has insufficient allowance", async () => {
+                test("should throw INSUFFICIENT_SENDER_ALLOWANCE", async () => {
+                    await expect(tokenApi.transferFromAsync(
+                        dummyZRXToken.address,
+                        SPENDER,
+                        RECIPIENT,
+                        new BigNumber(10),
+                        { from: OPERATOR },
+                    )).rejects.toThrow(
+                        TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE()
+                    );
+                });
+            });
+
             describe("sender transfers 10 tokens to recipient", () => {
                 let txHash: string;
                 let spenderBalanceBefore: BigNumber;
@@ -232,6 +289,20 @@ describe("Token API (Integration Tests)", () => {
                 });
                 await dummyMKRToken.setBalance.sendTransactionAsync(OPERATOR, Units.ether(200), {
                     from: CONTRACT_OWNER,
+                });
+            });
+
+            describe("token does not implement ERC20", () => {
+                let nonERC20;
+
+                beforeEach(async () => {
+                    nonERC20 = await contractsApi.loadRepaymentRouterAsync();
+                });
+
+                test("should throw CONTRACT_DOES_NOT_IMPLEMENT_ERC20", async () => {
+                    await expect(
+                        tokenApi.getBalanceAsync(nonERC20.address, SPENDER),
+                    ).rejects.toThrow(TokenAssertionErrors.MISSING_ERC20_METHOD());
                 });
             });
 
