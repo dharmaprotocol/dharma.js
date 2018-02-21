@@ -26,7 +26,7 @@ export class SchemaValidator {
         Validator.prototype.customFormats.BigNumber = function(input) {
             const regex = RegExp("^\\d+(\\.\\d+)?$");
             // This allows undefined inputs, e.g. salt is not present sometimes.
-            return !input || (input.isBigNumber && regex.test(input.toString()));
+            return input === undefined || (input.isBigNumber && regex.test(input.toString()));
         };
 
         Validator.prototype.customFormats.wholeBigNumber = function(input) {
