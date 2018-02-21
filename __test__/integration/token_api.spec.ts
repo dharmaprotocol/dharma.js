@@ -108,10 +108,13 @@ describe("Token API (Integration Tests)", () => {
 
                 test("should throw INSUFFICIENT_SENDER_BALANCE", async () => {
                     await expect(
-                        tokenApi.transferAsync(dummyREPToken.address, RECIPIENT, new BigNumber(10), { from: SPENDER }),
-                    ).rejects.toThrow(
-                        TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
-                    );
+                        tokenApi.transferAsync(
+                            dummyREPToken.address,
+                            RECIPIENT,
+                            new BigNumber(10),
+                            { from: SPENDER },
+                        ),
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE());
                 });
             });
 
@@ -191,29 +194,29 @@ describe("Token API (Integration Tests)", () => {
                 });
 
                 test("should throw INSUFFICIENT_SENDER_BALANCE", async () => {
-                    await expect(tokenApi.transferFromAsync(
-                        dummyZRXToken.address,
-                        SPENDER,
-                        RECIPIENT,
-                        new BigNumber(10),
-                        { from: OPERATOR },
-                    )).rejects.toThrow(
-                        TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
-                    );
+                    await expect(
+                        tokenApi.transferFromAsync(
+                            dummyZRXToken.address,
+                            SPENDER,
+                            RECIPIENT,
+                            new BigNumber(10),
+                            { from: OPERATOR },
+                        ),
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE());
                 });
             });
 
             describe("sender has insufficient allowance", async () => {
                 test("should throw INSUFFICIENT_SENDER_ALLOWANCE", async () => {
-                    await expect(tokenApi.transferFromAsync(
-                        dummyZRXToken.address,
-                        SPENDER,
-                        RECIPIENT,
-                        new BigNumber(10),
-                        { from: OPERATOR },
-                    )).rejects.toThrow(
-                        TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE()
-                    );
+                    await expect(
+                        tokenApi.transferFromAsync(
+                            dummyZRXToken.address,
+                            SPENDER,
+                            RECIPIENT,
+                            new BigNumber(10),
+                            { from: OPERATOR },
+                        ),
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE());
                 });
             });
 
@@ -299,7 +302,7 @@ describe("Token API (Integration Tests)", () => {
                     nonERC20 = await contractsApi.loadRepaymentRouterAsync();
                 });
 
-                test("should throw CONTRACT_DOES_NOT_IMPLEMENT_ERC20", async () => {
+                test("should throw MISSING_ERC20_METHOD", async () => {
                     await expect(
                         tokenApi.getBalanceAsync(nonERC20.address, SPENDER),
                     ).rejects.toThrow(TokenAssertionErrors.MISSING_ERC20_METHOD());

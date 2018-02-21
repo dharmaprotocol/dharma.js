@@ -55,7 +55,7 @@ export class TokenAPI {
             tokenContract,
             options.from,
             value,
-            TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
+            TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(),
         );
 
         return tokenContract.transfer.sendTransactionAsync(to, value, transactionOptions);
@@ -90,7 +90,7 @@ export class TokenAPI {
             tokenContract,
             from,
             value,
-            TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE()
+            TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(),
         );
 
         await this.assert.token.hasSufficientAllowance(
@@ -98,7 +98,7 @@ export class TokenAPI {
             from,
             options.from,
             value,
-            TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE()
+            TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE(),
         );
 
         return tokenContract.transferFrom.sendTransactionAsync(from, to, value, transactionOptions);
@@ -137,6 +137,9 @@ export class TokenAPI {
         Object.assign(transactionOptions, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
         const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync();
 
         return tokenContract.approve.sendTransactionAsync(
@@ -157,6 +160,10 @@ export class TokenAPI {
         tokenAddress: string,
         options?: TxData,
     ): Promise<string> {
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
         // We set an allowance to be "unlimited" by setting it to
         // it's maximum possible value -- namely, 2^256 - 1.
         const unlimitedAllowance = new BigNumber(2).pow(256).sub(1);
@@ -177,6 +184,9 @@ export class TokenAPI {
         ownerAddress: string,
     ): Promise<BigNumber> {
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
         const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync();
 
         return tokenContract.allowance.callAsync(ownerAddress, tokenTransferProxy.address);

@@ -12,12 +12,17 @@ export const bytes32Schema = {
 
 export const numberSchema = {
     id: "/Number",
-    type: "string",
-    pattern: "^\\d+(\\.\\d+)?$",
+    type: "object",
+    properties: {
+        // BigNumber.js objects have a boolean method isBigNumber.
+        isBigNumber: { type: "boolean" },
+    },
+    required: ["isBigNumber"],
+    format: "BigNumber",
 };
 
 export const wholeNumberSchema = {
     id: "/WholeNumber",
-    type: "string",
-    pattern: "^\\d+$",
+    type: "object",
+    format: "wholeBigNumber",
 };

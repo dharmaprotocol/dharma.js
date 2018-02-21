@@ -12,6 +12,7 @@ export class SchemaValidator {
 
     constructor() {
         this._validator = new Validator();
+
         for (const schema of values(Schemas)) {
             this._validator.addSchema(schema, schema.id);
         }
@@ -21,13 +22,19 @@ export class SchemaValidator {
         this._validator.addSchema(schema, schema.id);
     }
 
-    // In order to validate a complex JS object using jsonschema, we must replace any complex
-    // sub-types (e.g BigNumber) with a simpler string representation. Since BigNumber and other
-    // complex types implement the `toString` method, we can stringify the object and
-    // then parse it. The resultant object can then be checked using jsonschema.
     public validate(instance: any, schema: Schema): ValidatorResult {
-        const jsonSchemaCompatibleObject = JSON.parse(JSON.stringify(instance));
-        return this._validator.validate(jsonSchemaCompatibleObject, schema);
+        Validator.prototype.customFormats.BigNumber = function(input) {
+            const regex = RegExp("^\\d+(\\.\\d+)?$");
+            // This allows undefined inputs, e.g. salt is not present sometimes.
+            return !input || (input.isBigNumber && regex.test(input.toString()));
+        };
+
+        Validator.prototype.customFormats.wholeBigNumber = function(input) {
+            const regex = RegExp("^\\d+$");
+            return input && input.isBigNumber && regex.test(input.toString());
+        };
+
+        return this._validator.validate(instance, schema);
     }
 
     public isValid(instance: any, schema: Schema): boolean {
