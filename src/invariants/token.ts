@@ -4,12 +4,12 @@ import { ERC20Contract } from "../wrappers";
 import * as singleLineString from "single-line-string";
 
 export const TokenAssertionErrors = {
-    MISSING_ERC20_METHOD: () =>
-        singleLineString`Contract does not implement ERC20 interface.`,
+    MISSING_ERC20_METHOD: () => singleLineString`Contract does not implement ERC20 interface.`,
 };
 
 export class TokenAssertions {
-    // Throws an error if the given candidateContract does not implement the ERC20 interface.
+    // Throws if the given candidateContract does not respond to some methods from the ERC20 interface.
+    // TODO: This could be made more complete by comparing the ERC20 interface to the candidate's properties.
     public async implementsERC20(candidate: any): Promise<void> {
         try {
             await candidate.balanceOf.callAsync(candidate.address);
@@ -17,29 +17,6 @@ export class TokenAssertions {
         } catch (error) {
             throw new Error(TokenAssertionErrors.MISSING_ERC20_METHOD());
         }
-
-        /*
-            Alternative, something like this could work"
-
-            // An ERC20 contract must at least implement the following methods:
-            const specMethods = [
-                'name',
-                'symbol',
-                'decimals',
-                'totalSupply',
-                'balanceOf',
-                'transfer',
-                'transferFrom',
-                'approve',
-                'allowance'
-            ];
-
-            specMethods.map((method: string) => {
-                if (!candidate.hasOwnProperty(method)) {
-                    throw new Error(TokenAssertionErrors.MISSING_ERC20_METHOD(method));
-                }
-            });
-        */
     }
 
     public async hasSufficientBalance(

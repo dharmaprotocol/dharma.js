@@ -1,16 +1,20 @@
+// libraries
+import { BigNumber } from "bignumber.js";
+import * as ABIDecoder from "abi-decoder";
+import * as compact from "lodash.compact";
+import * as Web3 from "web3";
+
+// utils
+import * as Units from "utils/units";
+import { Web3Utils } from "utils/web3_utils";
+
 import { ContractsAPI, TokenAPI } from "src/apis";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { TokenAPIErrors } from "src/apis/token_api";
-import { TokenAssertionErrors } from "../../src/invariants/token";
-
-import * as Web3 from "web3";
-import { Web3Utils } from "utils/web3_utils";
+import { TokenAssertionErrors } from "src/invariants/token";
 import { DummyTokenContract, TokenTransferProxyContract } from "src/wrappers";
+
 import { ACCOUNTS } from "../accounts";
-import { BigNumber } from "bignumber.js";
-import * as ABIDecoder from "abi-decoder";
-import * as Units from "utils/units";
-import * as compact from "lodash.compact";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
