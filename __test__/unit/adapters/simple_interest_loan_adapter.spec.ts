@@ -15,7 +15,7 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const contracts = new ContractsAPI(web3);
 const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(web3, contracts);
-const simpleInterestLoanTerms = new SimpleInterestLoanTerms();
+const simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -185,10 +185,43 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
             });
         });
 
-        // TODO: Add test for malformed hex string
-        // describe("...with value that is not 32 byte hex string", () => {
-        //
-        // });
+        describe("...with value that has too few bytes", () => {
+            const termsContractParameters = "0x00000000025674c25cd7f81d067000000500000000000004";
+
+            test("should throw INVALID_PACKED_PARAMETERS error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.unpackParameters(termsContractParameters);
+                }).toThrowError(
+                    SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(termsContractParameters),
+                );
+            });
+        });
+
+        describe("...with value that has too many bytes", () => {
+            const termsContractParameters =
+                "0x00000000000000002ff62db077c000000100000000000000000000000000000007";
+
+            test("should throw INVALID_PACKED_PARAMETERS error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.unpackParameters(termsContractParameters);
+                }).toThrowError(
+                    SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(termsContractParameters),
+                );
+            });
+        });
+
+        describe("...with value that includes non-hexadecimal characters", () => {
+            const termsContractParameters =
+                "0x00000000000000002ff62db077c0000001000000000000z00000000000000007";
+
+            test("should throw INVALID_PACKED_PARAMETERS error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.unpackParameters(termsContractParameters);
+                }).toThrowError(
+                    SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(termsContractParameters),
+                );
+            });
+        });
 
         describe("...with termsContractParameters string", () => {
             describe("Scenario #1", () => {

@@ -49,6 +49,8 @@ export const SimpleInterestAdapterErrors = {
         singleLineString`Terms Contract at address ${termsContract} does not
                          correspond to the SimpleInterestTermsContract associated
                          with the principal token at address ${principalToken}`,
+    INVALID_PACKED_PARAMETERS: (packedParameters: string) =>
+        singleLineString`Expected a 32 byte hex string, but received: ${packedParameters}`,
 };
 
 const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
@@ -87,6 +89,8 @@ export class SimpleInterestLoanTerms {
         termsContractParametersPacked: string,
     ): SimpleInterestTermsContractParameters {
         // TODO: Assert 32 bytes length
+        this.assertValidPackedParameters(termsContractParametersPacked);
+
         const totalExpectedRepaymentHex = termsContractParametersPacked.substr(0, 34);
         const amortizationUnitTypeHex = "0x" + termsContractParametersPacked.substr(34, 2);
         const termLengthHex = "0x" + termsContractParametersPacked.substr(36);
@@ -143,6 +147,16 @@ export class SimpleInterestLoanTerms {
         } else {
             this.assert.schema.wholeNumber("termLength", termLengthInAmortizationUnits);
         }
+    }
+
+    public assertValidPackedParameters(packedParameters: string) {
+        const regex = RegExp("^0x[0-9a-f]{64}$");
+
+        if (typeof packedParameters === "string" && regex.test(packedParameters)) {
+            return null;
+        }
+
+        throw new Error(SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(packedParameters));
     }
 }
 
