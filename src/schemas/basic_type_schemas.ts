@@ -14,7 +14,6 @@ export const numberSchema = {
     id: "/Number",
     type: "object",
     properties: {
-        // BigNumber.js objects have a boolean method isBigNumber.
         isBigNumber: { type: "boolean" },
     },
     required: ["isBigNumber"],
