@@ -9,8 +9,9 @@ export const TokenAssertionErrors = {
 };
 
 export class TokenAssertions {
-    // Throws an error if the given candidateContract does not implement the ERC20 interface.
-    public async implementsERC20(candidate: ERC20Contract): Promise<void> {
+    // Throws an error if the given candidateContract does not respond to some methods from the ERC20 interface.
+    // TODO: This could be made more complete by comparing the ERC20 interface to the candidate's properties.
+    public async implementsERC20(candidate: any): Promise<void> {
         const address = candidate.address;
 
         try {
