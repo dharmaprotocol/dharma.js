@@ -192,7 +192,7 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
                 expect(() => {
                     simpleInterestLoanTerms.unpackParameters(termsContractParameters);
                 }).toThrowError(
-                    SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(termsContractParameters),
+                    /Expected termsContractParametersPacked to conform to schema \/Bytes32/,
                 );
             });
         });
@@ -205,7 +205,7 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
                 expect(() => {
                     simpleInterestLoanTerms.unpackParameters(termsContractParameters);
                 }).toThrowError(
-                    SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(termsContractParameters),
+                    /Expected termsContractParametersPacked to conform to schema \/Bytes32/,
                 );
             });
         });
@@ -218,7 +218,7 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
                 expect(() => {
                     simpleInterestLoanTerms.unpackParameters(termsContractParameters);
                 }).toThrowError(
-                    SimpleInterestAdapterErrors.INVALID_PACKED_PARAMETERS(termsContractParameters),
+                    /Expected termsContractParametersPacked to conform to schema \/Bytes32/,
                 );
             });
         });
