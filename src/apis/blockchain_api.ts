@@ -1,7 +1,7 @@
 import { Web3Utils } from "../../utils/web3_utils";
 import { IntervalManager } from "../../utils/interval_utils";
 import * as Web3 from "web3";
-import singleLineString from "single-line-string";
+import * as singleLineString from "single-line-string";
 
 export const BlockchainAPIErrors = {
     AWAIT_MINE_TX_TIMED_OUT: (txHash: string) =>
@@ -54,7 +54,7 @@ export class BlockchainAPI {
                     }
                 },
                 async () => {
-                    reject(BlockchainAPIErrors.AWAIT_MINE_TX_TIMED_OUT(txHash));
+                    reject(new Error(BlockchainAPIErrors.AWAIT_MINE_TX_TIMED_OUT(txHash)));
                 },
                 pollingIntervalMs,
                 timeoutMs,
