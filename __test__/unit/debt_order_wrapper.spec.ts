@@ -37,7 +37,7 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
     });
 
     describe("#getIssuanceCommitment", () => {
-        test("returna correct subset of debt order as defined in whitepaper", () => {
+        test("returns correct subset of debt order as defined in whitepaper", () => {
             expect(debtOrderWrapper.getIssuanceCommitment()).toEqual({
                 issuanceVersion: debtOrder.issuanceVersion,
                 debtor: debtOrder.debtor,
