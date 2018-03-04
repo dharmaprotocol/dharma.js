@@ -116,7 +116,7 @@ describe("Token API (Integration Tests)", () => {
                             new BigNumber(10),
                             { from: SPENDER },
                         ),
-                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE());
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(SPENDER));
                 });
             });
 
@@ -204,11 +204,11 @@ describe("Token API (Integration Tests)", () => {
                             new BigNumber(10),
                             { from: OPERATOR },
                         ),
-                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE());
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(SPENDER));
                 });
             });
 
-            describe("sender has insufficient allowance", async () => {
+            describe("spender has given operator insufficient allowance", async () => {
                 test("should throw INSUFFICIENT_SENDER_ALLOWANCE", async () => {
                     await expect(
                         tokenApi.transferFromAsync(
