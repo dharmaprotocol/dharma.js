@@ -1,11 +1,11 @@
 import { BigNumber } from "../../utils/bignumber";
 
 export interface IssuanceCommitment {
-    issuanceVersion: string;
-    debtor: string;
+    version: string;
+    beneficiary: string;
     underwriter: string;
     underwriterRiskRating: BigNumber;
     termsContract: string;
     termsContractParameters: string;
-    salt: BigNumber;
+    issuanceBlockTimestamp: BigNumber;
 }
