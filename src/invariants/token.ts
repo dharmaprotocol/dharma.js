@@ -1,7 +1,27 @@
 import { BigNumber } from "bignumber.js";
 import { ERC20Contract } from "../wrappers";
 
+import * as singleLineString from "single-line-string";
+
+export const TokenAssertionErrors = {
+    MISSING_ERC20_METHOD: (contractAddress: string) =>
+        singleLineString`Contract at ${contractAddress} does not implement ERC20 interface.`,
+};
+
 export class TokenAssertions {
+    // Throws an error if the given candidateContract does not implement the ERC20 interface.
+    public async implementsERC20(candidate: ERC20Contract): Promise<void> {
+        const address = candidate.address;
+
+        try {
+            // NOTE: Needs to check more methods to validate complete ERC20 interface.
+            await candidate.balanceOf.callAsync(address);
+            await candidate.totalSupply.callAsync();
+        } catch (error) {
+            throw new Error(TokenAssertionErrors.MISSING_ERC20_METHOD(address));
+        }
+    }
+
     public async hasSufficientBalance(
         principalToken: ERC20Contract,
         payer: string,

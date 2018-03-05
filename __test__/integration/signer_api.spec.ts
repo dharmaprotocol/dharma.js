@@ -94,16 +94,16 @@ describe("Order Signer (Unit Tests)", () => {
                 });
             });
 
-            // TODO: Check more precisely for numbers being of type BigNumber
-            // describe("malformed principal amount", () => {
-            //     let debtOrderMalformedPrincipal: any = Object.assign({}, debtOrder);
-            //     debtOrderMalformedPrincipal.principalAmount = 14;
-            //
-            //     test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-            //         await expect(orderSigner.asDebtor(debtOrderMalformedPrincipal)).rejects
-            //             .toThrow(/\.principalAmount is not of type BigNumber/);
-            //     });
-            // });
+            describe("malformed principal amount", () => {
+                let debtOrderMalformedPrincipal: any = Object.assign({}, debtOrder);
+                debtOrderMalformedPrincipal.principalAmount = 14;
+
+                test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
+                    await expect(orderSigner.asDebtor(debtOrderMalformedPrincipal)).rejects.toThrow(
+                        /\.principalAmount does not conform to the "BigNumber" format/,
+                    );
+                });
+            });
 
             describe("missing principal token", () => {
                 let debtOrderMissingPrincipalToken = Object.assign({}, debtOrder);

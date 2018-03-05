@@ -126,7 +126,7 @@ describe("Debt Servicing API (Integration Tests)", () => {
                         new BigNumber(-100),
                         principalToken.address,
                     ),
-                ).rejects.toThrow(/instance does not match pattern/);
+                ).rejects.toThrow(/instance does not conform to the "BigNumber" format/);
             });
         });
 

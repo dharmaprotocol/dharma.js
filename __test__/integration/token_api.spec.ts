@@ -1,13 +1,18 @@
-import { ContractsAPI, TokenAPI } from "src/apis";
-import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import * as Web3 from "web3";
-import { Web3Utils } from "utils/web3_utils";
-import { DummyTokenContract, TokenTransferProxyContract } from "src/wrappers";
-import { ACCOUNTS } from "../accounts";
 import { BigNumber } from "bignumber.js";
 import * as ABIDecoder from "abi-decoder";
-import * as Units from "utils/units";
 import * as compact from "lodash.compact";
+
+import { Web3Utils } from "utils/web3_utils";
+import * as Units from "utils/units";
+
+import { ContractsAPI, TokenAPI } from "src/apis";
+import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
+import { TokenAPIErrors } from "src/apis/token_api";
+import { TokenAssertionErrors } from "src/invariants/token";
+import { DummyTokenContract, TokenTransferProxyContract } from "src/wrappers";
+
+import { ACCOUNTS } from "../accounts";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -96,6 +101,25 @@ describe("Token API (Integration Tests)", () => {
         });
 
         describe("contract exists at token address", () => {
+            describe("the sender has insufficient balance", async () => {
+                beforeEach(async () => {
+                    await dummyREPToken.setBalance.sendTransactionAsync(SPENDER, Units.ether(0), {
+                        from: CONTRACT_OWNER,
+                    });
+                });
+
+                test("should throw INSUFFICIENT_SENDER_BALANCE", async () => {
+                    await expect(
+                        tokenApi.transferAsync(
+                            dummyREPToken.address,
+                            RECIPIENT,
+                            new BigNumber(10),
+                            { from: SPENDER },
+                        ),
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(SPENDER));
+                });
+            });
+
             describe("sender transfers 10 tokens to recipient", () => {
                 let txHash: string;
                 let spenderBalanceBefore: BigNumber;
@@ -160,6 +184,44 @@ describe("Token API (Integration Tests)", () => {
         });
 
         describe("contract exists at token address", () => {
+            describe("sender has insufficient balance", () => {
+                beforeEach(async () => {
+                    await dummyZRXToken.approve.sendTransactionAsync(OPERATOR, new BigNumber(10), {
+                        from: SPENDER,
+                    });
+
+                    await dummyZRXToken.setBalance.sendTransactionAsync(SPENDER, Units.ether(0), {
+                        from: CONTRACT_OWNER,
+                    });
+                });
+
+                test("should throw INSUFFICIENT_SENDER_BALANCE", async () => {
+                    await expect(
+                        tokenApi.transferFromAsync(
+                            dummyZRXToken.address,
+                            SPENDER,
+                            RECIPIENT,
+                            new BigNumber(10),
+                            { from: OPERATOR },
+                        ),
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(SPENDER));
+                });
+            });
+
+            describe("spender has given operator insufficient allowance", async () => {
+                test("should throw INSUFFICIENT_SENDER_ALLOWANCE", async () => {
+                    await expect(
+                        tokenApi.transferFromAsync(
+                            dummyZRXToken.address,
+                            SPENDER,
+                            RECIPIENT,
+                            new BigNumber(10),
+                            { from: OPERATOR },
+                        ),
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE());
+                });
+            });
+
             describe("sender transfers 10 tokens to recipient", () => {
                 let txHash: string;
                 let spenderBalanceBefore: BigNumber;
@@ -232,6 +294,20 @@ describe("Token API (Integration Tests)", () => {
                 });
                 await dummyMKRToken.setBalance.sendTransactionAsync(OPERATOR, Units.ether(200), {
                     from: CONTRACT_OWNER,
+                });
+            });
+
+            describe("token does not implement ERC20", () => {
+                let nonERC20;
+
+                beforeEach(async () => {
+                    nonERC20 = await contractsApi.loadRepaymentRouterAsync();
+                });
+
+                test("should throw MISSING_ERC20_METHOD", async () => {
+                    await expect(
+                        tokenApi.getBalanceAsync(nonERC20.address, SPENDER),
+                    ).rejects.toThrow(TokenAssertionErrors.MISSING_ERC20_METHOD(nonERC20.address));
                 });
             });
 
