@@ -6,20 +6,20 @@
 
 ### Methods
 
-* [getTokenAddressBySymbolAsync](_contracts_api_.contractsapi.md#gettokenaddressbysymbolasync)
-* [loadDebtKernelAsync](_contracts_api_.contractsapi.md#loaddebtkernelasync)
-* [loadDebtRegistryAsync](_contracts_api_.contractsapi.md#loaddebtregistryasync)
-* [loadDebtTokenAsync](_contracts_api_.contractsapi.md#loaddebttokenasync)
-* [loadDharmaContractsAsync](_contracts_api_.contractsapi.md#loaddharmacontractsasync)
-* [loadERC20TokenAsync](_contracts_api_.contractsapi.md#loaderc20tokenasync)
-* [loadRepaymentRouterAsync](_contracts_api_.contractsapi.md#loadrepaymentrouterasync)
-* [loadRepaymentRouterAtAsync](_contracts_api_.contractsapi.md#loadrepaymentrouteratasync)
-* [loadSimpleInterestTermsContract](_contracts_api_.contractsapi.md#loadsimpleinteresttermscontract)
-* [loadTermsContractAsync](_contracts_api_.contractsapi.md#loadtermscontractasync)
-* [loadTermsContractRegistry](_contracts_api_.contractsapi.md#loadtermscontractregistry)
-* [loadTokenBySymbolAsync](_contracts_api_.contractsapi.md#loadtokenbysymbolasync)
-* [loadTokenRegistry](_contracts_api_.contractsapi.md#loadtokenregistry)
-* [loadTokenTransferProxyAsync](_contracts_api_.contractsapi.md#loadtokentransferproxyasync)
+* [getTokenAddressBySymbolAsync](#gettokenaddressbysymbolasync)
+* [loadDebtKernelAsync](#loaddebtkernelasync)
+* [loadDebtRegistryAsync](#loaddebtregistryasync)
+* [loadDebtTokenAsync](#loaddebttokenasync)
+* [loadDharmaContractsAsync](#loaddharmacontractsasync)
+* [loadERC20TokenAsync](#loaderc20tokenasync)
+* [loadRepaymentRouterAsync](#loadrepaymentrouterasync)
+* [loadRepaymentRouterAtAsync](#loadrepaymentrouteratasync)
+* [loadSimpleInterestTermsContract](#loadsimpleinteresttermscontract)
+* [loadTermsContractAsync](#loadtermscontractasync)
+* [loadTermsContractRegistry](#loadtermscontractregistry)
+* [loadTokenBySymbolAsync](#loadtokenbysymbolasync)
+* [loadTokenRegistry](#loadtokenregistry)
+* [loadTokenTransferProxyAsync](#loadtokentransferproxyasync)
 
 
 

@@ -86,7 +86,8 @@ export class SimpleInterestLoanTerms {
     public unpackParameters(
         termsContractParametersPacked: string,
     ): SimpleInterestTermsContractParameters {
-        // TODO: Assert 32 bytes length
+        this.assert.schema.bytes32("termsContractParametersPacked", termsContractParametersPacked);
+
         const totalExpectedRepaymentHex = termsContractParametersPacked.substr(0, 34);
         const amortizationUnitTypeHex = "0x" + termsContractParametersPacked.substr(34, 2);
         const termLengthHex = "0x" + termsContractParametersPacked.substr(36);

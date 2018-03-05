@@ -1,16 +1,19 @@
 jest.mock("src/artifacts/ts/DebtToken");
 
 import * as promisify from "tiny-promisify";
+import * as Web3 from "web3";
+import { BigNumber } from "bignumber.js";
+// We use an unmocked version of "fs" in order to pull the correct
+// contract address from our artifacts for testing purposes
+import * as fs from "fs";
+
+import { NULL_ADDRESS } from "utils/constants";
 import { Web3Utils } from "utils/web3_utils";
+
 import { DebtTokenContract } from "src/wrappers";
 import { DebtToken as MockContractArtifacts } from "src/artifacts/ts/DebtToken";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
-import * as Web3 from "web3";
-
-// We use an unmocked version of "fs" in order to pull the correct
-// contract address from our artifacts for testing purposes
-import * as fs from "fs";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -37,7 +40,51 @@ describe("Debt Token Contract Wrapper (Unit)", () => {
         debtTokenContractAbi = abi;
     });
 
-    // TODO: Create tests for general solidity method calls on the Debt Token contract
+    describe("once deployed", () => {
+        let contractWrapper;
+
+        beforeAll(async () => {
+            let mockNetworks = {};
+
+            mockNetworks[networkId] = {
+                address: debtTokenContractAddress,
+            };
+
+            MockContractArtifacts.mock(debtTokenContractAbi, mockNetworks);
+
+            contractWrapper = await DebtTokenContract.deployed(web3, TX_DEFAULTS);
+        });
+
+        describe("name", () => {
+            describe("callAsync()", () => {
+                test("returns 'DebtToken'", async () => {
+                    const name = await contractWrapper.name.callAsync();
+                    expect(name).toEqual("DebtToken");
+                });
+            });
+        });
+
+        describe("balanceOf", () => {
+            describe("callAsync()", () => {
+                test("returns 0 when called with null address", async () => {
+                    const balance = await contractWrapper.balanceOf.callAsync(NULL_ADDRESS);
+                    expect(balance).toEqual(new BigNumber(0));
+                });
+            });
+        });
+
+        describe("implementsERC721", () => {
+            describe("callAsync", () => {
+                test("it returns true", async () => {
+                    const implementsERC721 = await contractWrapper.implementsERC721.callAsync();
+                    expect(implementsERC721).toEqual(true);
+                });
+            });
+        });
+
+        // TODO: Create tests for other general solidity method calls on the Debt Token contract
+    });
+
     describe("#deployed()", () => {
         describe("no contract address associated w/ current network id", () => {
             beforeAll(() => {

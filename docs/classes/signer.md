@@ -6,9 +6,9 @@
 
 ### Methods
 
-* [asCreditor](_signer_api_.signerapi.md#ascreditor)
-* [asDebtor](_signer_api_.signerapi.md#asdebtor)
-* [asUnderwriter](_signer_api_.signerapi.md#asunderwriter)
+* [asCreditor](#ascreditor)
+* [asDebtor](#asdebtor)
+* [asUnderwriter](#asunderwriter)
 
 
 

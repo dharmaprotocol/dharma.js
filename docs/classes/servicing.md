@@ -6,9 +6,9 @@
 
 ### Methods
 
-* [getExpectedValueRepaid](_servicing_api_.servicingapi.md#getexpectedvaluerepaid)
-* [getValueRepaid](_servicing_api_.servicingapi.md#getvaluerepaid)
-* [makeRepayment](_servicing_api_.servicingapi.md#makerepayment)
+* [getExpectedValueRepaid](#getexpectedvaluerepaid)
+* [getValueRepaid](#getvaluerepaid)
+* [makeRepayment](#makerepayment)
 
 
 ---
