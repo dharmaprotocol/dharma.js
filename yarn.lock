@@ -18,6 +18,10 @@
     esutils "^2.0.2"
     js-tokens "^3.0.0"
 
+"@dharmaprotocol/contracts@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.14.tgz#734ff7e1f5f9566325341de84bd8a8be600969a6"
+
 "@octokit/rest@^14.0.3":
   version "14.0.9"
   resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-14.0.9.tgz#d5e0a00dcb78901dd7b2ef852acfc0aea7c479ef"

@@ -1,146 +1,136 @@
 {
-  "name": "@dharmaprotocol/dharma.js",
-  "version": "0.0.14",
-  "description": "",
-  "keywords": [],
-  "main": "dist/dharma.umd.js",
-  "module": "dist/lib/src/index.js",
-  "typings": "dist/types/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "author": "Nadav Hollander <nadav@dharma.io>",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "license": "MIT",
-  "engines": {
-    "node": ">=6.0.0"
-  },
-  "scripts": {
-    "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-    "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.prod.json --module commonjs --outDir dist/lib && webpack",
-    "start": "rollup -c rollup.config.ts -w",
-    "chain": "bash scripts/init_chain.sh",
-    "test": "jest --runInBand",
-    "docs": "typedoc --theme markdown --mdHideSources --name dharma.js --excludePrivate --excludeExternals --excludeProtected --hideGenerator --target ES6 --out generated_docs/ src/apis",
-    "test:watch": "jest --watch --runInBand",
-    "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "commit": "git-cz",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "{src,__test__,__mocks__}/**/*.ts": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-conventional-changelog"
+    "name": "@dharmaprotocol/dharma.js",
+    "version": "0.0.14",
+    "description": "",
+    "keywords": [],
+    "main": "dist/dharma.umd.js",
+    "module": "dist/lib/src/index.js",
+    "typings": "dist/types/src/index.d.ts",
+    "files": ["dist"],
+    "author": "Nadav Hollander <nadav@dharma.io>",
+    "repository": {
+        "type": "git",
+        "url": ""
     },
-    "validate-commit-msg": {
-      "types": "conventional-commit-types",
-      "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+    "license": "MIT",
+    "engines": {
+        "node": ">=6.0.0"
+    },
+    "scripts": {
+        "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+        "prebuild": "rimraf dist",
+        "build": "tsc -p tsconfig.prod.json --module commonjs --outDir dist/lib && webpack",
+        "start": "rollup -c rollup.config.ts -w",
+        "chain": "bash scripts/init_chain.sh",
+        "test": "jest --runInBand",
+        "docs":
+            "typedoc --theme markdown --mdHideSources --name dharma.js --excludePrivate --excludeExternals --excludeProtected --hideGenerator --target ES6 --out generated_docs/ src/apis",
+        "test:watch": "jest --watch --runInBand",
+        "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
+        "deploy-docs": "ts-node tools/gh-pages-publish",
+        "report-coverage": "cat ./coverage/lcov.info | coveralls",
+        "commit": "git-cz",
+        "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+        "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+        "precommit": "lint-staged"
+    },
+    "lint-staged": {
+        "{src,__test__,__mocks__}/**/*.ts": ["prettier --write", "git add"]
+    },
+    "config": {
+        "commitizen": {
+            "path": "node_modules/cz-conventional-changelog"
+        },
+        "validate-commit-msg": {
+            "types": "conventional-commit-types",
+            "helpMessage":
+                "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+        }
+    },
+    "jest": {
+        "automock": false,
+        "transform": {
+            ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+        },
+        "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+        "moduleFileExtensions": ["ts", "tsx", "js"],
+        "modulePaths": ["<rootDir>/"],
+        "coveragePathIgnorePatterns": ["/node_modules/", "/test/"],
+        "coverageThreshold": {
+            "global": {
+                "branches": 90,
+                "functions": 95,
+                "lines": 95,
+                "statements": 95
+            }
+        },
+        "collectCoverage": true,
+        "mapCoverage": true
+    },
+    "devDependencies": {
+        "@types/jest": "^22.0.0",
+        "@types/node": "^8.0.0",
+        "awesome-typescript-loader": "^3.4.1",
+        "babel-cli": "^6.26.0",
+        "bn.js": "^4.11.8",
+        "charta": "git://github.com/dharmaprotocol/charta.git#fix-unpacking-bug",
+        "colors": "^1.1.2",
+        "commitizen": "^2.9.6",
+        "coveralls": "^3.0.0",
+        "cross-env": "^5.0.1",
+        "cz-conventional-changelog": "^2.0.0",
+        "ethereumjs-abi": "^0.6.5",
+        "ganache-cli": "beta",
+        "husky": "^0.14.0",
+        "jest": "^22.0.2",
+        "lint-staged": "^6.0.0",
+        "lodash.camelcase": "^4.3.0",
+        "lodash.compact": "^3.0.1",
+        "prettier": "^1.10.2",
+        "prompt": "^1.0.0",
+        "replace-in-file": "^3.0.0-beta.2",
+        "rimraf": "^2.6.1",
+        "rollup": "^0.53.0",
+        "rollup-plugin-commonjs": "^8.0.2",
+        "rollup-plugin-json": "^2.3.0",
+        "rollup-plugin-node-builtins": "^2.1.2",
+        "rollup-plugin-node-globals": "^1.1.0",
+        "rollup-plugin-node-resolve": "^3.0.0",
+        "rollup-plugin-sourcemaps": "^0.4.2",
+        "rollup-plugin-typescript2": "^0.9.0",
+        "secp256k1": "^3.5.0",
+        "semantic-release": "^11.0.2",
+        "ts-jest": "^22.0.0",
+        "ts-node": "^4.1.0",
+        "tslint": "^5.8.0",
+        "tslint-config-prettier": "^1.1.0",
+        "tslint-config-standard": "^7.0.0",
+        "typedoc": "^0.10.0",
+        "typedoc-plugin-markdown": "^1.0.14",
+        "typescript": "^2.6.2",
+        "validate-commit-msg": "^2.12.2",
+        "web3-fake-provider": "^0.1.0",
+        "webpack": "^3.11.0"
+    },
+    "dependencies": {
+        "@dharmaprotocol/contracts": "^0.0.14",
+        "bignumber.js": "^5.0.0",
+        "ethereumjs-util": "^5.1.4",
+        "jsonschema": "^1.2.2",
+        "lodash.defaults": "^4.2.0",
+        "lodash.includes": "^4.3.0",
+        "lodash.isfunction": "^3.0.9",
+        "lodash.isobject": "^3.0.2",
+        "lodash.isundefined": "^3.0.1",
+        "lodash.omit": "^4.5.0",
+        "lodash.pickby": "^4.6.0",
+        "lodash.values": "^4.3.0",
+        "moment": "^2.20.1",
+        "single-line-string": "^0.0.2",
+        "tiny-promisify": "^1.0.0",
+        "typedoc-plugin-markdown": "^1.0.14",
+        "web3": "0.20.4",
+        "web3-typescript-typings": "^0.9.5",
+        "web3-utils": "1.0.0-beta.29"
     }
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
-    },
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "modulePaths": [
-      "<rootDir>/"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
-    },
-    "collectCoverage": true,
-    "mapCoverage": true
-  },
-  "devDependencies": {
-    "@types/jest": "^22.0.0",
-    "@types/node": "^8.0.0",
-    "awesome-typescript-loader": "^3.4.1",
-    "babel-cli": "^6.26.0",
-    "bn.js": "^4.11.8",
-    "charta": "git://github.com/dharmaprotocol/charta.git#fix-unpacking-bug",
-    "colors": "^1.1.2",
-    "commitizen": "^2.9.6",
-    "coveralls": "^3.0.0",
-    "cross-env": "^5.0.1",
-    "cz-conventional-changelog": "^2.0.0",
-    "ethereumjs-abi": "^0.6.5",
-    "ganache-cli": "beta",
-    "husky": "^0.14.0",
-    "jest": "^22.0.2",
-    "lint-staged": "^6.0.0",
-    "lodash.camelcase": "^4.3.0",
-    "lodash.compact": "^3.0.1",
-    "prettier": "^1.10.2",
-    "prompt": "^1.0.0",
-    "replace-in-file": "^3.0.0-beta.2",
-    "rimraf": "^2.6.1",
-    "rollup": "^0.53.0",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-json": "^2.3.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
-    "rollup-plugin-node-globals": "^1.1.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-sourcemaps": "^0.4.2",
-    "rollup-plugin-typescript2": "^0.9.0",
-    "secp256k1": "^3.5.0",
-    "semantic-release": "^11.0.2",
-    "ts-jest": "^22.0.0",
-    "ts-node": "^4.1.0",
-    "tslint": "^5.8.0",
-    "tslint-config-prettier": "^1.1.0",
-    "tslint-config-standard": "^7.0.0",
-    "typedoc": "^0.10.0",
-    "typedoc-plugin-markdown": "^1.0.14",
-    "typescript": "^2.6.2",
-    "validate-commit-msg": "^2.12.2",
-    "web3-fake-provider": "^0.1.0",
-    "webpack": "^3.11.0"
-  },
-  "dependencies": {
-    "bignumber.js": "^5.0.0",
-    "ethereumjs-util": "^5.1.4",
-    "jsonschema": "^1.2.2",
-    "lodash.defaults": "^4.2.0",
-    "lodash.includes": "^4.3.0",
-    "lodash.isfunction": "^3.0.9",
-    "lodash.isobject": "^3.0.2",
-    "lodash.isundefined": "^3.0.1",
-    "lodash.omit": "^4.5.0",
-    "lodash.pickby": "^4.6.0",
-    "lodash.values": "^4.3.0",
-    "moment": "^2.20.1",
-    "single-line-string": "^0.0.2",
-    "tiny-promisify": "^1.0.0",
-    "typedoc-plugin-markdown": "^1.0.14",
-    "web3": "0.20.4",
-    "web3-typescript-typings": "^0.9.5",
-    "web3-utils": "1.0.0-beta.29"
-  }
 }

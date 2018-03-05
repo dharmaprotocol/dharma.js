@@ -1,4 +1,4 @@
-jest.mock("src/artifacts/ts/DebtKernel");
+jest.mock("@dharmaprotocol/contracts");
 
 import * as promisify from "tiny-promisify";
 import { Web3Utils } from "utils/web3_utils";
@@ -7,7 +7,7 @@ import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_con
 import { ACCOUNTS } from "../accounts";
 import * as Web3 from "web3";
 
-import { DebtKernel as ContractArtifactsMock } from "src/artifacts/ts/DebtKernel";
+import { DebtKernel as ContractArtifactsMock } from "@dharmaprotocol/contracts";
 
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
@@ -17,7 +17,8 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
-const DEBT_KERNEL_RAW_ARTIFACTS_PATH = "src/artifacts/json/DebtKernel.json";
+const DEBT_KERNEL_RAW_ARTIFACTS_PATH =
+    "node_modules/@dharmaprotocol/contracts/artifacts/json/DebtKernel.json";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
