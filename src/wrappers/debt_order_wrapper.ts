@@ -67,15 +67,7 @@ export class DebtOrderWrapper {
      * @return Issuance commitment associated with this debt order
      */
     public getIssuanceCommitment(): IssuanceCommitment {
-        return {
-            issuanceVersion: this.debtOrder.issuanceVersion,
-            debtor: this.debtOrder.debtor,
-            underwriter: this.debtOrder.underwriter,
-            underwriterRiskRating: this.debtOrder.underwriterRiskRating,
-            termsContract: this.debtOrder.termsContract,
-            termsContractParameters: this.debtOrder.termsContractParameters,
-            salt: this.debtOrder.salt,
-        };
+        return IssuanceCommitment.fromDebtOrder(this.debtOrder);
     }
 
     /**
@@ -85,16 +77,7 @@ export class DebtOrderWrapper {
      * @return Hash of the issuance commitment associated with this debt order.
      */
     public getIssuanceCommitmentHash(): string {
-        const issuanceCommitment = this.getIssuanceCommitment();
-        return Web3Utils.soliditySHA3(
-            issuanceCommitment.issuanceVersion,
-            issuanceCommitment.debtor,
-            issuanceCommitment.underwriter,
-            issuanceCommitment.underwriterRiskRating,
-            issuanceCommitment.termsContract,
-            issuanceCommitment.termsContractParameters,
-            issuanceCommitment.salt,
-        );
+        return this.getIssuanceCommitment().getHash();
     }
 
     /**
