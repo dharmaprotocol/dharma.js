@@ -6,7 +6,7 @@ export interface Interval {
 }
 
 export class IntervalManager {
-    private intervals: { [intervalId: string]: Interval } = {};
+    protected intervals: { [intervalId: string]: Interval } = {};
 
     constructor() {
         this._intervalCallback = this._intervalCallback.bind(this);
@@ -25,7 +25,7 @@ export class IntervalManager {
             onTimeout,
             intervalMs,
             timeoutMs,
-        }
+        };
 
         setTimeout(this._intervalCallback(intervalId), intervalMs);
         setTimeout(this._timeoutCallback(intervalId), timeoutMs);
@@ -37,7 +37,7 @@ export class IntervalManager {
         }
     }
 
-    private async _intervalCallback(intervalId: string): Promise<any> {
+    protected async _intervalCallback(intervalId: string): Promise<any> {
         if (intervalId in this.intervals) {
             const { onCallback, intervalMs } = this.intervals[intervalId];
 
@@ -51,7 +51,7 @@ export class IntervalManager {
         }
     }
 
-    private async _timeoutCallback(intervalId: string): Promise<any> {
+    protected async _timeoutCallback(intervalId: string): Promise<any> {
         if (intervalId in this.intervals) {
             const { onTimeout } = this.intervals[intervalId];
 
