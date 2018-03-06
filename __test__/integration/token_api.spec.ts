@@ -1,10 +1,12 @@
-import * as Web3 from "web3";
+// libraries
 import { BigNumber } from "bignumber.js";
 import * as ABIDecoder from "abi-decoder";
 import * as compact from "lodash.compact";
+import * as Web3 from "web3";
 
-import { Web3Utils } from "utils/web3_utils";
+// utils
 import * as Units from "utils/units";
+import { Web3Utils } from "utils/web3_utils";
 
 import { ContractsAPI, TokenAPI } from "src/apis";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
