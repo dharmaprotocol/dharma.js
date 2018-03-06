@@ -17,7 +17,7 @@ import {
 } from "src/wrappers";
 
 import { ACCOUNTS } from "../../../accounts";
-import { MakeRepaymentScenario } from "../scenarios/index";
+import { MakeRepaymentScenario } from "../scenarios";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3Utils = new Web3Utils(web3);

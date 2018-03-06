@@ -10,7 +10,7 @@ export interface MakeRepaymentScenario {
     description: string;
     // The amount given as repayment.
     amount: BigNumber;
-    // The sender's allowance for the given repayment token.
+    // The sender's proxy allowance for the given repayment token.
     allowance: BigNumber;
     // The sender's balance for the given repayment token.
     balance: BigNumber;

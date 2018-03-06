@@ -11,11 +11,11 @@ import { TxData } from "../types";
 const TRANSFER_GAS_MAXIMUM = 70000;
 
 export const TokenAPIErrors = {
-    INSUFFICIENT_SENDER_BALANCE: spenderAddress =>
-        singleLineString`Sender with address ${spenderAddress} does not have sufficient balance in the specified token
+    INSUFFICIENT_SENDER_BALANCE: address =>
+        singleLineString`SENDER with address ${address} does not have sufficient balance in the specified token
                          to execute this transfer.`,
-    INSUFFICIENT_SENDER_ALLOWANCE: () =>
-        singleLineString`SENDER does not have sufficient allowance in the specified token
+    INSUFFICIENT_SENDER_ALLOWANCE: address =>
+        singleLineString`SENDER with address ${address} does not have sufficient allowance in the specified token
                          to execute this transfer.`,
 };
 
@@ -99,7 +99,7 @@ export class TokenAPI {
             from,
             options.from,
             value,
-            TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE(),
+            TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE(from),
         );
 
         return tokenContract.transferFrom.sendTransactionAsync(from, to, value, transactionOptions);

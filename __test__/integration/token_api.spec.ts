@@ -218,7 +218,7 @@ describe("Token API (Integration Tests)", () => {
                             new BigNumber(10),
                             { from: OPERATOR },
                         ),
-                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE());
+                    ).rejects.toThrow(TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE(SPENDER));
                 });
             });
 
