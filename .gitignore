@@ -1,4 +1,5 @@
-/src/artifacts
+/src/artifacts/ts/*.ts
+/src/artifacts/json/*.json
 
 # generated documentation
 generated_docs/
