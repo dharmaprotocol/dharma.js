@@ -4,6 +4,7 @@ import {
     RepaymentRouterContract,
     TokenTransferProxyContract,
     DummyTokenContract,
+    SimpleInterestTermsContractContract,
 } from "src/wrappers";
 import { OrderAPI, SignerAPI } from "src/apis";
 import {
@@ -23,6 +24,7 @@ export class OrderScenarioRunner {
     public repaymentRouter: RepaymentRouterContract;
     public tokenTransferProxy: TokenTransferProxyContract;
     public principalToken: DummyTokenContract;
+    public termsContract: SimpleInterestTermsContractContract;
     public orderApi: OrderAPI;
     public orderSigner: SignerAPI;
     public abiDecoder: any;
@@ -56,6 +58,7 @@ export class OrderScenarioRunner {
                     this.debtKernel,
                     this.repaymentRouter,
                     this.principalToken,
+                    this.termsContract,
                 );
 
                 // We dynamically set the creditor's balance and
@@ -101,6 +104,7 @@ export class OrderScenarioRunner {
                     const txHash = await this.orderApi.fillAsync(debtOrder, {
                         from: scenario.filler,
                     });
+
                     const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
 
                     const [debtOrderFilledLog] = compact(ABIDecoder.decodeLogs(receipt.logs));

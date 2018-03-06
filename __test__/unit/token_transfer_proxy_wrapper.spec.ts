@@ -1,9 +1,9 @@
-jest.mock("src/artifacts/ts/TokenTransferProxy");
+jest.mock("@dharmaprotocol/contracts");
 
 import * as promisify from "tiny-promisify";
 import { Web3Utils } from "utils/web3_utils";
 import { TokenTransferProxyContract } from "src/wrappers";
-import { TokenTransferProxy as MockContractArtifacts } from "src/artifacts/ts/TokenTransferProxy";
+import { TokenTransferProxy as MockContractArtifacts } from "@dharmaprotocol/contracts";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
 import * as Web3 from "web3";
@@ -16,7 +16,8 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
-const TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH = "src/artifacts/json/TokenTransferProxy.json";
+const TOKEN_TRANSFER_PROXY_ARTIFACTS_PATH =
+    "node_modules/@dharmaprotocol/contracts/artifacts/json/TokenTransferProxy.json";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
