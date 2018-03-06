@@ -1,4 +1,4 @@
-jest.mock("@dharmaprotocol/contracts");
+jest.mock("src/artifacts/ts/DebtToken");
 
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
@@ -11,7 +11,7 @@ import { NULL_ADDRESS } from "utils/constants";
 import { Web3Utils } from "utils/web3_utils";
 
 import { DebtTokenContract } from "src/wrappers";
-import { DebtToken as MockContractArtifacts } from "@dharmaprotocol/contracts";
+import { DebtToken as MockContractArtifacts } from "src/artifacts/ts/DebtToken";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
 
@@ -19,8 +19,7 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
-const DEBT_TOKEN_ARTIFACTS_PATH =
-    "node_modules/@dharmaprotocol/contracts/artifacts/json/DebtToken.json";
+const DEBT_TOKEN_ARTIFACTS_PATH = "src/artifacts/json/DebtToken.json";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 

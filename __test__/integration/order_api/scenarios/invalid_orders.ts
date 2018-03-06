@@ -1,9 +1,4 @@
-import {
-    DebtKernelContract,
-    RepaymentRouterContract,
-    DummyTokenContract,
-    SimpleInterestTermsContractContract,
-} from "src/wrappers";
+import { DebtKernelContract, RepaymentRouterContract, DummyTokenContract } from "src/wrappers";
 import * as Units from "utils/units";
 import * as moment from "moment";
 import { DebtOrder } from "types";
@@ -22,7 +17,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -38,7 +32,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: ACCOUNTS[4].address,
                 underwriterFee: Units.ether(0.511),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
@@ -64,7 +58,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -80,7 +73,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: NULL_ADDRESS,
                 underwriterFee: Units.ether(0.001),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
@@ -106,7 +99,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -122,7 +114,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: ACCOUNTS[4].address,
                 underwriterFee: Units.ether(0.001),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
@@ -148,7 +140,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -164,7 +155,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: ACCOUNTS[4].address,
                 underwriterFee: Units.ether(0.001),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
@@ -190,7 +181,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -206,7 +196,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: ACCOUNTS[4].address,
                 underwriterFee: Units.ether(0.001),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
@@ -232,7 +222,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -248,7 +237,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: ACCOUNTS[4].address,
                 underwriterFee: Units.ether(0.001),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
@@ -284,7 +273,6 @@ export const INVALID_ORDERS: FillScenario[] = [
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
-            termsContract: SimpleInterestTermsContractContract,
         ) => {
             return {
                 kernelVersion: debtKernel.address,
@@ -300,7 +288,7 @@ export const INVALID_ORDERS: FillScenario[] = [
                 underwriter: ACCOUNTS[4].address,
                 underwriterFee: Units.ether(0.001),
                 underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
+                termsContract: ACCOUNTS[5].address,
                 termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()

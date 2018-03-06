@@ -10,11 +10,6 @@ import { Web3Utils } from "utils/web3_utils";
 
 import { ACCOUNTS, NULL_ADDRESS } from "../accounts";
 
-// Given that this is an integration test, we unmock the Dharma
-// smart contracts artifacts package to pull the most recently
-// deployed contracts on the current network.
-jest.unmock("@dharmaprotocol/contracts");
-
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const contractsApi = new ContractsAPI(web3);

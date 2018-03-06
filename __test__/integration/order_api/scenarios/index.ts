@@ -1,9 +1,4 @@
-import {
-    DebtKernelContract,
-    RepaymentRouterContract,
-    DummyTokenContract,
-    SimpleInterestTermsContractContract,
-} from "src/wrappers";
+import { DebtKernelContract, RepaymentRouterContract, DummyTokenContract } from "src/wrappers";
 import { VALID_ORDERS } from "./valid_orders";
 import { INVALID_ORDERS } from "./invalid_orders";
 import { NONCONSENUAL_ORDERS } from "./nonconsensual_orders";
@@ -24,7 +19,6 @@ export interface FillScenario {
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
-        termsContract: SimpleInterestTermsContractContract,
     ) => DebtOrder;
     filler: string;
     signatories: {
