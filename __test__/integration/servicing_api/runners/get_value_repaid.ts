@@ -27,7 +27,7 @@ const servicingApi = new ServicingAPI(web3, contractsApi);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
-import { GetValueRepaidScenario } from "../scenarios/index";
+import { GetValueRepaidScenario } from "../scenarios";
 
 export class GetValueRepaidRunner {
     static testGetValueRepaidScenario(scenario: GetValueRepaidScenario) {
