@@ -89,6 +89,7 @@ describe("Debt Servicing API (Integration Tests)", () => {
             interestRate: new BigNumber(0.1),
             amortizationUnit: "months",
             termLength: new BigNumber(2),
+            issuanceBlockTimestamp: new BigNumber(moment().unix()),
             salt: new BigNumber(Math.trunc(Math.random() * 10000)), // TODO: use snapshotting instead of rotating salts,
             //  this is a silly way of preventing clashes
         });

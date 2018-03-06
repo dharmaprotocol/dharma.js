@@ -27,6 +27,7 @@ const DEFAULTS = {
             .add(30, "days")
             .unix(),
     ),
+    issuanceBlockTimestamp: new BigNumber(moment().unix()),
     salt: new BigNumber(0),
     debtorSignature: NULL_ECDSA_SIGNATURE,
     creditorSignature: NULL_ECDSA_SIGNATURE,
