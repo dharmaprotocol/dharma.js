@@ -22,7 +22,7 @@ const blockchainApi = new BlockchainAPI(web3);
 const contractsApi = new ContractsAPI(web3);
 const tokenApi = new TokenAPI(web3, contractsApi);
 
-describe("Blockchain API (Integration Tests)", () => {
+describe("Blockchain API (Unit Tests)", () => {
     describe("#awaitTransactionMinedAsync()", () => {
         let pollingInterval;
         let timeout;
