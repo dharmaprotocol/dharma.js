@@ -8,7 +8,7 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
-import { TokenTransferProxy as ContractArtifacts } from "../../artifacts/ts/TokenTransferProxy";
+import { TokenTransferProxy as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
@@ -279,6 +279,7 @@ export class TokenTransferProxyContract extends BaseContract {
         const web3Utils = new Web3Utils(web3);
 
         const { abi }: { abi: any } = ContractArtifacts;
+
         const contractExists = await web3Utils.doesContractExistAtAddressAsync(address);
         const currentNetwork = await web3Utils.getNetworkIdAsync();
 

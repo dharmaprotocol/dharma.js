@@ -124,6 +124,7 @@
     "webpack": "^3.11.0"
   },
   "dependencies": {
+    "@dharmaprotocol/contracts": "^0.0.14",
     "bignumber.js": "^5.0.0",
     "ethereumjs-util": "^5.1.4",
     "jsonschema": "^1.2.2",

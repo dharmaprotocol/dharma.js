@@ -19,10 +19,17 @@ import {
     TokenRegistryContract,
     DebtKernelContract,
     RepaymentRouterContract,
+    SimpleInterestTermsContractContract,
     TokenTransferProxyContract,
+    TermsContractRegistryContract,
 } from "src/wrappers";
 
 import { ACCOUNTS } from "../../accounts";
+
+// Given that this is an integration test, we unmock the Dharma
+// smart contracts artifacts package to pull the most recently
+// deployed contracts on the current network.
+jest.unmock("@dharmaprotocol/contracts");
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -35,7 +42,14 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 describe("Order API (Integration Tests)", () => {
     beforeAll(async () => {
         const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
+        const termsContractRegistry = await TermsContractRegistryContract.deployed(
+            web3,
+            TX_DEFAULTS,
+        );
         const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
+        const termsContractAddress = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
+            principalTokenAddress,
+        );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
         scenarioRunner.orderApi = new OrderAPI(web3, contractsApi);
@@ -50,6 +64,12 @@ describe("Order API (Integration Tests)", () => {
             web3,
             TX_DEFAULTS,
         );
+        scenarioRunner.termsContract = await SimpleInterestTermsContractContract.at(
+            termsContractAddress,
+            web3,
+            TX_DEFAULTS,
+        );
+
         scenarioRunner.debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS);
     });
 

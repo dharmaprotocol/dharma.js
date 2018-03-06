@@ -1,9 +1,9 @@
-jest.mock("src/artifacts/ts/TokenRegistry");
+jest.mock("@dharmaprotocol/contracts");
 
 import * as promisify from "tiny-promisify";
 import { Web3Utils } from "utils/web3_utils";
 import { TokenRegistryContract } from "src/wrappers";
-import { TokenRegistry as MockContractArtifacts } from "src/artifacts/ts/TokenRegistry";
+import { TokenRegistry as MockContractArtifacts } from "@dharmaprotocol/contracts";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../accounts";
 import * as Web3 from "web3";
@@ -16,7 +16,8 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
-const TOKEN_REGISTRY_ARTIFACTS_PATH = "src/artifacts/json/TokenRegistry.json";
+const TOKEN_REGISTRY_ARTIFACTS_PATH =
+    "node_modules/@dharmaprotocol/contracts/artifacts/json/TokenRegistry.json";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 

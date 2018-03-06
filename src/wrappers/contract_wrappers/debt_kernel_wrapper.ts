@@ -3,7 +3,7 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
-import { DebtKernel as ContractArtifacts } from "../../artifacts/ts/DebtKernel";
+import { DebtKernel as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
 export class DebtKernelContract extends BaseContract {
