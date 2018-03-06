@@ -52,6 +52,12 @@ export const INVALID_MAKE_REPAYMENT: MakeRepaymentScenario[] = [
         errorMessage: ServicingAPIErrors.INSUFFICIENT_REPAYMENT_ALLOWANCE(),
     },
     {
+        description: "amount is not a BigNumber",
+        ...defaultArgs,
+        amount: 100,
+        errorMessage: /instance does not conform to the "BigNumber" format/,
+    },
+    {
         description: "amount is malformed",
         ...defaultArgs,
         amount: new BigNumber(-100),
