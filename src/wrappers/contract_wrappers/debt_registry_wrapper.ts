@@ -209,7 +209,7 @@ export class DebtRegistryContract extends BaseContract {
             const result = await promisify<
                 [string, string, string, BigNumber, string, string, BigNumber]
             >(self.web3ContractInstance.get.call, self.web3ContractInstance)(issuanceHash);
-            return result;
+            return IssuanceCommitment.fromData(result);
         },
     };
     public revokeEditAgentAuthorization = {

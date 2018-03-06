@@ -88,12 +88,10 @@ export class ServicingAPI {
             ServicingAPIErrors.INSUFFICIENT_REPAYMENT_ALLOWANCE(),
         );
 
-        const [repaymentRouterAddress] = await debtRegistry.get.callAsync(issuanceHash);
+        const issuance = await debtRegistry.get.callAsync(issuanceHash);
 
-        if (repaymentRouterAddress !== repaymentRouter.address) {
-            repaymentRouter = await this.contracts.loadRepaymentRouterAtAsync(
-                repaymentRouterAddress,
-            );
+        if (issuance.version !== repaymentRouter.address) {
+            repaymentRouter = await this.contracts.loadRepaymentRouterAtAsync(issuance.version);
         }
 
         return repaymentRouter.repay.sendTransactionAsync(
