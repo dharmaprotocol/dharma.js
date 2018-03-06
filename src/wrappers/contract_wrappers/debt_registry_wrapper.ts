@@ -2,7 +2,7 @@
  * This file is auto-generated using abi-gen. Don't edit directly.
  * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
  */
-import { IssuanceCommitment, TxData } from "../../types";
+import { IssuanceCommitment, IssuanceCommitmentData, TxData } from "../../types";
 import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
@@ -206,9 +206,10 @@ export class DebtRegistryContract extends BaseContract {
             defaultBlock?: Web3.BlockParam,
         ): Promise<IssuanceCommitment> {
             const self = this as DebtRegistryContract;
-            const result = await promisify<
-                [string, string, string, BigNumber, string, string, BigNumber]
-            >(self.web3ContractInstance.get.call, self.web3ContractInstance)(issuanceHash);
+            const result = await promisify<IssuanceCommitmentData>(
+                self.web3ContractInstance.get.call,
+                self.web3ContractInstance,
+            )(issuanceHash);
             return IssuanceCommitment.fromData(result);
         },
     };

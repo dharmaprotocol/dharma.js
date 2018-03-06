@@ -1,5 +1,7 @@
 import { BigNumber } from "../../utils/bignumber";
 
+export type IssuanceCommitmentData = [string, string, string, BigNumber, string, string, BigNumber];
+
 export class IssuanceCommitment {
     public version: string;
     public beneficiary: string;
@@ -26,7 +28,7 @@ export class IssuanceCommitment {
         this.termsContractParameters = termsContractParameters;
         this.issuanceBlockTimestamp = issuanceBlockTimestamp;
     }
-    static fromData(data: [string, string, string, BigNumber, string, string, BigNumber]) {
+    static fromData(data: IssuanceCommitmentData) {
         return new this(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
     }
 }
