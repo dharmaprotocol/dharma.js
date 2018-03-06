@@ -1,4 +1,5 @@
 jest.useFakeTimers();
+jest.unmock("@dharmaprotocol/contracts");
 
 // libraries
 import * as Web3 from "web3";
