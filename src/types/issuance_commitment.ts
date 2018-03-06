@@ -3,22 +3,14 @@ import { BigNumber } from "../../utils/bignumber";
 export type IssuanceCommitmentData = [string, string, string, BigNumber, string, string, BigNumber];
 
 export class IssuanceCommitment {
-    public version: string;
-    public beneficiary: string;
-    public underwriter: string;
-    public underwriterRiskRating: BigNumber;
-    public termsContract: string;
-    public termsContractParameters: string;
-    public issuanceBlockTimestamp: BigNumber;
-
     constructor(
-        version: string,
-        beneficiary: string,
-        underwriter: string,
-        underwriterRiskRating: BigNumber,
-        termsContract: string,
-        termsContractParameters: string,
-        issuanceBlockTimestamp: BigNumber,
+        public version: string,
+        public beneficiary: string,
+        public underwriter: string,
+        public underwriterRiskRating: BigNumber,
+        public termsContract: string,
+        public termsContractParameters: string,
+        public issuanceBlockTimestamp: BigNumber,
     ) {
         this.version = version;
         this.beneficiary = beneficiary;
