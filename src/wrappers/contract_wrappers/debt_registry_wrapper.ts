@@ -2,7 +2,7 @@
  * This file is auto-generated using abi-gen. Don't edit directly.
  * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
  */
-import { TxData } from "../../types";
+import { DebtRegistryEntry, DebtRegistryEntryData, TxData } from "../../types";
 import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
@@ -204,12 +204,13 @@ export class DebtRegistryContract extends BaseContract {
         async callAsync(
             issuanceHash: string,
             defaultBlock?: Web3.BlockParam,
-        ): Promise<[string, string, string, BigNumber, string, string, BigNumber]> {
+        ): Promise<DebtRegistryEntry> {
             const self = this as DebtRegistryContract;
-            const result = await promisify<
-                [string, string, string, BigNumber, string, string, BigNumber]
-            >(self.web3ContractInstance.get.call, self.web3ContractInstance)(issuanceHash);
-            return result;
+            const result = await promisify<DebtRegistryEntryData>(
+                self.web3ContractInstance.get.call,
+                self.web3ContractInstance,
+            )(issuanceHash);
+            return DebtRegistryEntry.fromData(result);
         },
     };
     public revokeEditAgentAuthorization = {

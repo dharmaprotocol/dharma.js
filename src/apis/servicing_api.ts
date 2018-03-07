@@ -3,7 +3,7 @@ import { BigNumber } from "bignumber.js";
 import * as Web3 from "web3";
 import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
-import { TxData } from "../types";
+import { DebtRegistryEntry, TxData } from "../types";
 import * as singleLineString from "single-line-string";
 
 const REPAYMENT_GAS_MAXIMUM = 100000;
@@ -88,12 +88,10 @@ export class ServicingAPI {
             ServicingAPIErrors.INSUFFICIENT_REPAYMENT_ALLOWANCE(),
         );
 
-        const [repaymentRouterAddress] = await debtRegistry.get.callAsync(issuanceHash);
+        const entry = await debtRegistry.get.callAsync(issuanceHash);
 
-        if (repaymentRouterAddress !== repaymentRouter.address) {
-            repaymentRouter = await this.contracts.loadRepaymentRouterAtAsync(
-                repaymentRouterAddress,
-            );
+        if (entry.version !== repaymentRouter.address) {
+            repaymentRouter = await this.contracts.loadRepaymentRouterAtAsync(entry.version);
         }
 
         return repaymentRouter.repay.sendTransactionAsync(
@@ -147,6 +145,29 @@ export class ServicingAPI {
             issuanceHash,
             new BigNumber(timestamp),
         );
+    }
+
+    /**
+     * Asynchronously retrieve the `DebtRegistryEntry` instance mapped to the
+     * issuance hash specified.
+     *
+     * @param  issuanceHash the id of the issuance to retrieve.
+     * @return              the relevant `DebtRegistryEntry` instance .
+     */
+    public async getDebtRegistryEntry(issuanceHash: string): Promise<DebtRegistryEntry> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const debtToken = await this.contracts.loadDebtTokenAsync();
+
+        await this.assert.debtAgreement.exists(
+            issuanceHash,
+            debtToken,
+            ServicingAPIErrors.DEBT_AGREEMENT_NONEXISTENT(issuanceHash),
+        );
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        return debtRegistry.get.callAsync(issuanceHash);
     }
 
     private async getTxDefaultOptions(): Promise<TxData> {
