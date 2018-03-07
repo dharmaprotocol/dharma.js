@@ -51,18 +51,6 @@ export class DebtRegistryEntry {
         this.issuanceBlockTimestamp = issuanceBlockTimestamp;
     }
 
-    public getHash(): string {
-        return Web3Utils.soliditySHA3(
-            this.version,
-            this.beneficiary,
-            this.underwriter,
-            this.underwriterRiskRating,
-            this.termsContract,
-            this.termsContractParameters,
-            this.issuanceBlockTimestamp,
-        );
-    }
-
     static fromData(data: DebtRegistryEntryData) {
         return new this(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
     }
