@@ -157,18 +157,15 @@ export class ServicingAPI {
     public async getDebtRegistryEntry(issuanceHash: string): Promise<DebtRegistryEntry> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
-        let {
-            debtToken,
-            repaymentRouter,
-            debtRegistry,
-            tokenTransferProxy,
-        } = await this.contracts.loadDharmaContractsAsync();
+        const debtToken = await this.contracts.loadDebtTokenAsync();
 
         await this.assert.debtAgreement.exists(
             issuanceHash,
             debtToken,
             ServicingAPIErrors.DEBT_AGREEMENT_NONEXISTENT(issuanceHash),
         );
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
 
         return debtRegistry.get.callAsync(issuanceHash);
     }
