@@ -117,7 +117,6 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.10.0",
-    "typedoc-plugin-markdown": "^1.0.14",
     "typescript": "^2.6.2",
     "validate-commit-msg": "^2.12.2",
     "web3-fake-provider": "^0.1.0",
