@@ -147,6 +147,21 @@ export class ServicingAPI {
         );
     }
 
+    /**
+     * Asynchronously retrieve the `DebtRegistryEntry` instance mapped to the
+     * issuance hash specified.
+     *
+     * @param  issuanceHash the id of the issuance to retrieve.
+     * @return              the relevant `DebtRegistryEntry` instance .
+     */
+    public async getDebtRegistryEntry(issuanceHash: string): Promise<DebtRegistryEntry> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        return debtRegistry.get.callAsync(issuanceHash);
+    }
+
     private async getTxDefaultOptions(): Promise<TxData> {
         const web3Utils = new Web3Utils(this.web3);
 
