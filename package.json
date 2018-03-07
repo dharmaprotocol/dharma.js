@@ -33,7 +33,8 @@
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
     "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "commitmsg": "commitlint -e $GIT_PARAMS"
   },
   "lint-staged": {
     "{src,__test__,__mocks__}/**/*.ts": [
@@ -79,6 +80,8 @@
     "mapCoverage": true
   },
   "devDependencies": {
+    "@commitlint/cli": "^6.1.3",
+    "@commitlint/config-conventional": "^6.1.3",
     "@types/jest": "^22.0.0",
     "@types/node": "^8.0.0",
     "awesome-typescript-loader": "^3.4.1",
@@ -117,9 +120,7 @@
     "tslint-config-prettier": "^1.1.0",
     "tslint-config-standard": "^7.0.0",
     "typedoc": "^0.10.0",
-    "typedoc-plugin-markdown": "^1.0.14",
     "typescript": "^2.6.2",
-    "validate-commit-msg": "^2.12.2",
     "web3-fake-provider": "^0.1.0",
     "webpack": "^3.11.0"
   },
