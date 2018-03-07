@@ -28,6 +28,7 @@ let debtOrder = {
     termsContract: ACCOUNTS[7].address,
     termsContractParameters: ACCOUNTS[8].address,
     expirationTimestampInSec: new BigNumber(moment().seconds()),
+    issuanceBlockTimestamp: new BigNumber(moment().unix()),
     salt: new BigNumber(0),
 };
 
@@ -39,13 +40,13 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
     describe("#getIssuanceCommitment", () => {
         test("returns correct subset of debt order as defined in whitepaper", () => {
             expect(debtOrderWrapper.getIssuanceCommitment()).toEqual({
-                issuanceVersion: debtOrder.issuanceVersion,
-                debtor: debtOrder.debtor,
+                version: debtOrder.issuanceVersion,
+                beneficiary: debtOrder.creditor,
                 underwriter: debtOrder.underwriter,
                 underwriterRiskRating: debtOrder.underwriterRiskRating,
                 termsContract: debtOrder.termsContract,
                 termsContractParameters: debtOrder.termsContractParameters,
-                salt: debtOrder.salt,
+                issuanceBlockTimestamp: debtOrder.issuanceBlockTimestamp,
             });
         });
     });
@@ -55,12 +56,12 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
             expect(debtOrderWrapper.getIssuanceCommitmentHash()).toBe(
                 Web3Utils.soliditySHA3(
                     debtOrder.issuanceVersion,
-                    debtOrder.debtor,
+                    debtOrder.creditor,
                     debtOrder.underwriter,
                     debtOrder.underwriterRiskRating,
                     debtOrder.termsContract,
                     debtOrder.termsContractParameters,
-                    debtOrder.salt,
+                    debtOrder.issuanceBlockTimestamp,
                 ),
             );
         });
@@ -73,12 +74,12 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
                     debtOrder.kernelVersion,
                     Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
-                        debtOrder.debtor,
+                        debtOrder.creditor,
                         debtOrder.underwriter,
                         debtOrder.underwriterRiskRating,
                         debtOrder.termsContract,
                         debtOrder.termsContractParameters,
-                        debtOrder.salt,
+                        debtOrder.issuanceBlockTimestamp,
                     ),
                     debtOrder.underwriterFee,
                     debtOrder.principalAmount,
@@ -120,12 +121,12 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
                     debtOrder.kernelVersion,
                     Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
-                        debtOrder.debtor,
+                        debtOrder.creditor,
                         debtOrder.underwriter,
                         debtOrder.underwriterRiskRating,
                         debtOrder.termsContract,
                         debtOrder.termsContractParameters,
-                        debtOrder.salt,
+                        debtOrder.issuanceBlockTimestamp,
                     ),
                     debtOrder.underwriterFee,
                     debtOrder.principalAmount,

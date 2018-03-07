@@ -3,7 +3,7 @@ import { BigNumber } from "bignumber.js";
 import * as Web3 from "web3";
 import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
-import { TxData } from "../types";
+import { IssuanceCommitment, TxData } from "../types";
 import * as singleLineString from "single-line-string";
 
 const REPAYMENT_GAS_MAXIMUM = 100000;
@@ -88,12 +88,10 @@ export class ServicingAPI {
             ServicingAPIErrors.INSUFFICIENT_REPAYMENT_ALLOWANCE(),
         );
 
-        const [repaymentRouterAddress] = await debtRegistry.get.callAsync(issuanceHash);
+        const issuance = await debtRegistry.get.callAsync(issuanceHash);
 
-        if (repaymentRouterAddress !== repaymentRouter.address) {
-            repaymentRouter = await this.contracts.loadRepaymentRouterAtAsync(
-                repaymentRouterAddress,
-            );
+        if (issuance.version !== repaymentRouter.address) {
+            repaymentRouter = await this.contracts.loadRepaymentRouterAtAsync(issuance.version);
         }
 
         return repaymentRouter.repay.sendTransactionAsync(
@@ -102,6 +100,21 @@ export class ServicingAPI {
             tokenAddress,
             transactionOptions,
         );
+    }
+
+    /**
+     * Asynchronously retrieve the `IssuanceCommitment` object mapped to the
+     * issuance hash provided.
+     *
+     * @param  issuanceHash the id of the issuance to retrieve.
+     * @return              the relevant `IssuanceCommitment` instance .
+     */
+    public async getIssuance(issuanceHash: string): Promise<IssuanceCommitment> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        return debtRegistry.get.callAsync(issuanceHash);
     }
 
     /**

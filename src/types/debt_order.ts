@@ -18,6 +18,7 @@ export interface DebtOrder {
     termsContract?: string;
     termsContractParameters?: string;
     expirationTimestampInSec?: BigNumber;
+    issuanceBlockTimestamp?: BigNumber;
     salt?: BigNumber;
 
     // Signatures
