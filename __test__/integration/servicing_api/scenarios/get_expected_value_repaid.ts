@@ -4,7 +4,7 @@ import { BigNumber } from "bignumber.js";
 // utils
 import * as Units from "utils/units";
 
-import { GetExpectedValueRepaidScenario } from "./index";
+import { GetExpectedValueRepaidScenario } from "./";
 
 export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {

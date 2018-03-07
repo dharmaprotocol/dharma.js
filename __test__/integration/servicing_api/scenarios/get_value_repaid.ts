@@ -1,7 +1,7 @@
 // utils
 import * as Units from "utils/units";
 
-import { GetValueRepaidScenario } from "./index";
+import { GetValueRepaidScenario } from "./";
 
 export const GET_VALUE_REPAID: GetValueRepaidScenario[] = [
     {
