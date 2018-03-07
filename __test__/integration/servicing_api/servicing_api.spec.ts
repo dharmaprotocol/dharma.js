@@ -1,3 +1,7 @@
+// We must explicitly unmock the dharma protocol contract artifacts
+// in instances where we need our deployed artifacts in our test environment.
+jest.unmock("@dharmaprotocol/contracts");
+
 // libraries
 import * as Web3 from "web3";
 
