@@ -35,18 +35,9 @@ export class BlockchainAPI {
     public async getErrorLogs(txHash: string): Promise<string[]> {
         const debtKernel = await this.contracts.loadDebtKernelAsync();
         ABIDecoder.addABI(debtKernel.abi);
-
-        return new Promise<string[]>(async (resolve, reject) => {
-            try {
-                const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
-                const decodedLogs: Logging.Entries = ABIDecoder.decodeLogs(receipt.logs);
-                const errors = _.flatMap(decodedLogs, DebtKernelError.parseErrors);
-                resolve(errors);
-            } catch (e) {
-                reject(e);
-            }
-            ABIDecoder.removeABI(debtKernel.abi);
-        });
+        const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
+        const decodedLogs: Logging.Entries = ABIDecoder.decodeLogs(receipt.logs);
+        return _.flatMap(decodedLogs, DebtKernelError.parseErrors);
     }
 
     /**
