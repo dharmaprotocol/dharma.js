@@ -3,6 +3,11 @@ import * as singleLineString from "single-line-string";
 
 import { Web3Utils } from "utils/web3_utils";
 import { IntervalManager } from "utils/interval_utils";
+import * as ABIDecoder from "abi-decoder";
+import { ContractsAPI } from ".";
+import * as _ from "lodash";
+
+import { Logging, DebtKernelError } from "src/types";
 
 import { Assertions } from "../invariants/index";
 
@@ -18,11 +23,30 @@ export class BlockchainAPI {
 
     private web3Utils: Web3Utils;
     private assert;
+    private contracts: ContractsAPI;
 
-    constructor(web3: Web3) {
+    constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3Utils = new Web3Utils(web3);
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3);
+        this.contracts = contracts;
+    }
+
+    public async getErrorLogs(txHash: string): Promise<string[]> {
+        const debtKernel = await this.contracts.loadDebtKernelAsync();
+        ABIDecoder.addABI(debtKernel.abi);
+
+        return new Promise<string[]>(async (resolve, reject) => {
+            try {
+                const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
+                const decodedLogs: Logging.Entries = ABIDecoder.decodeLogs(receipt.logs);
+                const errors = _.flatMap(decodedLogs, DebtKernelError.parseErrors);
+                resolve(errors);
+            } catch (e) {
+                reject(e);
+            }
+            ABIDecoder.removeABI(debtKernel.abi);
+        });
     }
 
     /**
