@@ -33,18 +33,17 @@ export class BlockchainAPI {
         this.contracts = contracts;
     }
 
-    private async configureABIDecoder(): Promise<boolean> {
+    private async configureABIDecoder() {
         if (this.isABIDecoderConfigured) {
-            return true;
+            return;
         }
         const debtKernel = await this.contracts.loadDebtKernelAsync();
         ABIDecoder.addABI(debtKernel.abi);
         this.isABIDecoderConfigured = true;
-        return true;
     }
 
     public async getErrorLogs(txHash: string): Promise<string[]> {
-        this.configureABIDecoder();
+        await this.configureABIDecoder();
         const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
         const decodedLogs: Logging.Entries = ABIDecoder.decodeLogs(receipt.logs);
         return _.flatMap(decodedLogs, DebtKernelError.parseErrors);
