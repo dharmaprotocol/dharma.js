@@ -16,7 +16,7 @@ import { DebtKernlErrorScenario } from "./error_scenarios";
 
 export const INVALID_ORDERS: DebtKernlErrorScenario[] = [
     {
-        description: "with principal < debtor fee",
+        description: "where principal < debtor fee",
         generateDebtOrder: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
@@ -35,7 +35,7 @@ export const INVALID_ORDERS: DebtKernlErrorScenario[] = [
                 relayer: ACCOUNTS[3].address,
                 relayerFee: Units.ether(0.001),
                 underwriter: ACCOUNTS[4].address,
-                underwriterFee: Units.ether(0.511),
+                underwriterFee: Units.ether(0.51),
                 underwriterRiskRating: Units.percent(0.001),
                 termsContract: termsContract.address,
                 termsContractParameters: NULL_BYTES32,
@@ -47,6 +47,6 @@ export const INVALID_ORDERS: DebtKernlErrorScenario[] = [
                 salt: new BigNumber(0),
             };
         },
-        error: DebtKernelError.ORDER_INVALID_INSUFFICIENT_OR_EXCESSIVE_FEES,
+        error: DebtKernelError.ORDER_INVALID_INSUFFICIENT_PRINCIPAL,
     },
 ];
