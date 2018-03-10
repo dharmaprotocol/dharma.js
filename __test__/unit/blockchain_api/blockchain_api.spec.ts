@@ -21,7 +21,8 @@ import { Logging, DebtKernelError, DebtOrder } from "src/types";
 import { ACCOUNTS } from "../../accounts";
 import * as moment from "moment";
 import { BigNumber } from "bignumber.js";
-
+import { ErrorScenarioRunner } from "./error_scenario_runner";
+import { INVALID_ORDERS } from "./scenarios";
 import { DebtOrderWrapper } from "src/wrappers";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -31,73 +32,15 @@ const blockchainApi = new BlockchainAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
 const orderAPI = new OrderAPI(web3, contractsApi);
 
+const scenarioRunner = new ErrorScenarioRunner(web3);
+
 describe("Blockchain API (Unit Tests)", () => {
     describe("#getErrorLogs", () => {
-        let txHash: string;
-
         beforeAll(async () => {
-            const dummyTokenRegistry = await contractsApi.loadTokenRegistry();
-            const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
-            const principalToken = await DummyTokenContract.at(dummyREPAddress, web3, {});
-
-            const {
-                debtKernel,
-                debtRegistry,
-                debtToken,
-                repaymentRouter,
-                tokenTransferProxy,
-            } = await contractsApi.loadDharmaContractsAsync();
-
-            const termsContract = await contractsApi.loadSimpleInterestTermsContract(
-                principalToken.address,
-            );
-
-            // principal < debtor fee
-            let order: DebtOrder = {
-                kernelVersion: debtKernel.address,
-                issuanceVersion: repaymentRouter.address,
-                principalAmount: Units.ether(0.49),
-                principalToken: principalToken.address,
-                debtor: ACCOUNTS[1].address,
-                debtorFee: Units.ether(0.51),
-                creditor: ACCOUNTS[2].address,
-                creditorFee: Units.ether(0.001),
-                relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.001),
-                underwriter: ACCOUNTS[4].address,
-                underwriterFee: Units.ether(0.511),
-                underwriterRiskRating: Units.percent(0.001),
-                termsContract: termsContract.address,
-                termsContractParameters: NULL_BYTES32,
-                expirationTimestampInSec: new BigNumber(
-                    moment()
-                        .add(7, "days")
-                        .unix(),
-                ),
-                salt: new BigNumber(0),
-            };
-
-            const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-                order,
-                contractsApi,
-            );
-
-            txHash = await debtKernel.fillDebtOrder.sendTransactionAsync(
-                debtOrderWrapped.getCreditor(),
-                debtOrderWrapped.getOrderAddresses(),
-                debtOrderWrapped.getOrderValues(),
-                debtOrderWrapped.getOrderBytes32(),
-                debtOrderWrapped.getSignaturesV(),
-                debtOrderWrapped.getSignaturesR(),
-                debtOrderWrapped.getSignaturesS(),
-                { from: debtOrderWrapped.getCreditor() },
-            );
+            await scenarioRunner.configure(web3);
         });
-
-        test("it returns the correct error message", async () => {
-            const errors = await blockchainApi.getErrorLogs(txHash);
-            expect(errors.length).toEqual(1);
-            expect(errors[0]).toEqual(DebtKernelError.messageForError(4));
+        describe("invalid orders should result in retrievable error logs", () => {
+            INVALID_ORDERS.forEach(scenarioRunner.testDebtKernelErrorScenario);
         });
     });
 
