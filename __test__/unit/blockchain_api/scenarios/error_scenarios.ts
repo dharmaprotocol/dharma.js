@@ -16,4 +16,5 @@ export interface DebtKernelErrorScenario {
         termsContract: SimpleInterestTermsContractContract,
     ) => DebtOrder;
     error: DebtKernelError;
+    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
 }
