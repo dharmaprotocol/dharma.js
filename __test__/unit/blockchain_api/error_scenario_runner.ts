@@ -1,5 +1,3 @@
-jest.unmock("@dharmaprotocol/contracts");
-
 import * as Web3 from "web3";
 import * as ABIDecoder from "abi-decoder";
 
