@@ -86,6 +86,10 @@ export class ErrorScenarioRunner {
                     this.contractsAPI,
                 );
 
+                if (scenario.beforeBlock) {
+                    await scenario.beforeBlock(debtOrder, this.debtKernel);
+                }
+
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(
                     debtOrderWrapped.getCreditor(),
                     debtOrderWrapped.getOrderAddresses(),
