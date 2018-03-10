@@ -151,4 +151,38 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
         },
         error: DebtKernelError.ORDER_INVALID_INSUFFICIENT_OR_EXCESSIVE_FEES,
     },
+    {
+        description: "order has already expired",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+            termsContract: SimpleInterestTermsContractContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                relayer: ACCOUNTS[3].address,
+                relayerFee: Units.ether(0.001),
+                underwriter: ACCOUNTS[4].address,
+                underwriterFee: Units.ether(0.001),
+                underwriterRiskRating: Units.percent(0.001),
+                termsContract: termsContract.address,
+                termsContractParameters: NULL_BYTES32,
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .subtract(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
+        },
+        error: DebtKernelError.ORDER_EXPIRED,
+    },
 ];
