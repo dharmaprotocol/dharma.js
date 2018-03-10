@@ -10,17 +10,13 @@ import * as Web3 from "web3";
 // utils
 import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
-import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
-
 import { MockIntervalManager } from "./utils/mock_interval_manager";
 
 import { BlockchainAPIErrors } from "src/apis/blockchain_api";
 import { DummyTokenContract } from "src/wrappers/contract_wrappers/dummy_token_wrapper";
-import { BlockchainAPI, ContractsAPI, OrderAPI, TokenAPI } from "src/apis/";
+import { BlockchainAPI, ContractsAPI, TokenAPI } from "src/apis/";
 import { Logging, DebtKernelError, DebtOrder } from "src/types";
 import { ACCOUNTS } from "../../accounts";
-import * as moment from "moment";
-import { BigNumber } from "bignumber.js";
 import { ErrorScenarioRunner } from "./error_scenario_runner";
 import { INVALID_ORDERS } from "./scenarios";
 import { DebtOrderWrapper } from "src/wrappers";
@@ -30,7 +26,6 @@ const web3Utils = new Web3Utils(web3);
 const contractsApi = new ContractsAPI(web3);
 const blockchainApi = new BlockchainAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
-const orderAPI = new OrderAPI(web3, contractsApi);
 
 const scenarioRunner = new ErrorScenarioRunner(web3);
 
