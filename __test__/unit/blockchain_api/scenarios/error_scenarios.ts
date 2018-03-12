@@ -1,4 +1,5 @@
 import { DebtOrder, DebtKernelError } from "src/types";
+import { BigNumber } from "bignumber.js";
 
 import {
     DebtKernelContract,
@@ -21,5 +22,7 @@ export interface DebtKernelErrorScenario {
         creditor: boolean;
         underwriter: boolean;
     };
+    creditorBalance?: BigNumber;
+    creditorAllowance?: BigNumber;
     beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
 }
