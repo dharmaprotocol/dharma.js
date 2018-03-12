@@ -352,4 +352,55 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             );
         },
     },
+    {
+        description: "issuance has been canceled",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+            termsContract: SimpleInterestTermsContractContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                relayer: ACCOUNTS[3].address,
+                relayerFee: Units.ether(0.001),
+                underwriter: ACCOUNTS[4].address,
+                underwriterFee: Units.ether(0.001),
+                underwriterRiskRating: Units.percent(0.001),
+                termsContract: termsContract.address,
+                termsContractParameters: NULL_BYTES32,
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .add(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
+        },
+        error: DebtKernelError.ISSUANCE_CANCELLED,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
+        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
+            return await debtKernel.cancelIssuance.sendTransactionAsync(
+                debtOrder.issuanceVersion,
+                debtOrder.debtor,
+                debtOrder.termsContract,
+                debtOrder.termsContractParameters,
+                debtOrder.underwriter,
+                debtOrder.underwriterRiskRating,
+                debtOrder.salt,
+                { from: debtOrder.debtor },
+            );
+        },
+    },
 ];
