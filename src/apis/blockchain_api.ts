@@ -24,7 +24,6 @@ export class BlockchainAPI {
     private web3Utils: Web3Utils;
     private assert;
     private contracts: ContractsAPI;
-    private isABIDecoderConfigured = false;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3Utils = new Web3Utils(web3);
