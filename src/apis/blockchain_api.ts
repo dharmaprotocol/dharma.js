@@ -31,10 +31,18 @@ export class BlockchainAPI {
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3);
         this.contracts = contracts;
+        // We need to configure the ABI Decoder to be able to pull out error logs.
         const { abi } = DebtKernel;
         ABIDecoder.addABI(abi);
     }
 
+    /**
+     * Asynchronously retrieve any error logs that might have occurred during a
+     * given transaction. These errors are returned as human-readable strings.
+     *
+     * @param  txHash the hash of the transaction for which error logs are being queried.
+     * @return        the errors encountered (as human-readable strings).
+     */
     public async getErrorLogs(txHash: string): Promise<string[]> {
         const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
         const decodedLogs: Logging.Entries = ABIDecoder.decodeLogs(receipt.logs);
