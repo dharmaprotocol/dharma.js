@@ -1,7 +1,7 @@
 import * as Web3 from "web3";
 import * as ABIDecoder from "abi-decoder";
 
-import { DebtKernlErrorScenario } from "./scenarios";
+import { DebtKernelErrorScenario } from "./scenarios";
 import { DebtOrder, DebtKernelError } from "src/types";
 import { Web3Utils } from "utils/web3_utils";
 import { ContractsAPI, BlockchainAPI } from "src/apis/";
@@ -69,7 +69,7 @@ export class ErrorScenarioRunner {
         this.isConfigured = true;
     }
 
-    public testDebtKernelErrorScenario(scenario: DebtKernlErrorScenario) {
+    public testDebtKernelErrorScenario(scenario: DebtKernelErrorScenario) {
         describe(scenario.description, () => {
             let txHash: string;
 

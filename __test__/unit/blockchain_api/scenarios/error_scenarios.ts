@@ -7,7 +7,7 @@ import {
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
 
-export interface DebtKernlErrorScenario {
+export interface DebtKernelErrorScenario {
     description: string;
     generateDebtOrder: (
         debtKernel: DebtKernelContract,

@@ -12,9 +12,9 @@ import {
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
 
-import { DebtKernlErrorScenario } from "./error_scenarios";
+import { DebtKernelErrorScenario } from "./error_scenarios";
 
-export const INVALID_ORDERS: DebtKernlErrorScenario[] = [
+export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     {
         description: "where principal < debtor fee",
         generateDebtOrder: (
