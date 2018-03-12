@@ -16,7 +16,7 @@ export interface DebtKernelErrorScenario {
         termsContract: SimpleInterestTermsContractContract,
     ) => DebtOrder;
     error: DebtKernelError;
-    signatories?: {
+    signatories: {
         debtor: boolean;
         creditor: boolean;
         underwriter: boolean;

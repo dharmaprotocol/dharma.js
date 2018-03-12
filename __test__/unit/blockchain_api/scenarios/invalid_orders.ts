@@ -49,6 +49,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.ORDER_INVALID_INSUFFICIENT_PRINCIPAL,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
     },
     {
         description: "with no underwriter but with underwriter fee",
@@ -83,6 +88,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.ORDER_INVALID_UNSPECIFIED_FEE_RECIPIENT,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: false,
+        },
     },
     {
         description: "with a relayer fee but no assigned relayer",
@@ -117,6 +127,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.ORDER_INVALID_UNSPECIFIED_FEE_RECIPIENT,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
     },
     {
         description: "creditor + debtor fee does not equal underwriter + relayer fee",
@@ -151,6 +166,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.ORDER_INVALID_INSUFFICIENT_OR_EXCESSIVE_FEES,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
     },
     {
         description: "order has already expired",
@@ -185,6 +205,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.ORDER_EXPIRED,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
     },
     {
         description: "order has been cancelled",
@@ -219,6 +244,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.ORDER_CANCELLED,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
         beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
             const debtOrderWrapper = new DebtOrderWrapper(debtOrder);
 
@@ -263,6 +293,11 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             };
         },
         error: DebtKernelError.DEBT_ISSUED,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: true,
+        },
         beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
             const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
