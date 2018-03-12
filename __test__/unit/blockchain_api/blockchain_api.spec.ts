@@ -30,6 +30,10 @@ const tokenApi = new TokenAPI(web3, contractsApi);
 const scenarioRunner = new ErrorScenarioRunner(web3);
 
 describe("Blockchain API (Unit Tests)", () => {
+    beforeEach(scenarioRunner.saveSnapshotAsync);
+
+    afterEach(scenarioRunner.revertToSavedSnapshot);
+
     describe("#getErrorLogs", () => {
         beforeAll(async () => {
             await scenarioRunner.configure();

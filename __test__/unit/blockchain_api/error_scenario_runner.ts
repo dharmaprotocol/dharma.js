@@ -28,11 +28,14 @@ export class ErrorScenarioRunner {
     private signerAPI: SignerAPI;
 
     private isConfigured: boolean = false;
+    private currentSnapshotId: number;
 
     constructor(web3: Web3) {
         this.web3 = web3;
         this.web3Utils = new Web3Utils(web3);
         this.testDebtKernelErrorScenario = this.testDebtKernelErrorScenario.bind(this);
+        this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
+        this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
 
     public async configure() {
@@ -124,5 +127,13 @@ export class ErrorScenarioRunner {
                 expect(errors[0]).toEqual(DebtKernelError.messageForError(scenario.error));
             });
         });
+    }
+
+    public async saveSnapshotAsync() {
+        this.currentSnapshotId = await this.web3Utils.saveTestSnapshot();
+    }
+
+    public async revertToSavedSnapshot() {
+        await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
     }
 }
