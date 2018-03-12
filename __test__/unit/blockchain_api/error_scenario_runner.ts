@@ -4,7 +4,7 @@ import * as ABIDecoder from "abi-decoder";
 import { DebtKernelErrorScenario } from "./scenarios";
 import { DebtOrder, DebtKernelError } from "src/types";
 import { Web3Utils } from "utils/web3_utils";
-import { ContractsAPI, BlockchainAPI } from "src/apis/";
+import { ContractsAPI, BlockchainAPI, SignerAPI } from "src/apis/";
 
 import {
     DebtKernelContract,
@@ -25,6 +25,7 @@ export class ErrorScenarioRunner {
 
     private contractsAPI: ContractsAPI;
     private blockchainAPI: BlockchainAPI;
+    private signerAPI: SignerAPI;
 
     private isConfigured: boolean = false;
 
@@ -43,6 +44,7 @@ export class ErrorScenarioRunner {
         // Construct all necessary dependencies.
         const contractsAPI = new ContractsAPI(this.web3);
         const blockchainAPI = new BlockchainAPI(this.web3, contractsAPI);
+        const signerAPI = new SignerAPI(this.web3, contractsAPI);
         const {
             debtKernel,
             debtRegistry,
@@ -59,6 +61,7 @@ export class ErrorScenarioRunner {
         // Assign dependencies to instance variables.
         this.contractsAPI = contractsAPI;
         this.blockchainAPI = blockchainAPI;
+        this.signerAPI = signerAPI;
 
         this.debtKernel = debtKernel;
         this.repaymentRouter = repaymentRouter;
@@ -85,6 +88,19 @@ export class ErrorScenarioRunner {
                     debtOrder,
                     this.contractsAPI,
                 );
+
+                // We dynamically attach signatures based on whether the
+                // the scenario specifies that a signature from a signatory
+                // ought to be attached.
+                debtOrder.debtorSignature = scenario.signatories.debtor
+                    ? await this.signerAPI.asDebtor(debtOrder)
+                    : undefined;
+                debtOrder.creditorSignature = scenario.signatories.creditor
+                    ? await this.signerAPI.asCreditor(debtOrder)
+                    : undefined;
+                debtOrder.underwriterSignature = scenario.signatories.underwriter
+                    ? await this.signerAPI.asUnderwriter(debtOrder)
+                    : undefined;
 
                 if (scenario.beforeBlock) {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
