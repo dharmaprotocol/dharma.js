@@ -6,7 +6,7 @@ import { IntervalManager } from "utils/interval_utils";
 import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
 import * as _ from "lodash";
-
+import { DebtKernel } from "@dharmaprotocol/contracts";
 import { Logging, DebtKernelError } from "src/types";
 
 import { Assertions } from "../invariants/index";
@@ -31,19 +31,11 @@ export class BlockchainAPI {
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3);
         this.contracts = contracts;
-    }
-
-    private async configureABIDecoder() {
-        if (this.isABIDecoderConfigured) {
-            return;
-        }
-        const debtKernel = await this.contracts.loadDebtKernelAsync();
-        ABIDecoder.addABI(debtKernel.abi);
-        this.isABIDecoderConfigured = true;
+        const { abi } = DebtKernel;
+        ABIDecoder.addABI(abi);
     }
 
     public async getErrorLogs(txHash: string): Promise<string[]> {
-        await this.configureABIDecoder();
         const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
         const decodedLogs: Logging.Entries = ABIDecoder.decodeLogs(receipt.logs);
         return _.flatMap(decodedLogs, DebtKernelError.parseErrors);
