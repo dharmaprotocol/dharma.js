@@ -32,7 +32,7 @@ const scenarioRunner = new ErrorScenarioRunner(web3);
 describe("Blockchain API (Unit Tests)", () => {
     describe("#getErrorLogs", () => {
         beforeAll(async () => {
-            await scenarioRunner.configure(web3);
+            await scenarioRunner.configure();
         });
         describe("invalid orders should result in retrievable error logs", () => {
             INVALID_ORDERS.forEach(scenarioRunner.testDebtKernelErrorScenario);

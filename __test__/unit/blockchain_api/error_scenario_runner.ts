@@ -16,6 +16,7 @@ import {
 
 export class ErrorScenarioRunner {
     private web3Utils: Web3Utils;
+    private web3: Web3;
 
     private debtKernel: DebtKernelContract;
     private repaymentRouter: RepaymentRouterContract;
@@ -28,19 +29,20 @@ export class ErrorScenarioRunner {
     private isConfigured: boolean = false;
 
     constructor(web3: Web3) {
+        this.web3 = web3;
         this.web3Utils = new Web3Utils(web3);
         this.testDebtKernelErrorScenario = this.testDebtKernelErrorScenario.bind(this);
     }
 
-    public async configure(web3: Web3) {
+    public async configure() {
         // Prevent unnecessary configuration.
         if (this.isConfigured) {
             return;
         }
 
         // Construct all necessary dependencies.
-        const contractsAPI = new ContractsAPI(web3);
-        const blockchainAPI = new BlockchainAPI(web3, contractsAPI);
+        const contractsAPI = new ContractsAPI(this.web3);
+        const blockchainAPI = new BlockchainAPI(this.web3, contractsAPI);
         const {
             debtKernel,
             debtRegistry,
@@ -49,7 +51,7 @@ export class ErrorScenarioRunner {
         } = await contractsAPI.loadDharmaContractsAsync();
         const dummyTokenRegistry = await contractsAPI.loadTokenRegistry();
         const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
-        const principalToken = await DummyTokenContract.at(dummyREPAddress, web3, {});
+        const principalToken = await DummyTokenContract.at(dummyREPAddress, this.web3, {});
         const termsContract = await contractsAPI.loadSimpleInterestTermsContract(
             principalToken.address,
         );
