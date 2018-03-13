@@ -18,11 +18,7 @@ module.exports = {
         umdNamedDefine: true,
     },
     resolve: {
-        extensions: ['.ts', '.js'],
-        alias: {
-            src: path.resolve(__dirname, 'src'),
-            utils: path.resolve(__dirname, 'utils')
-        }
+        extensions: ['.ts', '.js']
     },
     devtool: 'source-map',
     plugins: [

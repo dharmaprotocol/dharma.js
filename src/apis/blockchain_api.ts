@@ -1,13 +1,13 @@
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 
-import { Web3Utils } from "utils/web3_utils";
-import { IntervalManager } from "utils/interval_utils";
+import { Web3Utils } from "../../utils/web3_utils";
+import { IntervalManager } from "../../utils/interval_utils";
 import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
 import * as _ from "lodash";
 import { DebtKernel } from "@dharmaprotocol/contracts";
-import { Logging, DebtKernelError } from "src/types";
+import { Logging, DebtKernelError } from "../types";
 
 import { Assertions } from "../invariants/index";
 
