@@ -95,11 +95,6 @@ export class ErrorScenarioRunner {
                     this.termsContract,
                 );
 
-                const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-                    debtOrder,
-                    this.contractsAPI,
-                );
-
                 // We dynamically set the creditor's balance and
                 // allowance of a given principal token to either
                 // their assigned values in the fill scenario, or
@@ -136,6 +131,11 @@ export class ErrorScenarioRunner {
                 if (scenario.beforeBlock) {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
                 }
+
+                const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+                    debtOrder,
+                    this.contractsAPI,
+                );
 
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(
                     debtOrderWrapped.getCreditor(),
