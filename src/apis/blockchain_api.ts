@@ -3,6 +3,11 @@ import * as singleLineString from "single-line-string";
 
 import { Web3Utils } from "utils/web3_utils";
 import { IntervalManager } from "utils/interval_utils";
+import * as ABIDecoder from "abi-decoder";
+import { ContractsAPI } from ".";
+import * as _ from "lodash";
+import { DebtKernel } from "@dharmaprotocol/contracts";
+import { Logging, DebtKernelError } from "src/types";
 
 import { Assertions } from "../invariants/index";
 
@@ -18,11 +23,31 @@ export class BlockchainAPI {
 
     private web3Utils: Web3Utils;
     private assert;
+    private contracts: ContractsAPI;
 
-    constructor(web3: Web3) {
+    constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3Utils = new Web3Utils(web3);
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3);
+        this.contracts = contracts;
+        // We need to configure the ABI Decoder to be able to pull out error logs.
+        const { abi } = DebtKernel;
+        ABIDecoder.addABI(abi);
+    }
+
+    /**
+     * Asynchronously retrieve any error logs that might have occurred during a
+     * given transaction. These errors are returned as human-readable strings.
+     *
+     * @param  txHash the hash of the transaction for which error logs are being queried.
+     * @return        the errors encountered (as human-readable strings).
+     */
+    public async getErrorLogs(txHash: string): Promise<string[]> {
+        const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
+        return _.flatMap(
+            ABIDecoder.decodeLogs(receipt.logs) as Logging.Entries,
+            DebtKernelError.parseErrors,
+        );
     }
 
     /**

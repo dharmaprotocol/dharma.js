@@ -31,6 +31,6 @@ export default class Dharma {
         this.order = new OrderAPI(this.web3, this.contracts);
         this.adapters = new AdaptersAPI(this.web3, this.contracts);
         this.token = new TokenAPI(this.web3, this.contracts);
-        this.blockchain = new BlockchainAPI(this.web3);
+        this.blockchain = new BlockchainAPI(this.web3, this.contracts);
     }
 }

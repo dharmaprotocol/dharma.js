@@ -10,23 +10,39 @@ import * as Web3 from "web3";
 // utils
 import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
-
 import { MockIntervalManager } from "./utils/mock_interval_manager";
 
-import { BlockchainAPI, BlockchainAPIErrors } from "src/apis/blockchain_api";
+import { BlockchainAPIErrors } from "src/apis/blockchain_api";
 import { DummyTokenContract } from "src/wrappers/contract_wrappers/dummy_token_wrapper";
-import { ContractsAPI } from "src/apis/contracts_api";
-import { TokenAPI } from "src/apis/token_api";
-
+import { BlockchainAPI, ContractsAPI, TokenAPI } from "src/apis/";
+import { Logging, DebtKernelError, DebtOrder } from "src/types";
 import { ACCOUNTS } from "../../accounts";
+import { ErrorScenarioRunner } from "./error_scenario_runner";
+import { INVALID_ORDERS } from "./scenarios";
+import { DebtOrderWrapper } from "src/wrappers";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3Utils = new Web3Utils(web3);
-const blockchainApi = new BlockchainAPI(web3);
 const contractsApi = new ContractsAPI(web3);
+const blockchainApi = new BlockchainAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
 
+const scenarioRunner = new ErrorScenarioRunner(web3);
+
 describe("Blockchain API (Unit Tests)", () => {
+    beforeEach(scenarioRunner.saveSnapshotAsync);
+
+    afterEach(scenarioRunner.revertToSavedSnapshot);
+
+    describe("#getErrorLogs", () => {
+        beforeAll(async () => {
+            await scenarioRunner.configure();
+        });
+        describe("invalid orders should result in retrievable error logs", () => {
+            INVALID_ORDERS.forEach(scenarioRunner.testDebtKernelErrorScenario);
+        });
+    });
+
     describe("#awaitTransactionMinedAsync()", () => {
         let pollingInterval;
         let timeout;
