@@ -22,6 +22,9 @@ We represent this in our `Logging.Event` type.
 */
 
 export namespace Logging {
+    export const LOG_ERROR_NAME = "LogError";
+    export const ERROR_ID = "_errorId";
+
     export type Entries = Entry[];
 
     export interface Entry {
