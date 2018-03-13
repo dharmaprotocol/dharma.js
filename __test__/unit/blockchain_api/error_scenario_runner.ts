@@ -12,7 +12,12 @@ import {
     RepaymentRouterContract,
     DummyTokenContract,
     SimpleInterestTermsContractContract,
+    TokenTransferProxyContract,
 } from "src/wrappers";
+
+import { ACCOUNTS } from "../../accounts";
+
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 export class ErrorScenarioRunner {
     private web3Utils: Web3Utils;
@@ -22,6 +27,7 @@ export class ErrorScenarioRunner {
     private repaymentRouter: RepaymentRouterContract;
     private principalToken: DummyTokenContract;
     private termsContract: SimpleInterestTermsContractContract;
+    private tokenTransferProxy: TokenTransferProxyContract;
 
     private contractsAPI: ContractsAPI;
     private blockchainAPI: BlockchainAPI;
@@ -53,10 +59,11 @@ export class ErrorScenarioRunner {
             debtRegistry,
             debtToken,
             repaymentRouter,
+            tokenTransferProxy,
         } = await contractsAPI.loadDharmaContractsAsync();
         const dummyTokenRegistry = await contractsAPI.loadTokenRegistry();
         const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
-        const principalToken = await DummyTokenContract.at(dummyREPAddress, this.web3, {});
+        const principalToken = await DummyTokenContract.at(dummyREPAddress, this.web3, TX_DEFAULTS);
         const termsContract = await contractsAPI.loadSimpleInterestTermsContract(
             principalToken.address,
         );
@@ -70,6 +77,7 @@ export class ErrorScenarioRunner {
         this.repaymentRouter = repaymentRouter;
         this.principalToken = principalToken;
         this.termsContract = termsContract;
+        this.tokenTransferProxy = tokenTransferProxy;
 
         // Mark instance as configured.
         this.isConfigured = true;
@@ -90,6 +98,26 @@ export class ErrorScenarioRunner {
                 const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
                     debtOrder,
                     this.contractsAPI,
+                );
+
+                // We dynamically set the creditor's balance and
+                // allowance of a given principal token to either
+                // their assigned values in the fill scenario, or
+                // to a default amount (i.e sufficient balance / allowance
+                // necessary for order fill)
+                const creditorBalance =
+                    scenario.creditorBalance || debtOrder.principalAmount.times(2);
+                const creditorAllowance =
+                    scenario.creditorAllowance || debtOrder.principalAmount.times(2);
+
+                await this.principalToken.setBalance.sendTransactionAsync(
+                    debtOrder.creditor,
+                    creditorBalance,
+                );
+                await this.principalToken.approve.sendTransactionAsync(
+                    this.tokenTransferProxy.address,
+                    creditorAllowance,
+                    { from: debtOrder.creditor },
                 );
 
                 // We dynamically attach signatures based on whether the
