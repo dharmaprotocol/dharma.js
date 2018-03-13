@@ -19,6 +19,10 @@ module.exports = {
     },
     resolve: {
         extensions: ['.ts', '.js'],
+        alias: {
+            src: path.resolve(__dirname, 'src'),
+            utils: path.resolve(__dirname, 'utils')
+        }
     },
     devtool: 'source-map',
     plugins: [
