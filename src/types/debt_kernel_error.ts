@@ -42,7 +42,7 @@ export namespace DebtKernelError {
         return event.name === ERROR_ID ? messageForError(Number(event.value)) : undefined;
     }
 
-    function messageForError(error: DebtKernelError): string {
+    export function messageForError(error: DebtKernelError): string {
         switch (error) {
             case DebtKernelError.DEBT_ISSUED:
                 return singleLineString`Debt has been already been issued.`;
