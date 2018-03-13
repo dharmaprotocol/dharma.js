@@ -6,7 +6,7 @@ import { IntervalManager } from "utils/interval_utils";
 import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
 import * as _ from "lodash";
-import { DebtKernel } from "@dharmaprotocol/contracts";
+import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
 import { Logging, DebtKernelError } from "src/types";
 
 import { Assertions } from "../invariants/index";
@@ -30,9 +30,10 @@ export class BlockchainAPI {
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3);
         this.contracts = contracts;
-        // We need to configure the ABI Decoder to be able to pull out error logs.
-        const { abi } = DebtKernel;
-        ABIDecoder.addABI(abi);
+
+        // We need to configure the ABI Decoder in order to pull out relevant logs.
+        ABIDecoder.addABI(DebtKernel.abi);
+        ABIDecoder.addABI(RepaymentRouter.abi);
     }
 
     /**
