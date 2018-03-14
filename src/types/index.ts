@@ -6,7 +6,7 @@ import { TxData, TxDataPayable } from "./transaction_options";
 import { DharmaConfig } from "./dharma_config";
 import { DebtRegistryEntry, DebtRegistryEntryData } from "./debt_registry_entry";
 import { Logging } from "./logging";
-import { DebtKernelError } from "./debt_kernel_error";
+import { ErrorParser } from "./error_parser";
 
 export {
     DebtOrder,
@@ -18,5 +18,5 @@ export {
     TxData,
     TxDataPayable,
     Logging,
-    DebtKernelError,
+    ErrorParser,
 };
