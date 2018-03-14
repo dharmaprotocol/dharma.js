@@ -47,8 +47,12 @@ export class GetExpectedValueRepaidRunner {
 
         beforeAll(async () => {
             const tokenRegistry = await contractsApi.loadTokenRegistry();
-            const principalTokenAddress = await tokenRegistry.getTokenAddress.callAsync("REP");
-            const nonPrincipalTokenAddress = await tokenRegistry.getTokenAddress.callAsync("ZRX");
+            const principalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
+                "REP",
+            );
+            const nonPrincipalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
+                "ZRX",
+            );
             const repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
 
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();

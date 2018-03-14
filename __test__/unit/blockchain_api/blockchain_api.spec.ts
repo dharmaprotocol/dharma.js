@@ -1,5 +1,3 @@
-jest.useFakeTimers();
-
 // We must explicitly unmock the dharma protocol contract artifacts
 // in instances where we need our deployed artifacts in our test environment.
 jest.unmock("@dharmaprotocol/contracts");
@@ -84,7 +82,9 @@ describe("Blockchain API (Unit Tests)", () => {
                 timeout = 2;
 
                 const dummyTokenRegistry = await contractsApi.loadTokenRegistry();
-                const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
+                const dummyREPAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync(
+                    "REP",
+                );
                 const dummyToken = await DummyTokenContract.at(dummyREPAddress, web3, {});
 
                 txHash = await tokenApi.setProxyAllowanceAsync(dummyToken.address, Units.ether(1), {

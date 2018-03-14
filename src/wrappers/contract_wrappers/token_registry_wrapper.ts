@@ -8,6 +8,7 @@ import * as promisify from "tiny-promisify";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { classUtils } from "../../../utils/class_utils";
 import { TokenRegistry as ContractArtifacts } from "@dharmaprotocol/contracts";
+import { BigNumber } from "bignumber.js";
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
@@ -59,13 +60,23 @@ export class TokenRegistryContract extends BaseContract {
             return result;
         },
     };
-    public getTokenAddress = {
+    public getTokenAddressBySymbol = {
         async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<string> {
             const self = this as TokenRegistryContract;
             const result = await promisify<string>(
-                self.web3ContractInstance.getTokenAddress.call,
+                self.web3ContractInstance.getTokenAddressBySymbol.call,
                 self.web3ContractInstance,
             )(symbol);
+            return result;
+        },
+    };
+    public getTokenAddressByIndex = {
+        async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenAddressByIndex.call,
+                self.web3ContractInstance,
+            )(index);
             return result;
         },
     };

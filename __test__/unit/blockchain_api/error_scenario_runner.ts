@@ -62,7 +62,7 @@ export class ErrorScenarioRunner {
             tokenTransferProxy,
         } = await contractsAPI.loadDharmaContractsAsync();
         const dummyTokenRegistry = await contractsAPI.loadTokenRegistry();
-        const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
+        const dummyREPAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
         const principalToken = await DummyTokenContract.at(dummyREPAddress, this.web3, TX_DEFAULTS);
         const termsContract = await contractsAPI.loadSimpleInterestTermsContract(
             principalToken.address,

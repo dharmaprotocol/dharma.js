@@ -46,7 +46,9 @@ describe("Order API (Integration Tests)", () => {
             web3,
             TX_DEFAULTS,
         );
-        const principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
+        const principalTokenAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync(
+            "REP",
+        );
         const termsContractAddress = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
             principalTokenAddress,
         );

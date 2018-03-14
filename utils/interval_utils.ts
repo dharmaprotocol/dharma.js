@@ -27,7 +27,7 @@ export class IntervalManager {
             timeoutMs,
         };
 
-        setTimeout(this._intervalCallback(intervalId).bind(this), intervalMs);
+        setTimeout(this._forTesting().bind(this), intervalMs);
         setTimeout(this._timeoutCallback(intervalId).bind(this), timeoutMs);
     }
 

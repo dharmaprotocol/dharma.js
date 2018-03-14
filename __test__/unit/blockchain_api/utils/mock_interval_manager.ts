@@ -27,10 +27,10 @@ export class MockIntervalManager extends IntervalManager {
             timeoutMs,
         };
 
-        setTimeout(this._intervalCallback(intervalId), intervalMs);
+        setTimeout(this._intervalCallback(intervalId).bind(this), intervalMs);
 
         if (this._shouldTimeout) {
-            setTimeout(this._timeoutCallback(intervalId), timeoutMs);
+            setTimeout(this._timeoutCallback(intervalId).bind(this), timeoutMs);
         }
     }
 }

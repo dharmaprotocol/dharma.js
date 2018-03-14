@@ -65,7 +65,7 @@ describe("Dummy Token Contract Wrapper (Unit)", () => {
         // Now that our contract artifacts are mocked, the TokenRegistryContract wrapper should
         // work as intended, and allow us to pull the address of a deployed ERC20 token.
         const tokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
-        REPTokenAddress = await tokenRegistry.getTokenAddress.callAsync("REP");
+        REPTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync("REP");
     });
 
     // TODO: Create tests for general solidity method calls on the Debt Token contract
