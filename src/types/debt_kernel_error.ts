@@ -1,6 +1,4 @@
 import * as singleLineString from "single-line-string";
-import { Logging } from "./logging";
-import * as _ from "lodash";
 
 export enum DebtKernelError {
     // Debt has been already been issued
@@ -26,19 +24,6 @@ export enum DebtKernelError {
 }
 
 export namespace DebtKernelError {
-    export function parseErrors(entry: Logging.Entry): string[] {
-        if (entry.name === Logging.LOG_ERROR_NAME) {
-            const humanReadableErrorsOrNil = _.map(entry.events, parseErrorID);
-            return _.compact(humanReadableErrorsOrNil);
-        } else {
-            return [];
-        }
-    }
-
-    function parseErrorID(event: Logging.Event): string | undefined {
-        return event.name === Logging.ERROR_ID ? messageForError(Number(event.value)) : undefined;
-    }
-
     export function messageForError(error: DebtKernelError): string {
         switch (error) {
             case DebtKernelError.DEBT_ISSUED:
