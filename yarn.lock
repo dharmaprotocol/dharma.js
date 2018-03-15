@@ -140,9 +140,12 @@
   dependencies:
     find-up "^2.1.0"
 
-"@dharmaprotocol/contracts@^0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.14.tgz#734ff7e1f5f9566325341de84bd8a8be600969a6"
+"@dharmaprotocol/contracts@^0.0.15":
+  version "0.0.15"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.15.tgz#2b1287f165228ec1d438d0f45758fab6a206ee8a"
+  dependencies:
+    NonFungibleToken "https://github.com/dharmaprotocol/NonFungibleToken.git"
+    zeppelin-solidity "^1.6.0"
 
 "@marionebl/sander@^0.6.0":
   version "0.6.1"
@@ -276,6 +279,10 @@
 "@types/lodash@4.14.99":
   version "4.14.99"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.99.tgz#e6e10c0a4cc16c7409b3181f1e66880d2fb7d4dc"
+
+"@types/lodash@^4.14.104":
+  version "4.14.104"
+  resolved "http://registry.npmjs.org/@types/lodash/-/lodash-4.14.104.tgz#53ee2357fa2e6e68379341d92eb2ecea4b11bb80"
 
 "@types/lodash@^4.14.86":
   version "4.14.102"

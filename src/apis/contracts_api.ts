@@ -336,7 +336,7 @@ export class ContractsAPI {
     public async getTokenAddressBySymbolAsync(symbol: string): Promise<string> {
         const tokenRegistryContract = await this.loadTokenRegistry({});
 
-        const tokenAddress = await tokenRegistryContract.getTokenAddress.callAsync(symbol);
+        const tokenAddress = await tokenRegistryContract.getTokenAddressBySymbol.callAsync(symbol);
 
         if (tokenAddress === NULL_ADDRESS) {
             throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));

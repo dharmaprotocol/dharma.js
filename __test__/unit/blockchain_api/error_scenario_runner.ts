@@ -62,7 +62,7 @@ export class ErrorScenarioRunner {
             tokenTransferProxy,
         } = await contractsAPI.loadDharmaContractsAsync();
         const dummyTokenRegistry = await contractsAPI.loadTokenRegistry();
-        const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
+        const dummyREPAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
         const principalToken = await DummyTokenContract.at(dummyREPAddress, this.web3, TX_DEFAULTS);
         const termsContract = await contractsAPI.loadSimpleInterestTermsContract(
             principalToken.address,
@@ -149,11 +149,18 @@ export class ErrorScenarioRunner {
                 );
             });
 
-            test("it returns the correct human-readable error message", async () => {
-                const errors = await this.blockchainAPI.getErrorLogs(txHash);
-                expect(errors.length).toEqual(1);
-                expect(errors[0]).toEqual(DebtKernelError.messageForError(scenario.error));
-            });
+            if (scenario.error != null) {
+                test("it returns the correct human-readable error message", async () => {
+                    const errors = await this.blockchainAPI.getErrorLogs(txHash);
+                    expect(errors.length).toEqual(1);
+                    expect(errors[0]).toEqual(DebtKernelError.messageForError(scenario.error));
+                });
+            } else {
+                test("it returns no error messages", async () => {
+                    const errors = await this.blockchainAPI.getErrorLogs(txHash);
+                    expect(errors.length).toEqual(0);
+                });
+            }
         });
     }
 

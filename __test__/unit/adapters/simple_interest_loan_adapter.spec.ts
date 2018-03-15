@@ -285,7 +285,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
     beforeAll(async () => {
         const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
-        principalTokenAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
+        principalTokenAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
     });
 
     describe("#toDebtOrder", () => {

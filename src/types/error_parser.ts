@@ -1,4 +1,4 @@
-import { _, chain, value, curry, map, compact, flatMap } from "lodash/fp";
+import { _, chain, value, curry, map, flatMap, compact, filter } from "lodash/fp";
 
 import { Logging } from "./logging";
 import { DebtKernelError } from "./debt_kernel_error";
@@ -6,17 +6,26 @@ import { RepaymentRouterError } from "./repayment_router_error";
 import { ContractsAPI } from "src/apis";
 
 export namespace ErrorParser {
-    enum Origin {
-        DebtKernel,
-        RepaymentRouter,
-    }
-
     export async function parseDecodedLogs(
-        logs: any,
+        logs: any[],
         contractsAPI: ContractsAPI,
     ): Promise<string[]> {
         const curriedParseEntry = curry(parseEntry)(_, contractsAPI);
-        return flatMap(logs as Logging.Entries, curriedParseEntry);
+
+        return chain(logs)
+            .compact() // filter out any undefined values
+            .filter(isParseableEntry) // filter out any non-parseable entries
+            .flatMap(curriedParseEntry) // parse out errors
+            .value();
+    }
+
+    function isParseableEntry(log: any): boolean {
+        return log.hasOwnProperty("name");
+    }
+
+    enum Origin {
+        DebtKernel,
+        RepaymentRouter,
     }
 
     async function parseEntry(entry: Logging.Entry, contractsAPI: ContractsAPI): Promise<string[]> {

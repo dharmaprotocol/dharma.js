@@ -1,8 +1,8 @@
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 
-import { Web3Utils } from "utils/web3_utils";
-import { IntervalManager } from "utils/interval_utils";
+import { Web3Utils } from "../../utils/web3_utils";
+import { IntervalManager } from "../../utils/interval_utils";
 import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
 import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
@@ -44,7 +44,8 @@ export class BlockchainAPI {
      */
     public async getErrorLogs(txHash: string): Promise<string[]> {
         const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
-        return await ErrorParser.parseDecodedLogs(receipt.logs, this.contracts);
+        const decodedLogs = ABIDecoder.decodeLogs(receipt.logs);
+        return await ErrorParser.parseDecodedLogs(decodedLogs, this.contracts);
     }
 
     /**

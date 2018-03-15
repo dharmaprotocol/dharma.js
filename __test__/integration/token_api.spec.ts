@@ -55,9 +55,9 @@ describe("Token API (Integration Tests)", () => {
         currentSnapshotId = await web3Utils.saveTestSnapshot();
 
         const dummyTokenRegistry = await contractsApi.loadTokenRegistry();
-        const dummyREPAddress = await dummyTokenRegistry.getTokenAddress.callAsync("REP");
-        const dummyZRXAddress = await dummyTokenRegistry.getTokenAddress.callAsync("ZRX");
-        const dummyMKRAddress = await dummyTokenRegistry.getTokenAddress.callAsync("MKR");
+        const dummyREPAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
+        const dummyZRXAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("ZRX");
+        const dummyMKRAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("MKR");
 
         dummyREPToken = await DummyTokenContract.at(dummyREPAddress, web3, TX_DEFAULTS);
         dummyZRXToken = await DummyTokenContract.at(dummyZRXAddress, web3, TX_DEFAULTS);

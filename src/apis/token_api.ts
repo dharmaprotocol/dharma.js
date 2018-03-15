@@ -2,7 +2,7 @@ import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import { BigNumber } from "bignumber.js";
 
-import { Web3Utils } from "utils/web3_utils";
+import { Web3Utils } from "../../utils/web3_utils";
 
 import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";

@@ -18,7 +18,7 @@ export class IntervalManager {
         onCallback: () => Promise<boolean>,
         onTimeout: () => Promise<any>,
         intervalMs: number,
-        timeoutMs: number
+        timeoutMs: number,
     ) {
         this.intervals[intervalId] = {
             onCallback,
@@ -27,8 +27,8 @@ export class IntervalManager {
             timeoutMs,
         };
 
-        setTimeout(this._intervalCallback(intervalId), intervalMs);
-        setTimeout(this._timeoutCallback(intervalId), timeoutMs);
+        setTimeout(this._intervalCallback(intervalId).bind(this), intervalMs);
+        setTimeout(this._timeoutCallback(intervalId).bind(this), timeoutMs);
     }
 
     public clearInterval(intervalId: string) {
@@ -37,27 +37,31 @@ export class IntervalManager {
         }
     }
 
-    protected async _intervalCallback(intervalId: string): Promise<any> {
-        if (intervalId in this.intervals) {
-            const { onCallback, intervalMs } = this.intervals[intervalId];
+    protected _intervalCallback(intervalId: string): () => Promise<void> {
+        return async () => {
+            if (intervalId in this.intervals) {
+                const { onCallback, intervalMs } = this.intervals[intervalId];
 
-            const continueInterval = await onCallback();
+                const continueInterval = await onCallback();
 
-            if (continueInterval) {
-                setTimeout(this._intervalCallback(intervalId), intervalMs);
-            } else {
-                this.clearInterval(intervalId);
+                if (continueInterval) {
+                    setTimeout(this._intervalCallback(intervalId), intervalMs);
+                } else {
+                    this.clearInterval(intervalId);
+                }
             }
-        }
+        };
     }
 
-    protected async _timeoutCallback(intervalId: string): Promise<any> {
-        if (intervalId in this.intervals) {
-            const { onTimeout } = this.intervals[intervalId];
+    protected _timeoutCallback(intervalId: string): () => Promise<void> {
+        return async () => {
+            if (intervalId in this.intervals) {
+                const { onTimeout } = this.intervals[intervalId];
 
-            await onTimeout();
+                await onTimeout();
 
-            this.clearInterval(intervalId)
-        }
+                this.clearInterval(intervalId);
+            }
+        };
     }
 }
