@@ -44,10 +44,7 @@ export class BlockchainAPI {
      */
     public async getErrorLogs(txHash: string): Promise<string[]> {
         const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
-        return _.flatMap(
-            ABIDecoder.decodeLogs(receipt.logs) as Logging.Entries,
-            DebtKernelError.parseErrors,
-        );
+        return DebtKernelError.parseLogs(ABIDecoder.decodeLogs(receipt.logs));
     }
 
     /**

@@ -29,7 +29,19 @@ export enum DebtKernelError {
 }
 
 export namespace DebtKernelError {
-    export function parseErrors(entry: Logging.Entry): string[] {
+    export function parseLogs(logs: any[]): string[] {
+        return _.chain(logs)
+            .compact() // filter out any undefined values
+            .filter(isParseableEntry) // filter out any non-parseable entries
+            .flatMap(parseErrorsFromEntry) // parse out errors
+            .value();
+    }
+
+    function isParseableEntry(log: any): boolean {
+        return log.hasOwnProperty("name");
+    }
+
+    function parseErrorsFromEntry(entry: Logging.Entry): string[] {
         if (entry.name === LOG_ERROR_NAME) {
             const humanReadableErrorsOrNil = _.map(entry.events, parseErrorID);
             return _.compact(humanReadableErrorsOrNil);
