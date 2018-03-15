@@ -16,7 +16,7 @@ import { BlockchainAPI, ContractsAPI, TokenAPI } from "src/apis/";
 import { Logging, DebtKernelError, DebtOrder } from "src/types";
 import { ACCOUNTS } from "../../accounts";
 import { ErrorScenarioRunner } from "./error_scenario_runner";
-import { INVALID_ORDERS } from "./scenarios";
+import { INVALID_ORDERS, VALID_ORDERS } from "./scenarios";
 import { DebtOrderWrapper } from "src/wrappers";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -38,6 +38,9 @@ describe("Blockchain API (Unit Tests)", () => {
         });
         describe("invalid orders should result in retrievable error logs", () => {
             INVALID_ORDERS.forEach(scenarioRunner.testDebtKernelErrorScenario);
+        });
+        describe("valid orders should result in no error logs", () => {
+            VALID_ORDERS.forEach(scenarioRunner.testDebtKernelErrorScenario);
         });
     });
 
