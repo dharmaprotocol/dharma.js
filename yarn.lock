@@ -280,6 +280,10 @@
   version "4.14.99"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.99.tgz#e6e10c0a4cc16c7409b3181f1e66880d2fb7d4dc"
 
+"@types/lodash@^4.14.104":
+  version "4.14.104"
+  resolved "http://registry.npmjs.org/@types/lodash/-/lodash-4.14.104.tgz#53ee2357fa2e6e68379341d92eb2ecea4b11bb80"
+
 "@types/lodash@^4.14.86":
   version "4.14.102"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.102.tgz#586a3e22385fc79b07cef9c5a1c8a5387986fbc8"
