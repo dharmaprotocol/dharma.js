@@ -24,6 +24,8 @@ const CONTRACT_OWNER = ACCOUNTS[0].address;
 const CREDITOR = ACCOUNTS[1].address;
 const DEBTOR = ACCOUNTS[2].address;
 
+const ZERO_AMOUNT = Units.ether(0);
+
 const TX_DEFAULTS = { from: CONTRACT_OWNER, gas: 400000 };
 
 export class ErrorScenarioRunner {
@@ -166,6 +168,12 @@ export class ErrorScenarioRunner {
 
                 if (scenario.agreementExists) {
                     await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
+                }
+
+                if (scenario.isPayerBalanceInsufficient) {
+                    await principalToken.setBalance.sendTransactionAsync(DEBTOR, ZERO_AMOUNT, {
+                        from: CONTRACT_OWNER,
+                    });
                 }
 
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
