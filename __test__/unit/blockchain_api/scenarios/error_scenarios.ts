@@ -30,4 +30,9 @@ export interface DebtKernelErrorScenario {
 export interface RepaymentRouterErrorScenario {
     description: string;
     error?: RepaymentRouterError;
+    agreementExists: boolean;
 }
+
+export const DEFAULT_REPAYMENT_ARGS = {
+    agreementExists: true,
+};

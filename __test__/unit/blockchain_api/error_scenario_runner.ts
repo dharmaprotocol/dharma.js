@@ -4,8 +4,7 @@ import * as Units from "utils/units";
 import { BigNumber } from "bignumber.js";
 
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
-import { DebtOrder } from "src/types";
-import { DebtKernelError } from "src/types/debt_kernel_error";
+import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
 import { Web3Utils } from "utils/web3_utils";
 import { ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
 import { SimpleInterestLoanAdapter } from "src/adapters";
@@ -165,7 +164,9 @@ export class ErrorScenarioRunner {
 
                 const issuanceHash = debtOrderWrapped.getIssuanceCommitmentHash();
 
-                await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
+                if (scenario.agreementExists) {
+                    await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
+                }
 
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
                     issuanceHash,
@@ -179,9 +180,7 @@ export class ErrorScenarioRunner {
                 test("it returns the correct human-readable error message", async () => {
                     const errors = await this.blockchainAPI.getErrorLogs(txHash);
                     expect(errors.length).toEqual(1);
-                    expect(errors[0]).toEqual(
-                        RepaymentRouterErrorScenario.messageForError(scenario.error),
-                    );
+                    expect(errors[0]).toEqual(RepaymentRouterError.messageForError(scenario.error));
                 });
             } else {
                 test("it returns no error messages", async () => {
