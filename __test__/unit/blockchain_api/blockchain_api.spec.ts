@@ -13,11 +13,9 @@ import { MockIntervalManager } from "./utils/mock_interval_manager";
 import { BlockchainAPIErrors } from "src/apis/blockchain_api";
 import { DummyTokenContract } from "src/wrappers/contract_wrappers/dummy_token_wrapper";
 import { BlockchainAPI, ContractsAPI, TokenAPI } from "src/apis/";
-import { Logging, DebtKernelError, DebtOrder } from "src/types";
 import { ACCOUNTS } from "../../accounts";
 import { ErrorScenarioRunner } from "./error_scenario_runner";
-import { INVALID_ORDERS, VALID_ORDERS } from "./scenarios";
-import { DebtOrderWrapper } from "src/wrappers";
+import { INVALID_ORDERS, VALID_ORDERS, VALID_REPAYMENTS } from "./scenarios";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3Utils = new Web3Utils(web3);
@@ -41,6 +39,9 @@ describe("Blockchain API (Unit Tests)", () => {
         });
         describe("valid orders should result in no error logs", () => {
             VALID_ORDERS.forEach(scenarioRunner.testDebtKernelErrorScenario);
+        });
+        describe("valid repayments should result in no error logs", () => {
+            VALID_REPAYMENTS.forEach(scenarioRunner.testRepaymentRouterErrorScenario);
         });
     });
 
