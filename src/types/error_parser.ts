@@ -35,9 +35,9 @@ export class ErrorParser {
         if (entry.name === Logging.LOG_ERROR_NAME) {
             const origin = this.parseOrigin(entry);
             return _.chain(entry.events)
-                .map(this.parseErrorID)
-                .filter(n => n != null)
-                .map(n => this.messageForErrorWithID(n, origin))
+                .map(this.parseErrorID) // pull out error ids
+                .filter(n => n != null) // filter out undefined values
+                .map(n => this.messageForErrorWithID(n, origin)) // pull human-readable messages for each error id
                 .value();
         } else {
             return [];
