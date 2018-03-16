@@ -112,18 +112,9 @@ export class ErrorScenarioRunner {
                 const principalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
                     "REP",
                 );
-                const nonPrincipalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
-                    "ZRX",
-                );
 
                 const principalToken = await DummyTokenContract.at(
                     principalTokenAddress,
-                    this.web3,
-                    TX_DEFAULTS,
-                );
-
-                const nonPrincipalToken = await DummyTokenContract.at(
-                    nonPrincipalTokenAddress,
                     this.web3,
                     TX_DEFAULTS,
                 );
@@ -176,10 +167,42 @@ export class ErrorScenarioRunner {
                     });
                 }
 
+                let repaymentToken: DummyTokenContract;
+
+                if (scenario.isRouterAuthorizedToReportPayment) {
+                    repaymentToken = principalToken;
+                } else {
+                    const nonPrincipalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
+                        "ZRX",
+                    );
+
+                    const nonPrincipalToken = await DummyTokenContract.at(
+                        nonPrincipalTokenAddress,
+                        this.web3,
+                        TX_DEFAULTS,
+                    );
+
+                    await nonPrincipalToken.setBalance.sendTransactionAsync(CREDITOR, AMOUNT, {
+                        from: CONTRACT_OWNER,
+                    });
+
+                    await nonPrincipalToken.setBalance.sendTransactionAsync(DEBTOR, AMOUNT, {
+                        from: CONTRACT_OWNER,
+                    });
+
+                    await nonPrincipalToken.approve.sendTransactionAsync(
+                        this.tokenTransferProxy.address,
+                        AMOUNT,
+                        { from: DEBTOR },
+                    );
+
+                    repaymentToken = nonPrincipalToken;
+                }
+
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
                     issuanceHash,
                     AMOUNT.div(2),
-                    principalToken.address,
+                    repaymentToken.address,
                     { from: DEBTOR },
                 );
             });

@@ -14,4 +14,10 @@ export const INVALID_REPAYMENT_SCENARIOS: RepaymentRouterErrorScenario[] = [
         ...DEFAULT_REPAYMENT_ARGS,
         isPayerBalanceInsufficient: true,
     },
+    {
+        description: "the repayment is not in the expected token",
+        error: RepaymentRouterError.ROUTER_UNAUTHORIZED_TO_REPORT_REPAYMENT,
+        ...DEFAULT_REPAYMENT_ARGS,
+        isRouterAuthorizedToReportPayment: false,
+    },
 ];
