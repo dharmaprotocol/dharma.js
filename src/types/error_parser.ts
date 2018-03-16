@@ -36,7 +36,7 @@ export class ErrorParser {
             const origin = this.parseOrigin(entry);
             return _.chain(entry.events)
                 .map(this.parseErrorID)
-                .compact()
+                .filter(n => n != null)
                 .map(n => this.messageForErrorWithID(n, origin))
                 .value();
         } else {
