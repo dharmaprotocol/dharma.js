@@ -180,7 +180,7 @@ export class ErrorScenarioRunner {
                     );
                 }
 
-                const repaymentToken = scenario.isRouterAuthorizedToReportPayment
+                const repaymentToken = scenario.willTermsContractAcceptRepayment
                     ? principalToken
                     : this.generateTokenForSymbol("ZRX");
 
