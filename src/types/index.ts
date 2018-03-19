@@ -8,6 +8,7 @@ import { DebtRegistryEntry, DebtRegistryEntryData } from "./debt_registry_entry"
 import { Logging } from "./logging";
 import { ErrorParser } from "./error_parser";
 import { DebtKernelError } from "./debt_kernel_error";
+import { RepaymentSchedule } from "./repayment_schedule";
 import { RepaymentRouterError } from "./repayment_router_error";
 
 export {
@@ -22,5 +23,6 @@ export {
     Logging,
     ErrorParser,
     DebtKernelError,
+    RepaymentSchedule,
     RepaymentRouterError,
 };

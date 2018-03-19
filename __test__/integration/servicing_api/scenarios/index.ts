@@ -2,6 +2,7 @@ import { VALID_MAKE_REPAYMENT } from "./valid_make_repayment";
 import { INVALID_MAKE_REPAYMENT } from "./invalid_make_repayment";
 import { GET_VALUE_REPAID } from "./get_value_repaid";
 import { GET_EXPECTED_VALUE_REPAID } from "./get_expected_value_repaid";
+import { GET_REPAYMENT_SCHEDULE } from "./get_repayment_schedule";
 
 import { BigNumber } from "bignumber.js";
 
@@ -51,9 +52,19 @@ export interface GetExpectedValueRepaidScenario {
     expected: BigNumber;
 }
 
+export interface GetRepaymentScheduleScenario {
+    // The test's description.
+    description: string;
+    // Given a timestamp, returns a list of dates as unix timestamps.
+    expected: (timestamp: number) => Array<number>;
+    amortizationUnit: "hours" | "days" | "weeks" | "months" | "years";
+    termLength: BigNumber;
+}
+
 export {
     VALID_MAKE_REPAYMENT,
     INVALID_MAKE_REPAYMENT,
     GET_VALUE_REPAID,
     GET_EXPECTED_VALUE_REPAID,
+    GET_REPAYMENT_SCHEDULE,
 };

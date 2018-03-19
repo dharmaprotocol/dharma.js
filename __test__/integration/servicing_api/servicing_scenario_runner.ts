@@ -17,6 +17,7 @@ import { DebtKernelContract } from "src/wrappers/contract_wrappers/debt_kernel_w
 import { MakeRepaymentRunner } from "./runners/make_repayment";
 import { GetValueRepaidRunner } from "./runners/get_value_repaid";
 import { GetExpectedValueRepaidRunner } from "./runners/get_expected_value_repaid";
+import { GetRepaymentScheduleRunner } from "./runners/get_repayment_schedule";
 
 export class ServicingScenarioRunner {
     public web3Utils: Web3Utils;
@@ -27,6 +28,7 @@ export class ServicingScenarioRunner {
     public testMakeRepaymentScenario;
     public testGetValueRepaidScenario;
     public testGetExpectedValueRepaidScenario;
+    public testGetRepaymentScheduleScenario;
 
     private currentSnapshotId: number;
 
@@ -41,6 +43,9 @@ export class ServicingScenarioRunner {
             this,
         );
         this.testGetExpectedValueRepaidScenario = GetExpectedValueRepaidRunner.testGetExpectedValueRepaidScenario.bind(
+            this,
+        );
+        this.testGetRepaymentScheduleScenario = GetRepaymentScheduleRunner.testGetRepaymentScheduleScenario.bind(
             this,
         );
     }

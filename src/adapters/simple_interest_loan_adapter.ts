@@ -1,11 +1,18 @@
-import * as omit from "lodash.omit";
-import { DebtOrder } from "../types";
-import { ContractsAPI } from "../apis";
-import { BigNumber } from "../../utils/bignumber";
-import { NULL_ADDRESS } from "../../utils/constants";
-import { Assertions } from "../invariants";
+// libraries
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import * as omit from "lodash.omit";
+
+// utils
+import { BigNumber } from "../../utils/bignumber";
+import { NULL_ADDRESS } from "../../utils/constants";
+
+// types
+import { DebtOrder, RepaymentSchedule } from "../types";
+
+import { ContractsAPI } from "../apis";
+import { Assertions } from "../invariants";
+import { DebtRegistryEntry } from "../types/debt_registry_entry";
 
 export interface SimpleInterestLoanOrder extends DebtOrder {
     // Required Debt Order Parameters
@@ -241,6 +248,19 @@ export class SimpleInterestLoanAdapter {
             termLength,
             amortizationUnit,
         };
+    }
+
+    public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
+        const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
+        const { termLength, amortizationUnit } = this.termsContractInterface.unpackParameters(
+            termsContractParameters,
+        );
+
+        return new RepaymentSchedule(
+            amortizationUnit,
+            termLength,
+            issuanceBlockTimestamp.toNumber(),
+        ).toArray();
     }
 
     private async assertTermsContractCorrespondsToPrincipalToken(
