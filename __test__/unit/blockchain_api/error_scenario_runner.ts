@@ -166,10 +166,12 @@ export class ErrorScenarioRunner {
 
                 const issuanceHash = await this.getIssuanceHashForDebtOrder(debtOrder);
 
+                // Should there be a valid debt agreement in this scenario?
                 if (scenario.agreementExists) {
                     await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
                 }
 
+                // Does the debtor have sufficient balance to make the repayment?
                 if (scenario.isPayerBalanceInsufficient) {
                     await principalToken.setBalance.sendTransactionAsync(
                         DEBTOR,
@@ -180,6 +182,16 @@ export class ErrorScenarioRunner {
                     );
                 }
 
+                /* Will the terms contract accept this repayment?
+
+                In our scenario, the terms contract is a `SimpleInterestLoan`
+                and if the repayment is not in the correct token, then it
+                will reject the repayment. Thus, if
+                `willTermsContractAcceptRepayment` is false, we generate a
+                new token that is not the principal token and use that for
+                repayment, which should trigger the repayment router to
+                reject the repayment.
+                */
                 const repaymentToken = scenario.willTermsContractAcceptRepayment
                     ? principalToken
                     : this.generateTokenForSymbol("ZRX");
