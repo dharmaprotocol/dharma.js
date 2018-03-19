@@ -77,8 +77,6 @@ export class ErrorScenarioRunner {
 
         const {
             debtKernel,
-            debtRegistry,
-            debtToken,
             repaymentRouter,
             tokenTransferProxy,
         } = await this.contractsAPI.loadDharmaContractsAsync();
