@@ -24,7 +24,7 @@ const CONTRACT_OWNER = ACCOUNTS[0].address;
 const CREDITOR = ACCOUNTS[1].address;
 const DEBTOR = ACCOUNTS[2].address;
 
-const ZERO_REPAYMENT_AMOUNT = Units.ether(0);
+const ZERO_AMOUNT = Units.ether(0);
 const REPAYMENT_AMOUNT = Units.ether(10);
 const PRINCIPAL_AMOUNT = REPAYMENT_AMOUNT.mul(3);
 
@@ -182,13 +182,9 @@ export class ErrorScenarioRunner {
 
                 // Does the debtor have sufficient balance to make the repayment?
                 if (scenario.isPayerBalanceInsufficient) {
-                    await principalToken.setBalance.sendTransactionAsync(
-                        DEBTOR,
-                        ZERO_PAYMENT_AMOUNT,
-                        {
-                            from: CONTRACT_OWNER,
-                        },
-                    );
+                    await principalToken.setBalance.sendTransactionAsync(DEBTOR, ZERO_AMOUNT, {
+                        from: CONTRACT_OWNER,
+                    });
                 }
 
                 /* Will the terms contract accept this repayment?
