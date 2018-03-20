@@ -1,4 +1,3 @@
-import * as Web3 from "web3";
 import { DebtOrder, TxData } from "../types";
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
@@ -11,12 +10,13 @@ import {
 } from "../wrappers";
 import { signatureUtils } from "../../utils/signature_utils";
 import * as moment from "moment";
+import { ContractsAPI } from "../apis";
 
 export class OrderAssertions {
-    private web3: Web3;
+    private contracts: ContractsAPI;
 
-    public constructor(web3: Web3) {
-        this.web3 = web3;
+    public constructor(contracts: ContractsAPI) {
+        this.contracts = contracts;
     }
 
     /*
@@ -72,7 +72,10 @@ export class OrderAssertions {
         debtToken: DebtTokenContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
 
         const getOwnerAddress = await debtToken.ownerOf.callAsync(
             new BigNumber(debtOrderWrapped.getIssuanceCommitmentHash()),
@@ -88,7 +91,10 @@ export class OrderAssertions {
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
         if (
             await debtKernel.debtOrderCancelled.callAsync(
                 debtOrderWrapped.getDebtorCommitmentHash(),
@@ -104,7 +110,10 @@ export class OrderAssertions {
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
         if (
             await debtKernel.issuanceCancelled.callAsync(
                 debtOrderWrapped.getIssuanceCommitmentHash(),
@@ -142,12 +151,15 @@ export class OrderAssertions {
     */
 
     // If message sender not debtor, debtor signature must be valid
-    public validDebtorSignature(
+    public async validDebtorSignature(
         debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
         if (transactionOptions.from !== debtOrder.debtor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -162,12 +174,15 @@ export class OrderAssertions {
     }
 
     // If message sender not creditor, creditor signature must be valid
-    public validCreditorSignature(
+    public async validCreditorSignature(
         debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
         if (transactionOptions.from !== debtOrder.creditor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -182,12 +197,15 @@ export class OrderAssertions {
     }
 
     // If message sender not underwriter AND underwriter exists, underwriter signature must be valid
-    public validUnderwriterSignature(
+    public async validUnderwriterSignature(
         debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contracts,
+        );
         if (transactionOptions.from !== debtOrder.underwriter) {
             if (
                 !signatureUtils.isValidSignature(

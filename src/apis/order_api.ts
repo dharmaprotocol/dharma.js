@@ -75,7 +75,7 @@ export class OrderAPI {
         this.web3 = web3;
         this.contracts = contracts;
 
-        this.assert = new Assertions(this.web3);
+        this.assert = new Assertions(this.web3, this.contracts);
     }
 
     /**
@@ -114,7 +114,10 @@ export class OrderAPI {
             debtKernel,
             debtToken,
         );
-        this.assertConsensualityInvariants(debtOrderWrapped.getDebtOrder(), transactionOptions);
+        await this.assertConsensualityInvariants(
+            debtOrderWrapped.getDebtOrder(),
+            transactionOptions,
+        );
         await this.assertExternalBalanceAndAllowanceInvariantsAsync(
             debtOrderWrapped.getDebtOrder(),
             tokenTransferProxy,
@@ -258,21 +261,21 @@ export class OrderAPI {
         );
     }
 
-    private assertConsensualityInvariants(debtOrder: DebtOrder, transactionOptions: object) {
-        this.assert.order.validDebtorSignature(
+    private async assertConsensualityInvariants(debtOrder: DebtOrder, transactionOptions: object) {
+        await this.assert.order.validDebtorSignature(
             debtOrder,
             transactionOptions,
             OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
         );
 
-        this.assert.order.validCreditorSignature(
+        await this.assert.order.validCreditorSignature(
             debtOrder,
             transactionOptions,
             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
         );
 
         if (debtOrder.underwriter && debtOrder.underwriter !== NULL_ADDRESS) {
-            this.assert.order.validUnderwriterSignature(
+            await this.assert.order.validUnderwriterSignature(
                 debtOrder,
                 transactionOptions,
                 OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
