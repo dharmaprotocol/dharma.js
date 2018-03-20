@@ -32,11 +32,11 @@ export interface RepaymentRouterErrorScenario {
     error?: RepaymentRouterError;
     agreementExists: boolean;
     isPayerBalanceInsufficient: boolean;
-    isRouterAuthorizedToReportPayment: boolean;
+    willTermsContractAcceptRepayment: boolean;
 }
 
 export const DEFAULT_REPAYMENT_ARGS = {
     agreementExists: true,
     isPayerBalanceInsufficient: false,
-    isRouterAuthorizedToReportPayment: true,
+    willTermsContractAcceptRepayment: true,
 };

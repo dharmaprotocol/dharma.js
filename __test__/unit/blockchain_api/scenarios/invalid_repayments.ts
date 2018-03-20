@@ -15,9 +15,10 @@ export const INVALID_REPAYMENT_SCENARIOS: RepaymentRouterErrorScenario[] = [
         isPayerBalanceInsufficient: true,
     },
     {
-        description: "the repayment is not in the expected token",
-        error: RepaymentRouterError.ROUTER_UNAUTHORIZED_TO_REPORT_REPAYMENT,
+        description:
+            "the simple interest terms contract will reject repayment made in another token",
+        error: RepaymentRouterError.REPAYMENT_REJECTED_BY_TERMS_CONTRACT,
         ...DEFAULT_REPAYMENT_ARGS,
-        isRouterAuthorizedToReportPayment: false,
+        willTermsContractAcceptRepayment: false,
     },
 ];

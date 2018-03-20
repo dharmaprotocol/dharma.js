@@ -24,7 +24,8 @@ const CONTRACT_OWNER = ACCOUNTS[0].address;
 const CREDITOR = ACCOUNTS[1].address;
 const DEBTOR = ACCOUNTS[2].address;
 
-const ZERO_AMOUNT = Units.ether(0);
+const ZERO_REPAYMENT_AMOUNT = Units.ether(0);
+const REPAYMENT_AMOUNT = Units.ether(10);
 
 const TX_DEFAULTS = { from: CONTRACT_OWNER, gas: 400000 };
 
@@ -77,8 +78,6 @@ export class ErrorScenarioRunner {
 
         const {
             debtKernel,
-            debtRegistry,
-            debtToken,
             repaymentRouter,
             tokenTransferProxy,
         } = await this.contractsAPI.loadDharmaContractsAsync();
@@ -102,106 +101,104 @@ export class ErrorScenarioRunner {
         this.isConfigured = true;
     }
 
+    private async generateTokenForSymbol(symbol: string): Promise<DummyTokenContract> {
+        const tokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(symbol);
+
+        const token = await DummyTokenContract.at(tokenAddress, this.web3, TX_DEFAULTS);
+
+        // Grant creditor a balance of tokens
+        await token.setBalance.sendTransactionAsync(CREDITOR, REPAYMENT_AMOUNT, {
+            from: CONTRACT_OWNER,
+        });
+
+        // Grant debtor a balance of tokens
+        await token.setBalance.sendTransactionAsync(DEBTOR, REPAYMENT_AMOUNT, {
+            from: CONTRACT_OWNER,
+        });
+
+        // Approve the token transfer proxy for a sufficient
+        // amount of tokens for an order fill.
+        await token.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            REPAYMENT_AMOUNT,
+            {
+                from: CREDITOR,
+            },
+        );
+
+        return token;
+    }
+
+    private async generateSignedDebtOrderWithToken(token: DummyTokenContract): Promise<DebtOrder> {
+        const debtOrder = await this.simpleInterestLoan.toDebtOrder({
+            debtor: DEBTOR,
+            creditor: CREDITOR,
+            principalAmount: REPAYMENT_AMOUNT,
+            principalToken: token.address,
+            interestRate: new BigNumber(0.1),
+            amortizationUnit: "months",
+            termLength: new BigNumber(2),
+            salt: new BigNumber(0),
+        });
+
+        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder);
+
+        return debtOrder;
+    }
+
+    private async getIssuanceHashForDebtOrder(debtOrder: DebtOrder): Promise<string> {
+        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
+            debtOrder,
+            this.contractsAPI,
+        );
+
+        return debtOrderWrapped.getIssuanceCommitmentHash();
+    }
+
     public testRepaymentRouterErrorScenario(scenario: RepaymentRouterErrorScenario) {
         describe(scenario.description, () => {
             let txHash: string;
 
-            const AMOUNT = Units.ether(10);
-
             beforeEach(async () => {
-                const principalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
-                    "REP",
-                );
+                const principalToken = await this.generateTokenForSymbol("REP");
 
-                const principalToken = await DummyTokenContract.at(
-                    principalTokenAddress,
-                    this.web3,
-                    TX_DEFAULTS,
-                );
+                const debtOrder = await this.generateSignedDebtOrderWithToken(principalToken);
 
-                // Grant creditor a balance of tokens
-                await principalToken.setBalance.sendTransactionAsync(CREDITOR, AMOUNT, {
-                    from: CONTRACT_OWNER,
-                });
+                const issuanceHash = await this.getIssuanceHashForDebtOrder(debtOrder);
 
-                // Grant debtor a balance of tokens
-                await principalToken.setBalance.sendTransactionAsync(DEBTOR, AMOUNT, {
-                    from: CONTRACT_OWNER,
-                });
-
-                // Approve the token transfer proxy for a sufficient
-                // amount of tokens for an order fill.
-                await principalToken.approve.sendTransactionAsync(
-                    this.tokenTransferProxy.address,
-                    AMOUNT,
-                    { from: CREDITOR },
-                );
-
-                const debtOrder = await this.simpleInterestLoan.toDebtOrder({
-                    debtor: DEBTOR,
-                    creditor: CREDITOR,
-                    principalAmount: AMOUNT,
-                    principalToken: principalToken.address,
-                    interestRate: new BigNumber(0.1),
-                    amortizationUnit: "months",
-                    termLength: new BigNumber(2),
-                    salt: new BigNumber(0),
-                });
-
-                debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder);
-
-                const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-                    debtOrder,
-                    this.contractsAPI,
-                );
-
-                const issuanceHash = debtOrderWrapped.getIssuanceCommitmentHash();
-
+                // Should there be a valid debt agreement in this scenario?
                 if (scenario.agreementExists) {
                     await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
                 }
 
+                // Does the debtor have sufficient balance to make the repayment?
                 if (scenario.isPayerBalanceInsufficient) {
-                    await principalToken.setBalance.sendTransactionAsync(DEBTOR, ZERO_AMOUNT, {
-                        from: CONTRACT_OWNER,
-                    });
+                    await principalToken.setBalance.sendTransactionAsync(
+                        DEBTOR,
+                        ZERO_REPAYMENT_AMOUNT,
+                        {
+                            from: CONTRACT_OWNER,
+                        },
+                    );
                 }
 
-                let repaymentToken: DummyTokenContract;
+                /* Will the terms contract accept this repayment?
 
-                if (scenario.isRouterAuthorizedToReportPayment) {
-                    repaymentToken = principalToken;
-                } else {
-                    const nonPrincipalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
-                        "ZRX",
-                    );
-
-                    const nonPrincipalToken = await DummyTokenContract.at(
-                        nonPrincipalTokenAddress,
-                        this.web3,
-                        TX_DEFAULTS,
-                    );
-
-                    await nonPrincipalToken.setBalance.sendTransactionAsync(CREDITOR, AMOUNT, {
-                        from: CONTRACT_OWNER,
-                    });
-
-                    await nonPrincipalToken.setBalance.sendTransactionAsync(DEBTOR, AMOUNT, {
-                        from: CONTRACT_OWNER,
-                    });
-
-                    await nonPrincipalToken.approve.sendTransactionAsync(
-                        this.tokenTransferProxy.address,
-                        AMOUNT,
-                        { from: DEBTOR },
-                    );
-
-                    repaymentToken = nonPrincipalToken;
-                }
+                In our scenario, the terms contract is a `SimpleInterestLoan`
+                and if the repayment is not in the correct token, then it
+                will reject the repayment. Thus, if
+                `willTermsContractAcceptRepayment` is false, we generate a
+                new token that is not the principal token and use that for
+                repayment, which should trigger the repayment router to
+                reject the repayment.
+                */
+                const repaymentToken = scenario.willTermsContractAcceptRepayment
+                    ? principalToken
+                    : this.generateTokenForSymbol("ZRX");
 
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
                     issuanceHash,
-                    AMOUNT.div(2),
+                    REPAYMENT_AMOUNT,
                     repaymentToken.address,
                     { from: DEBTOR },
                 );
