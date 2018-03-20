@@ -1,4 +1,4 @@
-import { DebtOrder, DebtKernelError } from "src/types";
+import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
 import { BigNumber } from "bignumber.js";
 
 import {
@@ -26,3 +26,17 @@ export interface DebtKernelErrorScenario {
     creditorAllowance?: BigNumber;
     beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
 }
+
+export interface RepaymentRouterErrorScenario {
+    description: string;
+    error?: RepaymentRouterError;
+    agreementExists: boolean;
+    isPayerBalanceInsufficient: boolean;
+    willTermsContractAcceptRepayment: boolean;
+}
+
+export const DEFAULT_REPAYMENT_ARGS = {
+    agreementExists: true,
+    isPayerBalanceInsufficient: false,
+    willTermsContractAcceptRepayment: true,
+};
