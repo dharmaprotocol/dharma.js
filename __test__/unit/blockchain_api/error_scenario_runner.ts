@@ -126,6 +126,14 @@ export class ErrorScenarioRunner {
             },
         );
 
+        await token.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            REPAYMENT_AMOUNT,
+            {
+                from: DEBTOR,
+            },
+        );
+
         return token;
     }
 
