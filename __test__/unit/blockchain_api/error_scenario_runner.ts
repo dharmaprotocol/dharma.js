@@ -27,9 +27,9 @@ const DEBTOR = ACCOUNTS[2].address;
 const ZERO_AMOUNT = Units.ether(0);
 const REPAYMENT_AMOUNT = Units.ether(10);
 const PRINCIPAL_AMOUNT = REPAYMENT_AMOUNT.mul(3);
-// The balance or allowance must exceed the repayment amount to account for
-// the gas expended in sending the repayment.
-const BALANCE_OR_ALLOWANCE = REPAYMENT_AMOUNT.add(1);
+// The debtor's balance or allowance must exceed the repayment amount to account
+// for the gas expended in actually sending the repayment.
+const DEBTOR_BALANCE_OR_ALLOWANCE = REPAYMENT_AMOUNT.add(1);
 
 const TX_DEFAULTS = { from: CONTRACT_OWNER, gas: 400000 };
 
@@ -116,7 +116,7 @@ export class ErrorScenarioRunner {
         });
 
         // Grant debtor a balance of tokens
-        await token.setBalance.sendTransactionAsync(DEBTOR, BALANCE_OR_ALLOWANCE, {
+        await token.setBalance.sendTransactionAsync(DEBTOR, DEBTOR_BALANCE_OR_ALLOWANCE, {
             from: CONTRACT_OWNER,
         });
 
@@ -132,7 +132,7 @@ export class ErrorScenarioRunner {
 
         await token.approve.sendTransactionAsync(
             this.tokenTransferProxy.address,
-            BALANCE_OR_ALLOWANCE,
+            DEBTOR_BALANCE_OR_ALLOWANCE,
             {
                 from: DEBTOR,
             },
