@@ -192,9 +192,13 @@ export class ErrorScenarioRunner {
                 repayment, which should trigger the repayment router to
                 reject the repayment.
                 */
-                const repaymentToken = scenario.willTermsContractAcceptRepayment
-                    ? principalToken
-                    : this.generateTokenForSymbol("ZRX");
+                let repaymentToken: DummyTokenContract;
+
+                if (scenario.willTermsContractAcceptRepayment) {
+                    repaymentToken = principalToken;
+                } else {
+                    repaymentToken = await this.generateTokenForSymbol("ZRX");
+                }
 
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
                     issuanceHash,
