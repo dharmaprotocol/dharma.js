@@ -5,9 +5,8 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { IntervalManager } from "../../utils/interval_utils";
 import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
-import * as _ from "lodash";
-import { DebtKernel } from "@dharmaprotocol/contracts";
-import { Logging, DebtKernelError } from "../types";
+import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
+import { ErrorParser } from "src/types";
 
 import { Assertions } from "../invariants/index";
 
@@ -30,9 +29,10 @@ export class BlockchainAPI {
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3);
         this.contracts = contracts;
-        // We need to configure the ABI Decoder to be able to pull out error logs.
-        const { abi } = DebtKernel;
-        ABIDecoder.addABI(abi);
+
+        // We need to configure the ABI Decoder in order to pull out relevant logs.
+        ABIDecoder.addABI(DebtKernel.abi);
+        ABIDecoder.addABI(RepaymentRouter.abi);
     }
 
     /**
@@ -44,7 +44,13 @@ export class BlockchainAPI {
      */
     public async getErrorLogs(txHash: string): Promise<string[]> {
         const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
-        return DebtKernelError.parseLogs(ABIDecoder.decodeLogs(receipt.logs));
+        const { debtKernel, repaymentRouter } = await this.contracts.loadDharmaContractsAsync();
+        const decodedLogs = ABIDecoder.decodeLogs(receipt.logs);
+        const parser = new ErrorParser({
+            debtKernel: debtKernel.address,
+            repaymentRouter: repaymentRouter.address,
+        });
+        return parser.parseDecodedLogs(decodedLogs);
     }
 
     /**
