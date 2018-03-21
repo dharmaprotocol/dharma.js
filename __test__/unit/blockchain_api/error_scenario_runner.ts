@@ -129,6 +129,9 @@ export class ErrorScenarioRunner {
 
         await token.approve.sendTransactionAsync(
             this.tokenTransferProxy.address,
+            // TODO(kayvon): increasing the allowance to be greater than the
+            // repayment amount shouldn't be necessary. This appears to be an
+            // error in the contracts.
             REPAYMENT_AMOUNT.add(1),
             {
                 from: DEBTOR,
