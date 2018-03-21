@@ -216,7 +216,7 @@ export class SimpleInterestLoanAdapter {
             termLength,
         });
 
-        return debtOrder;
+        return DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
     }
 
     /**
