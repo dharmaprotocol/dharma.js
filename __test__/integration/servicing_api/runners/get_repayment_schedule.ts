@@ -87,11 +87,7 @@ export class GetRepaymentScheduleRunner {
 
             debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
 
-            const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-                debtOrder,
-                contractsApi,
-            );
-            issuanceHash = debtOrderWrapped.getIssuanceCommitmentHash();
+            issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 
             await orderApi.fillAsync(debtOrder, { from: CREDITOR });
 
