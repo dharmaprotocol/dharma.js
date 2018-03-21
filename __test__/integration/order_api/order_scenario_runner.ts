@@ -109,10 +109,6 @@ export class OrderScenarioRunner {
 
                     const [debtOrderFilledLog] = compact(ABIDecoder.decodeLogs(receipt.logs));
 
-                    if (debtOrderFilledLog.name == "LogError") {
-                        console.log(debtOrderFilledLog);
-                    }
-
                     expect(debtOrderFilledLog.name).toBe("LogDebtOrderFilled");
                 });
             } else {
