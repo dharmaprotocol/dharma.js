@@ -58,8 +58,8 @@ const MAX_TERM_LENGTH_VALUE_HEX = "0xffffffffffffffffffffffffffffff";
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
 
-    constructor(web3: Web3) {
-        this.assert = new Assertions(web3);
+    constructor(web3: Web3, contracts: ContractsAPI) {
+        this.assert = new Assertions(web3, contracts);
     }
 
     public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
@@ -161,9 +161,9 @@ export class SimpleInterestLoanAdapter {
     private termsContractInterface: SimpleInterestLoanTerms;
 
     public constructor(web3: Web3, contracts: ContractsAPI) {
-        this.assert = new Assertions(web3);
+        this.assert = new Assertions(web3, contracts);
         this.contracts = contracts;
-        this.termsContractInterface = new SimpleInterestLoanTerms(web3);
+        this.termsContractInterface = new SimpleInterestLoanTerms(web3, contracts);
     }
 
     /**
