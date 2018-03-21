@@ -1,14 +1,22 @@
+// libraries
+import * as Web3 from "web3";
+
+// utils
+import { BigNumber } from "utils/bignumber";
+import * as Units from "utils/units";
+import * as moment from "moment";
+
 import {
     SimpleInterestLoanAdapter,
     SimpleInterestLoanTerms,
     SimpleInterestAdapterErrors,
     AmortizationUnit,
 } from "src/adapters/simple_interest_loan_adapter";
+
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
-import * as Web3 from "web3";
-import { BigNumber } from "utils/bignumber";
-import * as Units from "utils/units";
+
 import { TokenRegistryContract, TermsContractRegistryContract } from "src/wrappers";
+
 import { ACCOUNTS } from "../../accounts";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
@@ -493,6 +501,66 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             "0x0000000000002a5b1b1e089f00d000000300000000000000000000000000000c",
                     });
                 });
+            });
+        });
+    });
+
+    describe("#getRepaymentSchedule", () => {
+        let simpleInterestTermsContractAddress: string;
+        let principalToken;
+        let termsContract;
+
+        beforeAll(async () => {
+            const termsContractRegistry = await TermsContractRegistryContract.deployed(
+                web3,
+                TX_DEFAULTS,
+            );
+            simpleInterestTermsContractAddress = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
+                principalTokenAddress,
+            );
+
+            principalToken = principalTokenAddress;
+            termsContract = simpleInterestTermsContractAddress;
+        });
+
+        describe("when the schedule is across 2 weeks", () => {
+            test("it returns a list of 2 unix timestamps 1 week apart", async () => {
+                const totalExpectedRepayment = new BigNumber(1);
+                const amortizationUnit = SimpleInterestLoanAdapter.Installments.WEEKLY;
+                const termLength = new BigNumber(2);
+                const contractTermsParameters = simpleInterestLoanTerms.packParameters({
+                    totalExpectedRepayment,
+                    amortizationUnit,
+                    termLength,
+                });
+
+                const issuanceTime = moment().unix();
+
+                // Mock a debt registry entry that has some issuance time and the terms parameters.
+                const debtRegistryEntry = {
+                    version: "0",
+                    beneficiary: "0",
+                    underwriter: "0",
+                    underwriterRiskRating: new BigNumber(0),
+                    termsContract: termsContract,
+                    termsContractParameters: contractTermsParameters,
+                    issuanceBlockTimestamp: new BigNumber(issuanceTime),
+                };
+
+                const scheduleList = await simpleInterestLoanAdapter.getRepaymentSchedule(
+                    debtRegistryEntry,
+                );
+
+                expect(scheduleList).toEqual([
+                    moment
+                        .unix(issuanceTime)
+                        .add(1, "week")
+                        .unix(),
+                    moment
+                        .unix(issuanceTime)
+                        .add(2, "weeks")
+                        .unix(),
+                ]);
             });
         });
     });

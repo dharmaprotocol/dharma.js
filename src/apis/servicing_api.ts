@@ -1,10 +1,18 @@
+// contracts
 import { ContractsAPI } from "./";
-import { BigNumber } from "bignumber.js";
+
+// libraries
 import * as Web3 from "web3";
+import * as singleLineString from "single-line-string";
+import { BigNumber } from "bignumber.js";
+
+// utils
 import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
-import { DebtRegistryEntry, TxData } from "../types";
-import * as singleLineString from "single-line-string";
+
+// types
+import { DebtRegistryEntry, TxData, RepaymentSchedule } from "../types";
+import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
 
 const REPAYMENT_GAS_MAXIMUM = 100000;
 
@@ -18,6 +26,8 @@ export const ServicingAPIErrors = {
     INSUFFICIENT_REPAYMENT_ALLOWANCE: () =>
         singleLineString`Payer has not granted the token transfer proxy a sufficient
                          allowance in the specified token to execute this repayment.`,
+    UNKNOWN_LOAN_ADAPTER: (termsContract: string) =>
+        singleLineString`Associated loan adapter not found for terms contract at ${termsContract}`,
 };
 
 export class ServicingAPI {
@@ -170,6 +180,17 @@ export class ServicingAPI {
         return debtRegistry.get.callAsync(issuanceHash);
     }
 
+    public async getRepaymentScheduleAsync(issuanceHash: string): Promise<Array<number>> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const debtRegistryEntry = await this.getDebtRegistryEntry(issuanceHash);
+
+        const { termsContract } = debtRegistryEntry;
+        const adapter = this.adapterForTermsContract(termsContract);
+
+        return adapter.getRepaymentSchedule(debtRegistryEntry);
+    }
+
     private async getTxDefaultOptions(): Promise<TxData> {
         const web3Utils = new Web3Utils(this.web3);
 
@@ -181,5 +202,16 @@ export class ServicingAPI {
             from: accounts[0],
             gas: REPAYMENT_GAS_MAXIMUM,
         };
+    }
+
+    private adapterForTermsContract(termsContract: string): any {
+        const termsContractType = this.contracts.getTermsContractType(termsContract);
+
+        switch (termsContractType) {
+            case "SimpleInterestTermsContractContract":
+                return new SimpleInterestLoanAdapter(this.web3, this.contracts);
+        }
+
+        throw new Error(ServicingAPIErrors.UNKNOWN_LOAN_ADAPTER(termsContract));
     }
 }

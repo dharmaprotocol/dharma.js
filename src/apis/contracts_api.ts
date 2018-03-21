@@ -39,11 +39,14 @@ export const ContractsError = {
                 address ${principalToken}`,
     CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) =>
         singleLineString`Could not find token associated with symbol ${symbol}.`,
+    TERMS_CONTRACT_NOT_FOUND: (tokenAddress: string) =>
+        singleLineString`Could not find a terms contract at address ${tokenAddress}`,
 };
 
 export class ContractsAPI {
     private web3: Web3;
     private config: DharmaConfig;
+    private termsContracts: { [contractAddress: string]: ContractWrapper };
 
     private cache: { [contractName: string]: ContractWrapper };
 
@@ -52,6 +55,7 @@ export class ContractsAPI {
         this.config = config;
 
         this.cache = {};
+        this.termsContracts = {};
     }
 
     public async loadDharmaContractsAsync(
@@ -275,6 +279,26 @@ export class ContractsAPI {
         return termsContractRegistry;
     }
 
+    /**
+     * Given a terms contract address, returns the name of that contract.
+     *
+     * Examples:
+     *  getTermsContractType("0x069cb8891d9dbf02d89079a77169e0dc8bacda65")
+     *  => "SimpleInterestTermsContractContract"
+     *
+     * @param {string} tokenAddress
+     * @returns {string}
+     */
+    public getTermsContractType(contractAddress: string): string {
+        const contractWrapper = this.termsContracts[contractAddress];
+
+        if (contractWrapper) {
+            return contractWrapper.constructor.name;
+        } else {
+            throw new Error(ContractsError.TERMS_CONTRACT_NOT_FOUND(contractAddress));
+        }
+    }
+
     public async loadSimpleInterestTermsContract(
         tokenAddress: string,
         transactionOptions: object = {},
@@ -302,6 +326,8 @@ export class ContractsAPI {
             );
 
             this.cache[cacheKey] = simpleInterestTermsContract;
+            this.termsContracts[simpleInterestTermsContract.address] = simpleInterestTermsContract;
+
             return simpleInterestTermsContract;
         }
     }
