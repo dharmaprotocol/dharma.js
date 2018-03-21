@@ -24,8 +24,9 @@ const CONTRACT_OWNER = ACCOUNTS[0].address;
 const CREDITOR = ACCOUNTS[1].address;
 const DEBTOR = ACCOUNTS[2].address;
 
-const ZERO_REPAYMENT_AMOUNT = Units.ether(0);
+const ZERO_AMOUNT = Units.ether(0);
 const REPAYMENT_AMOUNT = Units.ether(10);
+const PRINCIPAL_AMOUNT = REPAYMENT_AMOUNT.mul(3);
 
 const TX_DEFAULTS = { from: CONTRACT_OWNER, gas: 400000 };
 
@@ -107,7 +108,7 @@ export class ErrorScenarioRunner {
         const token = await DummyTokenContract.at(tokenAddress, this.web3, TX_DEFAULTS);
 
         // Grant creditor a balance of tokens
-        await token.setBalance.sendTransactionAsync(CREDITOR, REPAYMENT_AMOUNT, {
+        await token.setBalance.sendTransactionAsync(CREDITOR, PRINCIPAL_AMOUNT, {
             from: CONTRACT_OWNER,
         });
 
@@ -120,9 +121,20 @@ export class ErrorScenarioRunner {
         // amount of tokens for an order fill.
         await token.approve.sendTransactionAsync(
             this.tokenTransferProxy.address,
-            REPAYMENT_AMOUNT,
+            PRINCIPAL_AMOUNT,
             {
                 from: CREDITOR,
+            },
+        );
+
+        await token.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            // TODO(kayvon): increasing the allowance to be greater than the
+            // repayment amount shouldn't be necessary. This appears to be an
+            // error in the contracts.
+            REPAYMENT_AMOUNT.add(1),
+            {
+                from: DEBTOR,
             },
         );
 
@@ -133,7 +145,7 @@ export class ErrorScenarioRunner {
         const debtOrder = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
-            principalAmount: REPAYMENT_AMOUNT,
+            principalAmount: PRINCIPAL_AMOUNT,
             principalToken: token.address,
             interestRate: new BigNumber(0.1),
             amortizationUnit: "months",
@@ -173,13 +185,9 @@ export class ErrorScenarioRunner {
 
                 // Does the debtor have sufficient balance to make the repayment?
                 if (scenario.isPayerBalanceInsufficient) {
-                    await principalToken.setBalance.sendTransactionAsync(
-                        DEBTOR,
-                        ZERO_REPAYMENT_AMOUNT,
-                        {
-                            from: CONTRACT_OWNER,
-                        },
-                    );
+                    await principalToken.setBalance.sendTransactionAsync(DEBTOR, ZERO_AMOUNT, {
+                        from: CONTRACT_OWNER,
+                    });
                 }
 
                 /* Will the terms contract accept this repayment?
@@ -192,9 +200,13 @@ export class ErrorScenarioRunner {
                 repayment, which should trigger the repayment router to
                 reject the repayment.
                 */
-                const repaymentToken = scenario.willTermsContractAcceptRepayment
-                    ? principalToken
-                    : this.generateTokenForSymbol("ZRX");
+                let repaymentToken: DummyTokenContract;
+
+                if (scenario.willTermsContractAcceptRepayment) {
+                    repaymentToken = principalToken;
+                } else {
+                    repaymentToken = await this.generateTokenForSymbol("ZRX");
+                }
 
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
                     issuanceHash,

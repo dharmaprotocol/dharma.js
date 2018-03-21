@@ -140,9 +140,9 @@
   dependencies:
     find-up "^2.1.0"
 
-"@dharmaprotocol/contracts@^0.0.15":
-  version "0.0.15"
-  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.15.tgz#2b1287f165228ec1d438d0f45758fab6a206ee8a"
+"@dharmaprotocol/contracts@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.16.tgz#1f955287c1437cebd0852d68d4533491fe61fddf"
   dependencies:
     NonFungibleToken "https://github.com/dharmaprotocol/NonFungibleToken.git"
     zeppelin-solidity "^1.6.0"
@@ -325,6 +325,13 @@ JSONStream@^1.0.4:
   dependencies:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
+
+"NonFungibleToken@git+https://github.com/dharmaprotocol/NonFungibleToken.git":
+  version "0.0.1"
+  resolved "git+https://github.com/dharmaprotocol/NonFungibleToken.git#162e8609569654630a5a5ef3bbbe5e0ebbe90f1d"
+  dependencies:
+    abi-decoder "^1.0.9"
+    zeppelin-solidity "^1.4.0"
 
 "NonFungibleToken@https://github.com/dharmaprotocol/NonFungibleToken.git":
   version "0.0.1"
