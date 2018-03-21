@@ -36,7 +36,7 @@ export class MakeRepaymentRunner {
             let principalToken: DummyTokenContract;
             let nonPrincipalToken: DummyTokenContract;
             let tokenTransferProxy: TokenTransferProxyContract;
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
             let issuanceHash: string;
 
             const CONTRACT_OWNER = ACCOUNTS[0].address;
@@ -114,11 +114,7 @@ export class MakeRepaymentRunner {
 
                 debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
 
-                const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-                    debtOrder,
-                    contractsApi,
-                );
-                issuanceHash = debtOrderWrapped.getIssuanceCommitmentHash();
+                issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 
                 await orderApi.fillAsync(debtOrder, { from: CREDITOR });
 

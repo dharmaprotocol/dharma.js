@@ -24,7 +24,7 @@ export interface DebtKernelErrorScenario {
     };
     creditorBalance?: BigNumber;
     creditorAllowance?: BigNumber;
-    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
+    beforeBlock?: (debtOrder: DebtOrder.Instance, debtKernel: DebtKernelContract) => Promise<any>;
 }
 
 export interface RepaymentRouterErrorScenario {

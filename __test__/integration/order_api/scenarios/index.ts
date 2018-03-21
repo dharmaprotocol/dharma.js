@@ -37,7 +37,7 @@ export interface FillScenario {
     creditorAllowance?: BigNumber;
     errorType?: string;
     errorMessage?: string;
-    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
+    beforeBlock?: (debtOrder: DebtOrder.Instance, debtKernel: DebtKernelContract) => Promise<any>;
 }
 
 export interface OrderCancellationScenario {

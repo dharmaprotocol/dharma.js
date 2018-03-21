@@ -7,7 +7,7 @@ import { Assertions } from "../invariants";
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 
-export interface SimpleInterestLoanOrder extends DebtOrder {
+export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
     // Required Debt Order Parameters
     principalAmount: BigNumber;
     principalToken: string;
@@ -173,7 +173,9 @@ export class SimpleInterestLoanAdapter {
      * @param  simpleInterestLoanOrder a simple interest loan order instance.
      * @return                         the generated Dharma debt order.
      */
-    public async toDebtOrder(simpleInterestLoanOrder: SimpleInterestLoanOrder): Promise<DebtOrder> {
+    public async toDebtOrder(
+        simpleInterestLoanOrder: SimpleInterestLoanOrder,
+    ): Promise<DebtOrder.Instance> {
         this.assert.schema.simpleInterestLoanOrder(
             "simpleInterestLoanOrder",
             simpleInterestLoanOrder,
@@ -187,7 +189,7 @@ export class SimpleInterestLoanAdapter {
             termLength,
         } = simpleInterestLoanOrder;
 
-        let debtOrder: DebtOrder = omit(simpleInterestLoanOrder, [
+        let debtOrder: DebtOrder.Instance = omit(simpleInterestLoanOrder, [
             "interestRate",
             "amortizationUnit",
             "termLength",
@@ -217,7 +219,7 @@ export class SimpleInterestLoanAdapter {
      * @param  debtOrder a Dharma debt order instance.
      * @return           the generated simple interest loan order.
      */
-    public async fromDebtOrder(debtOrder: DebtOrder): Promise<SimpleInterestLoanOrder> {
+    public async fromDebtOrder(debtOrder: DebtOrder.Instance): Promise<SimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
         await this.assertTermsContractCorrespondsToPrincipalToken(
             debtOrder.principalToken,

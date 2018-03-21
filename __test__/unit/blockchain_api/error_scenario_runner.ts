@@ -102,71 +102,6 @@ export class ErrorScenarioRunner {
         this.isConfigured = true;
     }
 
-    private async generateTokenForSymbol(symbol: string): Promise<DummyTokenContract> {
-        const tokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(symbol);
-
-        const token = await DummyTokenContract.at(tokenAddress, this.web3, TX_DEFAULTS);
-
-        // Grant creditor a balance of tokens
-        await token.setBalance.sendTransactionAsync(CREDITOR, PRINCIPAL_AMOUNT, {
-            from: CONTRACT_OWNER,
-        });
-
-        // Grant debtor a balance of tokens
-        await token.setBalance.sendTransactionAsync(DEBTOR, REPAYMENT_AMOUNT, {
-            from: CONTRACT_OWNER,
-        });
-
-        // Approve the token transfer proxy for a sufficient
-        // amount of tokens for an order fill.
-        await token.approve.sendTransactionAsync(
-            this.tokenTransferProxy.address,
-            PRINCIPAL_AMOUNT,
-            {
-                from: CREDITOR,
-            },
-        );
-
-        await token.approve.sendTransactionAsync(
-            this.tokenTransferProxy.address,
-            // TODO(kayvon): increasing the allowance to be greater than the
-            // repayment amount shouldn't be necessary. This appears to be an
-            // error in the contracts.
-            REPAYMENT_AMOUNT.add(1),
-            {
-                from: DEBTOR,
-            },
-        );
-
-        return token;
-    }
-
-    private async generateSignedDebtOrderWithToken(token: DummyTokenContract): Promise<DebtOrder> {
-        const debtOrder = await this.simpleInterestLoan.toDebtOrder({
-            debtor: DEBTOR,
-            creditor: CREDITOR,
-            principalAmount: PRINCIPAL_AMOUNT,
-            principalToken: token.address,
-            interestRate: new BigNumber(0.1),
-            amortizationUnit: "months",
-            termLength: new BigNumber(2),
-            salt: new BigNumber(0),
-        });
-
-        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder);
-
-        return debtOrder;
-    }
-
-    private async getIssuanceHashForDebtOrder(debtOrder: DebtOrder): Promise<string> {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contractsAPI,
-        );
-
-        return debtOrderWrapped.getIssuanceCommitmentHash();
-    }
-
     public testRepaymentRouterErrorScenario(scenario: RepaymentRouterErrorScenario) {
         describe(scenario.description, () => {
             let txHash: string;
@@ -176,7 +111,7 @@ export class ErrorScenarioRunner {
 
                 const debtOrder = await this.generateSignedDebtOrderWithToken(principalToken);
 
-                const issuanceHash = await this.getIssuanceHashForDebtOrder(debtOrder);
+                const issuanceHash = await this.orderAPI.getIssuanceHash(debtOrder);
 
                 // Should there be a valid debt agreement in this scenario?
                 if (scenario.agreementExists) {
@@ -236,7 +171,7 @@ export class ErrorScenarioRunner {
             let txHash: string;
 
             beforeEach(async () => {
-                const debtOrder = scenario.generateDebtOrder(
+                let debtOrder = scenario.generateDebtOrder(
                     this.debtKernel,
                     this.repaymentRouter,
                     this.principalToken,
@@ -280,10 +215,8 @@ export class ErrorScenarioRunner {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
                 }
 
-                const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-                    debtOrder,
-                    this.contractsAPI,
-                );
+                debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
+                const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(
                     debtOrderWrapped.getCreditor(),
@@ -318,5 +251,63 @@ export class ErrorScenarioRunner {
 
     public async revertToSavedSnapshot() {
         await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+    }
+
+    private async generateTokenForSymbol(symbol: string): Promise<DummyTokenContract> {
+        const tokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(symbol);
+
+        const token = await DummyTokenContract.at(tokenAddress, this.web3, TX_DEFAULTS);
+
+        // Grant creditor a balance of tokens
+        await token.setBalance.sendTransactionAsync(CREDITOR, PRINCIPAL_AMOUNT, {
+            from: CONTRACT_OWNER,
+        });
+
+        // Grant debtor a balance of tokens
+        await token.setBalance.sendTransactionAsync(DEBTOR, REPAYMENT_AMOUNT, {
+            from: CONTRACT_OWNER,
+        });
+
+        // Approve the token transfer proxy for a sufficient
+        // amount of tokens for an order fill.
+        await token.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            PRINCIPAL_AMOUNT,
+            {
+                from: CREDITOR,
+            },
+        );
+
+        await token.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            // TODO(kayvon): increasing the allowance to be greater than the
+            // repayment amount shouldn't be necessary. This appears to be an
+            // error in the contracts.
+            REPAYMENT_AMOUNT.add(1),
+            {
+                from: DEBTOR,
+            },
+        );
+
+        return token;
+    }
+
+    private async generateSignedDebtOrderWithToken(
+        token: DummyTokenContract,
+    ): Promise<DebtOrder.Instance> {
+        const debtOrder = await this.simpleInterestLoan.toDebtOrder({
+            debtor: DEBTOR,
+            creditor: CREDITOR,
+            principalAmount: PRINCIPAL_AMOUNT,
+            principalToken: token.address,
+            interestRate: new BigNumber(0.1),
+            amortizationUnit: "months",
+            termLength: new BigNumber(2),
+            salt: new BigNumber(0),
+        });
+
+        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder);
+
+        return debtOrder;
     }
 }

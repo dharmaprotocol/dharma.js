@@ -43,7 +43,7 @@ export class OrderScenarioRunner {
 
     public testFillScenario(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -109,6 +109,10 @@ export class OrderScenarioRunner {
 
                     const [debtOrderFilledLog] = compact(ABIDecoder.decodeLogs(receipt.logs));
 
+                    if (debtOrderFilledLog.name == "LogError") {
+                        console.log(debtOrderFilledLog);
+                    }
+
                     expect(debtOrderFilledLog.name).toBe("LogDebtOrderFilled");
                 });
             } else {
@@ -123,7 +127,7 @@ export class OrderScenarioRunner {
 
     public async testOrderCancelScenario(scenario: OrderCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -176,7 +180,7 @@ export class OrderScenarioRunner {
 
     public async testIssuanceCancelScenario(scenario: IssuanceCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);

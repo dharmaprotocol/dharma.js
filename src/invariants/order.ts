@@ -24,14 +24,14 @@ export class OrderAssertions {
     */
 
     // principal >= debtor fee
-    public validDebtorFee(debtOrder: DebtOrder, errorMessage: string) {
+    public validDebtorFee(debtOrder: DebtOrder.Instance, errorMessage: string) {
         if (debtOrder.principalAmount.lt(debtOrder.debtorFee)) {
             throw new Error(errorMessage);
         }
     }
 
     // If no underwriter is specified, underwriter fees must be 0
-    public validUnderwriterFee(debtOrder: DebtOrder, errorMessage: string) {
+    public validUnderwriterFee(debtOrder: DebtOrder.Instance, errorMessage: string) {
         if (
             (!debtOrder.underwriter || debtOrder.underwriter === NULL_ADDRESS) &&
             debtOrder.underwriterFee.gt(0)
@@ -41,7 +41,7 @@ export class OrderAssertions {
     }
 
     // If no relayer is specified, relayer fees must be 0
-    public validRelayerFee(debtOrder: DebtOrder, errorMessage: string) {
+    public validRelayerFee(debtOrder: DebtOrder.Instance, errorMessage: string) {
         if (
             (!debtOrder.relayer || debtOrder.relayer === NULL_ADDRESS) &&
             debtOrder.relayerFee.gt(0)
@@ -51,7 +51,7 @@ export class OrderAssertions {
     }
 
     // creditorFee + debtorFee == relayerFee + underwriterFee
-    public validFees(debtOrder: DebtOrder, errorMessage: string) {
+    public validFees(debtOrder: DebtOrder.Instance, errorMessage: string) {
         const feesContributed = debtOrder.creditorFee.add(debtOrder.debtorFee);
         const feesDistributed = debtOrder.relayerFee.add(debtOrder.underwriterFee);
         if (!feesContributed.eq(feesDistributed)) {
@@ -60,7 +60,7 @@ export class OrderAssertions {
     }
 
     // Debt order must not be expired
-    public notExpired(debtOrder: DebtOrder, errorMessage: string) {
+    public notExpired(debtOrder: DebtOrder.Instance, errorMessage: string) {
         if (debtOrder.expirationTimestampInSec.lt(moment().unix())) {
             throw new Error(errorMessage);
         }
@@ -68,14 +68,12 @@ export class OrderAssertions {
 
     // Debt cannot already have been issued
     public async notAlreadyIssuedAsync(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         debtToken: DebtTokenContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         const getOwnerAddress = await debtToken.ownerOf.callAsync(
             new BigNumber(debtOrderWrapped.getIssuanceCommitmentHash()),
@@ -87,14 +85,13 @@ export class OrderAssertions {
 
     // Debt order cannot have been cancelled
     public async debtOrderNotCancelledAsync(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
         if (
             await debtKernel.debtOrderCancelled.callAsync(
                 debtOrderWrapped.getDebtorCommitmentHash(),
@@ -106,14 +103,13 @@ export class OrderAssertions {
 
     // Issuance cannot have been cancelled
     public async issuanceNotCancelledAsync(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
         if (
             await debtKernel.issuanceCancelled.callAsync(
                 debtOrderWrapped.getIssuanceCommitmentHash(),
@@ -124,7 +120,7 @@ export class OrderAssertions {
     }
 
     public senderAuthorizedToCancelOrder(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -134,7 +130,7 @@ export class OrderAssertions {
     }
 
     public senderAuthorizedToCancelIssuance(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -152,14 +148,13 @@ export class OrderAssertions {
 
     // If message sender not debtor, debtor signature must be valid
     public async validDebtorSignature(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
         if (transactionOptions.from !== debtOrder.debtor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -175,14 +170,13 @@ export class OrderAssertions {
 
     // If message sender not creditor, creditor signature must be valid
     public async validCreditorSignature(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
         if (transactionOptions.from !== debtOrder.creditor) {
             if (
                 !signatureUtils.isValidSignature(
@@ -198,14 +192,13 @@ export class OrderAssertions {
 
     // If message sender not underwriter AND underwriter exists, underwriter signature must be valid
     public async validUnderwriterSignature(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        const debtOrderWrapped = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
         if (transactionOptions.from !== debtOrder.underwriter) {
             if (
                 !signatureUtils.isValidSignature(
@@ -225,7 +218,7 @@ export class OrderAssertions {
 
     // Creditor balance > principal + fee
     public async sufficientCreditorBalanceAsync(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         principalToken: ERC20Contract,
         errorMessage: string,
     ) {
@@ -237,7 +230,7 @@ export class OrderAssertions {
 
     // Creditor Allowance to TokenTransferProxy >= principal + creditorFee
     public async sufficientCreditorAllowanceAsync(
-        debtOrder: DebtOrder,
+        debtOrder: DebtOrder.Instance,
         principalToken: ERC20Contract,
         tokenTransferProxy: TokenTransferProxyContract,
         errorMessage: string,
