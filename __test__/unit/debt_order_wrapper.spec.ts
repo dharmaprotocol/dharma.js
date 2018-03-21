@@ -7,7 +7,7 @@ import { Web3Utils } from "utils/web3_utils";
 
 import { ACCOUNTS } from "../accounts";
 
-let debtOrderWrapper: DebtOrderWrapper;
+let debtOrderWrapper: DebtOrder.InstanceWrapper;
 
 // For the unit test's purposes, we use arbitrary
 // addresses for all debt order fields that expect addresses.

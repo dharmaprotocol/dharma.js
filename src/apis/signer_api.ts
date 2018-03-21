@@ -39,13 +39,12 @@ export class SignerAPI {
      * @param debtOrder The debt order for which we desire a signature
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
-    async asDebtor(debtOrder: DebtOrder): Promise<ECDSASignature> {
+    async asDebtor(debtOrder: DebtOrder.Instance): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
 
-        const wrappedDebtOrder = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+
+        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
         return this.signPayloadWithAddress(
             wrappedDebtOrder.getDebtorCommitmentHash(),
@@ -62,13 +61,12 @@ export class SignerAPI {
      * @param debtOrder The debt order for which we desire a signature
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
-    async asCreditor(debtOrder: DebtOrder): Promise<ECDSASignature> {
+    async asCreditor(debtOrder: DebtOrder.Instance): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
 
-        const wrappedDebtOrder = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+
+        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
         return this.signPayloadWithAddress(
             wrappedDebtOrder.getCreditorCommitmentHash(),
@@ -85,13 +83,12 @@ export class SignerAPI {
      * @param debtOrder The debt order for which we desire a signature
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
-    async asUnderwriter(debtOrder: DebtOrder): Promise<ECDSASignature> {
+    async asUnderwriter(debtOrder: DebtOrder.Instance): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
 
-        const wrappedDebtOrder = await DebtOrderWrapper.applyNetworkDefaults(
-            debtOrder,
-            this.contracts,
-        );
+        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+
+        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
         return this.signPayloadWithAddress(
             wrappedDebtOrder.getUnderwriterCommitmentHash(),

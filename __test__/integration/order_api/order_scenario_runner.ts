@@ -43,7 +43,7 @@ export class OrderScenarioRunner {
 
     public testFillScenario(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -123,7 +123,7 @@ export class OrderScenarioRunner {
 
     public async testOrderCancelScenario(scenario: OrderCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -176,7 +176,7 @@ export class OrderScenarioRunner {
 
     public async testIssuanceCancelScenario(scenario: IssuanceCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrder: DebtOrder.Instance;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
