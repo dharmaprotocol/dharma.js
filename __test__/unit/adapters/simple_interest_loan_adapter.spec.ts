@@ -1,11 +1,24 @@
 // libraries
 import * as Web3 from "web3";
+import * as moment from "moment";
 
 // utils
 import { BigNumber } from "utils/bignumber";
+import { ACCOUNTS } from "../../accounts";
 import * as Units from "utils/units";
-import * as moment from "moment";
 
+// wrappers
+import {
+    DebtKernelContract,
+    RepaymentRouterContract,
+    TokenRegistryContract,
+    TermsContractRegistryContract,
+} from "src/wrappers";
+
+// types
+import { DebtOrder } from "src/types";
+
+// adapters
 import {
     SimpleInterestLoanAdapter,
     SimpleInterestLoanTerms,
@@ -15,15 +28,11 @@ import {
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
 
-import { TokenRegistryContract, TermsContractRegistryContract } from "src/wrappers";
-
-import { ACCOUNTS } from "../../accounts";
-
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const contracts = new ContractsAPI(web3);
 const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(web3, contracts);
-const simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3);
+const simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contracts);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -289,10 +298,17 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
 });
 
 describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
+    let debtKernelAddress: string;
+    let repaymentRouterAddress: string;
     let principalTokenAddress: string;
 
     beforeAll(async () => {
+        const debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS);
+        const repaymentRouter = await RepaymentRouterContract.deployed(web3, TX_DEFAULTS);
         const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
+
+        debtKernelAddress = debtKernel.address;
+        repaymentRouterAddress = repaymentRouter.address;
         principalTokenAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
     });
 
@@ -444,6 +460,9 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termLength,
                         }),
                     ).resolves.toEqual({
+                        ...DebtOrder.DEFAULTS,
+                        kernelVersion: debtKernelAddress,
+                        issuanceVersion: repaymentRouterAddress,
                         principalAmount,
                         principalToken: principalTokenAddress,
                         termsContract: simpleInterestTermsContractAddress,
@@ -469,6 +488,9 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termLength,
                         }),
                     ).resolves.toEqual({
+                        ...DebtOrder.DEFAULTS,
+                        kernelVersion: debtKernelAddress,
+                        issuanceVersion: repaymentRouterAddress,
                         principalAmount,
                         principalToken: principalTokenAddress,
                         termsContract: simpleInterestTermsContractAddress,
@@ -494,6 +516,9 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termLength,
                         }),
                     ).resolves.toEqual({
+                        ...DebtOrder.DEFAULTS,
+                        kernelVersion: debtKernelAddress,
+                        issuanceVersion: repaymentRouterAddress,
                         principalAmount,
                         principalToken: principalTokenAddress,
                         termsContract: simpleInterestTermsContractAddress,
@@ -507,7 +532,6 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
     describe("#getRepaymentSchedule", () => {
         let simpleInterestTermsContractAddress: string;
-        let principalToken;
         let termsContract;
 
         beforeAll(async () => {
@@ -519,7 +543,6 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                 principalTokenAddress,
             );
 
-            principalToken = principalTokenAddress;
             termsContract = simpleInterestTermsContractAddress;
         });
 
@@ -547,7 +570,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     issuanceBlockTimestamp: new BigNumber(issuanceTime),
                 };
 
-                const scheduleList = await simpleInterestLoanAdapter.getRepaymentSchedule(
+                const scheduleList = simpleInterestLoanAdapter.getRepaymentSchedule(
                     debtRegistryEntry,
                 );
 
