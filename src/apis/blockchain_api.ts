@@ -6,7 +6,7 @@ import { IntervalManager } from "../../utils/interval_utils";
 import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
 import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
-import { ErrorParser } from "src/types";
+import { ErrorParser } from "../types";
 
 import { Assertions } from "../invariants/index";
 
