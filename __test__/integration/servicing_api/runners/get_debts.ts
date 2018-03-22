@@ -64,7 +64,7 @@ export class GetDebtsRunner {
                         interestRate: new BigNumber(0.1),
                         amortizationUnit: "months",
                         termLength: new BigNumber(2),
-                        salt: new BigNumber(i),
+                        salt: new BigNumber(Math.trunc(Math.random() * 10000)),
                     });
 
                     debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);

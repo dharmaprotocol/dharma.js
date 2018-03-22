@@ -32,6 +32,6 @@ export const GET_DEBTS: GetDebtsScenario[] = [
         debtor: ACCOUNTS[4].address,
         account: "0x122341",
         numDebtAgreements: 0,
-        errorMessage: "Hello, world!",
+        errorMessage: "Expected account to conform to schema /Address",
     },
 ];
