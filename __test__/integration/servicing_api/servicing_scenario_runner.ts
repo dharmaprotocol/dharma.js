@@ -10,6 +10,7 @@ import { GetValueRepaidRunner } from "./runners/get_value_repaid";
 import { GetExpectedValueRepaidRunner } from "./runners/get_expected_value_repaid";
 import { GetRepaymentScheduleRunner } from "./runners/get_repayment_schedule";
 import { GetDebtsRunner } from "./runners/get_debts";
+import { GetInvestmentsRunner } from "./runners/get_investments";
 
 export class ServicingScenarioRunner {
     public web3Utils: Web3Utils;
@@ -19,6 +20,7 @@ export class ServicingScenarioRunner {
     public testGetExpectedValueRepaidScenario;
     public testGetRepaymentScheduleScenario;
     public testGetDebtsScenario;
+    public testGetInvestmentsScenario;
 
     private currentSnapshotId: number;
 
@@ -39,6 +41,7 @@ export class ServicingScenarioRunner {
             this,
         );
         this.testGetDebtsScenario = GetDebtsRunner.testScenario.bind(this);
+        this.testGetInvestmentsScenario = GetInvestmentsRunner.testScenario.bind(this);
     }
 
     public async saveSnapshotAsync() {

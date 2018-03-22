@@ -14,6 +14,7 @@ import {
     GET_VALUE_REPAID,
     GET_EXPECTED_VALUE_REPAID,
     GET_DEBTS,
+    GET_INVESTMENTS,
 } from "./scenarios";
 
 // scenario runner
@@ -52,6 +53,10 @@ describe("Debt Servicing API (Integration Tests)", () => {
 
     describe("#getDebtsAsync()", () => {
         GET_DEBTS.forEach(scenarioRunner.testGetDebtsScenario);
+    });
+
+    describe("#getInvestmentsAsync()", () => {
+        GET_INVESTMENTS.forEach(scenarioRunner.testGetInvestmentsScenario);
     });
 
     // TODO: Add tests for malformed TCP

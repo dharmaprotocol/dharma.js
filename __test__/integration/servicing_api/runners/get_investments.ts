@@ -24,14 +24,14 @@ const tokenApi = new TokenAPI(web3, contractsApi);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
-import { GetDebtsScenario } from "../scenarios";
+import { GetInvestmentsScenario } from "../scenarios";
 
-export class GetDebtsRunner {
-    static testScenario(scenario: GetDebtsScenario) {
+export class GetInvestmentsRunner {
+    static testScenario(scenario: GetInvestmentsScenario) {
         let principalToken: DummyTokenContract;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;
-        const CREDITOR = ACCOUNTS[1].address;
+        const DEBTOR = ACCOUNTS[1].address;
 
         beforeAll(async () => {
             const tokenRegistry = await contractsApi.loadTokenRegistry();
@@ -42,13 +42,17 @@ export class GetDebtsRunner {
             principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);
 
             // Grant creditor a balance of tokens
-            await principalToken.setBalance.sendTransactionAsync(CREDITOR, Units.ether(100), {
-                from: CONTRACT_OWNER,
-            });
+            await principalToken.setBalance.sendTransactionAsync(
+                scenario.creditor,
+                Units.ether(100),
+                {
+                    from: CONTRACT_OWNER,
+                },
+            );
 
             // Grant token transfer proxy an unlimited allowance
             await tokenApi.setUnlimitedProxyAllowanceAsync(principalToken.address, {
-                from: CREDITOR,
+                from: scenario.creditor,
             });
         });
 
@@ -56,10 +60,10 @@ export class GetDebtsRunner {
             let issuanceHashes = [];
 
             beforeEach(async () => {
-                for (let i = 0; i < scenario.numDebtAgreements; i++) {
+                for (let i = 0; i < scenario.numInvestments; i++) {
                     const debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
-                        debtor: scenario.debtor,
-                        creditor: CREDITOR,
+                        debtor: DEBTOR,
+                        creditor: scenario.creditor,
                         principalAmount: Units.ether(1),
                         principalToken: principalToken.address,
                         interestRate: new BigNumber(0.1),
@@ -73,23 +77,23 @@ export class GetDebtsRunner {
                     const issuanceHash = await orderApi.getIssuanceHash(debtOrder);
                     issuanceHashes.push(issuanceHash);
 
-                    await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+                    await orderApi.fillAsync(debtOrder, { from: scenario.creditor });
                 }
             });
 
             if (!scenario.errorMessage) {
                 test(`return the ${
-                    scenario.numDebtAgreements
-                } debt agreements issued by debtor`, async () => {
-                    await expect(servicingApi.getDebtsAsync(scenario.account)).resolves.toEqual(
-                        issuanceHashes,
-                    );
+                    scenario.numInvestments
+                } debt agreements invested in by the creditor`, async () => {
+                    await expect(
+                        servicingApi.getInvestmentsAsync(scenario.account),
+                    ).resolves.toEqual(issuanceHashes);
                 });
             } else {
                 test(`throws error: ${scenario.errorMessage}`, async () => {
-                    await expect(servicingApi.getDebtsAsync(scenario.account)).rejects.toThrowError(
-                        scenario.errorMessage,
-                    );
+                    await expect(
+                        servicingApi.getInvestmentsAsync(scenario.account),
+                    ).rejects.toThrowError(scenario.errorMessage);
                 });
             }
         });
