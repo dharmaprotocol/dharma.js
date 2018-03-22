@@ -4,31 +4,21 @@ import * as Web3 from "web3";
 // utils
 import { Web3Utils } from "utils/web3_utils";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
-import { DebtOrder } from "src/types";
-import {
-    DebtOrderWrapper,
-    DummyTokenContract,
-    RepaymentRouterContract,
-    TokenTransferProxyContract,
-} from "src/wrappers";
-import { DebtKernelContract } from "src/wrappers/contract_wrappers/debt_kernel_wrapper";
-
+// scenario runners
 import { MakeRepaymentRunner } from "./runners/make_repayment";
 import { GetValueRepaidRunner } from "./runners/get_value_repaid";
 import { GetExpectedValueRepaidRunner } from "./runners/get_expected_value_repaid";
 import { GetRepaymentScheduleRunner } from "./runners/get_repayment_schedule";
+import { GetDebtsRunner } from "./runners/get_debts";
 
 export class ServicingScenarioRunner {
     public web3Utils: Web3Utils;
-    public debtKernel: DebtKernelContract;
-    public repaymentRouter: RepaymentRouterContract;
-    public tokenTransferProxy: TokenTransferProxyContract;
-    public principalToken: DummyTokenContract;
+
     public testMakeRepaymentScenario;
     public testGetValueRepaidScenario;
     public testGetExpectedValueRepaidScenario;
     public testGetRepaymentScheduleScenario;
+    public testGetDebtsScenario;
 
     private currentSnapshotId: number;
 
@@ -48,6 +38,7 @@ export class ServicingScenarioRunner {
         this.testGetRepaymentScheduleScenario = GetRepaymentScheduleRunner.testGetRepaymentScheduleScenario.bind(
             this,
         );
+        this.testGetDebtsScenario = GetDebtsRunner.testScenario.bind(this);
     }
 
     public async saveSnapshotAsync() {

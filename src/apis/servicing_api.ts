@@ -180,6 +180,14 @@ export class ServicingAPI {
         return debtRegistry.get.callAsync(issuanceHash);
     }
 
+    public async getDebtsAsync(account: string): Promise<string[]> {
+        return [""];
+    }
+
+    public async getInvestmentsAsync(account: string): Promise<string[]> {
+        return [""];
+    }
+
     public async getRepaymentScheduleAsync(issuanceHash: string): Promise<Array<number>> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 

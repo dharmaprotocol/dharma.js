@@ -7,22 +7,16 @@ import { GET_REPAYMENT_SCHEDULE } from "./scenarios/get_repayment_schedule";
 // libraries
 import * as Web3 from "web3";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
-import { DebtOrder } from "src/types";
-import {
-    DebtOrderWrapper,
-    DummyTokenContract,
-    RepaymentRouterContract,
-    TokenTransferProxyContract,
-} from "src/wrappers";
-
+// scenarios
 import {
     VALID_MAKE_REPAYMENT,
     INVALID_MAKE_REPAYMENT,
     GET_VALUE_REPAID,
     GET_EXPECTED_VALUE_REPAID,
+    GET_DEBTS,
 } from "./scenarios";
 
+// scenario runner
 import { ServicingScenarioRunner } from "./servicing_scenario_runner";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -54,6 +48,10 @@ describe("Debt Servicing API (Integration Tests)", () => {
 
     describe("#getRepaymentSchedule", () => {
         GET_REPAYMENT_SCHEDULE.forEach(scenarioRunner.testGetRepaymentScheduleScenario);
+    });
+
+    describe("#getDebtsAsync()", () => {
+        GET_DEBTS.forEach(scenarioRunner.testGetDebtsScenario);
     });
 
     // TODO: Add tests for malformed TCP
