@@ -180,8 +180,19 @@ export class ServicingAPI {
         return debtRegistry.get.callAsync(issuanceHash);
     }
 
+    /**
+     * Given a debtor's account, returns a list of issuance hashes
+     * corresponding to debts which the debtor has issued in the past.
+     *
+     * @param  account The debtor's account
+     * @return         A list of issuance hashes of the debtor's debts
+     */
     public async getDebtsAsync(account: string): Promise<string[]> {
-        return [""];
+        this.assert.schema.address("account", account);
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        return debtRegistry.getDebtorsDebts.callAsync(account);
     }
 
     public async getInvestmentsAsync(account: string): Promise<string[]> {
