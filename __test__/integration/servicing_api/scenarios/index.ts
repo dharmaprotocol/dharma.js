@@ -3,6 +3,8 @@ import { INVALID_MAKE_REPAYMENT } from "./invalid_make_repayment";
 import { GET_VALUE_REPAID } from "./get_value_repaid";
 import { GET_EXPECTED_VALUE_REPAID } from "./get_expected_value_repaid";
 import { GET_REPAYMENT_SCHEDULE } from "./get_repayment_schedule";
+import { GET_DEBTS } from "./get_debts";
+import { GET_INVESTMENTS } from "./get_investments";
 
 import { BigNumber } from "bignumber.js";
 
@@ -61,10 +63,38 @@ export interface GetRepaymentScheduleScenario {
     termLength: BigNumber;
 }
 
+export interface GetDebtsScenario {
+    // The test's description.
+    description: string;
+    // Specifies the account we'll be pulling debts for
+    account: string;
+    // Specifies the account on whose behalf we'll be taking out loans
+    debtor: string;
+    // Number of debt agreements the account is engaged in.
+    numDebtAgreements: number;
+    // If the test fails, this field will contain the expected error message
+    errorMessage?: string;
+}
+
+export interface GetInvestmentsScenario {
+    // The test's description.
+    description: string;
+    // Specifies the account we'll be pulling investments for
+    account: string;
+    // Specifies the account on whose behalf we'll be filling loan orders
+    creditor: string;
+    // Number of debt agreements the account has invested in.
+    numInvestments: number;
+    // If the test fails, this field will contain the expected error message
+    errorMessage?: string;
+}
+
 export {
     VALID_MAKE_REPAYMENT,
     INVALID_MAKE_REPAYMENT,
     GET_VALUE_REPAID,
     GET_EXPECTED_VALUE_REPAID,
     GET_REPAYMENT_SCHEDULE,
+    GET_DEBTS,
+    GET_INVESTMENTS,
 };

@@ -35,7 +35,7 @@ export namespace DebtOrder {
         salt: new BigNumber(0),
         debtorSignature: NULL_ECDSA_SIGNATURE,
         creditorSignature: NULL_ECDSA_SIGNATURE,
-        underWriterSignature: NULL_ECDSA_SIGNATURE,
+        underwriterSignature: NULL_ECDSA_SIGNATURE,
     };
 
     export interface Instance {

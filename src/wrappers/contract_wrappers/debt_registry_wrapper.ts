@@ -139,6 +139,16 @@ export class DebtRegistryContract extends BaseContract {
             return result;
         },
     };
+    public getDebtorsDebts = {
+        async callAsync(debtor: string, defaultBlock?: Web3.BlockParam): Promise<string[]> {
+            const self = this as DebtRegistryContract;
+            const result = await promisify<[string, string]>(
+                self.web3ContractInstance.getDebtorsDebts.call,
+                self.web3ContractInstance,
+            )(debtor);
+            return result;
+        },
+    };
     public getTerms = {
         async callAsync(
             issuanceHash: string,

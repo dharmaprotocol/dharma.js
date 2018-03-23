@@ -180,6 +180,45 @@ export class ServicingAPI {
         return debtRegistry.get.callAsync(issuanceHash);
     }
 
+    /**
+     * Given a debtor's account, returns a list of issuance hashes
+     * corresponding to debts which the debtor has issued in the past.
+     *
+     * @param  account The debtor's account
+     * @return         A list of issuance hashes of the debtor's debts
+     */
+    public async getDebtsAsync(account: string): Promise<string[]> {
+        this.assert.schema.address("account", account);
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        return debtRegistry.getDebtorsDebts.callAsync(account);
+    }
+
+    /**
+     * Given a creditor's account, returns a list of issuance hashes
+     * corresponding to debts which the creditor has invested in.
+     *
+     * @param account The creditor's account
+     * @return        A list of issuance hashes of the creditor's investments
+     */
+    public async getInvestmentsAsync(account: string): Promise<string[]> {
+        this.assert.schema.address("account", account);
+
+        const debtToken = await this.contracts.loadDebtTokenAsync();
+
+        // The ERC721-compliant token id's of debt tokens we generate
+        // are simply the issuance hashes of their corresponding
+        // debt agreements.  Thus, we can retrieve a list of
+        // a users' debt agreements by retrieving a list of tokens
+        // they own.
+        const usersDebtTokens = await debtToken.getOwnerTokens.callAsync(account);
+
+        return usersDebtTokens.map(
+            (tokenId: BigNumber) => `0x${tokenId.toString(16).padStart(64, "0")}`,
+        );
+    }
+
     public async getRepaymentScheduleAsync(issuanceHash: string): Promise<Array<number>> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
