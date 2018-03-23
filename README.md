@@ -3,6 +3,8 @@
 ------------
 ### Hello, `dharma.js`!
 
+[![CircleCI](https://circleci.com/gh/dharmaprotocol/dharma.js/tree/master.svg?style=svg)](https://circleci.com/gh/dharmaprotocol/dharma.js/tree/master)
+
 This repository contains the `dharma.js` client application development libraries.  `dharma.js` makes it easy for developers who may not be deeply familiar with smart contract development to interact with the various components of Dharma protocol and build hyper-flexible lending applications.
 
 Extensive documentation on the libraries can be found [here](https://docs.dharma.io).
