@@ -132,7 +132,7 @@ export class SimpleInterestLoanTerms {
 
         // We only need to assert that the amortization unit type is valid,
         // given that it's impossible for the parsed totalExpectedRepayment,
-        // principalTokenIndexand, and termLength to exceed their bounds.
+        // principalTokenIndex, and termLength to exceed their bounds.
         this.assertValidAmortizationUnitCode(unitCode);
 
         const amortizationUnit = AmortizationUnitCode[unitCode].toLowerCase() as AmortizationUnit;
