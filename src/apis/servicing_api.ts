@@ -225,7 +225,7 @@ export class ServicingAPI {
         const debtRegistryEntry = await this.getDebtRegistryEntry(issuanceHash);
 
         const { termsContract } = debtRegistryEntry;
-        const adapter = this.adapterForTermsContract(termsContract);
+        const adapter = await this.adapterForTermsContract(termsContract);
 
         return adapter.getRepaymentSchedule(debtRegistryEntry);
     }
@@ -243,8 +243,8 @@ export class ServicingAPI {
         };
     }
 
-    private adapterForTermsContract(termsContract: string): any {
-        const termsContractType = this.contracts.getTermsContractType(termsContract);
+    private async adapterForTermsContract(termsContract: string): Promise<any> {
+        const termsContractType = await this.contracts.getTermsContractType(termsContract);
 
         switch (termsContractType) {
             case "SimpleInterestTermsContractContract":

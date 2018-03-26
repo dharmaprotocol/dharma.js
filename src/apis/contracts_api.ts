@@ -1,6 +1,7 @@
 // external
 import * as Web3 from "web3";
 import { BigNumber } from "bignumber.js";
+import * as _ from "lodash";
 
 // wrappers
 import {
@@ -64,7 +65,6 @@ export class ContractsAPI {
         this.config = config;
 
         this.cache = {};
-        this.termsContracts = {};
     }
 
     public async loadDharmaContractsAsync(
@@ -298,14 +298,20 @@ export class ContractsAPI {
      * @param {string} tokenAddress
      * @returns {string}
      */
-    public getTermsContractType(contractAddress: string): string {
-        const contractWrapper = this.termsContracts[contractAddress];
+    public async getTermsContractType(contractAddress: string): Promise<string> {
+        const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
+        const supportedTermsContracts = [simpleInterestTermsContract];
 
-        if (contractWrapper) {
-            return contractWrapper.constructor.name;
-        } else {
+        const matchingTermsContract = _.find(
+            supportedTermsContracts,
+            termsContract => termsContract.address === contractAddress,
+        );
+
+        if (!matchingTermsContract) {
             throw new Error(ContractsError.TERMS_CONTRACT_NOT_FOUND(contractAddress));
         }
+
+        return matchingTermsContract.constructor.name;
     }
 
     public async loadSimpleInterestTermsContract(
@@ -411,9 +417,5 @@ export class ContractsAPI {
 
     private getRepaymentRouterCacheKey(tokenAddress: string): string {
         return `RepaymentRouter_${tokenAddress}`;
-    }
-
-    private getSimpleInterestTermsContractCacheKey(tokenAddress: string): string {
-        return `SimpleInterestTermsContract_${tokenAddress}`;
     }
 }
