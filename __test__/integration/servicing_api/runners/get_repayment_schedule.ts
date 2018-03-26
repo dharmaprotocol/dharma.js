@@ -9,7 +9,6 @@ import * as Units from "utils/units";
 import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
 import { DebtOrder } from "src/types";
 import {
-    DebtOrderWrapper,
     DummyTokenContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
@@ -34,7 +33,7 @@ export class GetRepaymentScheduleRunner {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder;
+        let debtOrder: DebtOrder.Instance;
         let issuanceHash: string;
         let issuanceBlockTimestamp: BigNumber;
 
@@ -76,23 +75,15 @@ export class GetRepaymentScheduleRunner {
                 debtor: DEBTOR,
                 creditor: CREDITOR,
                 principalAmount: Units.ether(1),
-                principalToken: principalToken.address,
+                principalTokenSymbol: "REP",
                 interestRate: new BigNumber(0.14),
                 amortizationUnit: scenario.amortizationUnit,
                 termLength: scenario.termLength,
-                // TODO: use snapshotting instead of rotating salts,
-                // this is a silly way of preventing clashes
-                salt: new BigNumber(Math.trunc(Math.random() * 10000)),
             });
 
             debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
 
             issuanceHash = await orderApi.getIssuanceHash(debtOrder);
-
-            await orderApi.fillAsync(debtOrder, { from: CREDITOR });
-
-            const debtRegistryEntry = await servicingApi.getDebtRegistryEntry(issuanceHash);
-            issuanceBlockTimestamp = debtRegistryEntry.issuanceBlockTimestamp;
 
             ABIDecoder.addABI(repaymentRouter.abi);
         });
@@ -102,6 +93,18 @@ export class GetRepaymentScheduleRunner {
         });
 
         describe(scenario.description, () => {
+            beforeEach(async () => {
+                // NOTE: We fill debt orders in the `beforeEach` block to ensure
+                // that the blockchain is snapshotted *before* order filling
+                // in the parent scope's `beforeEach` block.  For more information,
+                // read about Jest's order of execution in scoped tests:
+                // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
+                await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+
+                const debtRegistryEntry = await servicingApi.getDebtRegistryEntry(issuanceHash);
+                issuanceBlockTimestamp = debtRegistryEntry.issuanceBlockTimestamp;
+            });
+
             test(`returns the list: ${JSON.stringify(scenario.expected)}`, async () => {
                 const schedule = await servicingApi.getRepaymentScheduleAsync(issuanceHash);
                 const expected = scenario.expected(issuanceBlockTimestamp.toNumber());

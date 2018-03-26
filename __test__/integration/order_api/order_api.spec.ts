@@ -21,7 +21,6 @@ import {
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
     TokenTransferProxyContract,
-    TermsContractRegistryContract,
 } from "src/wrappers";
 
 import { ACCOUNTS } from "../../accounts";
@@ -42,15 +41,8 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 describe("Order API (Integration Tests)", () => {
     beforeAll(async () => {
         const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
-        const termsContractRegistry = await TermsContractRegistryContract.deployed(
-            web3,
-            TX_DEFAULTS,
-        );
         const principalTokenAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync(
             "REP",
-        );
-        const termsContractAddress = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
-            principalTokenAddress,
         );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
@@ -66,8 +58,7 @@ describe("Order API (Integration Tests)", () => {
             web3,
             TX_DEFAULTS,
         );
-        scenarioRunner.termsContract = await SimpleInterestTermsContractContract.at(
-            termsContractAddress,
+        scenarioRunner.termsContract = await SimpleInterestTermsContractContract.deployed(
             web3,
             TX_DEFAULTS,
         );
