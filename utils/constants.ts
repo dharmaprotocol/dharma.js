@@ -15,6 +15,7 @@ export const DEBT_KERNEL_CONTRACT_CACHE_KEY = "DebtKernel";
 export const DEBT_REGISTRY_CONTRACT_CACHE_KEY = "DebtRegistry";
 export const DEBT_TOKEN_CONTRACT_CACHE_KEY = "DebtToken";
 export const REPAYMENT_ROUTER_CONTRACT_CACHE_KEY = "RepaymentRouter";
+export const SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY = "SimpleInterestTermsContract";
 export const TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "TokenRegistry";
 export const TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY = "TokenTransferProxy";
 export const TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry";
