@@ -1,5 +1,4 @@
 import * as Web3 from "web3";
-import * as ABIDecoder from "abi-decoder";
 import * as Units from "utils/units";
 import { BigNumber } from "bignumber.js";
 
@@ -15,6 +14,7 @@ import {
     RepaymentRouterContract,
     DummyTokenContract,
     SimpleInterestTermsContractContract,
+    TokenRegistryContract,
     TokenTransferProxyContract,
 } from "src/wrappers";
 
@@ -85,9 +85,7 @@ export class ErrorScenarioRunner {
         const tokenRegistry = await this.contractsAPI.loadTokenRegistry();
         const dummyREPAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync("REP");
         const principalToken = await DummyTokenContract.at(dummyREPAddress, this.web3, TX_DEFAULTS);
-        const termsContract = await this.contractsAPI.loadSimpleInterestTermsContract(
-            principalToken.address,
-        );
+        const termsContract = await this.contractsAPI.loadSimpleInterestTermsContract();
 
         this.debtKernel = debtKernel;
         this.repaymentRouter = repaymentRouter;
@@ -109,7 +107,7 @@ export class ErrorScenarioRunner {
             beforeEach(async () => {
                 const principalToken = await this.generateTokenForSymbol("REP");
 
-                const debtOrder = await this.generateSignedDebtOrderWithToken(principalToken);
+                const debtOrder = await this.generateSignedDebtOrderWithToken("REP");
 
                 const issuanceHash = await this.orderAPI.getIssuanceHash(debtOrder);
 
@@ -292,14 +290,12 @@ export class ErrorScenarioRunner {
         return token;
     }
 
-    private async generateSignedDebtOrderWithToken(
-        token: DummyTokenContract,
-    ): Promise<DebtOrder.Instance> {
+    private async generateSignedDebtOrderWithToken(token: string): Promise<DebtOrder.Instance> {
         const debtOrder = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
             principalAmount: PRINCIPAL_AMOUNT,
-            principalToken: token.address,
+            principalTokenSymbol: token,
             interestRate: new BigNumber(0.1),
             amortizationUnit: "months",
             termLength: new BigNumber(2),
