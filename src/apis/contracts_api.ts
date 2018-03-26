@@ -1,3 +1,9 @@
+// external
+import * as Web3 from "web3";
+import { BigNumber } from "bignumber.js";
+import * as _ from "lodash";
+
+// wrappers
 import {
     ContractWrapper,
     DebtKernelContract,
@@ -11,19 +17,23 @@ import {
     SimpleInterestTermsContractContract,
     TermsContractRegistryContract,
 } from "../wrappers";
-import * as Web3 from "web3";
-import { DharmaConfig } from "../types";
+
+// utils
 import {
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_REGISTRY_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
+    SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
     TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
 } from "../../utils/constants";
 import * as singleLineString from "single-line-string";
+
+// types
+import { DharmaConfig } from "../types";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -55,7 +65,6 @@ export class ContractsAPI {
         this.config = config;
 
         this.cache = {};
-        this.termsContracts = {};
     }
 
     public async loadDharmaContractsAsync(
@@ -289,47 +298,49 @@ export class ContractsAPI {
      * @param {string} tokenAddress
      * @returns {string}
      */
-    public getTermsContractType(contractAddress: string): string {
-        const contractWrapper = this.termsContracts[contractAddress];
+    public async getTermsContractType(contractAddress: string): Promise<string> {
+        const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
+        const supportedTermsContracts = [simpleInterestTermsContract];
 
-        if (contractWrapper) {
-            return contractWrapper.constructor.name;
-        } else {
+        const matchingTermsContract = _.find(
+            supportedTermsContracts,
+            termsContract => termsContract.address === contractAddress,
+        );
+
+        if (!matchingTermsContract) {
             throw new Error(ContractsError.TERMS_CONTRACT_NOT_FOUND(contractAddress));
         }
+
+        return matchingTermsContract.constructor.name;
     }
 
     public async loadSimpleInterestTermsContract(
-        tokenAddress: string,
         transactionOptions: object = {},
     ): Promise<SimpleInterestTermsContractContract> {
-        const cacheKey = this.getSimpleInterestTermsContractCacheKey(tokenAddress);
+        if (SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[
+                SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
+            ] as SimpleInterestTermsContractContract;
+        }
 
-        if (cacheKey in this.cache) {
-            return this.cache[cacheKey] as SimpleInterestTermsContractContract;
-        } else {
-            const termsContractRegistry = await this.loadTermsContractRegistry(transactionOptions);
-            const simpleInterestTermsContractAddress = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
-                tokenAddress,
-            );
+        let simpleInterestTermsContract: SimpleInterestTermsContractContract;
 
-            if (simpleInterestTermsContractAddress === NULL_ADDRESS) {
-                throw new Error(
-                    ContractsError.SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED(tokenAddress),
-                );
-            }
-
-            const simpleInterestTermsContract = await SimpleInterestTermsContractContract.at(
-                simpleInterestTermsContractAddress,
+        if (this.config.simpleInterestTermsContractAddress) {
+            simpleInterestTermsContract = await SimpleInterestTermsContractContract.at(
+                this.config.simpleInterestTermsContractAddress,
                 this.web3,
                 transactionOptions,
             );
-
-            this.cache[cacheKey] = simpleInterestTermsContract;
-            this.termsContracts[simpleInterestTermsContract.address] = simpleInterestTermsContract;
-
-            return simpleInterestTermsContract;
+        } else {
+            simpleInterestTermsContract = await SimpleInterestTermsContractContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
         }
+
+        this.cache[SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY] = simpleInterestTermsContract;
+
+        return simpleInterestTermsContract;
     }
 
     public async loadTokenRegistry(
@@ -371,9 +382,25 @@ export class ContractsAPI {
         return tokenAddress;
     }
 
+    public async getTokenIndexBySymbolAsync(symbol: string): Promise<BigNumber> {
+        const tokenRegistryContract = await this.loadTokenRegistry();
+
+        // We first confirm token exists with the given symbol.  This call
+        // will throw if the token is not tracked by the registry.
+        await this.getTokenAddressBySymbolAsync(symbol);
+
+        return tokenRegistryContract.getTokenIndexBySymbol.callAsync(symbol);
+    }
+
+    public async getTokenSymbolByIndexAsync(index: BigNumber): Promise<string> {
+        const tokenRegistryContract = await this.loadTokenRegistry();
+
+        return tokenRegistryContract.getTokenSymbolByIndex.callAsync(index);
+    }
+
     public async loadTokenBySymbolAsync(
         symbol: string,
-        transactionOptions: object,
+        transactionOptions: object = {},
     ): Promise<ERC20Contract> {
         const tokenAddress = await this.getTokenAddressBySymbolAsync(symbol);
 
@@ -390,9 +417,5 @@ export class ContractsAPI {
 
     private getRepaymentRouterCacheKey(tokenAddress: string): string {
         return `RepaymentRouter_${tokenAddress}`;
-    }
-
-    private getSimpleInterestTermsContractCacheKey(tokenAddress: string): string {
-        return `SimpleInterestTermsContract_${tokenAddress}`;
     }
 }

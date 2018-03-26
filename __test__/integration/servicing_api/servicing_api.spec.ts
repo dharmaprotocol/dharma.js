@@ -58,8 +58,4 @@ describe("Debt Servicing API (Integration Tests)", () => {
     describe("#getInvestmentsAsync()", () => {
         GET_INVESTMENTS.forEach(scenarioRunner.testGetInvestmentsScenario);
     });
-
-    // TODO: Add tests for malformed TCP
-    // TODO: Add tests for different types of terms contracts
-    // TODO: Add tests for different variations of loan terms
 });

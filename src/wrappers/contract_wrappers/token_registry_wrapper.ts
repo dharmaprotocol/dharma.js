@@ -80,6 +80,26 @@ export class TokenRegistryContract extends BaseContract {
             return result;
         },
     };
+    public getTokenIndexBySymbol = {
+        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenIndexBySymbol.call,
+                self.web3ContractInstance,
+            )(symbol);
+            return result;
+        },
+    };
+    public getTokenSymbolByIndex = {
+        async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenSymbolByIndex.call,
+                self.web3ContractInstance,
+            )(index);
+            return result;
+        },
+    };
 
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
         super(web3ContractInstance, defaults);

@@ -14,7 +14,7 @@ export const simpleInterestLoanOrderSchema = {
             },
             required: [
                 "principalAmount",
-                "principalToken",
+                "principalTokenSymbol",
                 "interestRate",
                 "amortizationUnit",
                 "termLength",

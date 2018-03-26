@@ -25,7 +25,7 @@ export interface FillScenario {
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
         termsContract: SimpleInterestTermsContractContract,
-    ) => DebtOrder;
+    ) => DebtOrder.Instance;
     filler: string;
     signatories: {
         debtor: boolean;
@@ -46,7 +46,7 @@ export interface OrderCancellationScenario {
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
-    ) => DebtOrder;
+    ) => DebtOrder.Instance;
     canceller: string;
     successfullyCancels: boolean;
     orderAlreadyCancelled: boolean;

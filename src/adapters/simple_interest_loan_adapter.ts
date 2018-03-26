@@ -17,7 +17,7 @@ import { DebtRegistryEntry } from "../types/debt_registry_entry";
 export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
     // Required Debt Order Parameters
     principalAmount: BigNumber;
-    principalToken: string;
+    principalTokenSymbol: string;
 
     // Parameters for Terms Contract
     interestRate: BigNumber;
@@ -29,6 +29,7 @@ export interface SimpleInterestTermsContractParameters {
     totalExpectedRepayment: BigNumber;
     amortizationUnit: AmortizationUnit;
     termLength: BigNumber;
+    principalTokenIndex: BigNumber;
 }
 
 export type AmortizationUnit = "hours" | "days" | "weeks" | "months" | "years";
@@ -43,6 +44,9 @@ enum AmortizationUnitCode {
 }
 
 export const SimpleInterestAdapterErrors = {
+    INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
+        singleLineString`Token Registry does not track a token at index
+                         ${tokenIndex.toString()}.`,
     INVALID_EXPECTED_REPAYMENT_VALUE: () =>
         singleLineString`Total expected repayment value cannot be negative or
                          greater than 2^128 - 1.`,
@@ -56,11 +60,19 @@ export const SimpleInterestAdapterErrors = {
         singleLineString`Terms Contract at address ${termsContract} does not
                          correspond to the SimpleInterestTermsContract associated
                          with the principal token at address ${principalToken}`,
+    UNSUPPORTED_PRINCIPAL_TOKEN: (principalTokenSymbol: string) =>
+        singleLineString`Token with symbol ${principalTokenSymbol} is not supported
+                         by the Dharma Token Registry`,
+    MISMATCHED_TOKEN_SYMBOL: (principalTokenAddress: string, symbol: string) =>
+        singleLineString`Terms contract parameters are invalid for the given debt order.
+                         Principal token at address ${principalTokenAddress} does not
+                         correspond to specified token with symbol ${symbol}`,
 };
 
 const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
-const MAX_EXPECTED_REPAYMENT_VALUE_HEX = "0xffffffffffffffffffffffffffffffff";
-const MAX_TERM_LENGTH_VALUE_HEX = "0xffffffffffffffffffffffffffffff";
+const MAX_PRINCIPAL_TOKEN_INDEX_HEX = "0xff";
+const MAX_EXPECTED_REPAYMENT_VALUE_HEX = "0xffffffffffffffffffffffffffffff";
+const MAX_TERM_LENGTH_VALUE_HEX = "0xffff";
 
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
@@ -70,12 +82,19 @@ export class SimpleInterestLoanTerms {
     }
 
     public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
-        const { totalExpectedRepayment, amortizationUnit, termLength } = termsContractParameters;
+        const {
+            principalTokenIndex,
+            totalExpectedRepayment,
+            amortizationUnit,
+            termLength,
+        } = termsContractParameters;
 
+        this.assertPrincipalTokenIndexWithinBounds(principalTokenIndex);
         this.assertTotalExpectedRepaymentWithinBounds(totalExpectedRepayment);
         this.assertValidAmortizationUnit(amortizationUnit);
         this.assertTermLengthWholeAndWithinBounds(termLength);
 
+        const principalTokenIndexHex = principalTokenIndex.toString(16);
         const totalExpectedRepaymentHex = totalExpectedRepayment.toString(16);
         const amortizationUnitTypeHex = AmortizationUnitCode[
             amortizationUnit.toUpperCase()
@@ -84,9 +103,11 @@ export class SimpleInterestLoanTerms {
 
         return (
             "0x" +
-            totalExpectedRepaymentHex.padStart(32, "0") +
-            amortizationUnitTypeHex.padStart(2, "0") +
-            termLengthHex.padStart(30, "0")
+            principalTokenIndexHex.padStart(2, "0") +
+            totalExpectedRepaymentHex.padStart(30, "0") +
+            amortizationUnitTypeHex.padStart(1, "0") +
+            termLengthHex.padStart(4, "0") +
+            "0".repeat(27)
         );
     }
 
@@ -95,10 +116,12 @@ export class SimpleInterestLoanTerms {
     ): SimpleInterestTermsContractParameters {
         this.assert.schema.bytes32("termsContractParametersPacked", termsContractParametersPacked);
 
-        const totalExpectedRepaymentHex = termsContractParametersPacked.substr(0, 34);
-        const amortizationUnitTypeHex = "0x" + termsContractParametersPacked.substr(34, 2);
-        const termLengthHex = "0x" + termsContractParametersPacked.substr(36);
+        const principalTokenIndexHex = termsContractParametersPacked.substr(0, 4);
+        const totalExpectedRepaymentHex = `0x${termsContractParametersPacked.substr(4, 30)}`;
+        const amortizationUnitTypeHex = `0x${termsContractParametersPacked.substr(34, 1)}`;
+        const termLengthHex = `0x${termsContractParametersPacked.substr(35, 4)}`;
 
+        const principalTokenIndex = new BigNumber(principalTokenIndexHex);
         const totalExpectedRepayment = new BigNumber(totalExpectedRepaymentHex);
         const termLength = new BigNumber(termLengthHex);
 
@@ -108,17 +131,24 @@ export class SimpleInterestLoanTerms {
         const unitCode = parseInt(amortizationUnitTypeHex, 16);
 
         // We only need to assert that the amortization unit type is valid,
-        // given that it's impossible for the parsed totalExpectedRepayment
-        // and termLength to exceed their bounds.
+        // given that it's impossible for the parsed totalExpectedRepayment,
+        // principalTokenIndex, and termLength to exceed their bounds.
         this.assertValidAmortizationUnitCode(unitCode);
 
         const amortizationUnit = AmortizationUnitCode[unitCode].toLowerCase() as AmortizationUnit;
 
         return {
+            principalTokenIndex,
             totalExpectedRepayment,
             termLength,
             amortizationUnit,
         };
+    }
+
+    public assertPrincipalTokenIndexWithinBounds(principalTokenIndex: BigNumber) {
+        if (principalTokenIndex.lt(0) || principalTokenIndex.gt(MAX_PRINCIPAL_TOKEN_INDEX_HEX)) {
+            throw new Error(SimpleInterestAdapterErrors.INVALID_TOKEN_INDEX(principalTokenIndex));
+        }
     }
 
     public assertTotalExpectedRepaymentWithinBounds(totalExpectedRepayment: BigNumber) {
@@ -189,32 +219,42 @@ export class SimpleInterestLoanAdapter {
         );
 
         const {
-            principalToken,
+            principalTokenSymbol,
             principalAmount,
             interestRate,
             amortizationUnit,
             termLength,
         } = simpleInterestLoanOrder;
 
+        const principalToken = await this.contracts.loadTokenBySymbolAsync(principalTokenSymbol);
+        const principalTokenIndex = await this.contracts.getTokenIndexBySymbolAsync(
+            principalTokenSymbol,
+        );
+
+        const totalExpectedRepayment = principalAmount.times(interestRate.plus(1)).trunc();
+
+        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract(
+            TX_DEFAULTS,
+        );
+
         let debtOrder: DebtOrder.Instance = omit(simpleInterestLoanOrder, [
+            "principalTokenSymbol",
             "interestRate",
             "amortizationUnit",
             "termLength",
         ]);
 
-        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract(
-            principalToken,
-            TX_DEFAULTS,
-        );
-
-        const totalExpectedRepayment = principalAmount.times(interestRate.plus(1)).trunc();
-
-        debtOrder.termsContract = simpleInterestTermsContract.address;
-        debtOrder.termsContractParameters = this.termsContractInterface.packParameters({
-            totalExpectedRepayment,
-            amortizationUnit,
-            termLength,
-        });
+        debtOrder = {
+            ...debtOrder,
+            principalToken: principalToken.address,
+            termsContract: simpleInterestTermsContract.address,
+            termsContractParameters: this.termsContractInterface.packParameters({
+                principalTokenIndex,
+                totalExpectedRepayment,
+                amortizationUnit,
+                termLength,
+            }),
+        };
 
         return DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
     }
@@ -228,24 +268,30 @@ export class SimpleInterestLoanAdapter {
      */
     public async fromDebtOrder(debtOrder: DebtOrder.Instance): Promise<SimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
-        await this.assertTermsContractCorrespondsToPrincipalToken(
-            debtOrder.principalToken,
-            debtOrder.termsContract,
-        );
 
         const {
+            principalTokenIndex,
             totalExpectedRepayment,
             termLength,
             amortizationUnit,
         } = this.termsContractInterface.unpackParameters(debtOrder.termsContractParameters);
 
-        const { principalAmount, principalToken } = debtOrder;
+        const { principalAmount } = debtOrder;
         const interestRate = totalExpectedRepayment.div(principalAmount).sub(1);
+
+        const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
+            principalTokenIndex,
+        );
+
+        await this.assertPrincipalTokenCorrespondsToSymbol(
+            debtOrder.principalToken,
+            principalTokenSymbol,
+        );
 
         return {
             ...debtOrder,
             principalAmount,
-            principalToken,
+            principalTokenSymbol,
             interestRate,
             termLength,
             amortizationUnit,
@@ -265,18 +311,16 @@ export class SimpleInterestLoanAdapter {
         ).toArray();
     }
 
-    private async assertTermsContractCorrespondsToPrincipalToken(
+    private async assertPrincipalTokenCorrespondsToSymbol(
         principalToken: string,
-        termsContract: string,
+        symbol: string,
     ): Promise<void> {
-        const termsContractRegistry = await this.contracts.loadTermsContractRegistry(TX_DEFAULTS);
-        const termsContractCorrespondingToPrincipalToken = await termsContractRegistry.getSimpleInterestTermsContractAddress.callAsync(
-            principalToken,
-        );
+        const addressMappedToSymbol = await this.contracts.getTokenAddressBySymbolAsync(symbol);
 
-        if (termsContractCorrespondingToPrincipalToken !== termsContract) {
+        // Validate that the
+        if (principalToken !== addressMappedToSymbol) {
             throw new Error(
-                SimpleInterestAdapterErrors.INVALID_TERMS_CONTRACT(principalToken, termsContract),
+                SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(principalToken, symbol),
             );
         }
     }

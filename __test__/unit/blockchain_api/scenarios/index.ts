@@ -10,6 +10,7 @@ import { INVALID_REPAYMENT_SCENARIOS } from "./invalid_repayments";
 
 export {
     DebtKernelErrorScenario,
+    RepaymentRouterErrorScenario,
     INVALID_ORDERS,
     VALID_ORDERS,
     VALID_REPAYMENTS,
