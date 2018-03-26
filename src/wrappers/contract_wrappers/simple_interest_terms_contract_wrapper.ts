@@ -180,6 +180,41 @@ export class SimpleInterestTermsContractContract extends BaseContract {
         classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
     }
 
+    public static async deployed(
+        web3: Web3,
+        defaults: Partial<TxData>,
+    ): Promise<SimpleInterestTermsContractContract> {
+        const web3Utils = new Web3Utils(web3);
+
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
+        const { abi, networks }: { abi: any; networks: any } = ContractArtifacts;
+
+        if (networks[currentNetwork]) {
+            const { address: contractAddress } = networks[currentNetwork];
+
+            const contractExists = await web3Utils.doesContractExistAtAddressAsync(contractAddress);
+
+            if (contractExists) {
+                const web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
+                return new SimpleInterestTermsContractContract(web3ContractInstance, defaults);
+            } else {
+                throw new Error(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "SimpleInterestTermsContract",
+                        currentNetwork,
+                    ),
+                );
+            }
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                    "SimpleInterestTermsContract",
+                    currentNetwork,
+                ),
+            );
+        }
+    }
+
     public static async at(
         address: string,
         web3: Web3,
