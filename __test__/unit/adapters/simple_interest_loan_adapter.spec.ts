@@ -6,6 +6,7 @@ import * as moment from "moment";
 import { BigNumber } from "utils/bignumber";
 import { ACCOUNTS } from "../../accounts";
 import * as Units from "utils/units";
+import { Web3Utils } from "utils/web3_utils";
 
 // wrappers
 import {
@@ -23,7 +24,6 @@ import {
     SimpleInterestLoanAdapter,
     SimpleInterestLoanOrder,
     SimpleInterestLoanTerms,
-    SimpleInterestTermsContractParameters,
     SimpleInterestAdapterErrors,
     AmortizationUnit,
 } from "src/adapters/simple_interest_loan_adapter";
@@ -32,6 +32,7 @@ import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
+const web3Utils = new Web3Utils(web3);
 const contracts = new ContractsAPI(web3);
 const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(web3, contracts);
 const simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contracts);
@@ -49,6 +50,16 @@ jest.unmock("@dharmaprotocol/contracts");
 jest.unmock("fs-extra");
 
 describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
+    let snapshotId: number;
+
+    beforeEach(async () => {
+        snapshotId = await web3Utils.saveTestSnapshot();
+    });
+
+    afterEach(async () => {
+        await web3Utils.revertToSnapshot(snapshotId);
+    });
+
     const defaultLoanParams = {
         principalTokenIndex: new BigNumber(0), // REP's index in the Token Registry is 0
         totalExpectedRepayment: new BigNumber(3.456 * 10 ** 18),
@@ -662,7 +673,6 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
         describe("debt order is valid and well-formed", () => {
             let principalTokenAddress;
-            let principalTokenSymbol;
             let termsContract;
 
             beforeAll(() => {
