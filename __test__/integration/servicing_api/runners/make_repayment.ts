@@ -10,7 +10,6 @@ import { Web3Utils } from "utils/web3_utils";
 import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
 import { DebtOrder } from "src/types";
 import {
-    DebtOrderWrapper,
     DummyTokenContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
@@ -103,19 +102,21 @@ export class MakeRepaymentRunner {
                     debtor: DEBTOR,
                     creditor: CREDITOR,
                     principalAmount: Units.ether(1),
-                    principalToken: principalToken.address,
+                    principalTokenSymbol: "REP",
                     interestRate: new BigNumber(0.1),
                     amortizationUnit: "months",
                     termLength: new BigNumber(2),
-                    // TODO: use snapshotting instead of rotating salts,
-                    // this is a silly way of preventing clashes
-                    salt: new BigNumber(Math.trunc(Math.random() * 10000)),
                 });
 
                 debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
 
                 issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 
+                // NOTE: We fill debt orders in the `beforeEach` block to ensure
+                // that the blockchain is snapshotted *before* order filling
+                // in the parent scope's `beforeEach` block.  For more information,
+                // read about Jest's order of execution in scoped tests:
+                // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
                 await orderApi.fillAsync(debtOrder, { from: CREDITOR });
 
                 ABIDecoder.addABI(repaymentRouter.abi);

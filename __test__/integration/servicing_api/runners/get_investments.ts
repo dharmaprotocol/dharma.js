@@ -65,11 +65,11 @@ export class GetInvestmentsRunner {
                         debtor: DEBTOR,
                         creditor: scenario.creditor,
                         principalAmount: Units.ether(1),
-                        principalToken: principalToken.address,
+                        principalTokenSymbol: "REP",
                         interestRate: new BigNumber(0.1),
                         amortizationUnit: "months",
                         termLength: new BigNumber(2),
-                        salt: new BigNumber(Math.trunc(Math.random() * 10000)),
+                        salt: new BigNumber(i),
                     });
 
                     debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
@@ -77,6 +77,11 @@ export class GetInvestmentsRunner {
                     const issuanceHash = await orderApi.getIssuanceHash(debtOrder);
                     issuanceHashes.push(issuanceHash);
 
+                    // NOTE: We fill debt orders in the `beforeEach` block to ensure
+                    // that the blockchain is snapshotted *before* order filling
+                    // in the parent scope's `beforeEach` block.  For more information,
+                    // read about Jest's order of execution in scoped tests:
+                    // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
                     await orderApi.fillAsync(debtOrder, { from: scenario.creditor });
                 }
             });

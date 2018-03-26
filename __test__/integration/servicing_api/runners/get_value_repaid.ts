@@ -9,7 +9,6 @@ import * as Units from "utils/units";
 import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
 import { DebtOrder } from "src/types";
 import {
-    DebtOrderWrapper,
     DummyTokenContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
@@ -32,7 +31,6 @@ import { GetValueRepaidScenario } from "../scenarios";
 export class GetValueRepaidRunner {
     static testGetValueRepaidScenario(scenario: GetValueRepaidScenario) {
         let principalToken: DummyTokenContract;
-        let nonPrincipalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
         let debtOrder: DebtOrder.Instance;
@@ -49,18 +47,10 @@ export class GetValueRepaidRunner {
             const principalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
                 "REP",
             );
-            const nonPrincipalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
-                "ZRX",
-            );
             const repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
 
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
             principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);
-            nonPrincipalToken = await DummyTokenContract.at(
-                nonPrincipalTokenAddress,
-                web3,
-                TX_DEFAULTS,
-            );
 
             // Grant creditor a balance of tokens
             await principalToken.setBalance.sendTransactionAsync(CREDITOR, Units.ether(10), {
@@ -90,19 +80,15 @@ export class GetValueRepaidRunner {
                 debtor: DEBTOR,
                 creditor: CREDITOR,
                 principalAmount: Units.ether(1),
-                principalToken: principalToken.address,
+                principalTokenSymbol: "REP",
                 interestRate: new BigNumber(0.1),
                 amortizationUnit: "months",
                 termLength: new BigNumber(2),
-                salt: new BigNumber(Math.trunc(Math.random() * 10000)), // TODO: use snapshotting instead of rotating salts,
-                //  this is a silly way of preventing clashes
             });
 
             debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
 
             issuanceHash = await orderApi.getIssuanceHash(debtOrder);
-
-            await orderApi.fillAsync(debtOrder, { from: CREDITOR });
 
             ABIDecoder.addABI(repaymentRouter.abi);
         });
@@ -113,6 +99,13 @@ export class GetValueRepaidRunner {
 
         describe(scenario.description, () => {
             beforeEach(async () => {
+                // NOTE: We fill debt orders in the `beforeEach` block to ensure
+                // that the blockchain is snapshotted *before* order filling
+                // in the parent scope's `beforeEach` block.  For more information,
+                // read about Jest's order of execution in scoped tests:
+                // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
+                await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+
                 for (let i = 0; i < scenario.repaymentAttempts; i++) {
                     await servicingApi.makeRepayment(
                         issuanceHash,
