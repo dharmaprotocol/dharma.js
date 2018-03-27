@@ -83,7 +83,7 @@ export const SimpleInterestAdapterErrors = {
     MISMATCHED_TERMS_CONTRACT: (termsContract: string) =>
         singleLineString`Terms contract at address ${termsContract} is not
                          a SimpleInterestTermsContract.  As such, this adapter will not
-                         interface with the terms contract as expected.`,
+                         interface with the terms contract as expected`,
 };
 
 const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
