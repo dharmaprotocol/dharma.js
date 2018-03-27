@@ -66,6 +66,20 @@ export class CollateralizedLoanTerms {
         return `0x${baseTenParameters.toString(16).padStart(64, "0")}`;
     }
 
+    public unpackParameters(packedParams: string): CollateralizedTermsContractParameters {
+        this.assert.schema.bytes32("packedParams", packedParams);
+
+        const collateralTokenIndexHex = `0x${packedParams.substr(39, 2)}`;
+        const collateralAmountHex = `0x${packedParams.substr(41, 23)}`;
+        const gracePeriodInDaysHex = `0x${packedParams.substr(64, 2)}`;
+
+        return {
+            collateralTokenIndex: new BigNumber(collateralTokenIndexHex),
+            collateralAmount: new BigNumber(collateralAmountHex),
+            gracePeriodInDays: new BigNumber(gracePeriodInDaysHex),
+        };
+    }
+
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
         if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
