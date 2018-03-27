@@ -4,9 +4,9 @@ import { Assertions } from "src/invariants";
 import { BigNumber } from "utils/bignumber";
 import * as singleLineString from "single-line-string";
 
-const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(39);
-const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(62);
-const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(64);
+const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
+const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
+const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
 
 export interface CollateralizedTermsContractParameters {
     collateralTokenIndex: BigNumber;
