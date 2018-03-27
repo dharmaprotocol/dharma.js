@@ -30,6 +30,8 @@ export const CollateralizedAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
         singleLineString`Token Registry does not track a token at index
                          ${tokenIndex.toString()}.`,
+    INVALID_COLLATERAL_AMOUNT_VALUE: () =>
+        singleLineString`Collateral amount cannot be negative or greater than 2^92 - 1.`,
 };
 
 export class CollateralizedLoanTerms {
@@ -43,6 +45,7 @@ export class CollateralizedLoanTerms {
         const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
 
         this.assertCollateralTokenIndexWithinBounds(collateralTokenIndex);
+        this.assertCollateralAmountWithinBounds(collateralAmount);
 
         const collateralTokenIndexShifted = TermsContractParameters.bitShiftLeft(
             collateralTokenIndex,
@@ -61,6 +64,12 @@ export class CollateralizedLoanTerms {
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
         if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
+        }
+    }
+
+    private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
+        if (collateralAmount.lt(0) || collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_COLLATERAL_AMOUNT_VALUE());
         }
     }
 }
