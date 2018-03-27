@@ -42,6 +42,8 @@ export class CollateralizedLoanTerms {
     public packParameters(params: CollateralizedTermsContractParameters): string {
         const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
 
+        this.assertCollateralTokenIndexWithinBounds(collateralTokenIndex);
+
         const collateralTokenIndexShifted = TermsContractParameters.bitShiftLeft(
             collateralTokenIndex,
             100,
@@ -54,5 +56,11 @@ export class CollateralizedLoanTerms {
             .plus(gracePeriodInDaysShifted);
 
         return `0x${baseTenParameters.toString(16).padStart(64, "0")}`;
+    }
+
+    private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
+        if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
+        }
     }
 }
