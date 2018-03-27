@@ -47,6 +47,8 @@ export const ContractsError = {
                 address ${principalToken}`,
     CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) =>
         singleLineString`Could not find token associated with symbol ${symbol}.`,
+    CANNOT_FIND_TOKEN_WITH_INDEX: (index: number) =>
+        singleLineString`Could not find token associated with indedx ${index}.`,
     TERMS_CONTRACT_NOT_FOUND: (tokenAddress: string) =>
         singleLineString`Could not find a terms contract at address ${tokenAddress}`,
 };
@@ -54,7 +56,6 @@ export const ContractsError = {
 export class ContractsAPI {
     private web3: Web3;
     private config: DharmaConfig;
-    private termsContracts: { [contractAddress: string]: ContractWrapper };
 
     private cache: { [contractName: string]: ContractWrapper };
 
@@ -364,7 +365,13 @@ export class ContractsAPI {
     public async getTokenSymbolByIndexAsync(index: BigNumber): Promise<string> {
         const tokenRegistryContract = await this.loadTokenRegistry();
 
-        return tokenRegistryContract.getTokenSymbolByIndex.callAsync(index);
+        const symbol = await tokenRegistryContract.getTokenSymbolByIndex.callAsync(index);
+
+        if (symbol === "") {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index));
+        }
+
+        return symbol;
     }
 
     public async loadTokenBySymbolAsync(

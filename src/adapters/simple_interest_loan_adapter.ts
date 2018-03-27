@@ -80,6 +80,10 @@ export const SimpleInterestAdapterErrors = {
         singleLineString`Terms contract parameters are invalid for the given debt order.
                          Principal token at address ${principalTokenAddress} does not
                          correspond to specified token with symbol ${symbol}`,
+    MISMATCHED_TERMS_CONTRACT: (termsContract: string) =>
+        singleLineString`Terms contract at address ${termsContract} is not
+                         a SimpleInterestTermsContract.  As such, this adapter will not
+                         interface with the terms contract as expected.`,
 };
 
 const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
@@ -330,6 +334,37 @@ export class SimpleInterestLoanAdapter {
         };
     }
 
+    /**
+     * Asynchronously translates a Dharma debt registry entry into a
+     * simple interest loan order.
+     *
+     * @param entry a Dharma debt registry entry
+     * @return      the translated simple interest loan order
+     */
+    public async fromDebtRegistryEntry(entry: DebtRegistryEntry): Promise<SimpleInterestLoanOrder> {
+        await this.assertIsSimpleInterestTermsContract(entry.termsContract);
+
+        const {
+            principalTokenIndex,
+            principalAmount,
+            interestRate,
+            termLength,
+            amortizationUnit,
+        } = this.termsContractInterface.unpackParameters(entry.termsContractParameters);
+
+        const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
+            principalTokenIndex,
+        );
+
+        return {
+            principalTokenSymbol,
+            principalAmount,
+            interestRate,
+            termLength,
+            amortizationUnit,
+        };
+    }
+
     public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
         const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
         const { termLength, amortizationUnit } = this.termsContractInterface.unpackParameters(
@@ -354,6 +389,14 @@ export class SimpleInterestLoanAdapter {
             throw new Error(
                 SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(principalToken, symbol),
             );
+        }
+    }
+
+    private async assertIsSimpleInterestTermsContract(termsContract: string): Promise<void> {
+        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
+
+        if (termsContract !== simpleInterestTermsContract.address) {
+            throw new Error(SimpleInterestAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContract));
         }
     }
 }

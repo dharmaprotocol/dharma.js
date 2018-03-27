@@ -17,7 +17,7 @@ import {
 } from "src/wrappers";
 
 // types
-import { DebtOrder } from "src/types";
+import { DebtOrder, DebtRegistryEntry } from "src/types";
 
 // adapters
 import {
@@ -820,6 +820,141 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         amortizationUnit,
                         termLength,
                     });
+                });
+            });
+        });
+    });
+
+    describe("#fromDebtRegistryEntry", () => {
+        let termsContract: SimpleInterestTermsContractContract;
+        let defaultDebtRegistryEntry: DebtRegistryEntry;
+
+        beforeAll(async () => {
+            termsContract = await contracts.loadSimpleInterestTermsContract();
+
+            defaultDebtRegistryEntry = {
+                version: repaymentRouterAddress,
+                issuanceBlockTimestamp: new BigNumber(moment().unix()),
+                beneficiary: ACCOUNTS[0].address,
+                underwriter: ACCOUNTS[1].address,
+                underwriterRiskRating: Units.percent(0.1),
+                termsContract: termsContract.address,
+                termsContractParameters:
+                    "0x00000000000de0b6b3a764000000057820002000000000000000000000000000",
+            };
+        });
+
+        describe("no principal token tracked at that index", () => {
+            it("should throw CANNOT_FIND_TOKEN_WITH_INDEX", async () => {
+                await expect(
+                    simpleInterestLoanAdapter.fromDebtRegistryEntry({
+                        ...defaultDebtRegistryEntry,
+                        // Our test environment does not track a token at index 5 (which is packed
+                        // into the first byte of the parameters)
+                        termsContractParameters:
+                            "0x05000000000de0b6b3a764000000057820002000000000000000000000000000",
+                    }),
+                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(5));
+            });
+        });
+
+        describe("refers to incorrect terms contract", () => {
+            it("should throw MISMATCHED_TERMS_CONTRACT", async () => {
+                // We choose an arbitrary address to represent
+                // a different terms contract's address.
+                const nonSimpleInterestTermsContract = ACCOUNTS[3].address;
+
+                await expect(
+                    simpleInterestLoanAdapter.fromDebtRegistryEntry({
+                        ...defaultDebtRegistryEntry,
+                        termsContract: nonSimpleInterestTermsContract,
+                    }),
+                ).rejects.toThrow(
+                    SimpleInterestAdapterErrors.MISMATCHED_TERMS_CONTRACT(
+                        nonSimpleInterestTermsContract,
+                    ),
+                );
+            });
+        });
+
+        describe("invalid amorization unit type", () => {
+            it("should throw INVALID_AMORTIZATION_UNIT_TYPE", async () => {
+                await expect(
+                    simpleInterestLoanAdapter.fromDebtRegistryEntry({
+                        ...defaultDebtRegistryEntry,
+                        termsContractParameters:
+                            "0x00000000000de0b6b3a764000000057850002000000000000000000000000000",
+                    }),
+                ).rejects.toThrow(SimpleInterestAdapterErrors.INVALID_AMORTIZATION_UNIT_TYPE());
+            });
+        });
+
+        describe("entry parameters are valid", () => {
+            describe("Scenario #1:", () => {
+                let expectedLoanOrder: SimpleInterestLoanOrder;
+
+                beforeAll(() => {
+                    expectedLoanOrder = {
+                        principalAmount: Units.ether(1),
+                        principalTokenSymbol: "REP",
+                        interestRate: new BigNumber(0.14),
+                        amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
+                        termLength: new BigNumber(2),
+                    };
+                });
+
+                it("should return correct simple interest loan order", async () => {
+                    await expect(
+                        simpleInterestLoanAdapter.fromDebtRegistryEntry(defaultDebtRegistryEntry),
+                    ).resolves.toEqual(expectedLoanOrder);
+                });
+            });
+
+            describe("Scenario #2:", () => {
+                let expectedLoanOrder: SimpleInterestLoanOrder;
+
+                beforeAll(() => {
+                    expectedLoanOrder = {
+                        principalAmount: Units.ether(0.3),
+                        principalTokenSymbol: "MKR",
+                        interestRate: new BigNumber(1.678),
+                        amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
+                        termLength: new BigNumber(1),
+                    };
+                });
+
+                it("should return correct simple interest loan order", async () => {
+                    await expect(
+                        simpleInterestLoanAdapter.fromDebtRegistryEntry({
+                            ...defaultDebtRegistryEntry,
+                            termsContractParameters:
+                                "0x01000000000429d069189e000000418c40001000000000000000000000000000",
+                        }),
+                    ).resolves.toEqual(expectedLoanOrder);
+                });
+            });
+
+            describe("Scenario #3:", () => {
+                let expectedLoanOrder: SimpleInterestLoanOrder;
+
+                beforeAll(() => {
+                    expectedLoanOrder = {
+                        principalAmount: Units.ether(200000),
+                        principalTokenSymbol: "ZRX",
+                        interestRate: new BigNumber(0.0001),
+                        amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
+                        termLength: new BigNumber(12),
+                    };
+                });
+
+                it("should return correct simple interest loan order", async () => {
+                    await expect(
+                        simpleInterestLoanAdapter.fromDebtRegistryEntry({
+                            ...defaultDebtRegistryEntry,
+                            termsContractParameters:
+                                "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000",
+                        }),
+                    ).resolves.toEqual(expectedLoanOrder);
                 });
             });
         });
