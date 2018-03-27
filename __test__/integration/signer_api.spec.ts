@@ -4,7 +4,7 @@ import { SignerAPI, SignerAPIErrors } from "src/apis/signer_api";
 import * as Units from "utils/units";
 import * as moment from "moment";
 import * as Web3 from "web3";
-import { signatureUtils } from "utils/signature_utils";
+import { SignatureUtils } from "utils/signature_utils";
 
 import { Web3Utils } from "utils/web3_utils";
 
@@ -71,9 +71,9 @@ describe("Order Signer (Unit Tests)", () => {
                 debtOrderUndefinedDebtor.debtor = undefined;
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-                    await expect(orderSigner.asDebtor(debtOrderUndefinedDebtor)).rejects.toThrow(
-                        /requires property "debtor"/,
-                    );
+                    await expect(
+                        orderSigner.asDebtor(debtOrderUndefinedDebtor, false),
+                    ).rejects.toThrow(/requires property "debtor"/);
                 });
             });
 
@@ -82,9 +82,9 @@ describe("Order Signer (Unit Tests)", () => {
                 debtOrderMalformedDebtor.debtor = "0x12345malformed";
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-                    await expect(orderSigner.asDebtor(debtOrderMalformedDebtor)).rejects.toThrow(
-                        /\.debtor does not match pattern/,
-                    );
+                    await expect(
+                        orderSigner.asDebtor(debtOrderMalformedDebtor, false),
+                    ).rejects.toThrow(/\.debtor does not match pattern/);
                 });
             });
 
@@ -93,9 +93,9 @@ describe("Order Signer (Unit Tests)", () => {
                 debtOrderUndefinedPrincipal.principalAmount = undefined;
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-                    await expect(orderSigner.asDebtor(debtOrderUndefinedPrincipal)).rejects.toThrow(
-                        /requires property "principalAmount"/,
-                    );
+                    await expect(
+                        orderSigner.asDebtor(debtOrderUndefinedPrincipal, false),
+                    ).rejects.toThrow(/requires property "principalAmount"/);
                 });
             });
 
@@ -104,7 +104,9 @@ describe("Order Signer (Unit Tests)", () => {
                 debtOrderMalformedPrincipal.principalAmount = 14;
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-                    await expect(orderSigner.asDebtor(debtOrderMalformedPrincipal)).rejects.toThrow(
+                    await expect(
+                        orderSigner.asDebtor(debtOrderMalformedPrincipal, false),
+                    ).rejects.toThrow(
                         /\.principalAmount does not conform to the "BigNumber" format/,
                     );
                 });
@@ -116,7 +118,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asDebtor(debtOrderMissingPrincipalToken),
+                        orderSigner.asDebtor(debtOrderMissingPrincipalToken, false),
                     ).rejects.toThrow(/requires property "principalToken"/);
                 });
             });
@@ -127,7 +129,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asDebtor(debtOrderMalformedPrincipalToken),
+                        orderSigner.asDebtor(debtOrderMalformedPrincipalToken, false),
                     ).rejects.toThrow(/\.principalToken does not match pattern/);
                 });
             });
@@ -138,7 +140,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asDebtor(debtOrderUndefinedTermsContract),
+                        orderSigner.asDebtor(debtOrderUndefinedTermsContract, false),
                     ).rejects.toThrow(/requires property "termsContract"/);
                 });
             });
@@ -149,7 +151,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asDebtor(debtOrderMalformedTermsContract),
+                        orderSigner.asDebtor(debtOrderMalformedTermsContract, false),
                     ).rejects.toThrow(/\.termsContract does not match pattern/);
                 });
             });
@@ -160,7 +162,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asDebtor(debtOrderUndefinedTermsContractParams),
+                        orderSigner.asDebtor(debtOrderUndefinedTermsContractParams, false),
                     ).rejects.toThrow(/requires property "termsContractParameters"/);
                 });
             });
@@ -171,7 +173,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asDebtor(debtOrderMalformedTermsContractParams),
+                        orderSigner.asDebtor(debtOrderMalformedTermsContractParams, false),
                     ).rejects.toThrow(/\.termsContractParameters does not match pattern/);
                 });
             });
@@ -182,7 +184,7 @@ describe("Order Signer (Unit Tests)", () => {
             debtOrderWithNullDebtor.debtor = NULL_ADDRESS;
 
             test("throws INVALID_SIGNING_KEY error", async () => {
-                await expect(orderSigner.asDebtor(debtOrderWithNullDebtor)).rejects.toThrow(
+                await expect(orderSigner.asDebtor(debtOrderWithNullDebtor, false)).rejects.toThrow(
                     SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS),
                 );
             });
@@ -193,17 +195,19 @@ describe("Order Signer (Unit Tests)", () => {
             debtOrderWithExternalDebtor.debtor = "0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe";
 
             test("throws INVALID_SIGNING_KEY error", async () => {
-                await expect(orderSigner.asDebtor(debtOrderWithExternalDebtor)).rejects.toThrow(
+                await expect(
+                    orderSigner.asDebtor(debtOrderWithExternalDebtor, false),
+                ).rejects.toThrow(
                     SignerAPIErrors.INVALID_SIGNING_KEY(debtOrderWithExternalDebtor.debtor),
                 );
             });
         });
 
         describe("...with debtor's private key available and unlocked", () => {
-            test("returns valid signature", async () => {
-                const ecdsaSignature = await orderSigner.asDebtor(debtOrder);
+            let debtOrderHash: string;
 
-                const debtOrderHash = Web3Utils.soliditySHA3(
+            beforeAll(() => {
+                debtOrderHash = Web3Utils.soliditySHA3(
                     debtOrder.kernelVersion,
                     Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
@@ -223,14 +227,47 @@ describe("Order Signer (Unit Tests)", () => {
                     debtOrder.relayerFee,
                     debtOrder.expirationTimestampInSec,
                 );
+            });
 
-                expect(
-                    signatureUtils.isValidSignature(
+            describe("on signing client that expects hashed message w/ personal message prefix", () => {
+                test("returns valid signature", async () => {
+                    const ecdsaSignature = await orderSigner.asDebtor(debtOrder, true);
+
+                    // Given that our test environment (namely, Ganache) is a client that
+                    // prepends the personal message prefix on the user's behalf, the correctly
+                    // produced signature in this test environment will actually
+                    // redundantly prepend a personal message prefix to the payload
+                    // twice.  Thus, to test for correctness as best we can, we redundantly prefix
+                    // and hash the debtOrderHash -- once below, and again in the `isValidSignature`
+                    // mtheod.
+                    const prefixedDebtOrderHash = SignatureUtils.addPersonalMessagePrefix(
                         debtOrderHash,
-                        ecdsaSignature,
-                        debtOrder.debtor,
-                    ),
-                ).toBeTruthy();
+                    );
+
+                    expect(
+                        SignatureUtils.isValidSignature(
+                            prefixedDebtOrderHash,
+                            ecdsaSignature,
+                            debtOrder.debtor,
+                            true,
+                        ),
+                    ).toBeTruthy();
+                });
+            });
+
+            describe("on signing client that adds personal message prefix on user's behalf", () => {
+                test("returns valid signature", async () => {
+                    const ecdsaSignature = await orderSigner.asDebtor(debtOrder, false);
+
+                    expect(
+                        SignatureUtils.isValidSignature(
+                            debtOrderHash,
+                            ecdsaSignature,
+                            debtOrder.debtor,
+                            true,
+                        ),
+                    ).toBeTruthy();
+                });
             });
         });
     });
@@ -246,9 +283,9 @@ describe("Order Signer (Unit Tests)", () => {
                 debtOrderUndefinedDebtor.debtor = undefined;
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-                    await expect(orderSigner.asCreditor(debtOrderUndefinedDebtor)).rejects.toThrow(
-                        /requires property "debtor"/,
-                    );
+                    await expect(
+                        orderSigner.asCreditor(debtOrderUndefinedDebtor, false),
+                    ).rejects.toThrow(/requires property "debtor"/);
                 });
             });
 
@@ -257,9 +294,9 @@ describe("Order Signer (Unit Tests)", () => {
                 debtOrderMalformedDebtor.debtor = "0x12345malformed";
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
-                    await expect(orderSigner.asCreditor(debtOrderMalformedDebtor)).rejects.toThrow(
-                        /\.debtor does not match pattern/,
-                    );
+                    await expect(
+                        orderSigner.asCreditor(debtOrderMalformedDebtor, false),
+                    ).rejects.toThrow(/\.debtor does not match pattern/);
                 });
             });
 
@@ -269,7 +306,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderUndefinedCreditor),
+                        orderSigner.asCreditor(debtOrderUndefinedCreditor, false),
                     ).rejects.toThrow(/requires property "creditor"/);
                 });
             });
@@ -280,7 +317,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderMalformedCreditor),
+                        orderSigner.asCreditor(debtOrderMalformedCreditor, false),
                     ).rejects.toThrow(/\.creditor does not match pattern/);
                 });
             });
@@ -291,7 +328,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderUndefinedPrincipal),
+                        orderSigner.asCreditor(debtOrderUndefinedPrincipal, false),
                     ).rejects.toThrow(/requires property "principalAmount"/);
                 });
             });
@@ -313,7 +350,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderMissingPrincipalToken),
+                        orderSigner.asCreditor(debtOrderMissingPrincipalToken, false),
                     ).rejects.toThrow(/requires property "principalToken"/);
                 });
             });
@@ -324,7 +361,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderMalformedPrincipalToken),
+                        orderSigner.asCreditor(debtOrderMalformedPrincipalToken, false),
                     ).rejects.toThrow(/\.principalToken does not match pattern/);
                 });
             });
@@ -335,7 +372,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderUndefinedTermsContract),
+                        orderSigner.asCreditor(debtOrderUndefinedTermsContract, false),
                     ).rejects.toThrow(/requires property "termsContract"/);
                 });
             });
@@ -346,7 +383,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderMalformedTermsContract),
+                        orderSigner.asCreditor(debtOrderMalformedTermsContract, false),
                     ).rejects.toThrow(/\.termsContract does not match pattern/);
                 });
             });
@@ -357,7 +394,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderUndefinedTermsContractParams),
+                        orderSigner.asCreditor(debtOrderUndefinedTermsContractParams, false),
                     ).rejects.toThrow(/requires property "termsContractParameters"/);
                 });
             });
@@ -368,7 +405,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asCreditor(debtOrderMalformedTermsContractParams),
+                        orderSigner.asCreditor(debtOrderMalformedTermsContractParams, false),
                     ).rejects.toThrow(/\.termsContractParameters does not match pattern/);
                 });
             });
@@ -379,9 +416,9 @@ describe("Order Signer (Unit Tests)", () => {
             debtOrderWithNullCreditor.creditor = NULL_ADDRESS;
 
             test("throws INVALID_SIGNING_KEY error", async () => {
-                await expect(orderSigner.asCreditor(debtOrderWithNullCreditor)).rejects.toThrow(
-                    SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS),
-                );
+                await expect(
+                    orderSigner.asCreditor(debtOrderWithNullCreditor, false),
+                ).rejects.toThrow(SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS));
             });
         });
 
@@ -390,17 +427,19 @@ describe("Order Signer (Unit Tests)", () => {
             debtOrderWithExternalCreditor.creditor = "0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe";
 
             test("throws INVALID_SIGNING_KEY error", async () => {
-                await expect(orderSigner.asCreditor(debtOrderWithExternalCreditor)).rejects.toThrow(
+                await expect(
+                    orderSigner.asCreditor(debtOrderWithExternalCreditor, false),
+                ).rejects.toThrow(
                     SignerAPIErrors.INVALID_SIGNING_KEY(debtOrderWithExternalCreditor.creditor),
                 );
             });
         });
 
         describe("...with creditor's private key available and unlocked", () => {
-            test("returns valid signature", async () => {
-                const ecdsaSignature = await orderSigner.asCreditor(debtOrder);
+            let debtOrderHash: string;
 
-                const debtOrderHash = Web3Utils.soliditySHA3(
+            beforeAll(() => {
+                debtOrderHash = Web3Utils.soliditySHA3(
                     debtOrder.kernelVersion,
                     Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
@@ -420,14 +459,47 @@ describe("Order Signer (Unit Tests)", () => {
                     debtOrder.relayerFee,
                     debtOrder.expirationTimestampInSec,
                 );
+            });
 
-                expect(
-                    signatureUtils.isValidSignature(
+            describe("on signing client that expects hashed message w/ personal message prefix", () => {
+                test("returns valid signature", async () => {
+                    const ecdsaSignature = await orderSigner.asCreditor(debtOrder, true);
+
+                    // Given that our test environment (namely, Ganache) is a client that
+                    // prepends the personal message prefix on the user's behalf, the correctly
+                    // produced signature in this test environment will actually
+                    // redundantly prepend a personal message prefix to the payload
+                    // twice.  Thus, to test for correctness as best we can, we redundantly prefix
+                    // and hash the debtOrderHash -- once below, and again in the `isValidSignature`
+                    // mtheod.
+                    const prefixedDebtOrderHash = SignatureUtils.addPersonalMessagePrefix(
                         debtOrderHash,
-                        ecdsaSignature,
-                        debtOrder.creditor,
-                    ),
-                ).toBeTruthy();
+                    );
+
+                    expect(
+                        SignatureUtils.isValidSignature(
+                            prefixedDebtOrderHash,
+                            ecdsaSignature,
+                            debtOrder.creditor,
+                            true,
+                        ),
+                    ).toBeTruthy();
+                });
+            });
+
+            describe("on signing client that adds personal message prefix on user's behalf", () => {
+                test("returns valid signature", async () => {
+                    const ecdsaSignature = await orderSigner.asCreditor(debtOrder, false);
+
+                    expect(
+                        SignatureUtils.isValidSignature(
+                            debtOrderHash,
+                            ecdsaSignature,
+                            debtOrder.creditor,
+                            true,
+                        ),
+                    ).toBeTruthy();
+                });
             });
         });
     });
@@ -444,7 +516,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderUndefinedDebtor),
+                        orderSigner.asUnderwriter(debtOrderUndefinedDebtor, false),
                     ).rejects.toThrow(/requires property "debtor"/);
                 });
             });
@@ -455,7 +527,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderMalformedDebtor),
+                        orderSigner.asUnderwriter(debtOrderMalformedDebtor, false),
                     ).rejects.toThrow(/\.debtor does not match pattern/);
                 });
             });
@@ -466,7 +538,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderUndefinedPrincipal),
+                        orderSigner.asUnderwriter(debtOrderUndefinedPrincipal, false),
                     ).rejects.toThrow(/requires property "principalAmount"/);
                 });
             });
@@ -488,7 +560,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderMissingPrincipalToken),
+                        orderSigner.asUnderwriter(debtOrderMissingPrincipalToken, false),
                     ).rejects.toThrow(/requires property "principalToken"/);
                 });
             });
@@ -499,7 +571,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderMalformedPrincipalToken),
+                        orderSigner.asUnderwriter(debtOrderMalformedPrincipalToken, false),
                     ).rejects.toThrow(/\.principalToken does not match pattern/);
                 });
             });
@@ -510,7 +582,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderUndefinedTermsContract),
+                        orderSigner.asUnderwriter(debtOrderUndefinedTermsContract, false),
                     ).rejects.toThrow(/requires property "termsContract"/);
                 });
             });
@@ -521,7 +593,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderMalformedTermsContract),
+                        orderSigner.asUnderwriter(debtOrderMalformedTermsContract, false),
                     ).rejects.toThrow(/\.termsContract does not match pattern/);
                 });
             });
@@ -532,7 +604,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderUndefinedTermsContractParams),
+                        orderSigner.asUnderwriter(debtOrderUndefinedTermsContractParams, false),
                     ).rejects.toThrow(/requires property "termsContractParameters"/);
                 });
             });
@@ -543,7 +615,7 @@ describe("Order Signer (Unit Tests)", () => {
 
                 test("throws DOES_NOT_CONFORM_TO_SCHEMA error", async () => {
                     await expect(
-                        orderSigner.asUnderwriter(debtOrderMalformedTermsContractParams),
+                        orderSigner.asUnderwriter(debtOrderMalformedTermsContractParams, false),
                     ).rejects.toThrow(/\.termsContractParameters does not match pattern/);
                 });
             });
@@ -555,7 +627,7 @@ describe("Order Signer (Unit Tests)", () => {
 
             test("throws INVALID_SIGNING_KEY error", async () => {
                 await expect(
-                    orderSigner.asUnderwriter(debtOrderWithNullUnderwriter),
+                    orderSigner.asUnderwriter(debtOrderWithNullUnderwriter, false),
                 ).rejects.toThrow(SignerAPIErrors.INVALID_SIGNING_KEY(NULL_ADDRESS));
             });
         });
@@ -567,7 +639,7 @@ describe("Order Signer (Unit Tests)", () => {
 
             test("throws INVALID_SIGNING_KEY error", async () => {
                 await expect(
-                    orderSigner.asUnderwriter(debtOrderWithExternalUnderwriter),
+                    orderSigner.asUnderwriter(debtOrderWithExternalUnderwriter, false),
                 ).rejects.toThrow(
                     SignerAPIErrors.INVALID_SIGNING_KEY(
                         debtOrderWithExternalUnderwriter.underwriter,
@@ -577,10 +649,10 @@ describe("Order Signer (Unit Tests)", () => {
         });
 
         describe("...with underwriter's private key available and unlocked", () => {
-            test("returns valid signature", async () => {
-                const ecdsaSignature = await orderSigner.asUnderwriter(debtOrder);
+            let underwriterCommitmentHash: string;
 
-                const debtOrderHash = Web3Utils.soliditySHA3(
+            beforeAll(() => {
+                underwriterCommitmentHash = Web3Utils.soliditySHA3(
                     debtOrder.kernelVersion,
                     Web3Utils.soliditySHA3(
                         debtOrder.issuanceVersion,
@@ -596,14 +668,47 @@ describe("Order Signer (Unit Tests)", () => {
                     debtOrder.principalToken,
                     debtOrder.expirationTimestampInSec,
                 );
+            });
 
-                expect(
-                    signatureUtils.isValidSignature(
-                        debtOrderHash,
-                        ecdsaSignature,
-                        debtOrder.underwriter,
-                    ),
-                ).toBeTruthy();
+            describe("on signing client that expects hashed message w/ personal message prefix", () => {
+                test("returns valid signature", async () => {
+                    const ecdsaSignature = await orderSigner.asUnderwriter(debtOrder, true);
+
+                    // Given that our test environment (namely, Ganache) is a client that
+                    // prepends the personal message prefix on the user's behalf, the correctly
+                    // produced signature in this test environment will actually
+                    // redundantly prepend a personal message prefix to the payload
+                    // twice.  Thus, to test for correctness as best we can, we redundantly prefix
+                    // and hash the debtOrderHash -- once below, and again in the `isValidSignature`
+                    // mtheod.
+                    const prefixedCommitmentHash = SignatureUtils.addPersonalMessagePrefix(
+                        underwriterCommitmentHash,
+                    );
+
+                    expect(
+                        SignatureUtils.isValidSignature(
+                            prefixedCommitmentHash,
+                            ecdsaSignature,
+                            debtOrder.underwriter,
+                            true,
+                        ),
+                    ).toBeTruthy();
+                });
+            });
+
+            describe("on signing client that adds personal message prefix on user's behalf", () => {
+                test("returns valid signature", async () => {
+                    const ecdsaSignature = await orderSigner.asUnderwriter(debtOrder, false);
+
+                    expect(
+                        SignatureUtils.isValidSignature(
+                            underwriterCommitmentHash,
+                            ecdsaSignature,
+                            debtOrder.underwriter,
+                            true,
+                        ),
+                    ).toBeTruthy();
+                });
             });
         });
     });

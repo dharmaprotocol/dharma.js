@@ -8,7 +8,7 @@ import {
     TokenTransferProxyContract,
     ERC20Contract,
 } from "../wrappers";
-import { signatureUtils } from "../../utils/signature_utils";
+import { SignatureUtils } from "../../utils/signature_utils";
 import * as moment from "moment";
 import { ContractsAPI } from "../apis";
 
@@ -157,7 +157,7 @@ export class OrderAssertions {
 
         if (transactionOptions.from !== debtOrder.debtor) {
             if (
-                !signatureUtils.isValidSignature(
+                !SignatureUtils.isValidSignature(
                     debtOrderWrapped.getDebtorCommitmentHash(),
                     debtOrder.debtorSignature,
                     debtOrder.debtor,
@@ -179,7 +179,7 @@ export class OrderAssertions {
 
         if (transactionOptions.from !== debtOrder.creditor) {
             if (
-                !signatureUtils.isValidSignature(
+                !SignatureUtils.isValidSignature(
                     debtOrderWrapped.getCreditorCommitmentHash(),
                     debtOrder.creditorSignature,
                     debtOrder.creditor,
@@ -201,7 +201,7 @@ export class OrderAssertions {
 
         if (transactionOptions.from !== debtOrder.underwriter) {
             if (
-                !signatureUtils.isValidSignature(
+                !SignatureUtils.isValidSignature(
                     debtOrderWrapped.getUnderwriterCommitmentHash(),
                     debtOrder.underwriterSignature,
                     debtOrder.underwriter,
