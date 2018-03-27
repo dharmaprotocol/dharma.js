@@ -26,7 +26,8 @@ export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
 }
 
 export interface SimpleInterestTermsContractParameters {
-    totalExpectedRepayment: BigNumber;
+    principalAmount: BigNumber;
+    interestRate: BigNumber;
     amortizationUnit: AmortizationUnit;
     termLength: BigNumber;
     principalTokenIndex: BigNumber;
@@ -43,13 +44,25 @@ enum AmortizationUnitCode {
     YEARS,
 }
 
+const MAX_PRINCIPAL_TOKEN_INDEX_HEX = "0xff";
+const MAX_PRINCIPAL_AMOUNT_HEX = "0xffffffffffffffffffffffff";
+const MAX_TERM_LENGTH_VALUE_HEX = "0xffff";
+
+const MAX_INTEREST_RATE_PRECISION = 4;
+const FIXED_POINT_SCALING_FACTOR = 10 ** MAX_INTEREST_RATE_PRECISION;
+const MAX_INTEREST_RATE = 2 ** 24 / FIXED_POINT_SCALING_FACTOR;
+
 export const SimpleInterestAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
         singleLineString`Token Registry does not track a token at index
                          ${tokenIndex.toString()}.`,
-    INVALID_EXPECTED_REPAYMENT_VALUE: () =>
-        singleLineString`Total expected repayment value cannot be negative or
-                         greater than 2^128 - 1.`,
+    INVALID_PRINCIPAL_AMOUNT: () =>
+        singleLineString`Principal amount must be a whole number greater than 0
+                         and less than 2^96 - 1.`,
+    INVALID_INTEREST_RATE: () =>
+        singleLineString`Interest amount cannot be negative,
+                         greater than 1677.7216, or have more than
+                         ${MAX_INTEREST_RATE_PRECISION} decimal places.`,
     INVALID_AMORTIZATION_UNIT_TYPE: () =>
         singleLineString`Amortization unit must be of type HOURS, DAYS,
                          WEEKS, MONTHS, or YEARS.`,
@@ -70,9 +83,6 @@ export const SimpleInterestAdapterErrors = {
 };
 
 const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
-const MAX_PRINCIPAL_TOKEN_INDEX_HEX = "0xff";
-const MAX_EXPECTED_REPAYMENT_VALUE_HEX = "0xffffffffffffffffffffffffffffff";
-const MAX_TERM_LENGTH_VALUE_HEX = "0xffff";
 
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
@@ -84,18 +94,23 @@ export class SimpleInterestLoanTerms {
     public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
         const {
             principalTokenIndex,
-            totalExpectedRepayment,
+            principalAmount,
+            interestRate,
             amortizationUnit,
             termLength,
         } = termsContractParameters;
 
         this.assertPrincipalTokenIndexWithinBounds(principalTokenIndex);
-        this.assertTotalExpectedRepaymentWithinBounds(totalExpectedRepayment);
+        this.assertPrincipalAmountWithinBounds(principalAmount);
+        this.assertInterestRateValid(interestRate);
         this.assertValidAmortizationUnit(amortizationUnit);
         this.assertTermLengthWholeAndWithinBounds(termLength);
 
+        const interestRateFixedPoint = interestRate.mul(FIXED_POINT_SCALING_FACTOR);
+
         const principalTokenIndexHex = principalTokenIndex.toString(16);
-        const totalExpectedRepaymentHex = totalExpectedRepayment.toString(16);
+        const principalAmountHex = principalAmount.toString(16);
+        const interestRateFixedPointHex = interestRateFixedPoint.toString(16);
         const amortizationUnitTypeHex = AmortizationUnitCode[
             amortizationUnit.toUpperCase()
         ].toString(16);
@@ -104,7 +119,8 @@ export class SimpleInterestLoanTerms {
         return (
             "0x" +
             principalTokenIndexHex.padStart(2, "0") +
-            totalExpectedRepaymentHex.padStart(30, "0") +
+            principalAmountHex.padStart(24, "0") +
+            interestRateFixedPointHex.padStart(6, "0") +
             amortizationUnitTypeHex.padStart(1, "0") +
             termLengthHex.padStart(4, "0") +
             "0".repeat(27)
@@ -117,13 +133,20 @@ export class SimpleInterestLoanTerms {
         this.assert.schema.bytes32("termsContractParametersPacked", termsContractParametersPacked);
 
         const principalTokenIndexHex = termsContractParametersPacked.substr(0, 4);
-        const totalExpectedRepaymentHex = `0x${termsContractParametersPacked.substr(4, 30)}`;
+        const principalAmountHex = `0x${termsContractParametersPacked.substr(4, 24)}`;
+        const interestRateFixedPointHex = `0x${termsContractParametersPacked.substr(28, 6)}`;
         const amortizationUnitTypeHex = `0x${termsContractParametersPacked.substr(34, 1)}`;
         const termLengthHex = `0x${termsContractParametersPacked.substr(35, 4)}`;
 
         const principalTokenIndex = new BigNumber(principalTokenIndexHex);
-        const totalExpectedRepayment = new BigNumber(totalExpectedRepaymentHex);
+        const principalAmount = new BigNumber(principalAmountHex);
+        const interestRateFixedPoint = new BigNumber(interestRateFixedPointHex);
         const termLength = new BigNumber(termLengthHex);
+
+        // Given that our fixed point representation of the interest rate
+        // is scaled up by our chosen scaling factor, we scale it down
+        // for computations.
+        const interestRate = interestRateFixedPoint.div(FIXED_POINT_SCALING_FACTOR);
 
         // Since the amortization unit type is stored in 1 byte, it can't exceed
         // a value of 255.  As such, we're not concerned about using BigNumber's
@@ -139,7 +162,8 @@ export class SimpleInterestLoanTerms {
 
         return {
             principalTokenIndex,
-            totalExpectedRepayment,
+            principalAmount,
+            interestRate,
             termLength,
             amortizationUnit,
         };
@@ -151,12 +175,23 @@ export class SimpleInterestLoanTerms {
         }
     }
 
-    public assertTotalExpectedRepaymentWithinBounds(totalExpectedRepayment: BigNumber) {
+    public assertPrincipalAmountWithinBounds(principalAmount: BigNumber) {
+        if (principalAmount.lt(0) || principalAmount.gt(MAX_PRINCIPAL_AMOUNT_HEX)) {
+            throw new Error(SimpleInterestAdapterErrors.INVALID_PRINCIPAL_AMOUNT());
+        }
+    }
+
+    public assertInterestRateValid(interestRate: BigNumber) {
+        const [, rightOfDecimal] = interestRate.toString().split(".");
+
+        const numDecimals = typeof rightOfDecimal !== "undefined" ? rightOfDecimal.length : 0;
+
         if (
-            totalExpectedRepayment.lt(0) ||
-            totalExpectedRepayment.gt(MAX_EXPECTED_REPAYMENT_VALUE_HEX)
+            interestRate.lt(0) ||
+            interestRate.gt(MAX_INTEREST_RATE) ||
+            numDecimals > MAX_INTEREST_RATE_PRECISION
         ) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_EXPECTED_REPAYMENT_VALUE());
+            throw new Error(SimpleInterestAdapterErrors.INVALID_INTEREST_RATE());
         }
     }
 
@@ -231,8 +266,6 @@ export class SimpleInterestLoanAdapter {
             principalTokenSymbol,
         );
 
-        const totalExpectedRepayment = principalAmount.times(interestRate.plus(1)).trunc();
-
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract(
             TX_DEFAULTS,
         );
@@ -250,7 +283,8 @@ export class SimpleInterestLoanAdapter {
             termsContract: simpleInterestTermsContract.address,
             termsContractParameters: this.termsContractInterface.packParameters({
                 principalTokenIndex,
-                totalExpectedRepayment,
+                principalAmount,
+                interestRate,
                 amortizationUnit,
                 termLength,
             }),
@@ -271,13 +305,11 @@ export class SimpleInterestLoanAdapter {
 
         const {
             principalTokenIndex,
-            totalExpectedRepayment,
+            principalAmount,
+            interestRate,
             termLength,
             amortizationUnit,
         } = this.termsContractInterface.unpackParameters(debtOrder.termsContractParameters);
-
-        const { principalAmount } = debtOrder;
-        const interestRate = totalExpectedRepayment.div(principalAmount).sub(1);
 
         const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
             principalTokenIndex,
