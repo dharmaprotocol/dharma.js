@@ -2,6 +2,7 @@ import * as Web3 from "web3";
 import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
 import { BigNumber } from "utils/bignumber";
+import * as singleLineString from "single-line-string";
 
 export interface CollateralizedTermsContractParameters {
     collateralTokenIndex: BigNumber;
@@ -16,6 +17,12 @@ export namespace TermsContractParameters {
         return new BigNumber(binaryTargetStringShifted, 2);
     }
 }
+
+export const CollateralizedAdapterErrors = {
+    INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
+        singleLineString`Token Registry does not track a token at index
+                         ${tokenIndex.toString()}.`,
+};
 
 export class CollateralizedLoanTerms {
     private assert: Assertions;
