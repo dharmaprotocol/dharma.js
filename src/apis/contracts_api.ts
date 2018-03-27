@@ -367,8 +367,8 @@ export class ContractsAPI {
 
         const symbol = await tokenRegistryContract.getTokenSymbolByIndex.callAsync(index);
 
-        if (symbol === "") {
-            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index));
+        if (!symbol || symbol === "") {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index.toNumber()));
         }
 
         return symbol;
