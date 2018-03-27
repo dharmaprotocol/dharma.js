@@ -9,6 +9,14 @@ export interface CollateralizedTermsContractParameters {
     gracePeriodInDays: BigNumber;
 }
 
+export namespace TermsContractParameters {
+    export function bitShiftLeft(target: BigNumber, numPlaces: number): BigNumber {
+        const binaryTargetString = target.toString(2);
+        const binaryTargetStringShifted = binaryTargetString + "0".repeat(numPlaces);
+        return new BigNumber(binaryTargetStringShifted, 2);
+    }
+}
+
 export class CollateralizedLoanTerms {
     private assert: Assertions;
 
@@ -19,20 +27,17 @@ export class CollateralizedLoanTerms {
     public packParameters(params: CollateralizedTermsContractParameters): string {
         const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
 
-        const collateralTokenIndexShifted = this.bitShiftLeft(collateralTokenIndex, 100);
-        const collateralAmountShifted = this.bitShiftLeft(collateralAmount, 8);
-        const gracePeriodInDaysShifted = this.bitShiftLeft(gracePeriodInDays, 0);
+        const collateralTokenIndexShifted = TermsContractParameters.bitShiftLeft(
+            collateralTokenIndex,
+            100,
+        );
+        const collateralAmountShifted = TermsContractParameters.bitShiftLeft(collateralAmount, 8);
+        const gracePeriodInDaysShifted = TermsContractParameters.bitShiftLeft(gracePeriodInDays, 0);
 
         const baseTenParameters = collateralTokenIndexShifted
             .plus(collateralAmountShifted)
             .plus(gracePeriodInDaysShifted);
 
         return `0x${baseTenParameters.toString(16).padStart(64, "0")}`;
-    }
-
-    private bitShiftLeft(target: BigNumber, numPlaces: number): BigNumber {
-        const binaryTargetString = target.toString(2);
-        const binaryTargetStringShifted = binaryTargetString + "0".repeat(numPlaces);
-        return new BigNumber(binaryTargetStringShifted, 2);
     }
 }
