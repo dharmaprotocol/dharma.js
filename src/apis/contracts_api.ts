@@ -15,7 +15,6 @@ import {
     ERC20Contract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
-    TermsContractRegistryContract,
 } from "../wrappers";
 
 // utils
@@ -27,7 +26,6 @@ import {
     SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
-    TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
 } from "../../utils/constants";
 import * as singleLineString from "single-line-string";
@@ -257,35 +255,6 @@ export class ContractsAPI {
             this.cache[cacheKey] = termsContract;
             return termsContract;
         }
-    }
-
-    public async loadTermsContractRegistry(
-        transactionOptions: object = {},
-    ): Promise<TermsContractRegistryContract> {
-        if (TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
-            return this.cache[
-                TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY
-            ] as TermsContractRegistryContract;
-        }
-
-        let termsContractRegistry: TermsContractRegistryContract;
-
-        if (this.config.termsContractRegistry) {
-            termsContractRegistry = await TermsContractRegistryContract.at(
-                this.config.termsContractRegistry,
-                this.web3,
-                transactionOptions,
-            );
-        } else {
-            termsContractRegistry = await TermsContractRegistryContract.deployed(
-                this.web3,
-                transactionOptions,
-            );
-        }
-
-        this.cache[TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY] = termsContractRegistry;
-
-        return termsContractRegistry;
     }
 
     /**
