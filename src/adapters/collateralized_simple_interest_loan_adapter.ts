@@ -30,8 +30,9 @@ export const CollateralizedAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
         singleLineString`Token Registry does not track a token at index
                          ${tokenIndex.toString()}.`,
-    INVALID_COLLATERAL_AMOUNT_VALUE: () =>
-        singleLineString`Collateral amount cannot be negative or greater than 2^92 - 1.`,
+    COLLATERAL_AMOUNT_IS_NEGATIVE: () => singleLineString`Collateral amount cannot be negative.`,
+    COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM: () =>
+        singleLineString`Collateral amount exceeds maximum value of 2^92 - 1.`,
     GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
     GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
         singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
@@ -71,8 +72,12 @@ export class CollateralizedLoanTerms {
     }
 
     private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
-        if (collateralAmount.lt(0) || collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {
-            throw new Error(CollateralizedAdapterErrors.INVALID_COLLATERAL_AMOUNT_VALUE());
+        if (collateralAmount.lt(0)) {
+            throw new Error(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
+        }
+
+        if (collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {
+            throw new Error(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
         }
     }
 
