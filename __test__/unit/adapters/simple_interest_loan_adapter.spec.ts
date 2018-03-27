@@ -62,9 +62,10 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
 
     const defaultLoanParams = {
         principalTokenIndex: new BigNumber(0), // REP's index in the Token Registry is 0
-        totalExpectedRepayment: new BigNumber(3.456 * 10 ** 18),
-        amortizationUnit: SimpleInterestLoanAdapter.Installments.DAILY,
-        termLength: new BigNumber(7),
+        principalAmount: new BigNumber(3.456 * 10 ** 18), // Principal Amount: 3.456e18
+        interestRate: new BigNumber(14.36), // Interest Rate: 14.36%
+        amortizationUnit: SimpleInterestLoanAdapter.Installments.DAILY, // Daily installments
+        termLength: new BigNumber(7), // 7 day term
     };
 
     describe("#packParameters", () => {
@@ -85,25 +86,58 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
             });
         });
 
-        describe("...with total expected repayment > 2^128 - 1", () => {
-            test("should throw INVALID_EXPECTED_REPAYMENT_VALUE error", () => {
+        describe("...with principal amount > 2^96 - 1", () => {
+            test("should throw INVALID_PRINCIPAL_AMOUNT error", () => {
                 expect(() => {
                     simpleInterestLoanTerms.packParameters({
                         ...defaultLoanParams,
-                        totalExpectedRepayment: new BigNumber(3.5 * 10 ** 38),
+                        principalAmount: new BigNumber(3.5 * 10 ** 38),
                     });
-                }).toThrow(SimpleInterestAdapterErrors.INVALID_EXPECTED_REPAYMENT_VALUE());
+                }).toThrow(SimpleInterestAdapterErrors.INVALID_PRINCIPAL_AMOUNT());
             });
         });
 
-        describe("...with total expected repayment < 0", () => {
-            test("should throw INVALID_EXPECTED_REPAYMENT_VALUE error", () => {
+        describe("...with principal amount < 0", () => {
+            test("should throw INVALID_PRINCIPAL_AMOUNT error", () => {
                 expect(() => {
                     simpleInterestLoanTerms.packParameters({
                         ...defaultLoanParams,
-                        totalExpectedRepayment: new BigNumber(-1),
+                        principalAmount: new BigNumber(-1),
                     });
-                }).toThrowError(SimpleInterestAdapterErrors.INVALID_EXPECTED_REPAYMENT_VALUE());
+                }).toThrowError(SimpleInterestAdapterErrors.INVALID_PRINCIPAL_AMOUNT());
+            });
+        });
+
+        describe("...with interest rate > 1677.7216%", () => {
+            test("should throw INVALID_INTEREST_RATE error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        interestRate: new BigNumber(1677.7217),
+                    });
+                }).toThrowError(SimpleInterestAdapterErrors.INVALID_INTEREST_RATE());
+            });
+        });
+
+        describe("...with interest rate < 0", () => {
+            test("should throw INVALID_INTEREST_RATE error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        interestRate: new BigNumber(-1),
+                    });
+                }).toThrowError(SimpleInterestAdapterErrors.INVALID_INTEREST_RATE());
+            });
+        });
+
+        describe("...where interest rate has more than 4 decimal places", () => {
+            test("should throw INVALID_INTEREST_RATE error", () => {
+                expect(() => {
+                    simpleInterestLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        interestRate: new BigNumber(5.20035),
+                    });
+                }).toThrowError(SimpleInterestAdapterErrors.INVALID_INTEREST_RATE());
             });
         });
 
@@ -151,18 +185,19 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
             });
         });
 
-        describe("...with valid expected repayment, amortization, and term length", () => {
+        describe("...with valid principal amount, interest rate, amortization, and term length", () => {
             describe("Scenario #1", () => {
                 test("should return correctly packed parameters", () => {
                     expect(simpleInterestLoanTerms.packParameters(defaultLoanParams)).toEqual(
-                        "0x00000000000000002ff62db077c0000010007000000000000000000000000000",
+                        "0x00000000002ff62db077c000000230f010007000000000000000000000000000",
                     );
                 });
             });
 
             describe("Scenario #2", () => {
                 const principalTokenIndex = new BigNumber(1);
-                const totalExpectedRepayment = new BigNumber(723489020 * 10 ** 18);
+                const principalAmount = new BigNumber(723489020 * 10 ** 18);
+                const interestRate = new BigNumber(0.012);
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.YEARLY;
                 const termLength = new BigNumber(4);
 
@@ -170,17 +205,19 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
                     expect(
                         simpleInterestLoanTerms.packParameters({
                             principalTokenIndex,
-                            totalExpectedRepayment,
+                            principalAmount,
+                            interestRate,
                             amortizationUnit,
                             termLength,
                         }),
-                    ).toEqual("0x01000000025674c25cd7f81d0670000040004000000000000000000000000000");
+                    ).toEqual("0x01025674c25cd7f81d0670000000007840004000000000000000000000000000");
                 });
             });
 
             describe("Scenario #3", () => {
                 const principalTokenIndex = new BigNumber(2);
-                const totalExpectedRepayment = new BigNumber(0.0000023232312 * 10 ** 18);
+                const principalAmount = new BigNumber(0.0000023232312 * 10 ** 18);
+                const interestRate = new BigNumber(90.2321);
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.MONTHLY;
                 const termLength = new BigNumber(12);
 
@@ -188,11 +225,12 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
                     expect(
                         simpleInterestLoanTerms.packParameters({
                             principalTokenIndex,
-                            totalExpectedRepayment,
+                            principalAmount,
+                            interestRate,
                             amortizationUnit,
                             termLength,
                         }),
-                    ).toEqual("0x02000000000000000000021ceb5ed3003000c000000000000000000000000000");
+                    ).toEqual("0x02000000000000021ceb5ed3000dc4b13000c000000000000000000000000000");
                 });
             });
         });
@@ -251,7 +289,7 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
         describe("...with termsContractParameters string", () => {
             describe("Scenario #1", () => {
                 const parameters =
-                    "0x00000000000000002ff62db077c0000010007000000000000000000000000000";
+                    "0x00000000002ff62db077c000000230f010007000000000000000000000000000";
 
                 test("should return correctly unpacked parameters", () => {
                     expect(simpleInterestLoanTerms.unpackParameters(parameters)).toEqual(
@@ -262,10 +300,11 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
 
             describe("Scenario #2", () => {
                 const parameters =
-                    "0x01000000025674c25cd7f81d0670000040004000000000000000000000000000";
+                    "0x01025674c25cd7f81d0670000000007840004000000000000000000000000000";
                 const unpackedParameters = {
                     principalTokenIndex: new BigNumber(1),
-                    totalExpectedRepayment: new BigNumber(723489020 * 10 ** 18),
+                    principalAmount: new BigNumber(723489020 * 10 ** 18),
+                    interestRate: new BigNumber(0.012),
                     amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
                     termLength: new BigNumber(4),
                 };
@@ -279,10 +318,11 @@ describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
 
             describe("Scenario #3", () => {
                 const parameters =
-                    "0x05000000000000000000021ceb5ed3003000c000000000000000000000000000";
+                    "0x05000000000000021ceb5ed3000dc4b13000c000000000000000000000000000";
                 const unpackedParameters = {
                     principalTokenIndex: new BigNumber(5),
-                    totalExpectedRepayment: new BigNumber(0.0000023232312 * 10 ** 18),
+                    principalAmount: new BigNumber(0.0000023232312 * 10 ** 18),
+                    interestRate: new BigNumber(90.2321),
                     amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
                     termLength: new BigNumber(12),
                 };
@@ -436,7 +476,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
                         termsContractParameters:
-                            "0x00000000000000000fd217f5c3f2000020002000000000000000000000000000",
+                            "0x00000000000de0b6b3a764000000057820002000000000000000000000000000",
                     });
                 });
             });
@@ -468,7 +508,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
                         termsContractParameters:
-                            "0x01000000000000000b26400b1c8c800040001000000000000000000000000000",
+                            "0x01000000000429d069189e000000418c40001000000000000000000000000000",
                     });
                 });
             });
@@ -500,7 +540,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
                         termsContractParameters:
-                            "0x0200000000002a5b1b1e089f00d000003000c000000000000000000000000000",
+                            "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000",
                     });
                 });
             });
@@ -521,12 +561,14 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
         describe("when the schedule is across 2 weeks", () => {
             test("it returns a list of 2 unix timestamps 1 week apart", async () => {
                 const principalTokenIndex = new BigNumber(0);
-                const totalExpectedRepayment = new BigNumber(1);
+                const principalAmount = new BigNumber(1);
+                const interestRate = new BigNumber(1.23);
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.WEEKLY;
                 const termLength = new BigNumber(2);
                 const contractTermsParameters = simpleInterestLoanTerms.packParameters({
                     principalTokenIndex,
-                    totalExpectedRepayment,
+                    principalAmount,
+                    interestRate,
                     amortizationUnit,
                     termLength,
                 });
@@ -685,7 +727,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.WEEKLY;
                 const termLength = new BigNumber(2);
                 const termsContractParameters =
-                    "0x00000000000000000fd217f5c3f2000020002000000000000000000000000000";
+                    "0x00000000000de0b6b3a764000000057820002000000000000000000000000000";
 
                 beforeAll(async () => {
                     const principalToken = await contracts.loadTokenBySymbolAsync("REP");
@@ -719,7 +761,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.YEARLY;
                 const termLength = new BigNumber(1);
                 const termsContractParameters =
-                    "0x01000000000000000b26400b1c8c800040001000000000000000000000000000";
+                    "0x01000000000429d069189e000000418c40001000000000000000000000000000";
 
                 beforeAll(async () => {
                     const principalToken = await contracts.loadTokenBySymbolAsync("MKR");
@@ -753,7 +795,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.MONTHLY;
                 const termLength = new BigNumber(12);
                 const termsContractParameters =
-                    "0x0200000000002a5b1b1e089f00d000003000c000000000000000000000000000";
+                    "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000";
 
                 beforeAll(async () => {
                     const principalToken = await contracts.loadTokenBySymbolAsync("ZRX");
