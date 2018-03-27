@@ -32,6 +32,9 @@ export const CollateralizedAdapterErrors = {
                          ${tokenIndex.toString()}.`,
     INVALID_COLLATERAL_AMOUNT_VALUE: () =>
         singleLineString`Collateral amount cannot be negative or greater than 2^92 - 1.`,
+    GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
+    GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
+        singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
 };
 
 export class CollateralizedLoanTerms {
@@ -70,6 +73,18 @@ export class CollateralizedLoanTerms {
     private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
         if (collateralAmount.lt(0) || collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_COLLATERAL_AMOUNT_VALUE());
+        }
+    }
+
+    private assertGracePeriodInDaysWithinBounds(gracePeriodInDays: BigNumber) {
+        // Grace period can't be negative.
+        if (gracePeriodInDays.lt(0)) {
+            throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
+        }
+
+        // Grace period has a maximum value that cannot be exceeded due to how we pack params.
+        if (gracePeriodInDays.gt(MAX_GRACE_PERIOD_IN_DAYS_HEX)) {
+            throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
         }
     }
 }
