@@ -356,13 +356,15 @@ export class SimpleInterestLoanAdapter {
             principalTokenIndex,
         );
 
-        return {
+        const loanOrder: SimpleInterestLoanOrder = {
             principalTokenSymbol,
             principalAmount,
             interestRate,
             termLength,
             amortizationUnit,
         };
+
+        return loanOrder;
     }
 
     public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
@@ -392,11 +394,13 @@ export class SimpleInterestLoanAdapter {
         }
     }
 
-    private async assertIsSimpleInterestTermsContract(termsContract: string): Promise<void> {
+    private async assertIsSimpleInterestTermsContract(termsContractAddress: string): Promise<void> {
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
-        if (termsContract !== simpleInterestTermsContract.address) {
-            throw new Error(SimpleInterestAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContract));
+        if (termsContractAddress !== simpleInterestTermsContract.address) {
+            throw new Error(
+                SimpleInterestAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
+            );
         }
     }
 }
