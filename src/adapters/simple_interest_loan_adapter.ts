@@ -330,28 +330,6 @@ export class SimpleInterestLoanAdapter {
         };
     }
 
-    public async fromDebtRegistryEntry(entry: DebtRegistryEntry): Promise<SimpleInterestLoanOrder> {
-        const {
-            principalTokenIndex,
-            principalAmount,
-            interestRate,
-            termLength,
-            amortizationUnit,
-        } = this.termsContractInterface.unpackParameters(entry.termsContractParameters);
-
-        const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
-            principalTokenIndex,
-        );
-
-        return {
-            principalTokenSymbol,
-            principalAmount,
-            interestRate,
-            termLength,
-            amortizationUnit,
-        };
-    }
-
     public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
         const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
         const { termLength, amortizationUnit } = this.termsContractInterface.unpackParameters(
