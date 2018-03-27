@@ -19,7 +19,7 @@ export class SignatureUtils {
      *      API adds an Ethereum-specific prefix to message payloads.  This option
      *      specifies whether, in the `isValidSignature`, we want to add the
      *      Ethereum-specifc prefix to the message payload.
-     * @return [description]
+     * @return Whether or not the signature is valid.
      */
     public static isValidSignature(
         data: string,
