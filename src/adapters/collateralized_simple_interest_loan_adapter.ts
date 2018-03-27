@@ -50,6 +50,7 @@ export class CollateralizedLoanTerms {
 
         this.assertCollateralTokenIndexWithinBounds(collateralTokenIndex);
         this.assertCollateralAmountWithinBounds(collateralAmount);
+        this.assertGracePeriodInDaysWithinBounds(gracePeriodInDays);
 
         const collateralTokenIndexShifted = TermsContractParameters.bitShiftLeft(
             collateralTokenIndex,
