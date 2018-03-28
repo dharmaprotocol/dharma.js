@@ -306,9 +306,9 @@ JSONStream@^1.0.4:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-"NonFungibleToken@git+https://github.com/dharmaprotocol/NonFungibleToken.git":
+"NonFungibleToken@https://github.com/dharmaprotocol/NonFungibleToken.git":
   version "0.0.1"
-  resolved "git+https://github.com/dharmaprotocol/NonFungibleToken.git#3a45b200d14be1e1fc454f4b0fbf7f7b0d81f133"
+  resolved "https://github.com/dharmaprotocol/NonFungibleToken.git#3a45b200d14be1e1fc454f4b0fbf7f7b0d81f133"
   dependencies:
     zeppelin-solidity "^1.4.0"
 
