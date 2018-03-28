@@ -25,6 +25,7 @@ export const CollateralizedAdapterErrors = {
     GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
     GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
         singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
+    INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
 };
 
 export class CollateralizedLoanTerms {
@@ -70,12 +71,22 @@ export class CollateralizedLoanTerms {
     }
 
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
+        // Collateral token index cannot be a decimal value.
+        if (this.isDecimalValue(collateralTokenIndex)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+        }
+
         if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
         }
     }
 
     private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
+        // Collateral amount cannot be a decimal value.
+        if (this.isDecimalValue(collateralAmount)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+        }
+
         if (collateralAmount.lt(0)) {
             throw new Error(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
         }
@@ -85,7 +96,17 @@ export class CollateralizedLoanTerms {
         }
     }
 
+    private isDecimalValue(value: BigNumber): boolean {
+        const [, rightOfDecimal] = value.toString().split(".");
+        return rightOfDecimal.length > 0;
+    }
+
     private assertGracePeriodInDaysWithinBounds(gracePeriodInDays: BigNumber) {
+        // Grace period cannot be a decimal value.
+        if (this.isDecimalValue(gracePeriodInDays)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+        }
+
         // Grace period can't be negative.
         if (gracePeriodInDays.lt(0)) {
             throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
