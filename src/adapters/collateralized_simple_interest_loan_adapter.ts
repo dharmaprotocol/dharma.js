@@ -6,7 +6,7 @@ import { BigNumber } from "utils/bignumber";
 
 import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
-import { DebtOrder } from "src/types";
+import { DebtOrder, DebtRegistryEntry } from "src/types";
 
 import { TermsContractParameters } from "./terms_contract_parameters";
 import { SimpleInterestLoanTerms, SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
@@ -43,6 +43,10 @@ export const CollateralizedAdapterErrors = {
         singleLineString`Terms contract parameters are invalid for the given debt order.
                          Token at address ${tokenAddress} does not
                          correspond to specified token with symbol ${symbol}`,
+    MISMATCHED_TERMS_CONTRACT: (termsContractAddress: string) =>
+        singleLineString`Terms contract at address ${termsContractAddress} is not
+                         a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
+                         not interface with the terms contract as expected`,
 };
 
 export class CollateralizedLoanTerms {
@@ -271,6 +275,49 @@ export class CollateralizedSimpleInterestLoanAdapter {
         };
     }
 
+    public async fromDebtRegistryEntry(
+        entry: DebtRegistryEntry,
+    ): Promise<CollateralizedSimpleInterestLoanOrder> {
+        await this.assertIsCollateralizedSimpleInterestTermsContract(entry.termsContract);
+
+        const {
+            principalTokenIndex,
+            principalAmount,
+            interestRate,
+            termLength,
+            amortizationUnit,
+        } = this.simpleInterestLoanTerms.unpackParameters(entry.termsContractParameters);
+
+        const {
+            collateralTokenIndex,
+            collateralAmount,
+            gracePeriodInDays,
+        } = this.collateralizedLoanTerms.unpackParameters(entry.termsContractParameters);
+
+        const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
+            principalTokenIndex,
+        );
+
+        const collateralTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
+            collateralTokenIndex,
+        );
+
+        const loanOrder: CollateralizedSimpleInterestLoanOrder = {
+            // simple interest terms.
+            principalTokenSymbol,
+            principalAmount,
+            interestRate,
+            termLength,
+            amortizationUnit,
+            // collateralized terms.
+            collateralTokenSymbol,
+            collateralAmount,
+            gracePeriodInDays,
+        };
+
+        return loanOrder;
+    }
+
     private async assertTokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
@@ -283,6 +330,19 @@ export class CollateralizedSimpleInterestLoanAdapter {
         if (!doesTokenCorrespondToSymbol) {
             throw new Error(
                 CollateralizedAdapterErrors.MISMATCHED_TOKEN_SYMBOL(tokenAddress, symbol),
+            );
+        }
+    }
+
+    private async assertIsCollateralizedSimpleInterestTermsContract(
+        termsContractAddress: string,
+    ): Promise<void> {
+        // TODO(kayvon): this should query the contracts API for the collateralized simple interest terms contract.
+        const simpleInterestTermsContract = await this.contractsAPI.loadSimpleInterestTermsContract();
+
+        if (termsContractAddress !== simpleInterestTermsContract.address) {
+            throw new Error(
+                CollateralizedAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
         }
     }
