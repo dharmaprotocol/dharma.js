@@ -6,9 +6,7 @@
     "main": "dist/dharma.umd.js",
     "module": "dist/lib/src/index.js",
     "typings": "dist/types/src/index.d.ts",
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "author": "Nadav Hollander <nadav@dharma.io>",
     "repository": {
         "type": "git",
@@ -25,7 +23,8 @@
         "start": "rollup -c rollup.config.ts -w",
         "chain": "bash scripts/init_chain.sh",
         "test": "jest --runInBand",
-        "docs": "typedoc --theme markdown --mdHideSources --name dharma.js --excludePrivate --excludeExternals --excludeProtected --hideGenerator --target ES6 --out generated_docs/ src/apis",
+        "docs":
+            "typedoc --theme markdown --mdHideSources --name dharma.js --excludePrivate --excludeExternals --excludeProtected --hideGenerator --target ES6 --out generated_docs/ src/apis",
         "test:watch": "jest --watch --runInBand",
         "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
         "deploy-docs": "ts-node tools/gh-pages-publish",
@@ -37,10 +36,7 @@
         "commitmsg": "commitlint -e $GIT_PARAMS"
     },
     "lint-staged": {
-        "{src,__test__,__mocks__}/**/*.ts": [
-            "prettier --write",
-            "git add"
-        ]
+        "{src,__test__,__mocks__}/**/*.ts": ["prettier --write", "git add"]
     },
     "config": {
         "commitizen": {
@@ -48,7 +44,8 @@
         },
         "validate-commit-msg": {
             "types": "conventional-commit-types",
-            "helpMessage": "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
+            "helpMessage":
+                "Use \"npm run commit\" instead, we use conventional-changelog format :) (https://github.com/commitizen/cz-cli)"
         }
     },
     "jest": {
@@ -56,18 +53,9 @@
             ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
         },
         "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-        "moduleFileExtensions": [
-            "ts",
-            "tsx",
-            "js"
-        ],
-        "modulePaths": [
-            "<rootDir>/"
-        ],
-        "coveragePathIgnorePatterns": [
-            "/node_modules/",
-            "/test/"
-        ],
+        "moduleFileExtensions": ["ts", "tsx", "js"],
+        "modulePaths": ["<rootDir>/"],
+        "coveragePathIgnorePatterns": ["/node_modules/", "/test/"],
         "coverageThreshold": {
             "global": {
                 "branches": 40,
@@ -124,7 +112,7 @@
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.0.23",
+        "@dharmaprotocol/contracts": "0.0.24",
         "@types/lodash": "^4.14.104",
         "bignumber.js": "^5.0.0",
         "ethereumjs-util": "^5.1.4",
