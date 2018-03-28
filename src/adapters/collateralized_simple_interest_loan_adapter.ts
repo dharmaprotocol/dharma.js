@@ -143,6 +143,11 @@ export class CollateralizedSimpleInterestLoanAdapter {
     public async toDebtOrder(
         collateralizedSimpleInterestLoanOrder: CollateralizedSimpleInterestLoanOrder,
     ): Promise<DebtOrder.Instance> {
+        this.assert.schema.collateralizedSimpleInterestLoanOrder(
+            "collateralizedSimpleInterestLoanOrder",
+            collateralizedSimpleInterestLoanOrder,
+        );
+
         const {
             // destructure simple interest loan order params.
             principalTokenSymbol,
