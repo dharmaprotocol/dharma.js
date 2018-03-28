@@ -179,8 +179,7 @@ export class CollateralizedSimpleInterestLoanAdapter {
             collateralTokenSymbol,
         );
 
-        // TODO(kayvon): this needs to be the collateralized simple interest contract
-        const simpleInterestTermsContract = await this.contractsAPI.loadSimpleInterestTermsContract();
+        const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
         let debtOrder: DebtOrder.Instance = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed into the `termsContractParameters`.
@@ -216,7 +215,7 @@ export class CollateralizedSimpleInterestLoanAdapter {
         debtOrder = {
             ...debtOrder,
             principalToken: principalToken.address,
-            termsContract: simpleInterestTermsContract.address,
+            termsContract: collateralizedSimpleInterestTermsContract.address,
             termsContractParameters: packedParams,
         };
 
@@ -337,10 +336,9 @@ export class CollateralizedSimpleInterestLoanAdapter {
     private async assertIsCollateralizedSimpleInterestTermsContract(
         termsContractAddress: string,
     ): Promise<void> {
-        // TODO(kayvon): this should query the contracts API for the collateralized simple interest terms contract.
-        const simpleInterestTermsContract = await this.contractsAPI.loadSimpleInterestTermsContract();
+        const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
-        if (termsContractAddress !== simpleInterestTermsContract.address) {
+        if (termsContractAddress !== collateralizedSimpleInterestTermsContract.address) {
             throw new Error(
                 CollateralizedAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
