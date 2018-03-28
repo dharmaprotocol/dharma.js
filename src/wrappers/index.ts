@@ -10,6 +10,7 @@ import { ERC20Contract } from "./contract_wrappers/erc20_wrapper";
 import { TermsContract } from "./contract_wrappers/terms_contract_wrapper";
 import { RepaymentRouterContract } from "./contract_wrappers/repayment_router_wrapper";
 import { SimpleInterestTermsContractContract } from "./contract_wrappers/simple_interest_terms_contract_wrapper";
+import { CollateralizedSimpleInterestTermsContractContract } from "./contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
 
 export type ContractWrapper =
     | DebtKernelContract
@@ -19,6 +20,7 @@ export type ContractWrapper =
     | ERC20Contract
     | RepaymentRouterContract
     | SimpleInterestTermsContractContract
+    | CollateralizedSimpleInterestTermsContractContract
     | TermsContract
     | TokenRegistryContract;
 
@@ -34,5 +36,6 @@ export {
     ERC20Contract,
     TermsContract,
     SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
     RepaymentRouterContract,
 };

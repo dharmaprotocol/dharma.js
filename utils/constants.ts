@@ -4,7 +4,7 @@ export const NULL_BYTES32 = "0x0000000000000000000000000000000000000000000000000
 export const NULL_ECDSA_SIGNATURE = {
     r: "",
     s: "",
-    v: 0
+    v: 0,
 };
 
 export const WEB3_ERROR_INVALID_ADDRESS = "invalid address";
@@ -19,3 +19,5 @@ export const SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY = "SimpleInterestTermsCont
 export const TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "TokenRegistry";
 export const TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY = "TokenTransferProxy";
 export const TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry";
+export const COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
+    "CollateralizedSimpleInterestTermsContract";
