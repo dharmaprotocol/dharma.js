@@ -4,11 +4,18 @@ import { Assertions } from "src/invariants";
 import { BigNumber } from "utils/bignumber";
 import * as singleLineString from "single-line-string";
 import { TermsContractParameters } from "./terms_contract_parameters";
-import { SimpleInterestLoanTerms } from "./simple_interest_loan_adapter";
+import { SimpleInterestLoanTerms, SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
 
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
 const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
+
+// Extend order to include parameters necessary for a collateralized terms contract.
+export interface CollateralizedSimpleInterestLoanOrder extends SimpleInterestLoanOrder {
+    collateralTokenSymbol: string;
+    collateralAmount: BigNumber;
+    gracePeriodInDays: BigNumber;
+}
 
 export interface CollateralizedTermsContractParameters {
     collateralTokenIndex: BigNumber;
