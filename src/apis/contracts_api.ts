@@ -15,6 +15,7 @@ import {
     ERC20Contract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "../wrappers";
 
 // utils
@@ -27,7 +28,8 @@ import {
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
-} from "../../utils/constants";
+    COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
+} from "utils/constants";
 import * as singleLineString from "single-line-string";
 
 // types
@@ -311,6 +313,37 @@ export class ContractsAPI {
         this.cache[SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY] = simpleInterestTermsContract;
 
         return simpleInterestTermsContract;
+    }
+
+    public async loadCollateralizedSimpleInterestTermsContract(
+        transactionOptions: object = {},
+    ): Promise<CollateralizedSimpleInterestTermsContractContract> {
+        if (COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[
+                COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
+            ] as CollateralizedSimpleInterestTermsContractContract;
+        }
+
+        let collateralizedSimpleInterestTermsContract: CollateralizedSimpleInterestTermsContractContract;
+
+        if (this.config.collateralizedSimpleInterestTermsContractAddress) {
+            collateralizedSimpleInterestTermsContract = await CollateralizedSimpleInterestTermsContractContract.at(
+                this.config.collateralizedSimpleInterestTermsContractAddress,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            collateralizedSimpleInterestTermsContract = await CollateralizedSimpleInterestTermsContractContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+        }
+
+        this.cache[
+            COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
+        ] = collateralizedSimpleInterestTermsContract;
+
+        return collateralizedSimpleInterestTermsContract;
     }
 
     public async loadTokenRegistry(
