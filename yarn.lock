@@ -322,7 +322,7 @@ abbrev@1:
 
 "abi-decoder@https://github.com/dharmaprotocol/abi-decoder":
   version "1.1.0"
-  resolved "https://github.com/dharmaprotocol/abi-decoder#c48f6200d6535bd66395d1318d7e756b23cdd11f"
+  resolved "https://github.com/dharmaprotocol/abi-decoder#9448e51a134633673ccbb07a3df0ed2b0c47ab62"
   dependencies:
     babel-core "^6.23.1"
     babel-loader "^6.3.2"
