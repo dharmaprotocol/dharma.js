@@ -380,10 +380,12 @@ export class SimpleInterestLoanAdapter {
         principalToken: string,
         symbol: string,
     ): Promise<void> {
-        const addressMappedToSymbol = await this.contracts.getTokenAddressBySymbolAsync(symbol);
+        const doesTokenCorrespondToSymbol = await this.contracts.doesTokenCorrespondToSymbol(
+            principalToken,
+            symbol,
+        );
 
-        // Validate that the
-        if (principalToken !== addressMappedToSymbol) {
+        if (!doesTokenCorrespondToSymbol) {
             throw new Error(
                 SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(principalToken, symbol),
             );
