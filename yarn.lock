@@ -306,9 +306,9 @@ JSONStream@^1.0.4:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
 
-"NonFungibleToken@git+https://github.com/dharmaprotocol/NonFungibleToken.git":
+"NonFungibleToken@https://github.com/dharmaprotocol/NonFungibleToken.git":
   version "0.0.1"
-  resolved "git+https://github.com/dharmaprotocol/NonFungibleToken.git#162e8609569654630a5a5ef3bbbe5e0ebbe90f1d"
+  resolved "https://github.com/dharmaprotocol/NonFungibleToken.git#162e8609569654630a5a5ef3bbbe5e0ebbe90f1d"
   dependencies:
     abi-decoder "^1.0.9"
     zeppelin-solidity "^1.4.0"
