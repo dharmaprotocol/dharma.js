@@ -86,8 +86,6 @@ export const SimpleInterestAdapterErrors = {
                          interface with the terms contract as expected`,
 };
 
-const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
-
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
 
@@ -270,9 +268,7 @@ export class SimpleInterestLoanAdapter {
             principalTokenSymbol,
         );
 
-        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract(
-            TX_DEFAULTS,
-        );
+        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
         let debtOrder: DebtOrder.Instance = omit(simpleInterestLoanOrder, [
             "principalTokenSymbol",
