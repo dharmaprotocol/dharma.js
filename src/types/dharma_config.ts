@@ -7,4 +7,5 @@ export interface DharmaConfig {
     debtTokenAddress?: string;
     termsContractRegistry?: string;
     simpleInterestTermsContractAddress?: string;
+    collateralizedSimpleInterestTermsContractAddress?: string;
 }
