@@ -4,6 +4,7 @@ import { Assertions } from "src/invariants";
 import { BigNumber } from "utils/bignumber";
 import * as singleLineString from "single-line-string";
 import { TermsContractParameters } from "./terms_contract_parameters";
+import { SimpleInterestLoanTerms } from "./simple_interest_loan_adapter";
 
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
@@ -31,8 +32,8 @@ export const CollateralizedAdapterErrors = {
 export class CollateralizedLoanTerms {
     private assert: Assertions;
 
-    constructor(web3: Web3, contracts: ContractsAPI) {
-        this.assert = new Assertions(web3, contracts);
+    constructor(web3: Web3, contractsAPI: ContractsAPI) {
+        this.assert = new Assertions(web3, contractsAPI);
     }
 
     public packParameters(params: CollateralizedTermsContractParameters): string {
@@ -111,5 +112,19 @@ export class CollateralizedLoanTerms {
         if (gracePeriodInDays.gt(MAX_GRACE_PERIOD_IN_DAYS_HEX)) {
             throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
         }
+    }
+}
+
+export class CollateralizedSimpleInterestLoanAdapter {
+    private assert: Assertions;
+    private contractsAPI: ContractsAPI;
+    private simpleInterestLoanTerms: SimpleInterestLoanTerms;
+    private collateralizedLoanTerms: CollateralizedLoanTerms;
+
+    public constructor(web3: Web3, contractsAPI: ContractsAPI) {
+        this.assert = new Assertions(web3, contractsAPI);
+        this.contractsAPI = contractsAPI;
+        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
+        this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
     }
 }
