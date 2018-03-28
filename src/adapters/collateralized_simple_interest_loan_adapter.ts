@@ -39,6 +39,10 @@ export const CollateralizedAdapterErrors = {
     GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
         singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
     INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
+    MISMATCHED_TOKEN_SYMBOL: (tokenAddress: string, symbol: string) =>
+        singleLineString`Terms contract parameters are invalid for the given debt order.
+                         Token at address ${tokenAddress} does not
+                         correspond to specified token with symbol ${symbol}`,
 };
 
 export class CollateralizedLoanTerms {
@@ -213,5 +217,73 @@ export class CollateralizedSimpleInterestLoanAdapter {
         };
 
         return DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
+    }
+
+    public async fromDebtOrder(
+        debtOrder: DebtOrder.Instance,
+    ): Promise<CollateralizedSimpleInterestLoanOrder> {
+        this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
+
+        const {
+            principalTokenIndex,
+            principalAmount,
+            interestRate,
+            termLength,
+            amortizationUnit,
+        } = this.simpleInterestLoanTerms.unpackParameters(debtOrder.termsContractParameters);
+
+        const {
+            collateralTokenIndex,
+            collateralAmount,
+            gracePeriodInDays,
+        } = this.collateralizedLoanTerms.unpackParameters(debtOrder.termsContractParameters);
+
+        const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
+            principalTokenIndex,
+        );
+
+        const collateralTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
+            collateralTokenIndex,
+        );
+
+        const collateralTokenAddress = await this.contractsAPI.getTokenAddressBySymbolAsync(
+            collateralTokenSymbol,
+        );
+
+        // Assert that the principal token corresponds to symbol we've unpacked.
+        this.assertTokenCorrespondsToSymbol(debtOrder.principalToken, principalTokenSymbol);
+
+        // Assert that the collateral token address corresponds to symbol we've unpacked.
+        this.assertTokenCorrespondsToSymbol(collateralTokenAddress, collateralTokenSymbol);
+
+        return {
+            ...debtOrder,
+            // simple interest terms.
+            principalAmount,
+            principalTokenSymbol,
+            interestRate,
+            termLength,
+            amortizationUnit,
+            // collateralized terms.
+            collateralTokenSymbol,
+            collateralAmount,
+            gracePeriodInDays,
+        };
+    }
+
+    private async assertTokenCorrespondsToSymbol(
+        tokenAddress: string,
+        symbol: string,
+    ): Promise<void> {
+        const doesTokenCorrespondToSymbol = await this.contractsAPI.doesTokenCorrespondToSymbol(
+            tokenAddress,
+            symbol,
+        );
+
+        if (!doesTokenCorrespondToSymbol) {
+            throw new Error(
+                CollateralizedAdapterErrors.MISMATCHED_TOKEN_SYMBOL(tokenAddress, symbol),
+            );
+        }
     }
 }
