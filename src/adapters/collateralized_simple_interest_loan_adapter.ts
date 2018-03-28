@@ -72,7 +72,7 @@ export class CollateralizedLoanTerms {
 
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
         // Collateral token index cannot be a decimal value.
-        if (this.isDecimalValue(collateralTokenIndex)) {
+        if (TermsContractParameters.isDecimalValue(collateralTokenIndex)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
@@ -83,7 +83,7 @@ export class CollateralizedLoanTerms {
 
     private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
         // Collateral amount cannot be a decimal value.
-        if (this.isDecimalValue(collateralAmount)) {
+        if (TermsContractParameters.isDecimalValue(collateralAmount)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
@@ -96,14 +96,9 @@ export class CollateralizedLoanTerms {
         }
     }
 
-    private isDecimalValue(value: BigNumber): boolean {
-        const [, rightOfDecimal] = value.toString().split(".");
-        return rightOfDecimal.length > 0;
-    }
-
     private assertGracePeriodInDaysWithinBounds(gracePeriodInDays: BigNumber) {
         // Grace period cannot be a decimal value.
-        if (this.isDecimalValue(gracePeriodInDays)) {
+        if (TermsContractParameters.isDecimalValue(gracePeriodInDays)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 

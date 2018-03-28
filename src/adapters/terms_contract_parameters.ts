@@ -10,4 +10,9 @@ export namespace TermsContractParameters {
         const binaryTargetStringShifted = binaryTargetString + "0".repeat(numPlaces);
         return new BigNumber(binaryTargetStringShifted, 2);
     }
+
+    export function isDecimalValue(value: BigNumber): boolean {
+        const [, rightOfDecimal] = value.toString().split(".");
+        return rightOfDecimal.length > 0;
+    }
 }
