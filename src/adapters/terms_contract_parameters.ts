@@ -12,7 +12,6 @@ export namespace TermsContractParameters {
     }
 
     export function isDecimalValue(value: BigNumber): boolean {
-        const [, rightOfDecimal] = value.toString().split(".");
-        return rightOfDecimal.length > 0;
+        return value.toNumber() % 1 != 0;
     }
 }
