@@ -5,8 +5,8 @@
 // tslint:disable-next-line:no-unused-variable
 import { TxData, TxDataPayable } from "../../types";
 import * as promisify from "tiny-promisify";
-import { classUtils } from "utils/class_utils";
-import { Web3Utils } from "utils/web3_utils";
+import { classUtils } from "../../../utils/class_utils";
+import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "bignumber.js";
 import { CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";

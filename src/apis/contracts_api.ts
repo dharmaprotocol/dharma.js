@@ -29,7 +29,7 @@ import {
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
     COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
-} from "utils/constants";
+} from "../../utils/constants";
 import * as singleLineString from "single-line-string";
 
 // types
