@@ -1,8 +1,13 @@
 import * as Web3 from "web3";
+import * as singleLineString from "single-line-string";
+import * as omit from "lodash.omit";
+
+import { BigNumber } from "utils/bignumber";
+
 import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
-import { BigNumber } from "utils/bignumber";
-import * as singleLineString from "single-line-string";
+import { DebtOrder } from "src/types";
+
 import { TermsContractParameters } from "./terms_contract_parameters";
 import { SimpleInterestLoanTerms, SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
 
@@ -133,5 +138,75 @@ export class CollateralizedSimpleInterestLoanAdapter {
         this.contractsAPI = contractsAPI;
         this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
+    }
+
+    public async toDebtOrder(
+        collateralizedSimpleInterestLoanOrder: CollateralizedSimpleInterestLoanOrder,
+    ): Promise<DebtOrder.Instance> {
+        const {
+            // destructure simple interest loan order params.
+            principalTokenSymbol,
+            principalAmount,
+            interestRate,
+            amortizationUnit,
+            termLength,
+            // destructure collateralized loan order params.
+            collateralTokenSymbol,
+            collateralAmount,
+            gracePeriodInDays,
+        } = collateralizedSimpleInterestLoanOrder;
+
+        const principalToken = await this.contractsAPI.loadTokenBySymbolAsync(principalTokenSymbol);
+
+        const principalTokenIndex = await this.contractsAPI.getTokenIndexBySymbolAsync(
+            principalTokenSymbol,
+        );
+
+        const collateralTokenIndex = await this.contractsAPI.getTokenIndexBySymbolAsync(
+            collateralTokenSymbol,
+        );
+
+        // TODO(kayvon): this needs to be the collateralized simple interest contract
+        const simpleInterestTermsContract = await this.contractsAPI.loadSimpleInterestTermsContract();
+
+        let debtOrder: DebtOrder.Instance = omit(collateralizedSimpleInterestLoanOrder, [
+            // omit the simple interest parameters that will be packed into the `termsContractParameters`.
+            "principalTokenSymbol",
+            "interestRate",
+            "amortizationUnit",
+            "termLength",
+            // omit the collateralized parameters that will be packed into the `termsContractParameters`.
+            "collateralTokenSymbol",
+            "collateralAmount",
+            "gracePeriodInDays",
+        ]);
+
+        const packedSimpleInterestParams = this.simpleInterestLoanTerms.packParameters({
+            principalTokenIndex,
+            principalAmount,
+            interestRate,
+            amortizationUnit,
+            termLength,
+        });
+
+        const packedCollateralizedParams = this.collateralizedLoanTerms.packParameters({
+            collateralTokenIndex,
+            collateralAmount,
+            gracePeriodInDays,
+        });
+
+        // Our final output is the perfect union of the packed simple interest params and the packed
+        // collateralized params.
+        const packedParams =
+            packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
+
+        debtOrder = {
+            ...debtOrder,
+            principalToken: principalToken.address,
+            termsContract: simpleInterestTermsContract.address,
+            termsContractParameters: packedParams,
+        };
+
+        return DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
     }
 }
