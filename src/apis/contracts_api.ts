@@ -383,6 +383,14 @@ export class ContractsAPI {
         return this.loadERC20TokenAsync(tokenAddress, transactionOptions);
     }
 
+    public async doesTokenCorrespondToSymbol(
+        principalToken: string,
+        symbol: string,
+    ): Promise<boolean> {
+        const addressMappedToSymbol = await this.getTokenAddressBySymbolAsync(symbol);
+        return principalToken === addressMappedToSymbol;
+    }
+
     private getERC20TokenCacheKey(tokenAddress: string): string {
         return `ERC20_${tokenAddress}`;
     }
