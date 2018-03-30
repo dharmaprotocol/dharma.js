@@ -247,15 +247,8 @@ export class CollateralizedSimpleInterestLoanAdapter {
             collateralTokenIndex,
         );
 
-        const collateralTokenAddress = await this.contractsAPI.getTokenAddressBySymbolAsync(
-            collateralTokenSymbol,
-        );
-
-        // Assert that the principal token corresponds to symbol we've unpacked.
+        // Assert that the principal token corresponds to the symbol we've unpacked.
         this.assertTokenCorrespondsToSymbol(debtOrder.principalToken, principalTokenSymbol);
-
-        // Assert that the collateral token address corresponds to symbol we've unpacked.
-        this.assertTokenCorrespondsToSymbol(collateralTokenAddress, collateralTokenSymbol);
 
         return {
             ...debtOrder,
