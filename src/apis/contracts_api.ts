@@ -44,9 +44,9 @@ export interface DharmaContracts {
 }
 
 export const ContractsError = {
-    SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (principalToken: string) =>
+    SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (tokenAddress: string) =>
         singleLineString`SimpleInterestTermsContract not supported for principal token at
-                address ${principalToken}`,
+                address ${tokenAddress}`,
     CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) =>
         singleLineString`Could not find token associated with symbol ${symbol}.`,
     CANNOT_FIND_TOKEN_WITH_INDEX: (index: number) =>
@@ -276,7 +276,7 @@ export class ContractsAPI {
 
         const matchingTermsContract = _.find(
             supportedTermsContracts,
-            termsContract => termsContract.address === contractAddress,
+            (termsContract) => termsContract.address === contractAddress,
         );
 
         if (!matchingTermsContract) {
@@ -414,6 +414,14 @@ export class ContractsAPI {
         const tokenAddress = await this.getTokenAddressBySymbolAsync(symbol);
 
         return this.loadERC20TokenAsync(tokenAddress, transactionOptions);
+    }
+
+    public async doesTokenCorrespondToSymbol(
+        tokenAddress: string,
+        symbol: string,
+    ): Promise<boolean> {
+        const addressMappedToSymbol = await this.getTokenAddressBySymbolAsync(symbol);
+        return tokenAddress === addressMappedToSymbol;
     }
 
     private getERC20TokenCacheKey(tokenAddress: string): string {
