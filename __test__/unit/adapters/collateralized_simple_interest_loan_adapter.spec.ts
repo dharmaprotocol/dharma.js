@@ -53,4 +53,88 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
     afterEach(async () => {
         await web3Utils.revertToSnapshot(snapshotId);
     });
+
+    const defaultLoanParams = {
+        collateralTokenIndex: new BigNumber(0), // REP's index in the Token Registry is 0.
+        collateralAmount: new BigNumber(3.5 * 10 ** 18),
+        gracePeriodInDays: new BigNumber(5),
+    };
+
+    describe("#packParameters", () => {
+        describe("...with invalid collateral token index", () => {
+            test("should throw INVALID_TOKEN_INDEX error", () => {
+                const invalidCollateralTokenIndex = new BigNumber(300);
+
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        collateralTokenIndex: invalidCollateralTokenIndex,
+                    });
+                }).toThrow(
+                    CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(invalidCollateralTokenIndex),
+                );
+            });
+        });
+        describe("...with collateral amount > 2^92 - 1", () => {
+            test("should throw COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        collateralAmount: new BigNumber(3.5 * 10 ** 38),
+                    });
+                }).toThrow(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
+            });
+        });
+        describe("...with collateral amount < 0", () => {
+            test("should throw COLLATERAL_AMOUNT_IS_NEGATIVE error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        collateralAmount: new BigNumber(-1),
+                    });
+                }).toThrow(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
+            });
+        });
+        describe("...with collateral amount containing decimals", () => {
+            test("should throw INVALID_DECIMAL_VALUE error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        collateralAmount: new BigNumber(100.4567),
+                    });
+                }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+            });
+        });
+        describe("...with grace period in days < 0", () => {
+            test("should throw INVALID_INTEREST_RATE error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        gracePeriodInDays: new BigNumber(-1),
+                    });
+                }).toThrowError(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
+            });
+        });
+        describe("...with grace period in days > 255", () => {
+            test("should throw INVALID_INTEREST_RATE error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        gracePeriodInDays: new BigNumber(256),
+                    });
+                }).toThrowError(CollateralizedAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
+            });
+        });
+        describe("...with grace period containing decimals", () => {
+            test("should throw INVALID_DECIMAL_VALUE error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...defaultLoanParams,
+                        gracePeriodInDays: new BigNumber(1.567),
+                    });
+                }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+            });
+        });
+    });
+
 });
