@@ -3,27 +3,16 @@ import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
 import { BigNumber } from "utils/bignumber";
 import * as singleLineString from "single-line-string";
+import { TermsContractParameters } from "./terms_contract_parameters";
 
-const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(39);
-const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(62);
-const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(64);
+const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
+const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
+const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
 
 export interface CollateralizedTermsContractParameters {
     collateralTokenIndex: BigNumber;
     collateralAmount: BigNumber;
     gracePeriodInDays: BigNumber;
-}
-
-export namespace TermsContractParameters {
-    export function generateHexValueOfLength(length: number): string {
-        return "0x" + "f".repeat(length);
-    }
-
-    export function bitShiftLeft(target: BigNumber, numPlaces: number): BigNumber {
-        const binaryTargetString = target.toString(2);
-        const binaryTargetStringShifted = binaryTargetString + "0".repeat(numPlaces);
-        return new BigNumber(binaryTargetStringShifted, 2);
-    }
 }
 
 export const CollateralizedAdapterErrors = {
@@ -36,6 +25,7 @@ export const CollateralizedAdapterErrors = {
     GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
     GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
         singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
+    INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
 };
 
 export class CollateralizedLoanTerms {
@@ -81,12 +71,22 @@ export class CollateralizedLoanTerms {
     }
 
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
+        // Collateral token index cannot be a decimal value.
+        if (TermsContractParameters.isDecimalValue(collateralTokenIndex)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+        }
+
         if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
             throw new Error(CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
         }
     }
 
     private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
+        // Collateral amount cannot be a decimal value.
+        if (TermsContractParameters.isDecimalValue(collateralAmount)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+        }
+
         if (collateralAmount.lt(0)) {
             throw new Error(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
         }
@@ -97,6 +97,11 @@ export class CollateralizedLoanTerms {
     }
 
     private assertGracePeriodInDaysWithinBounds(gracePeriodInDays: BigNumber) {
+        // Grace period cannot be a decimal value.
+        if (TermsContractParameters.isDecimalValue(gracePeriodInDays)) {
+            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+        }
+
         // Grace period can't be negative.
         if (gracePeriodInDays.lt(0)) {
             throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
