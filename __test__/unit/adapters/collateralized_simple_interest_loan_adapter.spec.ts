@@ -175,4 +175,40 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             });
         });
     });
+
+    describe("#unpackParameters", () => {
+        describe("...with value that has too few bytes", () => {
+            const termsContractParameters = "0x" + "f".repeat(63);
+
+            test("should throw INVALID_PACKED_PARAMETERS error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.unpackParameters(termsContractParameters);
+                }).toThrowError(
+                    /Expected packedParams to conform to schema \/Bytes32/,
+                );
+            });
+        });
+        describe("...with value that has too many bytes", () => {
+            const termsContractParameters = "0x" + "f".repeat(65);
+
+            test("should throw INVALID_PACKED_PARAMETERS error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.unpackParameters(termsContractParameters);
+                }).toThrowError(
+                    /Expected packedParams to conform to schema \/Bytes32/,
+                );
+            });
+        });
+        describe("...with value that includes non-hexadecimal characters", () => {
+            const termsContractParameters = "0x" + "z".repeat(64);
+
+            test("should throw INVALID_PACKED_PARAMETERS error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.unpackParameters(termsContractParameters);
+                }).toThrowError(
+                    /Expected packedParams to conform to schema \/Bytes32/,
+                );
+            });
+        });
+    });
 });
