@@ -47,6 +47,7 @@ enum AmortizationUnitCode {
 const MAX_PRINCIPAL_TOKEN_INDEX_HEX = "0xff";
 const MAX_PRINCIPAL_AMOUNT_HEX = "0xffffffffffffffffffffffff";
 const MAX_TERM_LENGTH_VALUE_HEX = "0xffff";
+const MAX_TERM_LENGTH_VALUE_DEC = 65535;
 
 const MAX_INTEREST_RATE_PRECISION = 4;
 const FIXED_POINT_SCALING_FACTOR = 10 ** MAX_INTEREST_RATE_PRECISION;
@@ -68,7 +69,7 @@ export const SimpleInterestAdapterErrors = {
                          WEEKS, MONTHS, or YEARS.`,
     INVALID_TERM_LENGTH: () =>
         singleLineString`Term length value cannot be negative or greater
-                         than 2^120 - 1`,
+                         than ${MAX_TERM_LENGTH_VALUE_DEC}`,
     INVALID_TERMS_CONTRACT: (principalToken: string, termsContract: string) =>
         singleLineString`Terms Contract at address ${termsContract} does not
                          correspond to the SimpleInterestTermsContract associated
