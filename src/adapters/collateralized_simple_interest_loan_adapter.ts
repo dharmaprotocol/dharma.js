@@ -235,19 +235,9 @@ export class CollateralizedSimpleInterestLoanAdapter {
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
 
-        const {
-            principalTokenIndex,
-            principalAmount,
-            interestRate,
-            termLength,
-            amortizationUnit,
-        } = this.simpleInterestLoanTerms.unpackParameters(debtOrder.termsContractParameters);
-
-        const {
-            collateralTokenIndex,
-            collateralAmount,
-            gracePeriodInDays,
-        } = this.collateralizedLoanTerms.unpackParameters(debtOrder.termsContractParameters);
+        const { principalTokenIndex, collateralTokenIndex, ...params } = this.unpackParameters(
+            debtOrder.termsContractParameters,
+        );
 
         const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
             principalTokenIndex,
@@ -269,16 +259,9 @@ export class CollateralizedSimpleInterestLoanAdapter {
 
         return {
             ...debtOrder,
-            // simple interest terms.
-            principalAmount,
             principalTokenSymbol,
-            interestRate,
-            termLength,
-            amortizationUnit,
-            // collateralized terms.
             collateralTokenSymbol,
-            collateralAmount,
-            gracePeriodInDays,
+            ...params,
         };
     }
 
@@ -287,19 +270,9 @@ export class CollateralizedSimpleInterestLoanAdapter {
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
         await this.assertIsCollateralizedSimpleInterestTermsContract(entry.termsContract);
 
-        const {
-            principalTokenIndex,
-            principalAmount,
-            interestRate,
-            termLength,
-            amortizationUnit,
-        } = this.simpleInterestLoanTerms.unpackParameters(entry.termsContractParameters);
-
-        const {
-            collateralTokenIndex,
-            collateralAmount,
-            gracePeriodInDays,
-        } = this.collateralizedLoanTerms.unpackParameters(entry.termsContractParameters);
+        const { principalTokenIndex, collateralTokenIndex, ...params } = this.unpackParameters(
+            entry.termsContractParameters,
+        );
 
         const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
             principalTokenIndex,
@@ -310,16 +283,9 @@ export class CollateralizedSimpleInterestLoanAdapter {
         );
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
-            // simple interest terms.
             principalTokenSymbol,
-            principalAmount,
-            interestRate,
-            termLength,
-            amortizationUnit,
-            // collateralized terms.
             collateralTokenSymbol,
-            collateralAmount,
-            gracePeriodInDays,
+            ...params,
         };
 
         return loanOrder;
