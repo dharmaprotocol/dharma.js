@@ -33,7 +33,8 @@
         "semantic-release": "semantic-release pre && npm publish && semantic-release post",
         "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
         "precommit": "lint-staged",
-        "commitmsg": "commitlint -e $GIT_PARAMS"
+        "commitmsg": "commitlint -e $GIT_PARAMS",
+        "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts"
     },
     "lint-staged": {
         "{src,__test__,__mocks__}/**/*.ts": ["prettier --write"]
