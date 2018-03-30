@@ -135,6 +135,44 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
                 }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
             });
         });
-    });
+        describe("...with valid collateral token index, collateral amount, and grace period in days", () => {
+            describe("Scenario #1", () => {
+                test("should return correctly packed parameters", () => {
+                    expect(collateralizedLoanTerms.packParameters(defaultLoanParams)).toEqual(
+                        "0x000000000000000000000000000000000000000000000030927f74c9de000005",
+                    );
+                });
+            });
+            describe("Scenario #2", () => {
+                const collateralTokenIndex = new BigNumber(1);
+                const collateralAmount = new BigNumber(723489020 * 10 ** 18);
+                const gracePeriodInDays = new BigNumber(30);
 
+                test("should return correctly packed parameters", () => {
+                    expect(
+                        collateralizedLoanTerms.packParameters({
+                            collateralTokenIndex,
+                            collateralAmount,
+                            gracePeriodInDays,
+                        }),
+                    ).toEqual("0x00000000000000000000000000000000000000125674c25cd7f81d067000001e");
+                });
+            });
+            describe("Scenario #3", () => {
+                const collateralTokenIndex = new BigNumber(8);
+                const collateralAmount = new BigNumber(1212234234 * 10 ** 18);
+                const gracePeriodInDays = new BigNumber(90);
+
+                test("should return correctly packed parameters", () => {
+                    expect(
+                        collateralizedLoanTerms.packParameters({
+                            collateralTokenIndex,
+                            collateralAmount,
+                            gracePeriodInDays,
+                        }),
+                    ).toEqual("0x0000000000000000000000000000000000000083eabc9580d20c1abba800005a");
+                });
+            });
+        });
+    });
 });
