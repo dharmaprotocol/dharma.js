@@ -325,6 +325,23 @@ export class CollateralizedSimpleInterestLoanAdapter {
         return loanOrder;
     }
 
+    private unpackParameters(
+        termsContractParameters: string,
+    ): CollateralizedSimpleInterestTermsContractParameters {
+        const simpleInterestParams = this.simpleInterestLoanTerms.unpackParameters(
+            termsContractParameters,
+        );
+
+        const collateralizedParams = this.collateralizedLoanTerms.unpackParameters(
+            termsContractParameters,
+        );
+
+        return {
+            ...simpleInterestParams,
+            ...collateralizedParams,
+        };
+    }
+
     private async assertTokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
