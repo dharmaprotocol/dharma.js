@@ -68,7 +68,7 @@ export const SimpleInterestAdapterErrors = {
                          WEEKS, MONTHS, or YEARS.`,
     INVALID_TERM_LENGTH: () =>
         singleLineString`Term length value cannot be negative or greater
-                         than 2^120 - 1`,
+                         than ${parseInt(MAX_TERM_LENGTH_VALUE_HEX)}`,
     INVALID_TERMS_CONTRACT: (principalToken: string, termsContract: string) =>
         singleLineString`Terms Contract at address ${termsContract} does not
                          correspond to the SimpleInterestTermsContract associated
