@@ -9,7 +9,11 @@ import { Assertions } from "src/invariants";
 import { DebtOrder, DebtRegistryEntry } from "src/types";
 
 import { TermsContractParameters } from "./terms_contract_parameters";
-import { SimpleInterestLoanTerms, SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
+import {
+    SimpleInterestLoanTerms,
+    SimpleInterestLoanOrder,
+    SimpleInterestTermsContractParameters,
+} from "./simple_interest_loan_adapter";
 
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
@@ -27,6 +31,10 @@ export interface CollateralizedTermsContractParameters {
     collateralAmount: BigNumber;
     gracePeriodInDays: BigNumber;
 }
+
+interface CollateralizedSimpleInterestTermsContractParameters
+    extends SimpleInterestTermsContractParameters,
+        CollateralizedTermsContractParameters {}
 
 export const CollateralizedAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
