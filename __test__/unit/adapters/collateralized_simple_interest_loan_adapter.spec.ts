@@ -215,4 +215,27 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
     });
+    describe("...with valid termsContractParameters string", () => {
+        describe("Scenario #1", () => {
+            test("should return correctly unpacked parameters", () => {
+                expect(collateralizedLoanTerms.unpackParameters(scenario_1.packedParams)).toEqual(
+                    scenario_1.unpackedParams,
+                );
+            });
+        });
+        describe("Scenario #2", () => {
+            test("should return correctly unpacked parameters", () => {
+                expect(collateralizedLoanTerms.unpackParameters(scenario_2.packedParams)).toEqual(
+                    scenario_2.unpackedParams,
+                );
+            });
+        });
+        describe("Scenario #3", () => {
+            test("should return correctly unpacked parameters", () => {
+                expect(collateralizedLoanTerms.unpackParameters(scenario_3.packedParams)).toEqual(
+                    scenario_3.unpackedParams,
+                );
+            });
+        });
+    });
 });
