@@ -43,7 +43,12 @@ const collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contracts);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
-describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)", () => {
+interface Scenario {
+    unpackedParams: CollateralizedTermsContractParameters;
+    packedParams: string;
+}
+
+describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
     let snapshotId: number;
 
     beforeEach(async () => {
@@ -54,10 +59,31 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
         await web3Utils.revertToSnapshot(snapshotId);
     });
 
-    const defaultLoanParams = {
-        collateralTokenIndex: new BigNumber(0), // REP's index in the Token Registry is 0.
-        collateralAmount: new BigNumber(3.5 * 10 ** 18),
-        gracePeriodInDays: new BigNumber(5),
+    const scenario_1: Scenario = {
+        unpackedParams: {
+            collateralTokenIndex: new BigNumber(0),
+            collateralAmount: new BigNumber(3.5 * 10 ** 18),
+            gracePeriodInDays: new BigNumber(5),
+        },
+        packedParams: "0x000000000000000000000000000000000000000000000030927f74c9de000005",
+    };
+
+    const scenario_2: Scenario = {
+        unpackedParams: {
+            collateralTokenIndex: new BigNumber(1),
+            collateralAmount: new BigNumber(723489020 * 10 ** 18),
+            gracePeriodInDays: new BigNumber(30),
+        },
+        packedParams: "0x00000000000000000000000000000000000000125674c25cd7f81d067000001e",
+    };
+
+    const scenario_3: Scenario = {
+        unpackedParams: {
+            collateralTokenIndex: new BigNumber(8),
+            collateralAmount: new BigNumber(1212234234 * 10 ** 18),
+            gracePeriodInDays: new BigNumber(90),
+        },
+        packedParams: "0x0000000000000000000000000000000000000083eabc9580d20c1abba800005a",
     };
 
     describe("#packParameters", () => {
@@ -67,7 +93,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
 
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         collateralTokenIndex: invalidCollateralTokenIndex,
                     });
                 }).toThrow(
@@ -79,7 +105,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         collateralAmount: new BigNumber(3.5 * 10 ** 38),
                     });
                 }).toThrow(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
@@ -89,7 +115,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw COLLATERAL_AMOUNT_IS_NEGATIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         collateralAmount: new BigNumber(-1),
                     });
                 }).toThrow(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
@@ -99,7 +125,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_DECIMAL_VALUE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         collateralAmount: new BigNumber(100.4567),
                     });
                 }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
@@ -109,7 +135,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_INTEREST_RATE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         gracePeriodInDays: new BigNumber(-1),
                     });
                 }).toThrowError(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
@@ -119,7 +145,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_INTEREST_RATE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         gracePeriodInDays: new BigNumber(256),
                     });
                 }).toThrowError(CollateralizedAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
@@ -129,7 +155,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_DECIMAL_VALUE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...defaultLoanParams,
+                        ...scenario_1.unpackedParams,
                         gracePeriodInDays: new BigNumber(1.567),
                     });
                 }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
@@ -138,39 +164,23 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
         describe("...with valid collateral token index, collateral amount, and grace period in days", () => {
             describe("Scenario #1", () => {
                 test("should return correctly packed parameters", () => {
-                    expect(collateralizedLoanTerms.packParameters(defaultLoanParams)).toEqual(
-                        "0x000000000000000000000000000000000000000000000030927f74c9de000005",
-                    );
+                    expect(
+                        collateralizedLoanTerms.packParameters(scenario_1.unpackedParams),
+                    ).toEqual(scenario_1.packedParams);
                 });
             });
             describe("Scenario #2", () => {
-                const collateralTokenIndex = new BigNumber(1);
-                const collateralAmount = new BigNumber(723489020 * 10 ** 18);
-                const gracePeriodInDays = new BigNumber(30);
-
                 test("should return correctly packed parameters", () => {
                     expect(
-                        collateralizedLoanTerms.packParameters({
-                            collateralTokenIndex,
-                            collateralAmount,
-                            gracePeriodInDays,
-                        }),
-                    ).toEqual("0x00000000000000000000000000000000000000125674c25cd7f81d067000001e");
+                        collateralizedLoanTerms.packParameters(scenario_2.unpackedParams),
+                    ).toEqual(scenario_2.packedParams);
                 });
             });
             describe("Scenario #3", () => {
-                const collateralTokenIndex = new BigNumber(8);
-                const collateralAmount = new BigNumber(1212234234 * 10 ** 18);
-                const gracePeriodInDays = new BigNumber(90);
-
                 test("should return correctly packed parameters", () => {
                     expect(
-                        collateralizedLoanTerms.packParameters({
-                            collateralTokenIndex,
-                            collateralAmount,
-                            gracePeriodInDays,
-                        }),
-                    ).toEqual("0x0000000000000000000000000000000000000083eabc9580d20c1abba800005a");
+                        collateralizedLoanTerms.packParameters(scenario_3.unpackedParams),
+                    ).toEqual(scenario_3.packedParams);
                 });
             });
         });
@@ -183,9 +193,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_PACKED_PARAMETERS error", () => {
                 expect(() => {
                     collateralizedLoanTerms.unpackParameters(termsContractParameters);
-                }).toThrowError(
-                    /Expected packedParams to conform to schema \/Bytes32/,
-                );
+                }).toThrowError(/Expected packedParams to conform to schema \/Bytes32/);
             });
         });
         describe("...with value that has too many bytes", () => {
@@ -194,9 +202,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_PACKED_PARAMETERS error", () => {
                 expect(() => {
                     collateralizedLoanTerms.unpackParameters(termsContractParameters);
-                }).toThrowError(
-                    /Expected packedParams to conform to schema \/Bytes32/,
-                );
+                }).toThrowError(/Expected packedParams to conform to schema \/Bytes32/);
             });
         });
         describe("...with value that includes non-hexadecimal characters", () => {
@@ -205,9 +211,7 @@ describe("Collateralized Simple Interest Terms Contract Interface (Unit Tests)",
             test("should throw INVALID_PACKED_PARAMETERS error", () => {
                 expect(() => {
                     collateralizedLoanTerms.unpackParameters(termsContractParameters);
-                }).toThrowError(
-                    /Expected packedParams to conform to schema \/Bytes32/,
-                );
+                }).toThrowError(/Expected packedParams to conform to schema \/Bytes32/);
             });
         });
     });
