@@ -27,6 +27,7 @@ import {
     CollateralizedTermsContractParameters,
     CollateralizedSimpleInterestLoanOrder,
 } from "src/adapters/collateralized_simple_interest_loan_adapter";
+import { SimpleInterestLoanAdapter } from "src/adapters/simple_interest_loan_adapter";
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
 
@@ -237,5 +238,31 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                 );
             });
         });
+    });
+});
+
+describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", async () => {
+    let debtKernelAddress: string;
+    let repaymentRouterAddress: string;
+
+    let defaultLoanOrder: CollateralizedSimpleInterestLoanOrder;
+
+    beforeAll(async () => {
+        const debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS);
+        const repaymentRouter = await RepaymentRouterContract.deployed(web3, TX_DEFAULTS);
+
+        debtKernelAddress = debtKernel.address;
+        repaymentRouterAddress = repaymentRouter.address;
+
+        defaultLoanOrder = {
+            principalAmount: Units.ether(10),
+            principalTokenSymbol: "REP",
+            interestRate: new BigNumber(0.14),
+            amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
+            termLength: new BigNumber(2),
+            collateralTokenSymbol: "ZRX",
+            collateralAmount: new BigNumber(1 * 10 ** 18),
+            gracePeriodInDays: new BigNumber(5),
+        };
     });
 });
