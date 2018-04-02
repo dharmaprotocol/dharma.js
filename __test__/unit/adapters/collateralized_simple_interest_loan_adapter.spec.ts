@@ -415,6 +415,46 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     ).resolves.toEqual(scenario.debtOrder);
                 });
             });
+
+            describe("Scenario #3", () => {
+                const principalTokenSymbol = "ZRX";
+                const principalAmount = new BigNumber(50 * 10 ** 18);
+
+                beforeAll(async () => {
+                    principalToken = await contracts.loadTokenBySymbolAsync(
+                        principalTokenSymbol,
+                        TX_DEFAULTS,
+                    );
+                    scenario = {
+                        loanOrder: {
+                            principalTokenSymbol: principalTokenSymbol,
+                            principalAmount: principalAmount,
+                            interestRate: new BigNumber(0.2),
+                            amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
+                            termLength: new BigNumber(10),
+                            collateralTokenSymbol: "MKR",
+                            collateralAmount: new BigNumber(32 * 10 ** 18),
+                            gracePeriodInDays: new BigNumber(10),
+                        },
+                        debtOrder: {
+                            ...DebtOrder.DEFAULTS,
+                            kernelVersion: debtKernelAddress,
+                            issuanceVersion: repaymentRouterAddress,
+                            principalAmount,
+                            principalToken: principalToken.address,
+                            termsContract: termsContract.address,
+                            termsContractParameters:
+                                "0x0200000002b5e3af16b18800000007d02000a010000001bc16d674ec8000000a",
+                        },
+                    };
+                });
+
+                test("should return debt order with correctly packed values", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder(scenario.loanOrder),
+                    ).resolves.toEqual(scenario.debtOrder);
+                });
+            });
         });
     });
 });
