@@ -241,7 +241,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
     });
 });
 
-describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", async () => {
+describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
     let debtKernelAddress: string;
     let repaymentRouterAddress: string;
 
