@@ -1,3 +1,13 @@
+// Given that we rely on having access to the deployed Dharma smart contracts,
+// we unmock the Dharma smart contracts artifacts package to pull the most recently
+// deployed contracts on the current network.
+jest.unmock("@dharmaprotocol/contracts");
+
+// Unmock the "fs-extra" package in order to give us
+// access to the deployed TokenRegistry on the
+// test chain.
+jest.unmock("fs-extra");
+
 // libraries
 import * as Web3 from "web3";
 import * as moment from "moment";
