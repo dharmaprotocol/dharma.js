@@ -132,7 +132,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
         describe("...with grace period in days < 0", () => {
-            test("should throw INVALID_INTEREST_RATE error", () => {
+            test("should throw GRACE_PERIOD_IS_NEGATIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario_1.unpackedParams,
@@ -142,7 +142,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
         describe("...with grace period in days > 255", () => {
-            test("should throw INVALID_INTEREST_RATE error", () => {
+            test("should throw GRACE_PERIOD_EXCEEDS_MAXIMUM error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario_1.unpackedParams,
