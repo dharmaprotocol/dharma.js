@@ -23,7 +23,7 @@ import {
     DebtKernelContract,
     ERC20Contract,
     RepaymentRouterContract,
-    SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 
 // types
@@ -316,6 +316,64 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                             gracePeriodInDays: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "gracePeriodInDays"');
+                });
+            });
+        });
+
+        describe("collateralized simple interest loan's required parameters are present and well-formed ", () => {
+            interface AdapterScenario {
+                loanOrder: CollateralizedSimpleInterestLoanOrder;
+                debtOrder: DebtOrder.Instance;
+            }
+
+            let termsContract: CollateralizedSimpleInterestTermsContractContract;
+            let principalToken: ERC20Contract;
+            let scenario: AdapterScenario;
+
+            beforeAll(async () => {
+                termsContract = await contracts.loadCollateralizedSimpleInterestTermsContract(
+                    TX_DEFAULTS,
+                );
+            });
+
+            describe("Scenario #1", () => {
+                const principalTokenSymbol = "REP";
+                const principalAmount = new BigNumber(937 * 10 ** 18);
+
+                beforeAll(async () => {
+                    principalToken = await contracts.loadTokenBySymbolAsync(
+                        principalTokenSymbol,
+                        TX_DEFAULTS,
+                    );
+
+                    scenario = {
+                        loanOrder: {
+                            principalTokenSymbol: principalTokenSymbol,
+                            principalAmount: principalAmount,
+                            interestRate: new BigNumber(0.1),
+                            amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
+                            termLength: new BigNumber(2),
+                            collateralTokenSymbol: "ZRX",
+                            collateralAmount: new BigNumber(10),
+                            gracePeriodInDays: new BigNumber(90),
+                        },
+                        debtOrder: {
+                            ...DebtOrder.DEFAULTS,
+                            kernelVersion: debtKernelAddress,
+                            issuanceVersion: repaymentRouterAddress,
+                            principalAmount,
+                            principalToken: principalToken.address,
+                            termsContract: termsContract.address,
+                            termsContractParameters:
+                                "0x0000000032cb7cb78fad0400000003e830002020000000000000000000000a5a",
+                        },
+                    };
+                });
+
+                it("should return debt order with correctly packed values", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder(scenario.loanOrder),
+                    ).resolves.toEqual(scenario.debtOrder);
                 });
             });
         });
