@@ -275,4 +275,49 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             gracePeriodInDays: new BigNumber(5),
         };
     });
+
+    describe("#toDebtOrder", () => {
+        describe("collateralized simple interest loan's required parameter is missing or malformed", () => {
+            describe("`collateralTokenSymbol` is missing", () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder({
+                            ...defaultLoanOrder,
+                            collateralTokenSymbol: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "collateralTokenSymbol"');
+                });
+            });
+            describe("`collateralTokenSymbol` is not tracked by Token Registry", () => {
+                test("should throw CANNOT_FIND_TOKEN_WITH_SYMBOL", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder({
+                            ...defaultLoanOrder,
+                            collateralTokenSymbol: "EOS", // EOS is not tracked in our test env's registry
+                        }),
+                    ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("EOS"));
+                });
+            });
+            describe("`collateralAmount` is missing", async () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder({
+                            ...defaultLoanOrder,
+                            collateralAmount: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "collateralAmount"');
+                });
+            });
+            describe("`gracePeriodInDays` is missing", async () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder({
+                            ...defaultLoanOrder,
+                            gracePeriodInDays: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "gracePeriodInDays"');
+                });
+            });
+        });
+    });
 });
