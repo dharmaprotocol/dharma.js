@@ -338,14 +338,13 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
 
             describe("Scenario #1", () => {
                 const principalTokenSymbol = "REP";
-                const principalAmount = new BigNumber(937 * 10 ** 18);
+                const principalAmount = new BigNumber(1000 * 10 ** 18);
 
                 beforeAll(async () => {
                     principalToken = await contracts.loadTokenBySymbolAsync(
                         principalTokenSymbol,
                         TX_DEFAULTS,
                     );
-
                     scenario = {
                         loanOrder: {
                             principalTokenSymbol: principalTokenSymbol,
@@ -354,7 +353,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                             amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
                             termLength: new BigNumber(2),
                             collateralTokenSymbol: "ZRX",
-                            collateralAmount: new BigNumber(10),
+                            collateralAmount: new BigNumber(10 * 10 ** 18),
                             gracePeriodInDays: new BigNumber(90),
                         },
                         debtOrder: {
@@ -365,12 +364,52 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                             principalToken: principalToken.address,
                             termsContract: termsContract.address,
                             termsContractParameters:
-                                "0x0000000032cb7cb78fad0400000003e830002020000000000000000000000a5a",
+                                "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                         },
                     };
                 });
 
-                it("should return debt order with correctly packed values", async () => {
+                test("should return debt order with correctly packed values", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder(scenario.loanOrder),
+                    ).resolves.toEqual(scenario.debtOrder);
+                });
+            });
+
+            describe("Scenario #2", () => {
+                const principalTokenSymbol = "MKR";
+                const principalAmount = new BigNumber(12 * 10 ** 18);
+
+                beforeAll(async () => {
+                    principalToken = await contracts.loadTokenBySymbolAsync(
+                        principalTokenSymbol,
+                        TX_DEFAULTS,
+                    );
+                    scenario = {
+                        loanOrder: {
+                            principalTokenSymbol: principalTokenSymbol,
+                            principalAmount: principalAmount,
+                            interestRate: new BigNumber(0.12),
+                            amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
+                            termLength: new BigNumber(3),
+                            collateralTokenSymbol: "REP",
+                            collateralAmount: new BigNumber(5 * 10 ** 18),
+                            gracePeriodInDays: new BigNumber(120),
+                        },
+                        debtOrder: {
+                            ...DebtOrder.DEFAULTS,
+                            kernelVersion: debtKernelAddress,
+                            issuanceVersion: repaymentRouterAddress,
+                            principalAmount,
+                            principalToken: principalToken.address,
+                            termsContract: termsContract.address,
+                            termsContractParameters:
+                                "0x0100000000a688906bd8b000000004b0400030000000004563918244f4000078",
+                        },
+                    };
+                });
+
+                test("should return debt order with correctly packed values", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder(scenario.loanOrder),
                     ).resolves.toEqual(scenario.debtOrder);
