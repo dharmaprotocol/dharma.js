@@ -552,4 +552,66 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
     });
+    describe("#fromDebtRegistryEntry", () => {
+        describe("no principal token tracked at that index", () => {
+            it("should throw CANNOT_FIND_TOKEN_WITH_INDEX", async () => {
+                await expect(
+                    collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry({
+                        ...scenario_1.entry,
+                        // Our test environment does not track a token at index 5 (which is packed
+                        // into the first byte of the parameters)
+                        termsContractParameters:
+                            "0x05000000000de0b6b3a764000000057820002000000000000000000000000000",
+                    }),
+                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(5));
+            });
+        });
+
+        describe("refers to incorrect terms contract", () => {
+            test("should throw MISMATCHED_TERMS_CONTRACT", async () => {
+                // We choose an arbitrary address to represent
+                // a different terms contract's address.
+                const INVALID_ADDRESS = ACCOUNTS[3].address;
+
+                await expect(
+                    collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry({
+                        ...scenario_1.entry,
+                        termsContract: INVALID_ADDRESS,
+                    }),
+                ).rejects.toThrow(
+                    CollateralizedAdapterErrors.MISMATCHED_TERMS_CONTRACT(INVALID_ADDRESS),
+                );
+            });
+        });
+
+        describe("entry parameters are valid", () => {
+            describe("Scenario #1:", () => {
+                test("should return correct collateralized simple interest loan order", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry(
+                            scenario_1.entry,
+                        ),
+                    ).resolves.toEqual(scenario_1.minimalLoanOrder);
+                });
+            });
+            describe("Scenario #2:", () => {
+                test("should return correct collateralized simple interest loan order", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry(
+                            scenario_2.entry,
+                        ),
+                    ).resolves.toEqual(scenario_2.minimalLoanOrder);
+                });
+            });
+            describe("Scenario #3:", () => {
+                test("should return correct collateralized simple interest loan order", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry(
+                            scenario_3.entry,
+                        ),
+                    ).resolves.toEqual(scenario_3.minimalLoanOrder);
+                });
+            });
+        });
+    });
 });
