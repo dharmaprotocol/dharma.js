@@ -257,8 +257,8 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
 
 describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
     interface AdapterScenario {
-        loanOrder: CollateralizedSimpleInterestLoanOrder;
         debtOrder: DebtOrder.Instance;
+        loanOrder: CollateralizedSimpleInterestLoanOrder;
     }
 
     let scenario_1: AdapterScenario;
@@ -282,8 +282,41 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         const principalAmountForScenario2 = new BigNumber(12 * 10 ** 18);
         const principalAmountForScenario3 = new BigNumber(50 * 10 ** 18);
 
+        const debtOrderBase = {
+            ...DebtOrder.DEFAULTS,
+            kernelVersion: debtKernel.address,
+            issuanceVersion: repaymentRouter.address,
+            termsContract: termsContract.address,
+        };
+
+        const debtOrderForScenario1 = {
+            ...debtOrderBase,
+            principalAmount: principalAmountForScenario1,
+            principalToken: REP_TOKEN.address,
+            termsContractParameters:
+                "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+        };
+
+        const debtOrderForScenario2 = {
+            ...debtOrderBase,
+            principalAmount: principalAmountForScenario2,
+            principalToken: MKR_TOKEN.address,
+            termsContractParameters:
+                "0x0100000000a688906bd8b000000004b0400030000000004563918244f4000078",
+        };
+
+        const debtOrderForScenario3 = {
+            ...debtOrderBase,
+            principalAmount: principalAmountForScenario3,
+            principalToken: ZRX_TOKEN.address,
+            termsContractParameters:
+                "0x0200000002b5e3af16b18800000007d02000a010000001bc16d674ec8000000a",
+        };
+
         scenario_1 = {
+            debtOrder: debtOrderForScenario1,
             loanOrder: {
+                ...debtOrderForScenario1,
                 principalTokenSymbol: REP_TOKEN_SYMBOL,
                 principalAmount: principalAmountForScenario1,
                 interestRate: new BigNumber(0.1),
@@ -293,19 +326,11 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 collateralAmount: new BigNumber(10 * 10 ** 18),
                 gracePeriodInDays: new BigNumber(90),
             },
-            debtOrder: {
-                ...DebtOrder.DEFAULTS,
-                kernelVersion: debtKernel.address,
-                issuanceVersion: repaymentRouter.address,
-                principalAmount: principalAmountForScenario1,
-                principalToken: REP_TOKEN.address,
-                termsContract: termsContract.address,
-                termsContractParameters:
-                    "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
-            },
         };
         scenario_2 = {
+            debtOrder: debtOrderForScenario2,
             loanOrder: {
+                ...debtOrderForScenario2,
                 principalTokenSymbol: MKR_TOKEN_SYMBOL,
                 principalAmount: principalAmountForScenario2,
                 interestRate: new BigNumber(0.12),
@@ -315,19 +340,11 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 collateralAmount: new BigNumber(5 * 10 ** 18),
                 gracePeriodInDays: new BigNumber(120),
             },
-            debtOrder: {
-                ...DebtOrder.DEFAULTS,
-                kernelVersion: debtKernel.address,
-                issuanceVersion: repaymentRouter.address,
-                principalAmount: principalAmountForScenario2,
-                principalToken: MKR_TOKEN.address,
-                termsContract: termsContract.address,
-                termsContractParameters:
-                    "0x0100000000a688906bd8b000000004b0400030000000004563918244f4000078",
-            },
         };
         scenario_3 = {
+            debtOrder: debtOrderForScenario3,
             loanOrder: {
+                ...debtOrderForScenario3,
                 principalTokenSymbol: ZRX_TOKEN_SYMBOL,
                 principalAmount: principalAmountForScenario3,
                 interestRate: new BigNumber(0.2),
@@ -336,16 +353,6 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 collateralTokenSymbol: MKR_TOKEN_SYMBOL,
                 collateralAmount: new BigNumber(32 * 10 ** 18),
                 gracePeriodInDays: new BigNumber(10),
-            },
-            debtOrder: {
-                ...DebtOrder.DEFAULTS,
-                kernelVersion: debtKernel.address,
-                issuanceVersion: repaymentRouter.address,
-                principalAmount: principalAmountForScenario3,
-                principalToken: ZRX_TOKEN.address,
-                termsContract: termsContract.address,
-                termsContractParameters:
-                    "0x0200000002b5e3af16b18800000007d02000a010000001bc16d674ec8000000a",
             },
         };
     });
@@ -414,6 +421,89 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder(scenario_3.loanOrder),
                     ).resolves.toEqual(scenario_3.debtOrder);
+                });
+            });
+        });
+    });
+
+    describe("#fromDebtOrder()", () => {
+        describe("argument does not conform to the DebtOrderWithTermsSpecified schema", () => {
+            describe("malformed terms contract", () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                            ...scenario_1.debtOrder,
+                            termsContract: "invalid terms contract",
+                        }),
+                    ).rejects.toThrow("instance.termsContract does not match pattern");
+                });
+            });
+
+            describe("missing termsContract", () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                            ...scenario_1.debtOrder,
+                            termsContract: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "termsContract"');
+                });
+            });
+
+            describe("missing termsContractParameters", () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                            ...scenario_1.debtOrder,
+                            termsContractParameters: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "termsContractParameters"');
+                });
+            });
+
+            describe("missing principalAmount", async () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                            ...scenario_1.debtOrder,
+                            principalAmount: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "principalAmount"');
+                });
+            });
+
+            describe("missing principalToken", async () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                            ...scenario_1.debtOrder,
+                            principalToken: undefined,
+                        }),
+                    ).rejects.toThrow('instance requires property "principalToken"');
+                });
+            });
+        });
+
+        describe("debt order is valid and well-formed", () => {
+            describe("Scenario #1", () => {
+                test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario_1.debtOrder),
+                    ).resolves.toEqual(scenario_1.loanOrder);
+                });
+            });
+            describe("Scenario #2", () => {
+                test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario_2.debtOrder),
+                    ).resolves.toEqual(scenario_2.loanOrder);
+                });
+            });
+            describe("Scenario #3", () => {
+                test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario_3.debtOrder),
+                    ).resolves.toEqual(scenario_3.loanOrder);
                 });
             });
         });
