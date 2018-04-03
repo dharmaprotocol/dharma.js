@@ -37,7 +37,7 @@ import {
     CollateralizedTermsContractParameters,
     CollateralizedSimpleInterestLoanOrder,
 } from "src/adapters/collateralized_simple_interest_loan_adapter";
-import { SimpleInterestLoanAdapter } from "src/adapters/simple_interest_loan_adapter";
+import { SimpleInterestLoanAdapter } from "src/adapters/";
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
 
