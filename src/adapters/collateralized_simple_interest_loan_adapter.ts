@@ -7,6 +7,7 @@ import { BigNumber } from "utils/bignumber";
 import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
 import { DebtOrder, DebtRegistryEntry } from "src/types";
+import { BaseAdapter } from "./base_adapter";
 
 import { TermsContractParameters } from "./terms_contract_parameters";
 import {
@@ -143,13 +144,15 @@ export class CollateralizedLoanTerms {
     }
 }
 
-export class CollateralizedSimpleInterestLoanAdapter {
+export class CollateralizedSimpleInterestLoanAdapter extends BaseAdapter {
     private assert: Assertions;
     private contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
+        super();
+
         this.assert = new Assertions(web3, contractsAPI);
         this.contractsAPI = contractsAPI;
         this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
