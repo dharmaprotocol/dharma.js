@@ -528,6 +528,23 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
+        describe("terms contract does not match principal token's associated `CollateralizedSimpleInterestTermsContract`", () => {
+            test("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
+                await expect(
+                    collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                        ...scenario_1.debtOrder,
+                        termsContractParameters:
+                            "0x010000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                    }),
+                ).rejects.toThrow(
+                    CollateralizedAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
+                        scenario_1.debtOrder.principalToken,
+                        MKR_TOKEN_SYMBOL,
+                    ),
+                );
+            });
+        });
+
         describe("debt order is valid and well-formed", () => {
             describe("Scenario #1", () => {
                 test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
