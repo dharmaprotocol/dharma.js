@@ -248,7 +248,7 @@ export class CollateralizedSimpleInterestLoanAdapter {
         );
 
         // Assert that the principal token corresponds to the symbol we've unpacked.
-        this.assertTokenCorrespondsToSymbol(debtOrder.principalToken, principalTokenSymbol);
+        await this.assertTokenCorrespondsToSymbol(debtOrder.principalToken, principalTokenSymbol);
 
         return {
             ...debtOrder,
