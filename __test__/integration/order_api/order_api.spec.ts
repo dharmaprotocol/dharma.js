@@ -1,7 +1,14 @@
-import { OrderAPI } from "src/apis/order_api";
-import { ContractsAPI } from "src/apis/contracts_api";
+// External
+import * as Web3 from "web3";
+
+// APIs
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
+
+// Utils
 import { Web3Utils } from "utils/web3_utils";
-import { SignerAPI } from "src/apis/signer_api";
+import { ACCOUNTS } from "../../accounts";
+
+// Scenarios
 import {
     VALID_ORDERS,
     INVALID_ORDERS,
@@ -10,10 +17,14 @@ import {
     INVALID_ORDER_CANCELLATIONS,
     INVALID_ISSUANCE_CANCELLATIONS,
     NONCONSENUAL_ORDERS,
+    SUCCESSFUL_ORDER_GENERATION,
+    UNSUCCESSFUL_ORDER_GENERATION,
 } from "./scenarios";
-import { OrderScenarioRunner } from "./order_scenario_runner";
-import * as Web3 from "web3";
 
+// Runners
+import { OrderScenarioRunner } from "./order_scenario_runner";
+
+// Wrappers
 import {
     DummyTokenContract,
     TokenRegistryContract,
@@ -22,8 +33,6 @@ import {
     SimpleInterestTermsContractContract,
     TokenTransferProxyContract,
 } from "src/wrappers";
-
-import { ACCOUNTS } from "../../accounts";
 
 // Given that this is an integration test, we unmock the Dharma
 // smart contracts artifacts package to pull the most recently
@@ -48,6 +57,7 @@ describe("Order API (Integration Tests)", () => {
         scenarioRunner.web3Utils = new Web3Utils(web3);
         scenarioRunner.orderApi = new OrderAPI(web3, contractsApi);
         scenarioRunner.orderSigner = new SignerAPI(web3, contractsApi);
+        scenarioRunner.adaptersApi = new AdaptersAPI(web3, contractsApi);
         scenarioRunner.principalToken = await DummyTokenContract.at(
             principalTokenAddress,
             web3,
@@ -101,6 +111,16 @@ describe("Order API (Integration Tests)", () => {
 
         describe("Valid order cancellations", () => {
             VALID_ISSUANCE_CANCELLATIONS.forEach(scenarioRunner.testIssuanceCancelScenario);
+        });
+    });
+
+    describe("#generate", () => {
+        describe("Valid order generation", () => {
+            SUCCESSFUL_ORDER_GENERATION.forEach(scenarioRunner.testOrderGenerationScenario);
+        });
+
+        describe("Invalid order generation", () => {
+            UNSUCCESSFUL_ORDER_GENERATION.forEach(scenarioRunner.testOrderGenerationScenario);
         });
     });
 });
