@@ -1,16 +1,28 @@
+// External
 import * as Web3 from "web3";
-import { DebtOrder, IssuanceCommitment, TxData } from "../types";
-import { Web3Utils } from "../../utils/web3_utils";
-import { NULL_ADDRESS } from "../../utils/constants";
+import * as singleLineString from "single-line-string";
+
+// APIs
 import { ContractsAPI } from ".";
+
+// Adapters
+import { BaseAdapter } from "../adapters";
+
+// Wrappers
 import {
     DebtKernelContract,
     DebtOrderWrapper,
     DebtTokenContract,
     TokenTransferProxyContract,
 } from "../wrappers";
+
+// Types
+import { DebtOrder, IssuanceCommitment, TxData } from "../types";
+
+// Utils
+import { Web3Utils } from "../../utils/web3_utils";
+import { NULL_ADDRESS } from "../../utils/constants";
 import { Assertions } from "../invariants";
-import * as singleLineString from "single-line-string";
 
 const ORDER_FILL_GAS_MAXIMUM = 500000;
 
@@ -64,6 +76,10 @@ export const OrderAPIErrors = {
 
     INVALID_UNDERWRITER_SIGNATURE: () =>
         singleLineString`Underwriter signature is not valid for debt order`,
+
+    ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE: () =>
+        singleLineString`Supplied adapter does not conform to the required
+                         base adapter interface.`,
 };
 
 export class OrderAPI {
@@ -192,6 +208,25 @@ export class OrderAPI {
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         return debtOrderWrapped.getIssuanceCommitmentHash();
+    }
+
+    /**
+     * Generate a Dharma debt order, given the specified adapter and its associated
+     * parameters object.
+     *
+     * @param adapter The adapter to be leveraged in generating this particular debt
+     *                order
+     * @param params  The parameters that will be used by the aforementioned adapter
+     *                to generate the debt order.
+     * @return Newly generated debt order.
+     */
+    public async generate(adapter: BaseAdapter, params: object): Promise<DebtOrder.Instance> {
+        this.assert.adapter.conformsToInterface(
+            adapter,
+            OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
+        );
+
+        return adapter.toDebtOrder(params);
     }
 
     public async cancelIssuanceAsync(
