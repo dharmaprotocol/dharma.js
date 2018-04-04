@@ -549,6 +549,20 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
+        describe("terms contract params contains token index out of bounds", () => {
+            test("should throw CANNOT_FIND_TOKEN_WITH_INDEX", async () => {
+                await expect(
+                    collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                        ...scenario_1.debtOrder,
+                        // the principal token index is encoded as 9, which does not map to any
+                        // token listed in our `TokenRegistry`
+                        termsContractParameters:
+                            "0x090000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                    }),
+                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(9));
+            });
+        });
+
         describe("amortization specified in termsContractParameters is of invalid type", () => {
             it("should throw INVALID_AMORTIZATION_UNIT_TYPE", async () => {
                 await expect(
