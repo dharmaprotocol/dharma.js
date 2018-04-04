@@ -37,7 +37,10 @@ import {
     CollateralizedTermsContractParameters,
     CollateralizedSimpleInterestLoanOrder,
 } from "src/adapters/collateralized_simple_interest_loan_adapter";
-import { SimpleInterestLoanAdapter } from "src/adapters/";
+import {
+    SimpleInterestLoanAdapter,
+    SimpleInterestAdapterErrors,
+} from "src/adapters/simple_interest_loan_adapter";
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
 
@@ -533,6 +536,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
                         ...scenario_1.debtOrder,
+                        // the principal token index is encoded as 1 (which is MKR) instead of 0.
                         termsContractParameters:
                             "0x010000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                     }),
@@ -542,6 +546,19 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                         MKR_TOKEN_SYMBOL,
                     ),
                 );
+            });
+        });
+
+        describe("amortization specified in termsContractParameters is of invalid type", () => {
+            it("should throw INVALID_AMORTIZATION_UNIT_TYPE", async () => {
+                await expect(
+                    collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                        ...scenario_1.debtOrder,
+                        // The amortization unit is encoded as 6 (which is invalid) instead of 3.
+                        termsContractParameters:
+                            "0x000000003635c9adc5dea000000003e8600020200000008ac7230489e800005a",
+                    }),
+                ).rejects.toThrow(SimpleInterestAdapterErrors.INVALID_AMORTIZATION_UNIT_TYPE());
             });
         });
 
