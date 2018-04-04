@@ -86,8 +86,6 @@ export const SimpleInterestAdapterErrors = {
                          interface with the terms contract as expected`,
 };
 
-const TX_DEFAULTS = { from: NULL_ADDRESS, gas: 0 };
-
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
 
@@ -270,9 +268,7 @@ export class SimpleInterestLoanAdapter {
             principalTokenSymbol,
         );
 
-        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract(
-            TX_DEFAULTS,
-        );
+        const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
         let debtOrder: DebtOrder.Instance = omit(simpleInterestLoanOrder, [
             "principalTokenSymbol",
@@ -384,10 +380,12 @@ export class SimpleInterestLoanAdapter {
         principalToken: string,
         symbol: string,
     ): Promise<void> {
-        const addressMappedToSymbol = await this.contracts.getTokenAddressBySymbolAsync(symbol);
+        const doesTokenCorrespondToSymbol = await this.contracts.doesTokenCorrespondToSymbol(
+            principalToken,
+            symbol,
+        );
 
-        // Validate that the
-        if (principalToken !== addressMappedToSymbol) {
+        if (!doesTokenCorrespondToSymbol) {
             throw new Error(
                 SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(principalToken, symbol),
             );

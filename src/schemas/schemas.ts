@@ -11,6 +11,7 @@ import {
     debtOrderWithTermsDebtorAndCreditorSpecifiedSchema,
 } from "./debt_order_schemas";
 import { simpleInterestLoanOrderSchema } from "./simple_interest_parameters_schema";
+import { collateralizedSimpleInterestLoanOrderSchema } from "./collateralized_simple_interest_loan_order_schema";
 
 export const Schemas = {
     addressSchema,
@@ -21,5 +22,6 @@ export const Schemas = {
     debtOrderWithTermsAndDebtorSpecifiedSchema,
     debtOrderWithTermsDebtorAndCreditorSpecifiedSchema,
     simpleInterestLoanOrderSchema,
+    collateralizedSimpleInterestLoanOrderSchema,
     wholeNumberSchema,
 };

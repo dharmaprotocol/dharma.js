@@ -43,6 +43,14 @@ export class SchemaAssertions {
         this.assertConformsToSchema(variableName, value, Schemas.simpleInterestLoanOrderSchema);
     }
 
+    public collateralizedSimpleInterestLoanOrder(variableName: string, value: any) {
+        this.assertConformsToSchema(
+            variableName,
+            value,
+            Schemas.collateralizedSimpleInterestLoanOrderSchema,
+        );
+    }
+
     public debtOrder(variableName: string, value: any) {
         this.assertConformsToSchema(variableName, value, Schemas.debtOrderSchema);
     }
