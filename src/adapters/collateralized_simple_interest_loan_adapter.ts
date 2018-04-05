@@ -6,7 +6,7 @@ import { BigNumber } from "utils/bignumber";
 
 import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
-import { DebtOrder, DebtRegistryEntry } from "src/types";
+import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "src/types";
 import { BaseAdapter } from "./base_adapter";
 
 import { TermsContractParameters } from "./terms_contract_parameters";
@@ -285,6 +285,17 @@ export class CollateralizedSimpleInterestLoanAdapter extends BaseAdapter {
         };
 
         return loanOrder;
+    }
+
+    public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
+        const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
+        const { termLength, amortizationUnit } = this.unpackParameters(termsContractParameters);
+
+        return new RepaymentSchedule(
+            amortizationUnit,
+            termLength,
+            issuanceBlockTimestamp.toNumber(),
+        ).toArray();
     }
 
     private unpackParameters(
