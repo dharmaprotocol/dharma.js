@@ -68,4 +68,23 @@ export class DebtTokenAPI {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.getApproved.callAsync(tokenID);
     }
+
+    public async setApprovalForAll(
+        operator: string,
+        approved: boolean,
+        options?: TxData,
+    ): Promise<string> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ERC721_TRANSFER_GAS_MAXIMUM,
+            options,
+        );
+        return debtTokenContract.setApprovalForAll.sendTransactionAsync(
+            operator,
+            approved,
+            txOptions,
+        );
+    }
+
 }
