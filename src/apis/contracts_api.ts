@@ -281,7 +281,7 @@ export class ContractsAPI {
 
         const matchingTermsContract = _.find(
             supportedTermsContracts,
-            termsContract => termsContract.address === contractAddress,
+            (termsContract) => termsContract.address === contractAddress,
         );
 
         if (!matchingTermsContract) {
