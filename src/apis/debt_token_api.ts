@@ -1,5 +1,5 @@
 import * as Web3 from "web3";
-import { TxData } from "../types";
+import { TxData, TransactionOptions } from "../types";
 import { BigNumber } from "bignumber.js";
 import { Web3Utils } from "../../utils/web3_utils";
 import { ContractsAPI } from "./";
@@ -22,9 +22,11 @@ export interface DebtTokenAPI {
         to: string,
         tokenID: BigNumber,
         data?: string,
-        options?: TxData,
+        options?: TxData
     ): Promise<string>;
 }
+
+const ERC721_TRANSFER_GAS_MAXIMUM = 70000;
 
 export class DebtTokenAPI {
     private web3: Web3;
@@ -45,6 +47,17 @@ export class DebtTokenAPI {
     public async ownerOf(tokenID: BigNumber): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.ownerOf.callAsync(tokenID);
+    }
+
+
+    public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ERC721_TRANSFER_GAS_MAXIMUM,
+            options,
+        );
+        return debtTokenContract.approve.sendTransactionAsync(to, tokenID, txOptions);
     }
 
 }
