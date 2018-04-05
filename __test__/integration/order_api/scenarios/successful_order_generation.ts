@@ -23,4 +23,20 @@ export const SUCCESSFUL_ORDER_GENERATION: OrderGenerationScenario[] = [
         },
         throws: false,
     },
+    {
+        description:
+            "using collateralized simple interest loan adapter with valid input parameters",
+        adapter: (adaptersApi: AdaptersAPI) => adaptersApi.collateralizedSimpleInterestLoan,
+        inputParameters: {
+            principalAmount: Units.ether(1),
+            principalTokenSymbol: "ZRX",
+            interestRate: new BigNumber(4.135),
+            amortizationUnit: "months",
+            termLength: new BigNumber(3),
+            collateralTokenSymbol: "MKR",
+            collateralAmount: Units.ether(2),
+            gracePeriodInDays: new BigNumber(3),
+        },
+        throws: false,
+    },
 ];
