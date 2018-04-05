@@ -41,4 +41,10 @@ export class DebtTokenAPI {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.balanceOf.callAsync(owner);
     }
+
+    public async ownerOf(tokenID: BigNumber): Promise<string> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        return debtTokenContract.ownerOf.callAsync(tokenID);
+    }
+
 }
