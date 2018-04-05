@@ -1,67 +1,18 @@
 // External
 import { BigNumber } from "bignumber.js";
-import * as moment from "moment";
-
-// Wrappers
-import {
-    DebtKernelContract,
-    RepaymentRouterContract,
-    DummyTokenContract,
-    SimpleInterestTermsContractContract,
-} from "src/wrappers";
-
-// Test Utils
-import * as Units from "utils/units";
-import { ACCOUNTS } from "__test__/accounts";
-import { NULL_BYTES32 } from "utils/constants";
 
 // Scenario
 import { UnpackTermsScenario } from "./";
 
-const defaultDebtOrder = (
-    debtKernel: DebtKernelContract,
-    repaymentRouter: RepaymentRouterContract,
-    principalToken: DummyTokenContract,
-    simpleInterestTermsContract: SimpleInterestTermsContractContract,
-) => {
-    return {
-        kernelVersion: debtKernel.address,
-        issuanceVersion: repaymentRouter.address,
-        principalAmount: Units.ether(1),
-        principalToken: principalToken.address,
-        debtor: ACCOUNTS[1].address,
-        debtorFee: Units.ether(0.001),
-        creditor: ACCOUNTS[2].address,
-        creditorFee: Units.ether(0.001),
-        relayer: ACCOUNTS[3].address,
-        relayerFee: Units.ether(0.002),
-        termsContract: simpleInterestTermsContract.address,
-        termsContractParameters: NULL_BYTES32,
-        expirationTimestampInSec: new BigNumber(
-            moment()
-                .add(7, "days")
-                .unix(),
-        ),
-        salt: new BigNumber(0),
-    };
-};
+// Types
+import { DebtOrder } from "src/types";
 
 export const SUCCESSFUL_UNPACK_TERMS: UnpackTermsScenario[] = [
     {
         description: "terms contract corresponds to simple interest and parameters valid",
-        generateDebtOrder: (
-            debtKernel: DebtKernelContract,
-            repaymentRouter: RepaymentRouterContract,
-            principalToken: DummyTokenContract,
-            simpleInterestTermsContract: SimpleInterestTermsContractContract,
-        ) => {
+        debtOrder: (defaults: DebtOrder.Instance) => {
             return {
-                ...defaultDebtOrder(
-                    debtKernel,
-                    repaymentRouter,
-                    principalToken,
-                    simpleInterestTermsContract,
-                ),
+                ...defaults,
                 termsContractParameters:
                     "0x00000000002ff62db077c000000230f010007000000000000000000000000000",
             };

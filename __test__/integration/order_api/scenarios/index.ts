@@ -79,12 +79,7 @@ export interface OrderGenerationScenario {
 
 export interface UnpackTermsScenario {
     description: string;
-    generateDebtOrder: (
-        debtKernel: DebtKernelContract,
-        repaymentRouter: RepaymentRouterContract,
-        principalToken: DummyTokenContract,
-        simpleInterestTermsContract: SimpleInterestTermsContractContract,
-    ) => DebtOrder.Instance;
+    debtOrder: (debtOrderDefaults: DebtOrder.Instance) => DebtOrder.Instance;
     throws: boolean;
     expectedParameters?: object;
     errorType?: string;
