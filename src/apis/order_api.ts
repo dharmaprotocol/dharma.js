@@ -78,7 +78,7 @@ export const OrderAPIErrors = {
         singleLineString`Underwriter signature is not valid for debt order`,
 
     ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE: () =>
-        singleLineString`Supplied adapter does not conform to the required
+        singleLineString`Supplied adapter does not conform to the
                          base adapter interface.`,
 };
 
@@ -217,7 +217,7 @@ export class OrderAPI {
      * parameters object.
      *
      * @param adapter The adapter to be leveraged in generating this particular debt
-     *                order
+     *                order.
      * @param params  The parameters that will be used by the aforementioned adapter
      *                to generate the debt order.
      * @return Newly generated debt order.

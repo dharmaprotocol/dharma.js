@@ -59,6 +59,7 @@ export class OrderScenarioRunner {
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
         this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
         this.testUnpackTermsScenario = this.testUnpackTermsScenario.bind(this);
+
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -108,13 +109,13 @@ export class OrderScenarioRunner {
                 // ought to be attached.
                 debtOrder.debtorSignature = scenario.signatories.debtor
                     ? await this.orderSigner.asDebtor(debtOrder, false)
-                    : undefined;
+                    : null;
                 debtOrder.creditorSignature = scenario.signatories.creditor
                     ? await this.orderSigner.asCreditor(debtOrder, false)
-                    : undefined;
+                    : null;
                 debtOrder.underwriterSignature = scenario.signatories.underwriter
                     ? await this.orderSigner.asUnderwriter(debtOrder, false)
-                    : undefined;
+                    : null;
 
                 if (scenario.beforeBlock) {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
