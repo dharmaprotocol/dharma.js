@@ -10,10 +10,10 @@ export interface DebtTokenAPI {
     ownerOf(tokenID: BigNumber): Promise<string>;
     exists(tokenID: BigNumber): Promise<boolean>;
 
-    approve(to: string, tokenID: BigNumber): Promise<string>;
+    approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
     getApproved(tokenID: BigNumber): Promise<string>;
 
-    setApprovalForAll(operator: string, approved: boolean): Promise<string>;
+    setApprovalForAll(operator: string, approved: boolean, options?: TxData): Promise<string>;
     isApprovedForAll(owner: string, operator: string): Promise<boolean>;
 
     transfer(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
