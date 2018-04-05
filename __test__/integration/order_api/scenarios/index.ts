@@ -22,7 +22,7 @@ import { UNSUCCESSFUL_ORDER_GENERATION } from "./unsuccessful_order_generation";
 
 // Types
 import { DebtOrder } from "src/types";
-import { BaseAdapter } from "src/adapters";
+import { Adapter } from "src/adapters";
 import { AdaptersAPI } from "src/apis";
 
 export interface FillScenario {
@@ -68,9 +68,18 @@ export interface IssuanceCancellationScenario extends OrderCancellationScenario 
 
 export interface OrderGenerationScenario {
     description: string;
-    adapter: (adaptersApi: AdaptersAPI) => BaseAdapter;
+    adapter: (adaptersApi: AdaptersAPI) => Adapter.Interface;
     inputParameters: object;
     throws: boolean;
+    errorType?: string;
+    errorMessage?: string;
+}
+
+export interface UnpackParametersScenario {
+    description: string;
+    debtOrder: (defaultDebtOrder: DebtOrder.Instance) => DebtOrder.Instance;
+    throws: boolean;
+    expectedParameters?: object;
     errorType?: string;
     errorMessage?: string;
 }
