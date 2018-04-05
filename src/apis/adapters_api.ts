@@ -1,6 +1,28 @@
+// External
 import * as Web3 from "web3";
+import * as singleLineString from "single-line-string";
+
+// APIs
 import { ContractsAPI } from "./";
-import { SimpleInterestLoanAdapter, CollateralizedSimpleInterestLoanAdapter } from "../adapters";
+
+// Adapters
+import {
+    Adapter,
+    SimpleInterestLoanAdapter,
+    CollateralizedSimpleInterestLoanAdapter,
+} from "../adapters";
+
+// Wrappers
+import {
+    SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
+} from "src/wrappers";
+
+export const AdaptersErrors = {
+    NO_ADAPTER_FOR_TERMS_CONTRACT: (termsContractAddress: string) =>
+        singleLineString`Could not find adapter suitable for terms contract at
+                         address ${termsContractAddress}.`,
+};
 
 export class AdaptersAPI {
     /**
@@ -35,5 +57,20 @@ export class AdaptersAPI {
             this.web3,
             this.contracts,
         );
+    }
+
+    public async getAdapterByTermsContractAddress(
+        termsContractAddress: string,
+    ): Promise<Adapter.Interface> {
+        const termsContractType = await this.contracts.getTermsContractType(termsContractAddress);
+
+        switch (termsContractType) {
+            case SimpleInterestTermsContractContract.constructor.name:
+                return this.simpleInterestLoan;
+            case CollateralizedSimpleInterestTermsContractContract.constructor.name:
+                return this.collateralizedSimpleInterestLoan;
+            default:
+                throw new Error(AdaptersErrors.NO_ADAPTER_FOR_TERMS_CONTRACT(termsContractAddress));
+        }
     }
 }

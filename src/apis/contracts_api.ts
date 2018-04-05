@@ -2,6 +2,7 @@
 import * as Web3 from "web3";
 import { BigNumber } from "bignumber.js";
 import * as _ from "lodash";
+import * as singleLineString from "single-line-string";
 
 // wrappers
 import {
@@ -30,7 +31,6 @@ import {
     NULL_ADDRESS,
     COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
 } from "../../utils/constants";
-import * as singleLineString from "single-line-string";
 
 // types
 import { DharmaConfig } from "../types";
@@ -272,11 +272,16 @@ export class ContractsAPI {
      */
     public async getTermsContractType(contractAddress: string): Promise<string> {
         const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
-        const supportedTermsContracts = [simpleInterestTermsContract];
+        const collateralizedSimpleInterestTermsContract = await this.loadCollateralizedSimpleInterestTermsContract();
+
+        const supportedTermsContracts = [
+            simpleInterestTermsContract,
+            collateralizedSimpleInterestTermsContract,
+        ];
 
         const matchingTermsContract = _.find(
             supportedTermsContracts,
-            (termsContract) => termsContract.address === contractAddress,
+            termsContract => termsContract.address === contractAddress,
         );
 
         if (!matchingTermsContract) {
