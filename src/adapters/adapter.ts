@@ -1,7 +1,14 @@
 import { DebtOrder, DebtRegistryEntry } from "../types";
 
-export abstract class BaseAdapter {
-    public static conformsToAdapterInterface(object: any): object is BaseAdapter {
+export namespace Adapter {
+    export interface Interface {
+        fromDebtOrder: (debtOrder: DebtOrder.Instance) => Promise<object>;
+        toDebtOrder: (params: object) => Promise<DebtOrder.Instance>;
+        fromDebtRegistryEntry: (entry: DebtRegistryEntry) => Promise<object>;
+        getRepaymentSchedule: (entry: DebtRegistryEntry) => Array<number>;
+    }
+
+    export function conformsToAdapterInterface(object: any): object is Interface {
         return (
             "fromDebtOrder" in object &&
             "toDebtOrder" in object &&
@@ -13,9 +20,4 @@ export abstract class BaseAdapter {
             typeof object.getRepaymentSchedule === "function"
         );
     }
-
-    public abstract async fromDebtOrder(debtOrder: DebtOrder.Instance): Promise<object>;
-    public abstract async toDebtOrder(params: object): Promise<DebtOrder.Instance>;
-    public abstract async fromDebtRegistryEntry(entry: DebtRegistryEntry): Promise<object>;
-    public abstract getRepaymentSchedule(entry: DebtRegistryEntry): Array<number>;
 }

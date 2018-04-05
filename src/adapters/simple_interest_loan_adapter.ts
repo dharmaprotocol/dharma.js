@@ -13,7 +13,7 @@ import { DebtOrder, RepaymentSchedule } from "../types";
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
 import { DebtRegistryEntry } from "../types/debt_registry_entry";
-import { BaseAdapter } from "./base_adapter";
+import { Adapter } from "./adapter";
 
 export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
     // Required Debt Order Parameters
@@ -222,7 +222,7 @@ export class SimpleInterestLoanTerms {
     }
 }
 
-export class SimpleInterestLoanAdapter extends BaseAdapter {
+export class SimpleInterestLoanAdapter implements Adapter.Interface {
     public static Installments: { [type: string]: AmortizationUnit } = {
         HOURLY: "hours",
         DAILY: "days",
@@ -236,8 +236,6 @@ export class SimpleInterestLoanAdapter extends BaseAdapter {
     private termsContractInterface: SimpleInterestLoanTerms;
 
     public constructor(web3: Web3, contracts: ContractsAPI) {
-        super();
-
         this.assert = new Assertions(web3, contracts);
         this.contracts = contracts;
         this.termsContractInterface = new SimpleInterestLoanTerms(web3, contracts);
