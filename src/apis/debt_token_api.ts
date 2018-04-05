@@ -60,4 +60,8 @@ export class DebtTokenAPI {
         return debtTokenContract.approve.sendTransactionAsync(to, tokenID, txOptions);
     }
 
+    public async getApproved(tokenID: BigNumber): Promise<string> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        return debtTokenContract.getApproved.callAsync(tokenID);
+    }
 }
