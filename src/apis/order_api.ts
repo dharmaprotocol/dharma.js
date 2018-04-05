@@ -17,7 +17,7 @@ import {
 } from "../wrappers";
 
 // Types
-import { DebtOrder, IssuanceCommitment, TxData } from "../types";
+import { DebtOrder, IssuanceCommitment, TxData, TransactionOptions } from "../types";
 
 // Utils
 import { Web3Utils } from "../../utils/web3_utils";
@@ -110,9 +110,11 @@ export class OrderAPI {
      * @return           the hash of the ethereum transaction that fulfilled the debt order.
      */
     public async fillAsync(debtOrder: DebtOrder.Instance, options?: TxData): Promise<string> {
-        const transactionOptions = await this.getTxDefaultOptions();
-
-        Object.assign(transactionOptions, options);
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ORDER_FILL_GAS_MAXIMUM,
+            options,
+        );
 
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
 
@@ -120,14 +122,14 @@ export class OrderAPI {
             debtKernel,
             debtToken,
             tokenTransferProxy,
-        } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+        } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         await this.assertValidityInvariantsAsync(debtOrder, debtKernel, debtToken);
-        await this.assertConsensualityInvariants(debtOrder, transactionOptions);
+        await this.assertConsensualityInvariants(debtOrder, txOptions);
         await this.assertExternalBalanceAndAllowanceInvariantsAsync(
             debtOrder,
             tokenTransferProxy,
-            transactionOptions,
+            txOptions,
         );
 
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
@@ -140,7 +142,7 @@ export class OrderAPI {
             debtOrderWrapped.getSignaturesV(),
             debtOrderWrapped.getSignaturesR(),
             debtOrderWrapped.getSignaturesS(),
-            transactionOptions,
+            txOptions,
         );
     }
 
@@ -155,11 +157,13 @@ export class OrderAPI {
         debtOrder: DebtOrder.Instance,
         options?: TxData,
     ): Promise<string> {
-        const transactionOptions = await this.getTxDefaultOptions();
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ORDER_FILL_GAS_MAXIMUM,
+            options,
+        );
 
-        Object.assign(transactionOptions, options);
-
-        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
 
@@ -179,7 +183,7 @@ export class OrderAPI {
 
         this.assert.order.senderAuthorizedToCancelOrder(
             debtOrder,
-            transactionOptions,
+            txOptions,
             OrderAPIErrors.UNAUTHORIZED_ORDER_CANCELLATION(),
         );
 
@@ -187,7 +191,7 @@ export class OrderAPI {
             debtOrderWrapped.getOrderAddresses(),
             debtOrderWrapped.getOrderValues(),
             debtOrderWrapped.getOrderBytes32(),
-            transactionOptions,
+            txOptions,
         );
     }
 
@@ -231,9 +235,9 @@ export class OrderAPI {
 
     public async cancelIssuanceAsync(
         issuanceCommitment: IssuanceCommitment,
-        transactionOptions: TxData,
+        txOptions: TxData,
     ): Promise<string> {
-        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         await this.assert.order.issuanceNotCancelledAsync(
             issuanceCommitment,
@@ -243,7 +247,7 @@ export class OrderAPI {
 
         this.assert.order.senderAuthorizedToCancelIssuance(
             issuanceCommitment,
-            transactionOptions,
+            txOptions,
             OrderAPIErrors.UNAUTHORIZED_ISSUANCE_CANCELLATION(),
         );
 
@@ -255,7 +259,7 @@ export class OrderAPI {
             issuanceCommitment.underwriter,
             issuanceCommitment.underwriterRiskRating,
             issuanceCommitment.salt,
-            transactionOptions,
+            txOptions,
         );
     }
 
@@ -289,26 +293,23 @@ export class OrderAPI {
         );
     }
 
-    private async assertConsensualityInvariants(
-        debtOrder: DebtOrder.Instance,
-        transactionOptions: object,
-    ) {
+    private async assertConsensualityInvariants(debtOrder: DebtOrder.Instance, txOptions: object) {
         await this.assert.order.validDebtorSignature(
             debtOrder,
-            transactionOptions,
+            txOptions,
             OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
         );
 
         await this.assert.order.validCreditorSignature(
             debtOrder,
-            transactionOptions,
+            txOptions,
             OrderAPIErrors.INVALID_CREDITOR_SIGNATURE(),
         );
 
         if (debtOrder.underwriter && debtOrder.underwriter !== NULL_ADDRESS) {
             await this.assert.order.validUnderwriterSignature(
                 debtOrder,
-                transactionOptions,
+                txOptions,
                 OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
             );
         }
@@ -317,11 +318,11 @@ export class OrderAPI {
     private async assertExternalBalanceAndAllowanceInvariantsAsync(
         debtOrder: DebtOrder.Instance,
         tokenTransferProxy: TokenTransferProxyContract,
-        transactionOptions: object,
+        txOptions: object,
     ): Promise<void> {
         const principalToken = await this.contracts.loadERC20TokenAsync(
             debtOrder.principalToken,
-            transactionOptions,
+            txOptions,
         );
 
         await this.assert.order.sufficientCreditorBalanceAsync(
@@ -336,18 +337,5 @@ export class OrderAPI {
             tokenTransferProxy,
             OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
         );
-    }
-
-    private async getTxDefaultOptions(): Promise<object> {
-        const web3Utils = new Web3Utils(this.web3);
-
-        const accounts = await web3Utils.getAvailableAddressesAsync();
-
-        // TODO: Add fault tolerance to scenario in which not addresses are available
-
-        return {
-            from: accounts[0],
-            gas: ORDER_FILL_GAS_MAXIMUM,
-        };
     }
 }
