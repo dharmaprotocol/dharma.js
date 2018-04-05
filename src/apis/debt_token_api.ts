@@ -5,7 +5,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";
 
-export interface DebtTokenAPI {
+export interface ERC721 {
     balanceOf(owner: string): Promise<BigNumber>;
     ownerOf(tokenID: BigNumber): Promise<string>;
     exists(tokenID: BigNumber): Promise<boolean>;
@@ -22,13 +22,13 @@ export interface DebtTokenAPI {
         to: string,
         tokenID: BigNumber,
         data?: string,
-        options?: TxData
+        options?: TxData,
     ): Promise<string>;
 }
 
 const ERC721_TRANSFER_GAS_MAXIMUM = 70000;
 
-export class DebtTokenAPI {
+export class DebtTokenAPI implements ERC721 {
     private web3: Web3;
     private contracts: ContractsAPI;
     private assert: Assertions;
