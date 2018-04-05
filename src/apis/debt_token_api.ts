@@ -87,4 +87,9 @@ export class DebtTokenAPI {
         );
     }
 
+    public async isApprovedForAll(owner: string, operator: string): Promise<boolean> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        return debtTokenContract.isApprovedForAll.callAsync(owner, operator);
+    }
+
 }
