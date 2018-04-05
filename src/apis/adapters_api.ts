@@ -1,6 +1,6 @@
 import * as Web3 from "web3";
 import { ContractsAPI } from "./";
-import { SimpleInterestLoanAdapter } from "../adapters";
+import { SimpleInterestLoanAdapter, CollateralizedSimpleInterestLoanAdapter } from "../adapters";
 
 export class AdaptersAPI {
     /**
@@ -21,6 +21,7 @@ export class AdaptersAPI {
      * 10 ether * 2 years * 10% = 2 ether
      */
     public simpleInterestLoan: SimpleInterestLoanAdapter;
+    public collateralizedSimpleInterestLoan: CollateralizedSimpleInterestLoanAdapter;
 
     private contracts: ContractsAPI;
     private web3: Web3;
@@ -30,5 +31,9 @@ export class AdaptersAPI {
         this.contracts = contractsApi;
 
         this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.web3, this.contracts);
+        this.collateralizedSimpleInterestLoan = new CollateralizedSimpleInterestLoanAdapter(
+            this.web3,
+            this.contracts,
+        );
     }
 }

@@ -3,6 +3,7 @@ import * as Web3 from "web3";
 
 // Assertions
 import { AccountAssertions } from "./account";
+import { AdapterAssertions } from "./adapter";
 import { TokenAssertions } from "./token";
 import { OrderAssertions } from "./order";
 import { SchemaAssertions } from "./schema";
@@ -13,6 +14,7 @@ import { ContractsAPI } from "../apis/";
 
 export class Assertions {
     public account: AccountAssertions;
+    public adapter: AdapterAssertions;
     public order: OrderAssertions;
     public token: TokenAssertions;
     public schema: SchemaAssertions;
@@ -26,6 +28,7 @@ export class Assertions {
         this.contracts = contracts;
 
         this.account = new AccountAssertions(this.web3);
+        this.adapter = new AdapterAssertions();
         this.order = new OrderAssertions(this.contracts);
         this.token = new TokenAssertions();
         this.schema = new SchemaAssertions();

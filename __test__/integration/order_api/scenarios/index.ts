@@ -1,9 +1,15 @@
+// External
+import { BigNumber } from "bignumber.js";
+
+// Wrappers
 import {
     DebtKernelContract,
     RepaymentRouterContract,
     DummyTokenContract,
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
+
+// Scenarios
 import { VALID_ORDERS } from "./valid_orders";
 import { INVALID_ORDERS } from "./invalid_orders";
 import { NONCONSENUAL_ORDERS } from "./nonconsensual_orders";
@@ -11,12 +17,13 @@ import { VALID_ORDER_CANCELLATIONS } from "./valid_order_cancellations";
 import { VALID_ISSUANCE_CANCELLATIONS } from "./valid_issuance_cancellations";
 import { INVALID_ORDER_CANCELLATIONS } from "./invalid_order_cancellations";
 import { INVALID_ISSUANCE_CANCELLATIONS } from "./invalid_issuance_cancellations";
+import { SUCCESSFUL_ORDER_GENERATION } from "./successful_order_generation";
+import { UNSUCCESSFUL_ORDER_GENERATION } from "./unsuccessful_order_generation";
 
-import * as Units from "utils/units";
-import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
-import * as moment from "moment";
-import { BigNumber } from "bignumber.js";
+// Types
 import { DebtOrder } from "src/types";
+import { BaseAdapter } from "src/adapters";
+import { AdaptersAPI } from "src/apis";
 
 export interface FillScenario {
     description: string;
@@ -59,6 +66,15 @@ export interface OrderCancellationScenario {
 // interface as an IssuanceCancellationScenario
 export interface IssuanceCancellationScenario extends OrderCancellationScenario {}
 
+export interface OrderGenerationScenario {
+    description: string;
+    adapter: (adaptersApi: AdaptersAPI) => BaseAdapter;
+    inputParameters: object;
+    throws: boolean;
+    errorType?: string;
+    errorMessage?: string;
+}
+
 export {
     VALID_ORDERS,
     INVALID_ORDERS,
@@ -67,4 +83,6 @@ export {
     INVALID_ORDER_CANCELLATIONS,
     INVALID_ISSUANCE_CANCELLATIONS,
     NONCONSENUAL_ORDERS,
+    SUCCESSFUL_ORDER_GENERATION,
+    UNSUCCESSFUL_ORDER_GENERATION,
 };

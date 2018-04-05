@@ -13,6 +13,7 @@ import { DebtOrder, RepaymentSchedule } from "../types";
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
 import { DebtRegistryEntry } from "../types/debt_registry_entry";
+import { Adapter } from "./adapter";
 
 export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
     // Required Debt Order Parameters
@@ -221,7 +222,7 @@ export class SimpleInterestLoanTerms {
     }
 }
 
-export class SimpleInterestLoanAdapter {
+export class SimpleInterestLoanAdapter implements Adapter.Interface {
     public static Installments: { [type: string]: AmortizationUnit } = {
         HOURLY: "hours",
         DAILY: "days",

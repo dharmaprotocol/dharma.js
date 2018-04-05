@@ -1,3 +1,9 @@
+// External
+import * as Web3 from "web3";
+import * as compact from "lodash.compact";
+import * as ABIDecoder from "abi-decoder";
+
+// Wrappers
 import {
     DebtKernelContract,
     DebtOrderWrapper,
@@ -6,17 +12,24 @@ import {
     DummyTokenContract,
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
-import { OrderAPI, SignerAPI } from "src/apis";
+
+// APIs
+import { AdaptersAPI, OrderAPI, SignerAPI } from "src/apis";
+
+// Scenarios
 import {
     FillScenario,
     OrderCancellationScenario,
+    OrderGenerationScenario,
     IssuanceCancellationScenario,
 } from "./scenarios/";
-import * as Web3 from "web3";
-import { Web3Utils } from "utils/web3_utils";
+
+// Types
 import { DebtOrder } from "src/types";
-import * as compact from "lodash.compact";
-import * as ABIDecoder from "abi-decoder";
+import { BaseAdapter } from "src/adapters";
+
+// Utils
+import { Web3Utils } from "utils/web3_utils";
 
 export class OrderScenarioRunner {
     public web3Utils: Web3Utils;
@@ -27,6 +40,7 @@ export class OrderScenarioRunner {
     public termsContract: SimpleInterestTermsContractContract;
     public orderApi: OrderAPI;
     public orderSigner: SignerAPI;
+    public adaptersApi: AdaptersAPI;
     public abiDecoder: any;
 
     private currentSnapshotId: number;
@@ -37,6 +51,7 @@ export class OrderScenarioRunner {
         this.testFillScenario = this.testFillScenario.bind(this);
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
+        this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -85,14 +100,14 @@ export class OrderScenarioRunner {
                 // the scenario specifies that a signature from a signatory
                 // ought to be attached.
                 debtOrder.debtorSignature = scenario.signatories.debtor
-                    ? await this.orderSigner.asDebtor(debtOrder)
-                    : undefined;
+                    ? await this.orderSigner.asDebtor(debtOrder, false)
+                    : null;
                 debtOrder.creditorSignature = scenario.signatories.creditor
-                    ? await this.orderSigner.asCreditor(debtOrder)
-                    : undefined;
+                    ? await this.orderSigner.asCreditor(debtOrder, false)
+                    : null;
                 debtOrder.underwriterSignature = scenario.signatories.underwriter
-                    ? await this.orderSigner.asUnderwriter(debtOrder)
-                    : undefined;
+                    ? await this.orderSigner.asUnderwriter(debtOrder, false)
+                    : null;
 
                 if (scenario.beforeBlock) {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
@@ -229,6 +244,32 @@ export class OrderScenarioRunner {
                             debtOrderWrapped.getIssuanceCommitment(),
                             { from: scenario.canceller },
                         ),
+                    ).rejects.toThrow(scenario.errorMessage);
+                });
+            }
+        });
+    }
+
+    public testOrderGenerationScenario(scenario: OrderGenerationScenario) {
+        describe(scenario.description, () => {
+            let adapter: BaseAdapter;
+
+            beforeEach(() => {
+                adapter = scenario.adapter(this.adaptersApi);
+            });
+
+            if (!scenario.throws) {
+                test("returns order translated by adapter from input parameters", async () => {
+                    const expectedDebtOrder = await adapter.toDebtOrder(scenario.inputParameters);
+
+                    await expect(
+                        this.orderApi.generate(adapter, scenario.inputParameters),
+                    ).resolves.toEqual(expectedDebtOrder);
+                });
+            } else {
+                test(`should throw ${scenario.errorType}`, async () => {
+                    await expect(
+                        this.orderApi.generate(adapter, scenario.inputParameters),
                     ).rejects.toThrow(scenario.errorMessage);
                 });
             }
