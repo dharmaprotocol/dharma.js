@@ -79,7 +79,12 @@ export interface OrderGenerationScenario {
 
 export interface UnpackTermsScenario {
     description: string;
-    debtOrder: (debtOrderDefaults: DebtOrder.Instance) => DebtOrder.Instance;
+    termsContract: (
+        simpleInterest: string,
+        collateralizedSimpleInterest: string,
+        other: string,
+    ) => string;
+    termsContractParameters: string;
     throws: boolean;
     expectedParameters?: object;
     errorType?: string;

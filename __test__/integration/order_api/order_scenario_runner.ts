@@ -16,7 +16,7 @@ import {
 } from "src/wrappers";
 
 // APIs
-import { AdaptersAPI, OrderAPI, SignerAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
 
 // Scenarios
 import {
@@ -44,6 +44,7 @@ export class OrderScenarioRunner {
     public principalToken: DummyTokenContract;
     public termsContract: SimpleInterestTermsContractContract;
     public orderApi: OrderAPI;
+    public contractsApi: ContractsAPI;
     public orderSigner: SignerAPI;
     public adaptersApi: AdaptersAPI;
     public abiDecoder: any;
@@ -287,7 +288,11 @@ export class OrderScenarioRunner {
             let debtOrder: DebtOrder.Instance;
 
             beforeEach(async () => {
-                const defaultDebtOrder = {
+                const simpleInterestTermsContract = this.termsContract;
+                const collateralizedSimpleInterestTermsContract = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
+                const otherTermsContractAddress = ACCOUNTS[4].address;
+
+                debtOrder = {
                     kernelVersion: this.debtKernel.address,
                     issuanceVersion: this.repaymentRouter.address,
                     principalAmount: Units.ether(1),
@@ -298,9 +303,12 @@ export class OrderScenarioRunner {
                     creditorFee: Units.ether(0.001),
                     relayer: ACCOUNTS[3].address,
                     relayerFee: Units.ether(0.002),
-                    termsContract: this.termsContract.address,
-                    termsContractParameters:
-                        "0x00000000002ff62db077c000000230f010007000000000000000000000000000",
+                    termsContract: scenario.termsContract(
+                        simpleInterestTermsContract.address,
+                        collateralizedSimpleInterestTermsContract.address,
+                        otherTermsContractAddress,
+                    ),
+                    termsContractParameters: scenario.termsContractParameters,
                     expirationTimestampInSec: new BigNumber(
                         moment()
                             .add(7, "days")
@@ -308,8 +316,6 @@ export class OrderScenarioRunner {
                     ),
                     salt: new BigNumber(0),
                 };
-
-                debtOrder = scenario.debtOrder(defaultDebtOrder);
             });
 
             if (!scenario.throws) {

@@ -43,7 +43,6 @@ jest.unmock("@dharmaprotocol/contracts");
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
-const contractsApi = new ContractsAPI(web3);
 
 let scenarioRunner = new OrderScenarioRunner(web3);
 
@@ -57,9 +56,14 @@ describe("Order API (Integration Tests)", () => {
         );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
-        scenarioRunner.orderSigner = new SignerAPI(web3, contractsApi);
-        scenarioRunner.adaptersApi = new AdaptersAPI(web3, contractsApi);
-        scenarioRunner.orderApi = new OrderAPI(web3, contractsApi, scenarioRunner.adaptersApi);
+        scenarioRunner.contractsApi = new ContractsAPI(web3);
+        scenarioRunner.orderSigner = new SignerAPI(web3, scenarioRunner.contractsApi);
+        scenarioRunner.adaptersApi = new AdaptersAPI(web3, scenarioRunner.contractsApi);
+        scenarioRunner.orderApi = new OrderAPI(
+            web3,
+            scenarioRunner.contractsApi,
+            scenarioRunner.adaptersApi,
+        );
         scenarioRunner.principalToken = await DummyTokenContract.at(
             principalTokenAddress,
             web3,
