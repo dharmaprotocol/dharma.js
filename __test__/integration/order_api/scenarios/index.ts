@@ -19,6 +19,8 @@ import { INVALID_ORDER_CANCELLATIONS } from "./invalid_order_cancellations";
 import { INVALID_ISSUANCE_CANCELLATIONS } from "./invalid_issuance_cancellations";
 import { SUCCESSFUL_ORDER_GENERATION } from "./successful_order_generation";
 import { UNSUCCESSFUL_ORDER_GENERATION } from "./unsuccessful_order_generation";
+import { SUCCESSFUL_UNPACK_TERMS } from "./successful_unpack_terms";
+import { UNSUCCESSFUL_UNPACK_TERMS } from "./unsuccessful_unpack_terms";
 
 // Types
 import { DebtOrder } from "src/types";
@@ -75,9 +77,14 @@ export interface OrderGenerationScenario {
     errorMessage?: string;
 }
 
-export interface UnpackParametersScenario {
+export interface UnpackTermsScenario {
     description: string;
-    debtOrder: (defaultDebtOrder: DebtOrder.Instance) => DebtOrder.Instance;
+    generateDebtOrder: (
+        debtKernel: DebtKernelContract,
+        repaymentRouter: RepaymentRouterContract,
+        principalToken: DummyTokenContract,
+        simpleInterestTermsContract: SimpleInterestTermsContractContract,
+    ) => DebtOrder.Instance;
     throws: boolean;
     expectedParameters?: object;
     errorType?: string;
@@ -94,4 +101,6 @@ export {
     NONCONSENUAL_ORDERS,
     SUCCESSFUL_ORDER_GENERATION,
     UNSUCCESSFUL_ORDER_GENERATION,
+    SUCCESSFUL_UNPACK_TERMS,
+    UNSUCCESSFUL_UNPACK_TERMS,
 };

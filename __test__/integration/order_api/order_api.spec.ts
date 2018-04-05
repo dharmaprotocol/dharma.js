@@ -19,6 +19,8 @@ import {
     NONCONSENUAL_ORDERS,
     SUCCESSFUL_ORDER_GENERATION,
     UNSUCCESSFUL_ORDER_GENERATION,
+    SUCCESSFUL_UNPACK_TERMS,
+    UNSUCCESSFUL_UNPACK_TERMS,
 } from "./scenarios";
 
 // Runners
@@ -55,9 +57,9 @@ describe("Order API (Integration Tests)", () => {
         );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
-        scenarioRunner.orderApi = new OrderAPI(web3, contractsApi);
         scenarioRunner.orderSigner = new SignerAPI(web3, contractsApi);
         scenarioRunner.adaptersApi = new AdaptersAPI(web3, contractsApi);
+        scenarioRunner.orderApi = new OrderAPI(web3, contractsApi, scenarioRunner.adaptersApi);
         scenarioRunner.principalToken = await DummyTokenContract.at(
             principalTokenAddress,
             web3,
@@ -121,6 +123,16 @@ describe("Order API (Integration Tests)", () => {
 
         describe("Invalid order generation", () => {
             UNSUCCESSFUL_ORDER_GENERATION.forEach(scenarioRunner.testOrderGenerationScenario);
+        });
+    });
+
+    describe("#unpackTerms", () => {
+        describe("Successful terms unpacking", () => {
+            SUCCESSFUL_UNPACK_TERMS.forEach(scenarioRunner.testUnpackTermsScenario);
+        });
+
+        describe("Unsuccessful terms unpacking", () => {
+            UNSUCCESSFUL_UNPACK_TERMS.forEach(scenarioRunner.testUnpackTermsScenario);
         });
     });
 });

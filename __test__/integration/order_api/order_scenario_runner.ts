@@ -22,11 +22,12 @@ import {
     OrderCancellationScenario,
     OrderGenerationScenario,
     IssuanceCancellationScenario,
+    UnpackTermsScenario,
 } from "./scenarios/";
 
 // Types
 import { DebtOrder } from "src/types";
-import { BaseAdapter } from "src/adapters";
+import { Adapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
@@ -52,6 +53,7 @@ export class OrderScenarioRunner {
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
         this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
+        this.testUnpackTermsScenario = this.testUnpackTermsScenario.bind(this);
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -252,7 +254,7 @@ export class OrderScenarioRunner {
 
     public testOrderGenerationScenario(scenario: OrderGenerationScenario) {
         describe(scenario.description, () => {
-            let adapter: BaseAdapter;
+            let adapter: Adapter.Interface;
 
             beforeEach(() => {
                 adapter = scenario.adapter(this.adaptersApi);
@@ -271,6 +273,35 @@ export class OrderScenarioRunner {
                     await expect(
                         this.orderApi.generate(adapter, scenario.inputParameters),
                     ).rejects.toThrow(scenario.errorMessage);
+                });
+            }
+        });
+    }
+
+    public testUnpackTermsScenario(scenario: UnpackTermsScenario) {
+        describe(scenario.description, () => {
+            let debtOrder: DebtOrder.Instance;
+
+            beforeEach(async () => {
+                debtOrder = scenario.generateDebtOrder(
+                    this.debtKernel,
+                    this.repaymentRouter,
+                    this.principalToken,
+                    this.termsContract,
+                );
+            });
+
+            if (!scenario.throws) {
+                test("returns correctly unpacked parameters", async () => {
+                    await expect(this.orderApi.unpackTerms(debtOrder)).resolves.toEqual(
+                        scenario.expectedParameters,
+                    );
+                });
+            } else {
+                test(`throws ${scenario.errorType}`, async () => {
+                    await expect(this.orderApi.unpackTerms(debtOrder)).rejects.toThrow(
+                        scenario.errorMessage,
+                    );
                 });
             }
         });
