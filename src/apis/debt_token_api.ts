@@ -102,4 +102,25 @@ export class DebtTokenAPI {
         return debtTokenContract.transfer.sendTransactionAsync(to, tokenID, txOptions);
     }
 
+    public async transferFrom(
+        from: string,
+        to: string,
+        tokenID: BigNumber,
+        data?: string,
+        options?: TxData,
+    ): Promise<string> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ERC721_TRANSFER_GAS_MAXIMUM,
+            options,
+        );
+        return debtTokenContract.safeTransferFrom.sendTransactionAsync(
+            from,
+            to,
+            tokenID,
+            data,
+            txOptions,
+        );
+    }
 }
