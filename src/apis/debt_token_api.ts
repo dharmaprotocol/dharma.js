@@ -49,6 +49,10 @@ export class DebtTokenAPI {
         return debtTokenContract.ownerOf.callAsync(tokenID);
     }
 
+    public async exists(tokenID: BigNumber): Promise<boolean> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        return debtTokenContract.exists.callAsync(tokenID);
+    }
 
     public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
