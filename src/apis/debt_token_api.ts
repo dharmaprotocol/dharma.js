@@ -1,5 +1,9 @@
+import * as Web3 from "web3";
 import { TxData } from "../types";
 import { BigNumber } from "bignumber.js";
+import { Web3Utils } from "../../utils/web3_utils";
+import { ContractsAPI } from "./";
+import { Assertions } from "../invariants";
 
 export interface DebtTokenAPI {
     balanceOf(owner: string): Promise<BigNumber>;
@@ -20,4 +24,16 @@ export interface DebtTokenAPI {
         data?: string,
         options?: TxData,
     ): Promise<string>;
+}
+
+export class DebtTokenAPI {
+    private web3: Web3;
+    private contracts: ContractsAPI;
+    private assert: Assertions;
+
+    constructor(web3: Web3, contracts: ContractsAPI) {
+        this.web3 = web3;
+        this.contracts = contracts;
+        this.assert = new Assertions(this.web3, this.contracts);
+    }
 }
