@@ -6,7 +6,7 @@ import * as singleLineString from "single-line-string";
 import { ContractsAPI } from ".";
 
 // Adapters
-import { BaseAdapter } from "../adapters";
+import { Adapter } from "../adapters";
 
 // Wrappers
 import {
@@ -220,7 +220,7 @@ export class OrderAPI {
      *                to generate the debt order.
      * @return Newly generated debt order.
      */
-    public async generate(adapter: BaseAdapter, params: object): Promise<DebtOrder.Instance> {
+    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder.Instance> {
         this.assert.adapter.conformsToInterface(
             adapter,
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
