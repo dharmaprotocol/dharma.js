@@ -36,4 +36,9 @@ export class DebtTokenAPI {
         this.contracts = contracts;
         this.assert = new Assertions(this.web3, this.contracts);
     }
+
+    public async balanceOf(owner: string): Promise<BigNumber> {
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+        return debtTokenContract.balanceOf.callAsync(owner);
+    }
 }
