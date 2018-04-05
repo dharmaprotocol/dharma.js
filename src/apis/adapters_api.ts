@@ -65,9 +65,9 @@ export class AdaptersAPI {
         const termsContractType = await this.contracts.getTermsContractType(termsContractAddress);
 
         switch (termsContractType) {
-            case SimpleInterestTermsContractContract.constructor.name:
+            case SimpleInterestTermsContractContract.name:
                 return this.simpleInterestLoan;
-            case CollateralizedSimpleInterestTermsContractContract.constructor.name:
+            case CollateralizedSimpleInterestTermsContractContract.name:
                 return this.collateralizedSimpleInterestLoan;
             default:
                 throw new Error(AdaptersErrors.NO_ADAPTER_FOR_TERMS_CONTRACT(termsContractAddress));

@@ -51,8 +51,9 @@ export const ContractsError = {
         singleLineString`Could not find token associated with symbol ${symbol}.`,
     CANNOT_FIND_TOKEN_WITH_INDEX: (index: number) =>
         singleLineString`Could not find token associated with index ${index}.`,
-    TERMS_CONTRACT_NOT_FOUND: (tokenAddress: string) =>
-        singleLineString`Could not find a terms contract at address ${tokenAddress}`,
+    TERMS_CONTRACT_NOT_FOUND: (termsContractAddress: string) =>
+        singleLineString`Could not find a terms contract tracked by
+                         dharma.js at address ${termsContractAddress}.`,
 };
 
 export class ContractsAPI {
