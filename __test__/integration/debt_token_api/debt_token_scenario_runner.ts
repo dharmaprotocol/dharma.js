@@ -30,6 +30,8 @@ export class DebtTokenScenarioRunner {
 
         this.contractsAPI = new ContractsAPI(this.web3);
         this.debtTokenAPI = new DebtTokenAPI(this.web3, this.contractsAPI);
+
+        this.isConfigured = true;
     }
 
     public async saveSnapshotAsync() {
