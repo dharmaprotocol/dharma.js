@@ -2,6 +2,8 @@
 import * as Web3 from "web3";
 import * as compact from "lodash.compact";
 import * as ABIDecoder from "abi-decoder";
+import { BigNumber } from "bignumber.js";
+import * as moment from "moment";
 
 // Wrappers
 import {
@@ -14,7 +16,7 @@ import {
 } from "src/wrappers";
 
 // APIs
-import { AdaptersAPI, OrderAPI, SignerAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
 
 // Scenarios
 import {
@@ -22,14 +24,17 @@ import {
     OrderCancellationScenario,
     OrderGenerationScenario,
     IssuanceCancellationScenario,
+    UnpackTermsScenario,
 } from "./scenarios/";
 
 // Types
 import { DebtOrder } from "src/types";
-import { BaseAdapter } from "src/adapters";
+import { Adapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
+import { ACCOUNTS } from "../../accounts";
+import * as Units from "utils/units";
 
 export class OrderScenarioRunner {
     public web3Utils: Web3Utils;
@@ -39,6 +44,7 @@ export class OrderScenarioRunner {
     public principalToken: DummyTokenContract;
     public termsContract: SimpleInterestTermsContractContract;
     public orderApi: OrderAPI;
+    public contractsApi: ContractsAPI;
     public orderSigner: SignerAPI;
     public adaptersApi: AdaptersAPI;
     public abiDecoder: any;
@@ -52,6 +58,8 @@ export class OrderScenarioRunner {
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
         this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
+        this.testUnpackTermsScenario = this.testUnpackTermsScenario.bind(this);
+
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -252,7 +260,7 @@ export class OrderScenarioRunner {
 
     public testOrderGenerationScenario(scenario: OrderGenerationScenario) {
         describe(scenario.description, () => {
-            let adapter: BaseAdapter;
+            let adapter: Adapter.Interface;
 
             beforeEach(() => {
                 adapter = scenario.adapter(this.adaptersApi);
@@ -271,6 +279,57 @@ export class OrderScenarioRunner {
                     await expect(
                         this.orderApi.generate(adapter, scenario.inputParameters),
                     ).rejects.toThrow(scenario.errorMessage);
+                });
+            }
+        });
+    }
+
+    public testUnpackTermsScenario(scenario: UnpackTermsScenario) {
+        describe(scenario.description, () => {
+            let debtOrder: DebtOrder.Instance;
+
+            beforeEach(async () => {
+                const simpleInterestTermsContract = this.termsContract;
+                const collateralizedSimpleInterestTermsContract = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
+                const otherTermsContractAddress = ACCOUNTS[4].address;
+
+                debtOrder = {
+                    kernelVersion: this.debtKernel.address,
+                    issuanceVersion: this.repaymentRouter.address,
+                    principalAmount: Units.ether(1),
+                    principalToken: this.principalToken.address,
+                    debtor: ACCOUNTS[1].address,
+                    debtorFee: Units.ether(0.001),
+                    creditor: ACCOUNTS[2].address,
+                    creditorFee: Units.ether(0.001),
+                    relayer: ACCOUNTS[3].address,
+                    relayerFee: Units.ether(0.002),
+                    termsContract: scenario.termsContract(
+                        simpleInterestTermsContract.address,
+                        collateralizedSimpleInterestTermsContract.address,
+                        otherTermsContractAddress,
+                    ),
+                    termsContractParameters: scenario.termsContractParameters,
+                    expirationTimestampInSec: new BigNumber(
+                        moment()
+                            .add(7, "days")
+                            .unix(),
+                    ),
+                    salt: new BigNumber(0),
+                };
+            });
+
+            if (!scenario.throws) {
+                test("returns correctly unpacked parameters", async () => {
+                    await expect(this.orderApi.unpackTerms(debtOrder)).resolves.toEqual(
+                        scenario.expectedParameters,
+                    );
+                });
+            } else {
+                test(`throws ${scenario.errorType}`, async () => {
+                    await expect(this.orderApi.unpackTerms(debtOrder)).rejects.toThrow(
+                        scenario.errorMessage,
+                    );
                 });
             }
         });

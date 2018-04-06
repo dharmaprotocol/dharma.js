@@ -3,10 +3,10 @@ import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 
 // APIs
-import { ContractsAPI } from ".";
+import { AdaptersAPI, ContractsAPI } from ".";
 
 // Adapters
-import { BaseAdapter } from "../adapters";
+import { Adapter } from "../adapters";
 
 // Wrappers
 import {
@@ -86,10 +86,12 @@ export class OrderAPI {
     private web3: Web3;
     private assert: Assertions;
     private contracts: ContractsAPI;
+    private adapters: AdaptersAPI;
 
-    public constructor(web3: Web3, contracts: ContractsAPI) {
+    public constructor(web3: Web3, contracts: ContractsAPI, adapters: AdaptersAPI) {
         this.web3 = web3;
         this.contracts = contracts;
+        this.adapters = adapters;
 
         this.assert = new Assertions(this.web3, this.contracts);
     }
@@ -220,13 +222,33 @@ export class OrderAPI {
      *                to generate the debt order.
      * @return Newly generated debt order.
      */
-    public async generate(adapter: BaseAdapter, params: object): Promise<DebtOrder.Instance> {
+    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder.Instance> {
         this.assert.adapter.conformsToInterface(
             adapter,
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
         );
 
         return adapter.toDebtOrder(params);
+    }
+
+    /**
+     * Decode tightly-packed representation of debt agreement's terms in a
+     * given debt order into an object with human-interpretable keys and values.
+     *
+     * NOTE: If the terms contract in the given debt order does not correspond
+     *       to any of the built-in adapters bundled into dharma.js, this method
+     *       will throw.
+     *
+     * @param debtOrder A Dharma debt order
+     * @return An object containing human-interpretable terms for the loan
+     */
+    public async unpackTerms(debtOrder: DebtOrder.Instance): Promise<object> {
+        const { termsContract, termsContractParameters } = debtOrder;
+
+        // Will throw if adapter cannot be found for given terms contract
+        const adapter = await this.adapters.getAdapterByTermsContractAddress(termsContract);
+
+        return adapter.unpackParameters(termsContractParameters);
     }
 
     public async cancelIssuanceAsync(
