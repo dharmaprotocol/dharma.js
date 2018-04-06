@@ -560,7 +560,7 @@ export class DebtTokenContract extends BaseContract {
             return abiEncodedTransactionData;
         },
     };
-    public safeTransferFrom = {
+    public safeTransferFromWithData = {
         async sendTransactionAsync(
             _from: string,
             _to: string,

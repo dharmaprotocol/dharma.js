@@ -16,7 +16,7 @@ import {
 import {
     SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
-} from "src/wrappers";
+} from "../wrappers";
 
 export const AdaptersErrors = {
     NO_ADAPTER_FOR_TERMS_CONTRACT: (termsContractAddress: string) =>

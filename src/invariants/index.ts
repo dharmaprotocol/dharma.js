@@ -32,6 +32,6 @@ export class Assertions {
         this.order = new OrderAssertions(this.contracts);
         this.token = new TokenAssertions();
         this.schema = new SchemaAssertions();
-        this.debtAgreement = new DebtAgreementAssertions(this.web3);
+        this.debtAgreement = new DebtAgreementAssertions();
     }
 }

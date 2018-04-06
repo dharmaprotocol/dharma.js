@@ -2,11 +2,11 @@ import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
 
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 
-import { ContractsAPI } from "src/apis";
-import { Assertions } from "src/invariants";
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "src/types";
+import { ContractsAPI } from "../apis";
+import { Assertions } from "../invariants";
+import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 import { Adapter } from "./adapter";
 
 import { TermsContractParameters } from "./terms_contract_parameters";
