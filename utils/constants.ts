@@ -21,3 +21,4 @@ export const TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY = "TokenTransferProxy";
 export const TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry";
 export const COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
     "CollateralizedSimpleInterestTermsContract";
+export const COLLATERALIZER_CONTRACT_CACHE_KEY = "CollateralizerContract";
