@@ -11,6 +11,7 @@ import { TermsContract } from "./contract_wrappers/terms_contract_wrapper";
 import { RepaymentRouterContract } from "./contract_wrappers/repayment_router_wrapper";
 import { SimpleInterestTermsContractContract } from "./contract_wrappers/simple_interest_terms_contract_wrapper";
 import { CollateralizedSimpleInterestTermsContractContract } from "./contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
+import { CollateralizerContract } from "./contract_wrappers/collateralizer_wrapper";
 
 export type ContractWrapper =
     | DebtKernelContract
@@ -38,4 +39,5 @@ export {
     SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
     RepaymentRouterContract,
+    CollateralizerContract,
 };
