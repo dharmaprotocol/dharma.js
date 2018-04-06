@@ -23,7 +23,8 @@ export type ContractWrapper =
     | SimpleInterestTermsContractContract
     | CollateralizedSimpleInterestTermsContractContract
     | TermsContract
-    | TokenRegistryContract;
+    | TokenRegistryContract
+    | CollateralizerContract;
 
 export {
     BaseContract,
