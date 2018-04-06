@@ -306,6 +306,7 @@ export class DebtKernelContract extends BaseContract {
                     signaturesS,
                 ),
             );
+
             const txHash = await promisify<string>(
                 self.web3ContractInstance.fillDebtOrder,
                 self.web3ContractInstance,

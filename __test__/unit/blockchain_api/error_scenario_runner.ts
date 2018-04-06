@@ -284,7 +284,7 @@ export class ErrorScenarioRunner {
             // TODO(kayvon): increasing the allowance to be greater than the
             // repayment amount shouldn't be necessary. This appears to be an
             // error in the contracts.
-            REPAYMENT_AMOUNT.add(1),
+            REPAYMENT_AMOUNT.plus(1),
             {
                 from: DEBTOR,
             },
