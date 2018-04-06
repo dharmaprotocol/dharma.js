@@ -33,7 +33,7 @@ export interface CollateralizedTermsContractParameters {
     gracePeriodInDays: BigNumber;
 }
 
-interface CollateralizedSimpleInterestTermsContractParameters
+export interface CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
         CollateralizedTermsContractParameters {}
 
@@ -296,7 +296,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         ).toArray();
     }
 
-    private unpackParameters(
+    public unpackParameters(
         termsContractParameters: string,
     ): CollateralizedSimpleInterestTermsContractParameters {
         const simpleInterestParams = this.simpleInterestLoanTerms.unpackParameters(

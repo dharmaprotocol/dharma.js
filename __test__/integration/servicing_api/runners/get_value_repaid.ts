@@ -19,8 +19,8 @@ import { ACCOUNTS } from "../../../accounts";
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 const contractsApi = new ContractsAPI(web3);
-const orderApi = new OrderAPI(web3, contractsApi);
 const adaptersApi = new AdaptersAPI(web3, contractsApi);
+const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
 
@@ -86,7 +86,7 @@ export class GetValueRepaidRunner {
                 termLength: new BigNumber(2),
             });
 
-            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
+            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
             issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 

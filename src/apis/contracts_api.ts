@@ -2,6 +2,7 @@
 import * as Web3 from "web3";
 import { BigNumber } from "bignumber.js";
 import * as _ from "lodash";
+import * as singleLineString from "single-line-string";
 
 // wrappers
 import {
@@ -30,7 +31,6 @@ import {
     NULL_ADDRESS,
     COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
 } from "../../utils/constants";
-import * as singleLineString from "single-line-string";
 
 // types
 import { DharmaConfig } from "../types";
@@ -51,8 +51,9 @@ export const ContractsError = {
         singleLineString`Could not find token associated with symbol ${symbol}.`,
     CANNOT_FIND_TOKEN_WITH_INDEX: (index: number) =>
         singleLineString`Could not find token associated with index ${index}.`,
-    TERMS_CONTRACT_NOT_FOUND: (tokenAddress: string) =>
-        singleLineString`Could not find a terms contract at address ${tokenAddress}`,
+    TERMS_CONTRACT_NOT_FOUND: (termsContractAddress: string) =>
+        singleLineString`Could not find a terms contract tracked by
+                         dharma.js at address ${termsContractAddress}.`,
 };
 
 export class ContractsAPI {
@@ -272,7 +273,12 @@ export class ContractsAPI {
      */
     public async getTermsContractType(contractAddress: string): Promise<string> {
         const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
-        const supportedTermsContracts = [simpleInterestTermsContract];
+        const collateralizedSimpleInterestTermsContract = await this.loadCollateralizedSimpleInterestTermsContract();
+
+        const supportedTermsContracts = [
+            simpleInterestTermsContract,
+            collateralizedSimpleInterestTermsContract,
+        ];
 
         const matchingTermsContract = _.find(
             supportedTermsContracts,
