@@ -48,6 +48,43 @@ export class Web3Utils {
         return response.result;
     }
 
+    /**
+     * Returns the current blocktime in seconds.
+     *
+     * @returns {Promise<number>}
+     */
+    public async getCurrentBlockTime(): Promise<number> {
+        return this.web3.eth.getBlock("latest").timestamp;
+    }
+
+    /**
+     * Increases block time by the given number of seconds. Returns true
+     * if the next block was mined successfully after increasing time.
+     *
+     * @param {number} seconds
+     * @returns {Promise<boolean>}
+     */
+    public async increaseTime(seconds: number): Promise<boolean> {
+        const increaseTimeResponse = await this.sendJsonRpcRequestAsync(
+            "evm_increaseTime",
+            [seconds],
+        );
+
+        // A new block must be mined to make this effective.
+        const blockMineResponse = await this.mineBlock();
+
+        return !increaseTimeResponse["error"] && !blockMineResponse["error"];
+    }
+
+    /**
+     * Mines a single block.
+     *
+     * @returns {Promise<"web3".Web3.JSONRPCResponsePayload>}
+     */
+    public async mineBlock(): Promise<Web3.JSONRPCResponsePayload>  {
+        return this.sendJsonRpcRequestAsync("evm_mine", []);
+    }
+
     private async sendJsonRpcRequestAsync(
         method: string,
         params: any[],

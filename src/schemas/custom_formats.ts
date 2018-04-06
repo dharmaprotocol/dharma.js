@@ -11,7 +11,8 @@ export const bigNumberFormat = function(input) {
 
 export const wholeBigNumberFormat = function(input) {
     const regex = RegExp("^\\d+$");
-    return input === undefined || (input.isBigNumber && regex.test(input.toString()));
+
+    return input === undefined || (isBigNumber(input) && regex.test(input.toString()));
 };
 
 /**

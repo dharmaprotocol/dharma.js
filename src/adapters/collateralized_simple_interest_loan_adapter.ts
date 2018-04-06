@@ -1,24 +1,34 @@
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
+import * as moment from "moment";
 
-import { BigNumber } from "../../utils/bignumber";
+import { BigNumber } from "utils/bignumber";
+import { Web3Utils } from "utils/web3_utils";
 
-import { ContractsAPI } from "../apis";
-import { Assertions } from "../invariants";
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
+import { ContractsAPI } from "src/apis";
+import { Assertions } from "src/invariants";
+import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "src/types";
+
 import { Adapter } from "./adapter";
-
 import { TermsContractParameters } from "./terms_contract_parameters";
+
 import {
     SimpleInterestLoanTerms,
     SimpleInterestLoanOrder,
     SimpleInterestTermsContractParameters,
 } from "./simple_interest_loan_adapter";
 
+import { TermsContract } from "src/wrappers";
+
+import { NULL_ADDRESS } from "../../utils/constants";
+import { ACCOUNTS } from "../../__test__/accounts";
+
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
 const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
+
+const SECONDS_IN_DAY = 60 * 60 * 24;
 
 // Extend order to include parameters necessary for a collateralized terms contract.
 export interface CollateralizedSimpleInterestLoanOrder extends SimpleInterestLoanOrder {
@@ -56,6 +66,13 @@ export const CollateralizerAdapterErrors = {
         singleLineString`Terms contract at address ${termsContractAddress} is not
                          a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
                          not interface with the terms contract as expected`,
+    COLLATERAL_ALREADY_WITHDRAWN: (agreementId: string) =>
+        singleLineString`Collateral has already been withdrawn for agreement ID ${agreementId}`,
+    DEBT_NOT_YET_REPAID: (agreementId: string) =>
+        singleLineString`Debt has not been fully repaid for loan with agreement ID ${agreementId}`,
+    LOAN_NOT_IN_DEFAULT_FOR_GRACE_PERIOD: (agreementId: string) =>
+        singleLineString`Loan with agreement ID ${agreementId} is not currently in a state of
+                        default when adjusted for grace period`,
 };
 
 export class CollateralizedLoanTerms {
@@ -66,11 +83,9 @@ export class CollateralizedLoanTerms {
     }
 
     public packParameters(params: CollateralizedTermsContractParameters): string {
-        const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
+        this.assertValidParams(params);
 
-        this.assertCollateralTokenIndexWithinBounds(collateralTokenIndex);
-        this.assertCollateralAmountWithinBounds(collateralAmount);
-        this.assertGracePeriodInDaysWithinBounds(gracePeriodInDays);
+        const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
 
         const collateralTokenIndexShifted = TermsContractParameters.bitShiftLeft(
             collateralTokenIndex,
@@ -98,6 +113,14 @@ export class CollateralizedLoanTerms {
             collateralAmount: new BigNumber(collateralAmountHex),
             gracePeriodInDays: new BigNumber(gracePeriodInDaysHex),
         };
+    }
+
+    public assertValidParams(params: CollateralizedTermsContractParameters) {
+        const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
+
+        this.assertCollateralTokenIndexWithinBounds(collateralTokenIndex);
+        this.assertCollateralAmountWithinBounds(collateralAmount);
+        this.assertGracePeriodInDaysWithinBounds(gracePeriodInDays);
     }
 
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
@@ -149,10 +172,14 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
+    private web3Utils: Web3Utils;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
         this.assert = new Assertions(web3, contractsAPI);
+        this.web3Utils = new Web3Utils(web3);
+
         this.contractsAPI = contractsAPI;
+
         this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
     }
@@ -191,35 +218,35 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
         let debtOrder: DebtOrder.Instance = omit(collateralizedSimpleInterestLoanOrder, [
-            // omit the simple interest parameters that will be packed into the `termsContractParameters`.
+            // omit the simple interest parameters that will be packed
+            // into the `termsContractParameters`.
             "principalTokenSymbol",
             "interestRate",
             "amortizationUnit",
             "termLength",
-            // omit the collateralized parameters that will be packed into the `termsContractParameters`.
+            // omit the collateralized parameters that will be packed into
+            // the `termsContractParameters`.
             "collateralTokenSymbol",
             "collateralAmount",
             "gracePeriodInDays",
         ]);
 
-        const packedSimpleInterestParams = this.simpleInterestLoanTerms.packParameters({
-            principalTokenIndex,
-            principalAmount,
-            interestRate,
-            amortizationUnit,
-            termLength,
-        });
-
-        const packedCollateralizedParams = this.collateralizedLoanTerms.packParameters({
-            collateralTokenIndex,
-            collateralAmount,
-            gracePeriodInDays,
-        });
-
         // Our final output is the perfect union of the packed simple interest params and the packed
         // collateralized params.
-        const packedParams =
-            packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
+        const packedParams = this.packParameters(
+            {
+                principalTokenIndex,
+                principalAmount,
+                interestRate,
+                amortizationUnit,
+                termLength,
+            },
+            {
+                collateralTokenIndex,
+                collateralAmount,
+                gracePeriodInDays,
+            },
+        );
 
         debtOrder = {
             ...debtOrder,
@@ -296,6 +323,65 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         ).toArray();
     }
 
+    /**
+     * Seizes the collateral from the given debt agreement and
+     * transfers it to the debt agreement's beneficiary.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<string>} The transaction's hash.
+     */
+    public async seizeCollateral(agreementId: string): Promise<string> {
+        await this.assertCollateralSeizeable(agreementId);
+
+        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+
+        return collateralizerContract.seizeCollateral.sendTransactionAsync(
+            agreementId,
+            // FIXME: For default "from", was getting "invalid address" and default gas reverts.
+            { from: ACCOUNTS[1].address, gas: 4712388 },
+        );
+    }
+
+    /**
+     * Returns collateral to the debt agreement's original collateralizer
+     * if and only if the debt agreement's term has lapsed and
+     * the total expected repayment value has been repaid.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<string>} The transaction's hash.
+     */
+    public async returnCollateral(agreementId: string): Promise<string> {
+        await this.assertCollateralReturnable(agreementId);
+
+        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+
+        return collateralizerContract.returnCollateral.sendTransactionAsync(
+            agreementId,
+            // FIXME: For default "from", was getting "invalid address" and default gas reverts.
+            { from: ACCOUNTS[1].address, gas: 4712388 },
+        );
+    }
+
+    public async canReturnCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralReturnable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async canSeizeCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralSeizeable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     public unpackParameters(
         termsContractParameters: string,
     ): CollateralizedSimpleInterestTermsContractParameters {
@@ -311,6 +397,23 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
             ...simpleInterestParams,
             ...collateralizedParams,
         };
+    }
+
+    public packParameters(
+        simpleTermsParams: SimpleInterestTermsContractParameters,
+        collateralTermsParams: CollateralizedTermsContractParameters,
+    ): string {
+        const packedSimpleInterestParams = this.simpleInterestLoanTerms.packParameters(
+            simpleTermsParams,
+        );
+
+        const packedCollateralizedParams = this.collateralizedLoanTerms.packParameters(
+            collateralTermsParams,
+        );
+
+        // Our final output is the perfect union of the packed simple interest params and the packed
+        // collateralized params.
+        return packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
     }
 
     private async assertTokenCorrespondsToSymbol(
@@ -339,5 +442,115 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
                 CollateralizerAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
         }
+    }
+
+    /**
+     * Collateral is seizable if the collateral has not been withdrawn yet, and the
+     * loan has been defaulted for the duration of the grace period.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<void>}
+     */
+    private async assertCollateralSeizeable(agreementId: string): Promise<void> {
+        const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
+
+        const termsContractParameters = (await debtRegistry.getTerms.callAsync(agreementId))[1];
+
+        const unpackedParams = this.unpackParameters(termsContractParameters);
+
+        this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+
+        await this.assertCollateralNotWithdrawn(agreementId);
+
+        await this.assertDefaultedForGracePeriod(agreementId, unpackedParams.gracePeriodInDays);
+    }
+
+    /**
+     * Collateral is returnable if the debt is repaid, and the collateral has not yet
+     * been withdrawn.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<void>}
+     */
+    private async assertCollateralReturnable(agreementId: string): Promise<void> {
+        const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
+
+        const termsContractParameters = (await debtRegistry.getTerms.callAsync(agreementId))[1];
+
+        const unpackedParams = this.unpackParameters(termsContractParameters);
+
+        this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+
+        await this.assertCollateralNotWithdrawn(agreementId);
+
+        await this.assertDebtRepaid(agreementId);
+    }
+
+    private async assertDebtRepaid(agreementId) {
+        const debtRepaid = await this.debtRepaid(agreementId);
+
+        if (!debtRepaid) {
+            throw new Error(CollateralizerAdapterErrors.DEBT_NOT_YET_REPAID(agreementId));
+        }
+    }
+
+    private async assertDefaultedForGracePeriod(agreementId: string, gracePeriod: BigNumber) {
+        const defaultedForGracePeriod = await this.defaultedForGracePeriod(
+            agreementId,
+            gracePeriod,
+        );
+
+        if (!defaultedForGracePeriod) {
+            throw new Error(
+                CollateralizerAdapterErrors.LOAN_NOT_IN_DEFAULT_FOR_GRACE_PERIOD(agreementId),
+            );
+        }
+    }
+
+    private async defaultedForGracePeriod(
+        agreementId: string,
+        gracePeriod: BigNumber,
+    ): Promise<boolean> {
+        const termsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const repaymentToDate = await termsContract.getValueRepaidToDate.callAsync(agreementId);
+
+        const currentTime = await this.web3Utils.getCurrentBlockTime();
+
+        const timeAdjustedForGracePeriod = new BigNumber(currentTime).sub(
+            gracePeriod.mul(SECONDS_IN_DAY),
+        );
+
+        const minimumRepayment = await termsContract.getExpectedRepaymentValue.callAsync(
+            agreementId,
+            timeAdjustedForGracePeriod,
+        );
+
+        return repaymentToDate.lt(minimumRepayment);
+    }
+
+    private async assertCollateralNotWithdrawn(agreementId) {
+        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+
+        const collateralizerAddress = await collateralizerContract.agreementToCollateralizer.callAsync(
+            agreementId,
+        );
+
+        if (collateralizerAddress === NULL_ADDRESS) {
+            throw new Error(CollateralizerAdapterErrors.COLLATERAL_ALREADY_WITHDRAWN(agreementId));
+        }
+    }
+
+    private async debtRepaid(agreementId: string): Promise<boolean> {
+        const termsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const repaymentToDate = await termsContract.getValueRepaidToDate.callAsync(agreementId);
+
+        const termEnd = await termsContract.getTermEndTimestamp.callAsync(agreementId);
+
+        const expectedTotalRepayment = await termsContract.getExpectedRepaymentValue.callAsync(
+            agreementId,
+            termEnd,
+        );
+
+        return repaymentToDate.gte(expectedTotalRepayment);
     }
 }

@@ -16,3 +16,6 @@ logs/
 compiled
 .awcache
 .rpt2_cache
+
+# editor-generated files
+*.iml
