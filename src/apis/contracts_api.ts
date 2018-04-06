@@ -116,7 +116,7 @@ export class ContractsAPI {
 
         if (this.config.kernelAddress) {
             collateralizer = await CollateralizerContract.at(
-                this.config.kernelAddress,
+                this.config.collateralizerAddress,
                 this.web3,
                 transactionOptions,
             );
