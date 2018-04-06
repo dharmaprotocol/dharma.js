@@ -388,36 +388,7 @@ export class CollateralizerContract extends BaseContract {
             );
         });
     }
-
-    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<CollateralizerContract> {
-        const currentNetwork = web3.version.network;
-        const { abi, networks } = await this.getArtifactsData(web3);
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address);
-
-        return new CollateralizerContract(web3ContractInstance, defaults);
-    }
-
-    static async at(
-        address: string,
-        web3: Web3,
-        defaults: Partial<TxData>,
-    ): Promise<CollateralizerContract> {
-        const { abi } = await this.getArtifactsData(web3);
-        const web3ContractInstance = web3.eth.contract(abi).at(address);
-
-        return new CollateralizerContract(web3ContractInstance, defaults);
-    }
-
-    private static async getArtifactsData(web3: Web3): Promise<any> {
-        try {
-            const artifact = await fs.readFile("build/contracts/Collateralizer.json", "utf8");
-            const { abi, networks } = JSON.parse(artifact);
-            return { abi, networks };
-        } catch (e) {
-            console.error("Artifacts malformed or nonexistent: " + e.toString());
-        }
-    }
-
+    
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
         super(web3ContractInstance, defaults);
         classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
