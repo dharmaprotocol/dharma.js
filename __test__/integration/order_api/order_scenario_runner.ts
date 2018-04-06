@@ -26,7 +26,7 @@ import {
 
 // Types
 import { DebtOrder } from "src/types";
-import { BaseAdapter } from "src/adapters";
+import { Adapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
@@ -252,7 +252,7 @@ export class OrderScenarioRunner {
 
     public testOrderGenerationScenario(scenario: OrderGenerationScenario) {
         describe(scenario.description, () => {
-            let adapter: BaseAdapter;
+            let adapter: Adapter.Interface;
 
             beforeEach(() => {
                 adapter = scenario.adapter(this.adaptersApi);

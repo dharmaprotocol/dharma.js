@@ -55,10 +55,9 @@ describe("Order API (Integration Tests)", () => {
         );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
-        scenarioRunner.contractsApi = new ContractsAPI(web3);
-        scenarioRunner.orderSigner = new SignerAPI(web3, scenarioRunner.contractsApi);
-        scenarioRunner.adaptersApi = new AdaptersAPI(scenarioRunner.contractsApi);
-        scenarioRunner.orderApi = new OrderAPI(web3, scenarioRunner.contractsApi);
+        scenarioRunner.orderSigner = new SignerAPI(web3, contractsApi);
+        scenarioRunner.adaptersApi = new AdaptersAPI(contractsApi);
+        scenarioRunner.orderApi = new OrderAPI(web3, contractsApi);
         scenarioRunner.principalToken = await DummyTokenContract.at(
             principalTokenAddress,
             web3,
