@@ -72,7 +72,7 @@ export class GetInvestmentsRunner {
                         salt: new BigNumber(i),
                     });
 
-                    debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
+                    debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
                     const issuanceHash = await orderApi.getIssuanceHash(debtOrder);
                     issuanceHashes.push(issuanceHash);

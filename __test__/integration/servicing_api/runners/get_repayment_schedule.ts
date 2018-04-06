@@ -81,7 +81,7 @@ export class GetRepaymentScheduleRunner {
                 termLength: scenario.termLength,
             });
 
-            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
+            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
             issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 

@@ -108,7 +108,7 @@ export class MakeRepaymentRunner {
                     termLength: new BigNumber(2),
                 });
 
-                debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
+                debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
                 issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 

@@ -202,13 +202,13 @@ export class ErrorScenarioRunner {
                 // the scenario specifies that a signature from a signatory
                 // ought to be attached.
                 debtOrder.debtorSignature = scenario.signatories.debtor
-                    ? await this.signerAPI.asDebtor(debtOrder)
+                    ? await this.signerAPI.asDebtor(debtOrder, false)
                     : undefined;
                 debtOrder.creditorSignature = scenario.signatories.creditor
-                    ? await this.signerAPI.asCreditor(debtOrder)
+                    ? await this.signerAPI.asCreditor(debtOrder, false)
                     : undefined;
                 debtOrder.underwriterSignature = scenario.signatories.underwriter
-                    ? await this.signerAPI.asUnderwriter(debtOrder)
+                    ? await this.signerAPI.asUnderwriter(debtOrder, false)
                     : undefined;
 
                 if (scenario.beforeBlock) {
@@ -304,7 +304,7 @@ export class ErrorScenarioRunner {
             salt: new BigNumber(0),
         });
 
-        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder);
+        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder, false);
 
         return debtOrder;
     }
