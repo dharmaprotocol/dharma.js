@@ -75,10 +75,11 @@ export class OrderAssertions {
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
-        const getOwnerAddress = await debtToken.ownerOf.callAsync(
+        const orderIssued = await debtToken.exists.callAsync(
             new BigNumber(debtOrderWrapped.getIssuanceCommitmentHash()),
         );
-        if (getOwnerAddress !== NULL_ADDRESS) {
+
+        if (orderIssued) {
             throw new Error(errorMessage);
         }
     }

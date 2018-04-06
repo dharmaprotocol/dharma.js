@@ -21,7 +21,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
         principalAmount: Units.ether(1),
         interestRate: new BigNumber(0.1),
         amortizationUnit: "months",
-        expected: Units.ether(0.6),
+        expected: Units.ether(0.55),
     },
     {
         description: "in 61 days at 10% interest amortized monthly from 1 Ether principal",
@@ -29,7 +29,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
         principalAmount: Units.ether(1),
         interestRate: new BigNumber(0.1),
         amortizationUnit: "months",
-        expected: Units.ether(1.2),
+        expected: Units.ether(1.1),
     },
     {
         description: "in 0 days at 20% interest amortized monthly from 1 Ether principal",
@@ -45,7 +45,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
         principalAmount: Units.ether(1),
         interestRate: new BigNumber(0.2),
         amortizationUnit: "months",
-        expected: Units.ether(0.7),
+        expected: Units.ether(0.6),
     },
     {
         description: "in 61 days at 20% interest amortized monthly from 1 Ether principal",
@@ -53,6 +53,6 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
         principalAmount: Units.ether(1),
         interestRate: new BigNumber(0.2),
         amortizationUnit: "months",
-        expected: Units.ether(1.4),
+        expected: Units.ether(1.2),
     },
 ];

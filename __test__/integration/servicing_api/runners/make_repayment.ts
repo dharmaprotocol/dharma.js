@@ -187,6 +187,7 @@ export class MakeRepaymentRunner {
                 if (scenario.successfullyRepays) {
                     test("should emit log indicating successful repayment", async () => {
                         const receipt = await web3Utils.getTransactionReceiptAsync(txHash);
+
                         const [repaymentSuccessLog] = compact(ABIDecoder.decodeLogs(receipt.logs));
 
                         expect(repaymentSuccessLog.name).toBe("LogRepayment");

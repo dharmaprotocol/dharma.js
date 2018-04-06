@@ -14,7 +14,7 @@ import { Assertions } from "../invariants";
 import { DebtRegistryEntry, TxData, RepaymentSchedule } from "../types";
 import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
 
-const REPAYMENT_GAS_MAXIMUM = 100000;
+const REPAYMENT_GAS_MAXIMUM = 150000;
 
 export const ServicingAPIErrors = {
     DEBT_AGREEMENT_NONEXISTENT: (issuanceHash: string) =>
