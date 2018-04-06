@@ -1,9 +1,15 @@
 import * as Web3 from "web3";
 import { Web3Utils } from "utils/web3_utils";
 
+import { ContractsAPI, DebtTokenAPI } from "src/apis/";
+
 export class DebtTokenScenarioRunner {
     private web3Utils: Web3Utils;
     private web3: Web3;
+
+    // APIs
+    private contractsAPI: ContractsAPI;
+    private debtTokenAPI: DebtTokenAPI;
 
     private isConfigured: boolean = false;
     private currentSnapshotId: number;
@@ -21,6 +27,9 @@ export class DebtTokenScenarioRunner {
         if (this.isConfigured) {
             return;
         }
+
+        this.contractsAPI = new ContractsAPI(this.web3);
+        this.debtTokenAPI = new DebtTokenAPI(this.web3, this.contractsAPI);
     }
 
     public async saveSnapshotAsync() {
