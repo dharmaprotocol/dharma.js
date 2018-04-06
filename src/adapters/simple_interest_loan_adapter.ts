@@ -1,11 +1,9 @@
 // libraries
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
 
 // utils
 import { BigNumber } from "../../utils/bignumber";
-import { NULL_ADDRESS } from "../../utils/constants";
 
 // types
 import { DebtOrder, RepaymentSchedule } from "../types";
@@ -69,7 +67,7 @@ export const SimpleInterestAdapterErrors = {
                          WEEKS, MONTHS, or YEARS.`,
     INVALID_TERM_LENGTH: () =>
         singleLineString`Term length value cannot be negative or greater
-                         than ${parseInt(MAX_TERM_LENGTH_VALUE_HEX)}`,
+                         than ${parseInt(MAX_TERM_LENGTH_VALUE_HEX, 16)}`,
     INVALID_TERMS_CONTRACT: (principalToken: string, termsContract: string) =>
         singleLineString`Terms Contract at address ${termsContract} does not
                          correspond to the SimpleInterestTermsContract associated
@@ -90,8 +88,8 @@ export const SimpleInterestAdapterErrors = {
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
 
-    constructor(web3: Web3, contracts: ContractsAPI) {
-        this.assert = new Assertions(web3, contracts);
+    constructor(contracts: ContractsAPI) {
+        this.assert = new Assertions(contracts);
     }
 
     public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
@@ -235,10 +233,10 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
     private contracts: ContractsAPI;
     private termsContractInterface: SimpleInterestLoanTerms;
 
-    public constructor(web3: Web3, contracts: ContractsAPI) {
-        this.assert = new Assertions(web3, contracts);
+    public constructor(contracts: ContractsAPI) {
+        this.assert = new Assertions(contracts);
         this.contracts = contracts;
-        this.termsContractInterface = new SimpleInterestLoanTerms(web3, contracts);
+        this.termsContractInterface = new SimpleInterestLoanTerms(contracts);
     }
 
     /**

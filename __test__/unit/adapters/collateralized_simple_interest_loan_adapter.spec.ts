@@ -50,10 +50,9 @@ const web3Utils = new Web3Utils(web3);
 const contracts = new ContractsAPI(web3);
 
 const collateralizedSimpleInterestLoanAdapter = new CollateralizedSimpleInterestLoanAdapter(
-    web3,
     contracts,
 );
-const collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contracts);
+const collateralizedLoanTerms = new CollateralizedLoanTerms(contracts);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 

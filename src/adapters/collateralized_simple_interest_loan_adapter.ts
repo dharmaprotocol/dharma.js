@@ -1,4 +1,3 @@
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
 
@@ -61,8 +60,8 @@ export const CollateralizedAdapterErrors = {
 export class CollateralizedLoanTerms {
     private assert: Assertions;
 
-    constructor(web3: Web3, contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(web3, contractsAPI);
+    constructor(contractsAPI: ContractsAPI) {
+        this.assert = new Assertions(contractsAPI);
     }
 
     public packParameters(params: CollateralizedTermsContractParameters): string {
@@ -150,11 +149,11 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
 
-    public constructor(web3: Web3, contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(web3, contractsAPI);
+    public constructor(contractsAPI: ContractsAPI) {
+        this.assert = new Assertions(contractsAPI);
         this.contractsAPI = contractsAPI;
-        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
-        this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
+        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(contractsAPI);
+        this.collateralizedLoanTerms = new CollateralizedLoanTerms(contractsAPI);
     }
 
     public async toDebtOrder(
