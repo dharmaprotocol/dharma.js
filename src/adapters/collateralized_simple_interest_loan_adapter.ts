@@ -37,7 +37,7 @@ export interface CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
         CollateralizedTermsContractParameters {}
 
-export const CollateralizedAdapterErrors = {
+export const CollateralizerAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
         singleLineString`Token Registry does not track a token at index
                          ${tokenIndex.toString()}.`,
@@ -103,43 +103,43 @@ export class CollateralizedLoanTerms {
     private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
         // Collateral token index cannot be a decimal value.
         if (TermsContractParameters.isDecimalValue(collateralTokenIndex)) {
-            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+            throw new Error(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
         if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
-            throw new Error(CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
+            throw new Error(CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
         }
     }
 
     private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
         // Collateral amount cannot be a decimal value.
         if (TermsContractParameters.isDecimalValue(collateralAmount)) {
-            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+            throw new Error(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
         if (collateralAmount.lt(0)) {
-            throw new Error(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
+            throw new Error(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
         }
 
         if (collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {
-            throw new Error(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
+            throw new Error(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
         }
     }
 
     private assertGracePeriodInDaysWithinBounds(gracePeriodInDays: BigNumber) {
         // Grace period cannot be a decimal value.
         if (TermsContractParameters.isDecimalValue(gracePeriodInDays)) {
-            throw new Error(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+            throw new Error(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
         // Grace period can't be negative.
         if (gracePeriodInDays.lt(0)) {
-            throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
+            throw new Error(CollateralizerAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
         }
 
         // Grace period has a maximum value that cannot be exceeded due to how we pack params.
         if (gracePeriodInDays.gt(MAX_GRACE_PERIOD_IN_DAYS_HEX)) {
-            throw new Error(CollateralizedAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
+            throw new Error(CollateralizerAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
         }
     }
 }
@@ -324,7 +324,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         if (!doesTokenCorrespondToSymbol) {
             throw new Error(
-                CollateralizedAdapterErrors.MISMATCHED_TOKEN_SYMBOL(tokenAddress, symbol),
+                CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(tokenAddress, symbol),
             );
         }
     }
@@ -336,7 +336,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         if (termsContractAddress !== collateralizedSimpleInterestTermsContract.address) {
             throw new Error(
-                CollateralizedAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
+                CollateralizerAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
         }
     }
