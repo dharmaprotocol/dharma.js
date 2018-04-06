@@ -19,10 +19,13 @@ import { INVALID_ORDER_CANCELLATIONS } from "./invalid_order_cancellations";
 import { INVALID_ISSUANCE_CANCELLATIONS } from "./invalid_issuance_cancellations";
 import { SUCCESSFUL_ORDER_GENERATION } from "./successful_order_generation";
 import { UNSUCCESSFUL_ORDER_GENERATION } from "./unsuccessful_order_generation";
+import { SUCCESSFUL_UNPACK_TERMS } from "./successful_unpack_terms";
+import { UNSUCCESSFUL_UNPACK_TERMS } from "./unsuccessful_unpack_terms";
 
 // Types
 import { DebtOrder } from "src/types";
-import { BaseAdapter } from "src/adapters";
+import { Adapter } from "src/adapters";
+
 import { AdaptersAPI } from "src/apis";
 
 export interface FillScenario {
@@ -68,9 +71,23 @@ export interface IssuanceCancellationScenario extends OrderCancellationScenario 
 
 export interface OrderGenerationScenario {
     description: string;
-    adapter: (adaptersApi: AdaptersAPI) => BaseAdapter;
+    adapter: (adaptersApi: AdaptersAPI) => Adapter.Interface;
     inputParameters: object;
     throws: boolean;
+    errorType?: string;
+    errorMessage?: string;
+}
+
+export interface UnpackTermsScenario {
+    description: string;
+    termsContract: (
+        simpleInterest: string,
+        collateralizedSimpleInterest: string,
+        other: string,
+    ) => string;
+    termsContractParameters: string;
+    throws: boolean;
+    expectedParameters?: object;
     errorType?: string;
     errorMessage?: string;
 }
@@ -85,4 +102,6 @@ export {
     NONCONSENUAL_ORDERS,
     SUCCESSFUL_ORDER_GENERATION,
     UNSUCCESSFUL_ORDER_GENERATION,
+    SUCCESSFUL_UNPACK_TERMS,
+    UNSUCCESSFUL_UNPACK_TERMS,
 };
