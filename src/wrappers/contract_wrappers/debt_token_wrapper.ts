@@ -14,6 +14,16 @@ import * as Web3 from "web3";
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
 export class DebtTokenContract extends BaseContract {
+    public supportsInterface = {
+        async callAsync(interfaceID: string, defaultBlock?: Web3.BlockParam): Promise<boolean> {
+            const self = this as DebtTokenContract;
+            const result = await promisify<boolean>(
+                self.web3ContractInstance.supportsInterface.call,
+                self.web3ContractInstance,
+            )(interfaceID);
+            return result;
+        },
+    };
     public getAuthorizedMintAgents = {
         async callAsync(defaultBlock?: Web3.BlockParam): Promise<string[]> {
             const self = this as DebtTokenContract;
@@ -82,16 +92,6 @@ export class DebtTokenContract extends BaseContract {
             const self = this as DebtTokenContract;
             const abiEncodedTransactionData = self.web3ContractInstance.approve.getData();
             return abiEncodedTransactionData;
-        },
-    };
-    public implementsERC721 = {
-        async callAsync(defaultBlock?: Web3.BlockParam): Promise<boolean> {
-            const self = this as DebtTokenContract;
-            const result = await promisify<boolean>(
-                self.web3ContractInstance.implementsERC721.call,
-                self.web3ContractInstance,
-            )();
-            return result;
         },
     };
     public totalSupply = {
@@ -189,44 +189,67 @@ export class DebtTokenContract extends BaseContract {
             return abiEncodedTransactionData;
         },
     };
-    public mint = {
+    public safeTransferFrom = {
         async sendTransactionAsync(
-            _owner: string,
+            _from: string,
+            _to: string,
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
             const self = this as DebtTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
                 txData,
-                self.mint.estimateGasAsync.bind(self, _owner, _tokenId),
+                self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.mint,
+                self.web3ContractInstance.safeTransferFrom,
                 self.web3ContractInstance,
-            )(_owner, _tokenId, txDataWithDefaults);
+            )(_from, _to, _tokenId, txDataWithDefaults);
             return txHash;
         },
         async estimateGasAsync(
-            _owner: string,
+            _from: string,
+            _to: string,
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<number> {
             const self = this as DebtTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.mint.estimateGas,
+                self.web3ContractInstance.safeTransferFrom.estimateGas,
                 self.web3ContractInstance,
-            )(_owner, _tokenId, txDataWithDefaults);
+            )(_from, _to, _tokenId, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(
-            _owner: string,
+            _from: string,
+            _to: string,
             _tokenId: BigNumber,
             txData: TxData = {},
         ): string {
             const self = this as DebtTokenContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.mint.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.safeTransferFrom.getData();
             return abiEncodedTransactionData;
+        },
+    };
+    public exists = {
+        async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<boolean> {
+            const self = this as DebtTokenContract;
+            const result = await promisify<boolean>(
+                self.web3ContractInstance.exists.call,
+                self.web3ContractInstance,
+            )(_tokenId);
+            return result;
+        },
+    };
+    public tokenByIndex = {
+        async callAsync(_index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
+            const self = this as DebtTokenContract;
+            const result = await promisify<BigNumber>(
+                self.web3ContractInstance.tokenByIndex.call,
+                self.web3ContractInstance,
+            )(_index);
+            return result;
         },
     };
     public paused = {
@@ -244,16 +267,6 @@ export class DebtTokenContract extends BaseContract {
             const self = this as DebtTokenContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.ownerOf.call,
-                self.web3ContractInstance,
-            )(_tokenId);
-            return result;
-        },
-    };
-    public tokenMetadata = {
-        async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
-            const self = this as DebtTokenContract;
-            const result = await promisify<string>(
-                self.web3ContractInstance.tokenMetadata.call,
                 self.web3ContractInstance,
             )(_tokenId);
             return result;
@@ -471,6 +484,42 @@ export class DebtTokenContract extends BaseContract {
             return abiEncodedTransactionData;
         },
     };
+    public setApprovalForAll = {
+        async sendTransactionAsync(
+            _to: string,
+            _approved: boolean,
+            txData: TxData = {},
+        ): Promise<string> {
+            const self = this as DebtTokenContract;
+            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
+                txData,
+                self.setApprovalForAll.estimateGasAsync.bind(self, _to, _approved),
+            );
+            const txHash = await promisify<string>(
+                self.web3ContractInstance.setApprovalForAll,
+                self.web3ContractInstance,
+            )(_to, _approved, txDataWithDefaults);
+            return txHash;
+        },
+        async estimateGasAsync(
+            _to: string,
+            _approved: boolean,
+            txData: TxData = {},
+        ): Promise<number> {
+            const self = this as DebtTokenContract;
+            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
+            const gas = await promisify<number>(
+                self.web3ContractInstance.setApprovalForAll.estimateGas,
+                self.web3ContractInstance,
+            )(_to, _approved, txDataWithDefaults);
+            return gas;
+        },
+        getABIEncodedTransactionData(_to: string, _approved: boolean, txData: TxData = {}): string {
+            const self = this as DebtTokenContract;
+            const abiEncodedTransactionData = self.web3ContractInstance.setApprovalForAll.getData();
+            return abiEncodedTransactionData;
+        },
+    };
     public transfer = {
         async sendTransactionAsync(
             _to: string,
@@ -511,23 +560,73 @@ export class DebtTokenContract extends BaseContract {
             return abiEncodedTransactionData;
         },
     };
-    public numTokensTotal = {
-        async callAsync(defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
+    public safeTransferFrom = {
+        async sendTransactionAsync(
+            _from: string,
+            _to: string,
+            _tokenId: BigNumber,
+            _data: string,
+            txData: TxData = {},
+        ): Promise<string> {
             const self = this as DebtTokenContract;
-            const result = await promisify<BigNumber>(
-                self.web3ContractInstance.numTokensTotal.call,
+            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
+                txData,
+                self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId, _data),
+            );
+            const txHash = await promisify<string>(
+                self.web3ContractInstance.safeTransferFrom,
                 self.web3ContractInstance,
-            )();
+            )(_from, _to, _tokenId, _data, txDataWithDefaults);
+            return txHash;
+        },
+        async estimateGasAsync(
+            _from: string,
+            _to: string,
+            _tokenId: BigNumber,
+            _data: string,
+            txData: TxData = {},
+        ): Promise<number> {
+            const self = this as DebtTokenContract;
+            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
+            const gas = await promisify<number>(
+                self.web3ContractInstance.safeTransferFrom.estimateGas,
+                self.web3ContractInstance,
+            )(_from, _to, _tokenId, _data, txDataWithDefaults);
+            return gas;
+        },
+        getABIEncodedTransactionData(
+            _from: string,
+            _to: string,
+            _tokenId: BigNumber,
+            _data: string,
+            txData: TxData = {},
+        ): string {
+            const self = this as DebtTokenContract;
+            const abiEncodedTransactionData = self.web3ContractInstance.safeTransferFrom.getData();
+            return abiEncodedTransactionData;
+        },
+    };
+    public tokenURI = {
+        async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as DebtTokenContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.tokenURI.call,
+                self.web3ContractInstance,
+            )(_tokenId);
             return result;
         },
     };
-    public getOwnerTokens = {
-        async callAsync(_owner: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber[]> {
+    public isApprovedForAll = {
+        async callAsync(
+            _owner: string,
+            _operator: string,
+            defaultBlock?: Web3.BlockParam,
+        ): Promise<boolean> {
             const self = this as DebtTokenContract;
-            const result = await promisify<BigNumber[]>(
-                self.web3ContractInstance.getOwnerTokens.call,
+            const result = await promisify<boolean>(
+                self.web3ContractInstance.isApprovedForAll.call,
                 self.web3ContractInstance,
-            )(_owner);
+            )(_owner, _operator);
             return result;
         },
     };

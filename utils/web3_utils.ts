@@ -48,12 +48,17 @@ export class Web3Utils {
         return response.result;
     }
 
-    private async sendJsonRpcRequestAsync(method: string, params: any[]): Promise<Web3.JSONRPCResponsePayload> {
-        return promisify(this.web3.currentProvider.sendAsync, { context: this.web3.currentProvider })({
+    private async sendJsonRpcRequestAsync(
+        method: string,
+        params: any[],
+    ): Promise<Web3.JSONRPCResponsePayload> {
+        return promisify(this.web3.currentProvider.sendAsync, {
+            context: this.web3.currentProvider,
+        })({
             jsonrpc: "2.0",
             method,
             params,
-            id: new Date().getTime()
+            id: new Date().getTime(),
         });
     }
 }

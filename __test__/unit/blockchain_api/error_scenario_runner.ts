@@ -5,7 +5,7 @@ import { BigNumber } from "bignumber.js";
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
 import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
 import { Web3Utils } from "utils/web3_utils";
-import { ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
+import { AdaptersAPI, ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
 import { SimpleInterestLoanAdapter } from "src/adapters";
 
 import {
@@ -43,6 +43,7 @@ export class ErrorScenarioRunner {
     private tokenRegistry: TokenRegistryContract;
 
     // APIs
+    private adaptersAPI: AdaptersAPI;
     private contractsAPI: ContractsAPI;
     private blockchainAPI: BlockchainAPI;
     private signerAPI: SignerAPI;
@@ -71,7 +72,6 @@ export class ErrorScenarioRunner {
         }
 
         // Construct all necessary dependencies.
-
         this.contractsAPI = new ContractsAPI(this.web3);
         this.blockchainAPI = new BlockchainAPI(this.web3, this.contractsAPI);
         this.signerAPI = new SignerAPI(this.web3, this.contractsAPI);
@@ -190,6 +190,7 @@ export class ErrorScenarioRunner {
                     debtOrder.creditor,
                     creditorBalance,
                 );
+
                 await this.principalToken.approve.sendTransactionAsync(
                     this.tokenTransferProxy.address,
                     creditorAllowance,
@@ -302,7 +303,7 @@ export class ErrorScenarioRunner {
             salt: new BigNumber(0),
         });
 
-        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder);
+        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder, false);
 
         return debtOrder;
     }

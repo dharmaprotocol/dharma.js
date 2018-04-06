@@ -14,7 +14,7 @@ import { Assertions } from "../invariants";
 import { DebtRegistryEntry, TxData, RepaymentSchedule } from "../types";
 import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
 
-const REPAYMENT_GAS_MAXIMUM = 100000;
+const REPAYMENT_GAS_MAXIMUM = 150000;
 
 export const ServicingAPIErrors = {
     DEBT_AGREEMENT_NONEXISTENT: (issuanceHash: string) =>
@@ -212,9 +212,19 @@ export class ServicingAPI {
         // debt agreements.  Thus, we can retrieve a list of
         // a users' debt agreements by retrieving a list of tokens
         // they own.
-        const usersDebtTokens = await debtToken.getOwnerTokens.callAsync(account);
+        const numInvestments = await debtToken.balanceOf.callAsync(account);
 
-        return usersDebtTokens.map(
+        let userDebtTokenIds = [];
+
+        for (let i = 0; i < numInvestments.toNumber(); i++) {
+            const tokenId = await debtToken.tokenOfOwnerByIndex.callAsync(
+                account,
+                new BigNumber(i),
+            );
+            userDebtTokenIds.push(tokenId);
+        }
+
+        return userDebtTokenIds.map(
             (tokenId: BigNumber) => `0x${tokenId.toString(16).padStart(64, "0")}`,
         );
     }

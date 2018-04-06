@@ -132,12 +132,11 @@
   dependencies:
     find-up "^2.1.0"
 
-"@dharmaprotocol/contracts@0.0.26":
-  version "0.0.26"
-  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.26.tgz#fc88ab32f0074758234f420bc631ef5e1f651566"
+"@dharmaprotocol/contracts@0.0.27":
+  version "0.0.27"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.27.tgz#5015879e5e96d2eb2748ef37661f581d2978da42"
   dependencies:
-    NonFungibleToken "https://github.com/dharmaprotocol/NonFungibleToken.git"
-    zeppelin-solidity "^1.6.0"
+    zeppelin-solidity "^1.8.0"
 
 "@marionebl/sander@^0.6.0":
   version "0.6.1"
@@ -305,12 +304,6 @@ JSONStream@^1.0.4:
   dependencies:
     jsonparse "^1.2.0"
     through ">=2.2.7 <3"
-
-"NonFungibleToken@https://github.com/dharmaprotocol/NonFungibleToken.git":
-  version "0.0.1"
-  resolved "https://github.com/dharmaprotocol/NonFungibleToken.git#3a45b200d14be1e1fc454f4b0fbf7f7b0d81f133"
-  dependencies:
-    zeppelin-solidity "^1.4.0"
 
 abab@^1.0.3, abab@^1.0.4:
   version "1.0.4"
@@ -8600,9 +8593,9 @@ yn@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/yn/-/yn-2.0.0.tgz#e5adabc8acf408f6385fc76495684c88e6af689a"
 
-zeppelin-solidity@^1.4.0, zeppelin-solidity@^1.6.0:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/zeppelin-solidity/-/zeppelin-solidity-1.7.0.tgz#c43332926b6e84a845015c21753064eeac054df0"
+zeppelin-solidity@^1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/zeppelin-solidity/-/zeppelin-solidity-1.8.0.tgz#049fcde7daea9fc85210f8c6db9f8cd1ab8a853a"
   dependencies:
     dotenv "^4.0.0"
     ethjs-abi "^0.2.1"

@@ -24,7 +24,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { NULL_ADDRESS } from "../../utils/constants";
 import { Assertions } from "../invariants";
 
-const ORDER_FILL_GAS_MAXIMUM = 500000;
+const ORDER_FILL_GAS_MAXIMUM = 600000;
 
 export const OrderAPIErrors = {
     EXPIRED: () =>
