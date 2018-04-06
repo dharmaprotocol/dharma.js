@@ -17,6 +17,7 @@ import {
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
+    Collateralizer,
 } from "../wrappers";
 
 // utils
@@ -259,6 +260,10 @@ export class ContractsAPI {
             this.cache[cacheKey] = termsContract;
             return termsContract;
         }
+    }
+
+    public async loadCollateralizerAsync(transactionOptions: object = {}): Promise<Collateralizer> {
+        // STUB.
     }
 
     /**
