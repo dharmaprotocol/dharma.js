@@ -9,8 +9,6 @@ import { Assertions } from "src/invariants";
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "src/types";
 import { Adapter } from "./adapter";
 
-import { NULL_ADDRESS } from "../../utils/constants";
-
 import { TermsContractParameters } from "./terms_contract_parameters";
 import {
     SimpleInterestLoanTerms,
