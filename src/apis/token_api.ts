@@ -2,8 +2,6 @@ import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import { BigNumber } from "bignumber.js";
 
-import { Web3Utils } from "../../utils/web3_utils";
-
 import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";
 import { TxData, TransactionOptions } from "../types";
@@ -27,7 +25,7 @@ export class TokenAPI {
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
         this.contracts = contracts;
-        this.assert = new Assertions(this.web3, this.contracts);
+        this.assert = new Assertions(this.contracts);
     }
 
     /**

@@ -94,7 +94,7 @@ export class ErrorScenarioRunner {
         this.tokenTransferProxy = tokenTransferProxy;
         this.tokenRegistry = tokenRegistry;
 
-        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.web3, this.contractsAPI);
+        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.contractsAPI);
 
         // Mark instance as configured.
         this.isConfigured = true;

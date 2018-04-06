@@ -20,7 +20,6 @@ import {
 import { DebtOrder, IssuanceCommitment, TxData, TransactionOptions } from "../types";
 
 // Utils
-import { Web3Utils } from "../../utils/web3_utils";
 import { NULL_ADDRESS } from "../../utils/constants";
 import { Assertions } from "../invariants";
 
@@ -91,7 +90,7 @@ export class OrderAPI {
         this.web3 = web3;
         this.contracts = contracts;
 
-        this.assert = new Assertions(this.web3, this.contracts);
+        this.assert = new Assertions(this.contracts);
     }
 
     /**
