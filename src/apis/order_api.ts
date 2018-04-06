@@ -235,12 +235,12 @@ export class OrderAPI {
      * Decode tightly-packed representation of debt agreement's terms in a
      * given debt order into an object with human-interpretable keys and values.
      *
-     * NOTE: If no the terms contract in the given debt order does not correspond
+     * NOTE: If the terms contract in the given debt order does not correspond
      *       to any of the built-in adapters bundled into dharma.js, this method
      *       will throw.
      *
-     * @param debtOrder [description]
-     * @return [description]
+     * @param debtOrder A Dharma debt order
+     * @return An object containing human-interpretable terms for the loan
      */
     public async unpackTerms(debtOrder: DebtOrder.Instance): Promise<object> {
         const { termsContract, termsContractParameters } = debtOrder;
