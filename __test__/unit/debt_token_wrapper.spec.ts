@@ -67,18 +67,10 @@ describe("Debt Token Contract Wrapper (Unit)", () => {
 
         describe("balanceOf", () => {
             describe("callAsync()", () => {
-                test("returns 0 when called with null address", async () => {
-                    const balance = await contractWrapper.balanceOf.callAsync(NULL_ADDRESS);
-                    expect(balance).toEqual(new BigNumber(0));
-                });
-            });
-        });
-
-        describe("implementsERC721", () => {
-            describe("callAsync", () => {
-                test("it returns true", async () => {
-                    const implementsERC721 = await contractWrapper.implementsERC721.callAsync();
-                    expect(implementsERC721).toEqual(true);
+                test("throws when called with null address", async () => {
+                    await expect(
+                        contractWrapper.balanceOf.callAsync(NULL_ADDRESS),
+                    ).rejects.toThrow();
                 });
             });
         });
