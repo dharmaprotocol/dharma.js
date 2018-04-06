@@ -5,7 +5,7 @@ import { BigNumber } from "bignumber.js";
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
 import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
 import { Web3Utils } from "utils/web3_utils";
-import { ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
+import { AdaptersAPI, ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
 import { SimpleInterestLoanAdapter } from "src/adapters";
 
 import {
@@ -46,6 +46,7 @@ export class ErrorScenarioRunner {
     private contractsAPI: ContractsAPI;
     private blockchainAPI: BlockchainAPI;
     private signerAPI: SignerAPI;
+    private adaptersApi: AdaptersAPI;
     private orderAPI: OrderAPI;
 
     // Adapters
@@ -75,7 +76,8 @@ export class ErrorScenarioRunner {
         this.contractsAPI = new ContractsAPI(this.web3);
         this.blockchainAPI = new BlockchainAPI(this.web3, this.contractsAPI);
         this.signerAPI = new SignerAPI(this.web3, this.contractsAPI);
-        this.orderAPI = new OrderAPI(this.web3, this.contractsAPI);
+        this.adaptersApi = new AdaptersAPI(this.web3, this.contractsAPI);
+        this.orderAPI = new OrderAPI(this.web3, this.contractsAPI, this.adaptersApi);
 
         const {
             debtKernel,
