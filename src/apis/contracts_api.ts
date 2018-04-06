@@ -105,7 +105,9 @@ export class ContractsAPI {
         return debtKernel;
     }
 
-    public async loadCollateralizerAsync(transactionOptions: object = {}): Promise<CollateralizerContract> {
+    public async loadCollateralizerAsync(
+        transactionOptions: object = {},
+    ): Promise<CollateralizerContract> {
         if (COLLATERALIZER_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[COLLATERALIZER_CONTRACT_CACHE_KEY] as CollateralizerContract;
         }
