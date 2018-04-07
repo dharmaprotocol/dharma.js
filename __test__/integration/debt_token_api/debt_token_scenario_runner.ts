@@ -74,10 +74,7 @@ export class DebtTokenScenarioRunner {
         );
 
         // Adapters
-        this.simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(
-            this.web3,
-            this.contractsAPI,
-        );
+        this.simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(this.contractsAPI);
 
         this.isConfigured = true;
     }
