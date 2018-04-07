@@ -44,6 +44,7 @@ export class DebtTokenScenarioRunner {
         this.web3 = web3;
         this.web3Utils = new Web3Utils(web3);
 
+        this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -79,6 +80,47 @@ export class DebtTokenScenarioRunner {
         );
 
         this.isConfigured = true;
+    }
+
+    public async testBalanceOfScenario(scenario: DebtTokenScenario.BalanceOfScenario) {
+        describe(scenario.description, () => {
+            beforeEach(async () => {
+                const principalAmount = new BigNumber(10 * 10 ** 18);
+
+                await this.principalToken.setBalance.sendTransactionAsync(
+                    scenario.owner,
+                    principalAmount,
+                );
+
+                await this.principalToken.approve.sendTransactionAsync(
+                    this.tokenTransferProxy.address,
+                    principalAmount,
+                    { from: scenario.owner },
+                );
+
+                const params = {
+                    principalAmount: principalAmount,
+                    principalTokenSymbol: ERC20TokenSymbol.ZRX,
+                    interestRate: new BigNumber(4.135),
+                    amortizationUnit: "months",
+                    termLength: new BigNumber(3),
+                    debtor: ACCOUNTS[0].address,
+                    creditor: scenario.owner,
+                };
+
+                const order = await this.orderAPI.generate(this.simpleInterestLoanAdapter, params);
+                order.debtorSignature = await this.signerAPI.asDebtor(order, false);
+
+                await this.orderAPI.fillAsync(order, {
+                    from: scenario.owner,
+                });
+            });
+
+            test("returns correct balance of debt tokens", async () => {
+                const balance = await this.debtTokenAPI.balanceOf(scenario.owner);
+                await expect(balance.toNumber()).toEqual(scenario.balance);
+            });
+        });
     }
 
     public async saveSnapshotAsync() {
