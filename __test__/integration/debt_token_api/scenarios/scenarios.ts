@@ -11,4 +11,8 @@ export namespace DebtTokenScenario {
     export interface BalanceOfScenario extends Scenario {
         balance: number;
     }
+
+    export interface OwnerOfScenario extends Scenario {
+        shouldTransferTo?: string;
+    }
 }
