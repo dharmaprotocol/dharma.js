@@ -6,7 +6,7 @@ import { ERC20TokenSymbol } from "utils/constants";
 export const CREDITOR = ACCOUNTS[0].address;
 export const DEBTOR = ACCOUNTS[1].address;
 
-const order1: SimpleInterestLoanOrder = {
+export const ORDER_ONE: SimpleInterestLoanOrder = {
     principalAmount: new BigNumber(10 * 10 ** 18),
     principalTokenSymbol: ERC20TokenSymbol.ZRX,
     interestRate: new BigNumber(4.135),
@@ -16,7 +16,7 @@ const order1: SimpleInterestLoanOrder = {
     creditor: CREDITOR,
 };
 
-const order2: SimpleInterestLoanOrder = {
+export const ORDER_TWO: SimpleInterestLoanOrder = {
     principalAmount: new BigNumber(11 * 10 ** 18),
     principalTokenSymbol: ERC20TokenSymbol.MKR,
     interestRate: new BigNumber(8.937),
@@ -26,7 +26,7 @@ const order2: SimpleInterestLoanOrder = {
     creditor: CREDITOR,
 };
 
-const order3: SimpleInterestLoanOrder = {
+export const ORDER_THREE: SimpleInterestLoanOrder = {
     principalAmount: new BigNumber(12 * 10 ** 18),
     principalTokenSymbol: ERC20TokenSymbol.REP,
     interestRate: new BigNumber(1.987),
@@ -36,4 +36,4 @@ const order3: SimpleInterestLoanOrder = {
     creditor: CREDITOR,
 };
 
-export const ORDERS = [order1, order2, order3];
+export const ORDERS = [ORDER_ONE, ORDER_TWO, ORDER_THREE];
