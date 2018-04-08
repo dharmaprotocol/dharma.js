@@ -1,9 +1,16 @@
+// External
 import * as Web3 from "web3";
-import { TxData, TransactionOptions } from "../types";
 import { BigNumber } from "bignumber.js";
-import { Web3Utils } from "../../utils/web3_utils";
-import { ContractsAPI } from "./";
+import * as singleLineString from "single-line-string";
+
+// Types
+import { TxData, TransactionOptions } from "../types";
+
+// Utils
 import { Assertions } from "../invariants";
+
+// APIs
+import { ContractsAPI } from "./";
 
 export interface ERC721 {
     balanceOf(owner: string): Promise<BigNumber>;
@@ -27,6 +34,12 @@ export interface ERC721 {
 }
 
 const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
+
+export const DebtTokenAPIErrors = {
+    TOKEN_DOES_NOT_BELONG_TO_ACCOUNT: (account: string) => singleLineString`
+        Specified debt token does not belong to account ${account}
+    `,
+};
 
 export class DebtTokenAPI implements ERC721 {
     private web3: Web3;
@@ -110,11 +123,20 @@ export class DebtTokenAPI implements ERC721 {
         options?: TxData,
     ): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
+        await this.assert.debtToken.tokenBelongsToAccount(
+            debtTokenContract,
+            tokenID,
+            from,
+            DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
+        );
+
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
+
         return debtTokenContract.safeTransferFrom.sendTransactionAsync(
             from,
             to,
