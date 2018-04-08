@@ -52,8 +52,8 @@ export class OrderAssertions {
 
     // creditorFee + debtorFee == relayerFee + underwriterFee
     public validFees(debtOrder: DebtOrder.Instance, errorMessage: string) {
-        const feesContributed = debtOrder.creditorFee.add(debtOrder.debtorFee);
-        const feesDistributed = debtOrder.relayerFee.add(debtOrder.underwriterFee);
+        const feesContributed = debtOrder.creditorFee.plus(debtOrder.debtorFee);
+        const feesDistributed = debtOrder.relayerFee.plus(debtOrder.underwriterFee);
         if (!feesContributed.eq(feesDistributed)) {
             throw new Error(errorMessage);
         }
@@ -224,7 +224,7 @@ export class OrderAssertions {
         errorMessage: string,
     ) {
         const creditorBalance = await principalToken.balanceOf.callAsync(debtOrder.creditor);
-        if (creditorBalance.lt(debtOrder.principalAmount.add(debtOrder.creditorFee))) {
+        if (creditorBalance.lt(debtOrder.principalAmount.plus(debtOrder.creditorFee))) {
             throw new Error(errorMessage);
         }
     }
@@ -241,7 +241,7 @@ export class OrderAssertions {
             tokenTransferProxy.address,
         );
 
-        if (creditorAllowance.lt(debtOrder.principalAmount.add(debtOrder.creditorFee))) {
+        if (creditorAllowance.lt(debtOrder.principalAmount.plus(debtOrder.creditorFee))) {
             throw new Error(errorMessage);
         }
     }

@@ -13,10 +13,7 @@ export const bytes32Schema = {
 export const numberSchema = {
     id: "/Number",
     type: "object",
-    properties: {
-        isBigNumber: { type: "boolean" },
-    },
-    required: ["isBigNumber"],
+    // Ensures that the object meets the validator.customFormats.BigNumber format.
     format: "BigNumber",
 };
 
