@@ -41,7 +41,9 @@ const order3: SimpleInterestLoanOrder = {
 const ORDERS = [order1, order2, order3];
 
 const DESCRIPTION = (balance: number) =>
-    singleLineString`when user holds a balance of ${balance} debt token${balance == 1 ? "" : "s"}.`;
+    singleLineString`when user holds a balance of ${balance} debt token${
+        balance === 1 ? "" : "s"
+    }.`;
 
 function generateScenarioForBalanceOf(balance: number): DebtTokenScenario.BalanceOfScenario {
     return {
