@@ -2,7 +2,16 @@
 import * as Web3 from "web3";
 
 // Scenario Runners
+<<<<<<< HEAD
 import { OwnerOfScenarioRunner, BalanceOfScenarioRunner } from "./runners";
+=======
+import {
+    BalanceOfScenarioRunner,
+    TransferFromScenarioRunner,
+    TestAPIs,
+    TestAdapters,
+} from "./runners";
+>>>>>>> test: add test scaffolding for safeTransferFrom tests
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis/";
@@ -25,6 +34,9 @@ export class DebtTokenScenarioRunner {
     // Scenario Runners
     private balanceOfScenarioRunner: BalanceOfScenarioRunner;
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
+    private transferFromScenarioRunner: TransferFromScenarioRunner;
+
+    private currentSnapshotId: number;
 
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
@@ -52,6 +64,8 @@ export class DebtTokenScenarioRunner {
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
+        this.testTransferFromScenario = this.testTransferFromScenario.bind(this);
+
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -62,6 +76,10 @@ export class DebtTokenScenarioRunner {
 
     public async testOwnerOfScenario(scenario: DebtTokenScenario.OwnerOfScenario) {
         return this.ownerOfScenarioRunner.testScenario(scenario);
+    }
+
+    public async testTransferFromScenario(scenario: DebtTokenScenario.TransferFromScenario) {
+        return this.transferFromScenarioRunner.testScenario(scenario);
     }
 
     public async saveSnapshotAsync() {

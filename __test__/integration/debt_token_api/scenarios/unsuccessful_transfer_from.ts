@@ -10,6 +10,9 @@ import { ACCOUNTS } from "../../../accounts";
 import { DebtTokenScenario } from "./";
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
 
+// Errors
+import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
+
 const CREDITOR = ACCOUNTS[0].address;
 const DEBTOR = ACCOUNTS[1].address;
 const RECIPIENT = ACCOUNTS[2].address;
@@ -36,7 +39,7 @@ const defaults: DebtTokenScenario.TransferFromScenario = {
     from: CREDITOR,
     to: RECIPIENT,
     tokenID: (ordersIssuanceHash: BigNumber, other: BigNumber) => ordersIssuanceHash,
-    data: "arbitrary data",
+    data: "0x123456789abcdef",
 };
 
 export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFromScenario[] = [
@@ -44,6 +47,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
         ...defaults,
         description: "account being transferred from does not own debt token",
         tokenID: (ordersIssuanceHash: BigNumber, other: BigNumber) => other,
-        errorMessage: "blah blah",
+        errorType: "TOKEN_DOES_NOT_BELONG_TO_ACCOUNT",
+        errorMessage: "Specified debt token does not belong to account",
     },
 ];

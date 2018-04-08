@@ -21,8 +21,11 @@ export namespace DebtTokenScenario {
     export interface TransferFromScenario extends Scenario {
         from: string;
         to: string;
-        tokenID: BigNumber;
+        tokenID: (ordersIssuanceHash: BigNumber, other: BigNumber) => BigNumber;
         data?: string;
         options?: TxData;
+        succeeds: boolean;
+        errorType?: string;
+        errorMessage?: string;
     }
 }
