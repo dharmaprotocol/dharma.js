@@ -15,9 +15,10 @@ export const wholeBigNumberFormat = function(input) {
 };
 
 /**
- * NOTE: BigNumber.js is currently changing their API, and isBigNumber is deprecated (I.E. not
- * available in version 6.0. However, Truffe.js uses version 5.0, and the breaking changes between
- * versions are such that we have to keep using 5.0 until Truffle upgrades.
+ * NOTE: BigNumber.js is currently changing their API, and the method `isBigNumber` on instances
+ * of BigNumber is deprecated. I.E. this will not be available in the next version (v6.0.)
+ *
+ * However, Truffe.js uses v5.0, and so we are dependent on v5.0 until Truffle upgrades.
  *
  * In version 6.0, this can be replaced with `BigNumber.isBigNumber(object);`
  *
