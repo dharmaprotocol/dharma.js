@@ -91,10 +91,10 @@ export class DebtTokenScenarioRunner {
             { from: order.creditor },
         );
 
-        const preparedOrder = await this.orderAPI.generate(this.simpleInterestLoanAdapter, order);
-        preparedOrder.debtorSignature = await this.signerAPI.asDebtor(preparedOrder, false);
+        order = await this.orderAPI.generate(this.simpleInterestLoanAdapter, order);
+        order.debtorSignature = await this.signerAPI.asDebtor(order, false);
 
-        await this.orderAPI.fillAsync(preparedOrder, {
+        await this.orderAPI.fillAsync(order, {
             from: order.creditor,
         });
     }
