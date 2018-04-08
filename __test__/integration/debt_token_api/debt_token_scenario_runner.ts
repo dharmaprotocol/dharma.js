@@ -25,6 +25,7 @@ import { Web3Utils } from "utils/web3_utils";
 export class DebtTokenScenarioRunner {
     // Snapshotting.
     private web3Utils: Web3Utils;
+
     private currentSnapshotId: number;
 
     // Scenario Runners
