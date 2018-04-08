@@ -3,7 +3,9 @@ import * as singleLineString from "single-line-string";
 import { ORDERS, CREDITOR, DEBTOR } from "./orders";
 
 const DESCRIPTION = (balance: number) =>
-    singleLineString`when user holds a balance of ${balance} debt token${balance == 1 ? "" : "s"}.`;
+    singleLineString`when user holds a balance of ${balance} debt token${
+        balance === 1 ? "" : "s"
+    }.`;
 
 function generateScenarioForBalanceOf(balance: number): DebtTokenScenario.BalanceOfScenario {
     return {

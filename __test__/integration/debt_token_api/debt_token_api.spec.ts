@@ -16,10 +16,6 @@ const web3 = new Web3(provider);
 const scenarioRunner = new DebtTokenScenarioRunner(web3);
 
 describe("Debt Token API (Integration Tests)", () => {
-    beforeAll(async () => {
-        await scenarioRunner.configure();
-    });
-
     beforeEach(scenarioRunner.saveSnapshotAsync);
 
     afterEach(scenarioRunner.revertToSavedSnapshot);
