@@ -1,9 +1,16 @@
+// External
 import * as Web3 from "web3";
-import { TxData, TransactionOptions } from "../types";
 import { BigNumber } from "bignumber.js";
-import { Web3Utils } from "../../utils/web3_utils";
-import { ContractsAPI } from "./";
+import * as singleLineString from "single-line-string";
+
+// Types
+import { TxData, TransactionOptions } from "../types";
+
+// Utils
 import { Assertions } from "../invariants";
+
+// APIs
+import { ContractsAPI } from "./";
 
 export interface ERC721 {
     balanceOf(owner: string): Promise<BigNumber>;
@@ -27,6 +34,15 @@ export interface ERC721 {
 }
 
 const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
+
+export const DebtTokenAPIErrors = {
+    TOKEN_DOES_NOT_BELONG_TO_ACCOUNT: (account: string) => singleLineString`
+        Specified token does not belong to account ${account}
+    `,
+    ACCOUNT_UNAUTHORIZED_TO_TRANSFER: (account: string) => singleLineString`
+        Transaction sender ${account} neither owns the specified token nor is approved to transfer it.
+    `,
+};
 
 export class DebtTokenAPI implements ERC721 {
     private web3: Web3;
@@ -109,12 +125,28 @@ export class DebtTokenAPI implements ERC721 {
         data?: string,
         options?: TxData,
     ): Promise<string> {
-        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
+
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
+        await this.assert.debtToken.belongsToAccount(
+            debtTokenContract,
+            tokenID,
+            from,
+            DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
+        );
+
+        await this.assert.debtToken.canBeTransferredByAccount(
+            debtTokenContract,
+            tokenID,
+            options.from,
+            DebtTokenAPIErrors.ACCOUNT_UNAUTHORIZED_TO_TRANSFER(options.from),
+        );
+
         return debtTokenContract.safeTransferFrom.sendTransactionAsync(
             from,
             to,
