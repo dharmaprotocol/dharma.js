@@ -15,6 +15,8 @@ import { DebtTokenScenario } from "./scenarios";
 
 import { SimpleInterestLoanAdapter } from "src/adapters";
 
+import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
+
 import { ACCOUNTS } from "../../accounts";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
@@ -24,7 +26,6 @@ export class DebtTokenScenarioRunner {
     private web3: Web3;
 
     // Contracts
-    private principalToken: DummyTokenContract;
     private tokenTransferProxy: TokenTransferProxyContract;
     private tokenRegistry: TokenRegistryContract;
 
@@ -64,14 +65,6 @@ export class DebtTokenScenarioRunner {
         // Contracts
         this.tokenTransferProxy = await TokenTransferProxyContract.deployed(this.web3, TX_DEFAULTS);
         this.tokenRegistry = await TokenRegistryContract.deployed(this.web3, TX_DEFAULTS);
-        const principalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
-            ERC20TokenSymbol.ZRX,
-        );
-        this.principalToken = await DummyTokenContract.at(
-            principalTokenAddress,
-            this.web3,
-            TX_DEFAULTS,
-        );
 
         // Adapters
         this.simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(this.contractsAPI);
@@ -79,43 +72,44 @@ export class DebtTokenScenarioRunner {
         this.isConfigured = true;
     }
 
+    private async generateDebtTokenForOrder(order: SimpleInterestLoanOrder) {
+        const principalTokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(
+            order.principalTokenSymbol,
+        );
+
+        const principalToken = await DummyTokenContract.at(
+            principalTokenAddress,
+            this.web3,
+            TX_DEFAULTS,
+        );
+
+        await principalToken.setBalance.sendTransactionAsync(order.creditor, order.principalAmount);
+
+        await principalToken.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            order.principalAmount,
+            { from: order.creditor },
+        );
+
+        order = await this.orderAPI.generate(this.simpleInterestLoanAdapter, order);
+        order.debtorSignature = await this.signerAPI.asDebtor(order, false);
+
+        await this.orderAPI.fillAsync(order, {
+            from: order.creditor,
+        });
+    }
+
     public async testBalanceOfScenario(scenario: DebtTokenScenario.BalanceOfScenario) {
         describe(scenario.description, () => {
             beforeEach(async () => {
-                const principalAmount = new BigNumber(10 * 10 ** 18);
-
-                await this.principalToken.setBalance.sendTransactionAsync(
-                    scenario.owner,
-                    principalAmount,
-                );
-
-                await this.principalToken.approve.sendTransactionAsync(
-                    this.tokenTransferProxy.address,
-                    principalAmount,
-                    { from: scenario.owner },
-                );
-
-                const params = {
-                    principalAmount: principalAmount,
-                    principalTokenSymbol: ERC20TokenSymbol.ZRX,
-                    interestRate: new BigNumber(4.135),
-                    amortizationUnit: "months",
-                    termLength: new BigNumber(3),
-                    debtor: ACCOUNTS[0].address,
-                    creditor: scenario.owner,
-                };
-
-                const order = await this.orderAPI.generate(this.simpleInterestLoanAdapter, params);
-                order.debtorSignature = await this.signerAPI.asDebtor(order, false);
-
-                await this.orderAPI.fillAsync(order, {
-                    from: scenario.owner,
-                });
+                for (let order of scenario.orders) {
+                    await this.generateDebtTokenForOrder(order);
+                }
             });
 
             test("returns correct balance of debt tokens", async () => {
-                const balance = await this.debtTokenAPI.balanceOf(scenario.owner);
-                await expect(balance.toNumber()).toEqual(scenario.balance);
+                const computedBalance = await this.debtTokenAPI.balanceOf(scenario.creditor);
+                await expect(computedBalance.toNumber()).toEqual(scenario.balance);
             });
         });
     }
