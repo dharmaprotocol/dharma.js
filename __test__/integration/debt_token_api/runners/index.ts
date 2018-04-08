@@ -49,16 +49,19 @@ export abstract class ScenarioRunner {
         const { orderAPI, signerAPI, tokenAPI } = testAPIs;
         const { simpleInterestLoanAdapter } = testAdapters;
 
-        const principalTokenAddress = await this.configureTokenBalance(
+        const principalToken = await this.getDummyTokenBySymbol(
             web3,
             testAPIs,
+            simpleInterestLoanOrder.principalTokenSymbol,
+        );
+        await this.configureTokenBalance(
+            principalToken,
             simpleInterestLoanOrder.creditor,
             simpleInterestLoanOrder.principalAmount,
-            simpleInterestLoanOrder.principalTokenSymbol,
         );
 
         await tokenAPI.setProxyAllowanceAsync(
-            principalTokenAddress,
+            principalToken.address,
             simpleInterestLoanOrder.principalAmount,
         );
 
@@ -70,22 +73,23 @@ export abstract class ScenarioRunner {
         });
     }
 
-    private async configureTokenBalance(
+    private async getDummyTokenBySymbol(
         web3: Web3,
         testAPIs: TestAPIs,
-        account: string,
-        balance: BigNumber,
         tokenSymbol: string,
-    ): Promise<string> {
+    ): Promise<DummyTokenContract> {
         const { contractsAPI } = testAPIs;
-
         const tokenAddress = await contractsAPI.getTokenAddressBySymbolAsync(tokenSymbol);
 
-        const dummyToken = await DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
+        return DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
+    }
 
-        await dummyToken.setBalance.sendTransactionAsync(account, balance);
-
-        return tokenAddress;
+    private async configureTokenBalance(
+        token: DummyTokenContract,
+        account: string,
+        balance: BigNumber,
+    ): Promise<string> {
+        return token.setBalance.sendTransactionAsync(account, balance);
     }
 }
 
