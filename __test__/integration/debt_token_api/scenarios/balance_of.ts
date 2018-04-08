@@ -53,7 +53,7 @@ function generateScenarioForBalanceOf(balance: number): DebtTokenScenario.Balanc
     };
 }
 
-const BALANCES = Array.from(Array(ORDERS.length).keys());
+const BALANCES = Array.from(Array(ORDERS.length + 1).keys()); // [0, 1, 2, 3]
 
 export const BALANCE_OF_SCENARIOS: DebtTokenScenario.BalanceOfScenario[] = BALANCES.map(
     generateScenarioForBalanceOf,
