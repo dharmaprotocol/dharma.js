@@ -2,7 +2,7 @@
 import * as Web3 from "web3";
 
 // Scenario Runners
-import { OwnerOfScenarioRunner, BalanceOfScenarioRunner, TestAPIs, TestAdapters } from "./runners";
+import { OwnerOfScenarioRunner, BalanceOfScenarioRunner } from "./runners";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis/";
@@ -19,6 +19,7 @@ import { Web3Utils } from "utils/web3_utils";
 export class DebtTokenScenarioRunner {
     // Snapshotting.
     private web3Utils: Web3Utils;
+
     private currentSnapshotId: number;
 
     // Scenario Runners
