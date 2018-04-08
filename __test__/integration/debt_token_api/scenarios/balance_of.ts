@@ -53,9 +53,6 @@ function generateScenarioForBalanceOf(balance: number): DebtTokenScenario.Balanc
     };
 }
 
-export const BALANCE_OF_SCENARIOS: DebtTokenScenario.BalanceOfScenario[] = [
-    generateScenarioForBalanceOf(0),
-    generateScenarioForBalanceOf(1),
-    generateScenarioForBalanceOf(2),
-    generateScenarioForBalanceOf(3),
-];
+export const BALANCE_OF_SCENARIOS: DebtTokenScenario.BalanceOfScenario[] = [0, 1, 2, 3].map(
+    generateScenarioForBalanceOf,
+);
