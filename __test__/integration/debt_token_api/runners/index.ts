@@ -42,9 +42,9 @@ export abstract class ScenarioRunner {
 
     public abstract testScenario(scenario: DebtTokenScenario.Scenario);
 
-    public async generateDebtTokenForOrder(
+    public generateDebtTokenForOrder = async (
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<DebtOrder.Instance> {
+    ): Promise<BigNumber> => {
         const { orderAPI, signerAPI, tokenAPI } = this.testAPIs;
         const { simpleInterestLoanAdapter } = this.testAdapters;
 
@@ -70,14 +70,8 @@ export abstract class ScenarioRunner {
             from: order.creditor,
         });
 
-        return order;
-    }
-
-    public tokenIDForOrder = async (loanOrder: SimpleInterestLoanOrder): Promise<BigNumber> => {
-        const { orderAPI } = this.testAPIs;
-
-        const order = await this.generateDebtTokenForOrder(loanOrder);
         const tokenIDAsString = await orderAPI.getIssuanceHash(order);
+
         return new BigNumber(tokenIDAsString);
     };
 

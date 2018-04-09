@@ -13,7 +13,7 @@ export class OwnerOfScenarioRunner extends ScenarioRunner {
 
         describe(scenario.description, () => {
             beforeEach(async () => {
-                tokenIDs = await Promise.all(scenario.orders.map(this.tokenIDForOrder));
+                tokenIDs = await Promise.all(scenario.orders.map(this.generateDebtTokenForOrder));
 
                 if (scenario.shouldTransferTo) {
                     for (let id of tokenIDs) {
