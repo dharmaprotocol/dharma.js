@@ -2,27 +2,20 @@
 import * as Web3 from "web3";
 
 // Types
-import { ScenarioRunner, TestAPIs, TestAdapters } from "./";
+import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
-import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
 
 export class BalanceOfScenarioRunner extends ScenarioRunner {
-    public testScenario(
-        scenario: DebtTokenScenario.BalanceOfScenario,
-        web3: Web3,
-        testAPIs: TestAPIs,
-        testAdapters: TestAdapters,
-    ) {
-        const { debtTokenAPI } = testAPIs;
-
+    public testScenario(scenario: DebtTokenScenario.BalanceOfScenario) {
         describe(scenario.description, () => {
             beforeEach(async () => {
                 for (let order of scenario.orders) {
-                    await this.generateDebtTokenForOrder(order, web3, testAPIs, testAdapters);
+                    await this.generateDebtTokenForOrder(order);
                 }
             });
 
             test("returns correct balance of debt tokens", async () => {
+                const { debtTokenAPI } = this.testAPIs;
                 const computedBalance = await debtTokenAPI.balanceOf(scenario.creditor);
                 expect(computedBalance.toNumber()).toEqual(scenario.balance);
             });
