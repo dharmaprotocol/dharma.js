@@ -38,13 +38,18 @@ export abstract class ScenarioRunner {
         protected web3: Web3,
         protected testAPIs: TestAPIs,
         protected testAdapters: TestAdapters,
-    ) {}
+    ) {
+        this.generateDebtTokenForOrder = this.generateDebtTokenForOrder.bind(this);
+        this.generateDebtTokenIDWithoutFulfillment = this.generateDebtTokenIDWithoutFulfillment.bind(
+            this,
+        );
+    }
 
     public abstract testScenario(scenario: DebtTokenScenario.Scenario);
 
-    public generateDebtTokenForOrder = async (
+    public async generateDebtTokenForOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<BigNumber> => {
+    ): Promise<BigNumber> {
         const { orderAPI, signerAPI, tokenAPI } = this.testAPIs;
         const { simpleInterestLoanAdapter } = this.testAdapters;
 
@@ -73,11 +78,11 @@ export abstract class ScenarioRunner {
         const tokenIDAsString = await orderAPI.getIssuanceHash(order);
 
         return new BigNumber(tokenIDAsString);
-    };
+    }
 
-    public generateDebtTokenIDWithoutFulfillment = async (
+    public async generateDebtTokenIDWithoutFulfillment(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<BigNumber> => {
+    ): Promise<BigNumber> {
         const { orderAPI } = this.testAPIs;
         const { simpleInterestLoanAdapter } = this.testAdapters;
 
@@ -86,7 +91,7 @@ export abstract class ScenarioRunner {
         const tokenIDAsString = await orderAPI.getIssuanceHash(order);
 
         return new BigNumber(tokenIDAsString);
-    };
+    }
 
     private async getDummyTokenBySymbol(tokenSymbol: string): Promise<DummyTokenContract> {
         const { contractsAPI } = this.testAPIs;
