@@ -37,7 +37,10 @@ const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
 
 export const DebtTokenAPIErrors = {
     TOKEN_DOES_NOT_BELONG_TO_ACCOUNT: (account: string) => singleLineString`
-        Specified debt token does not belong to account ${account}
+        Specified token does not belong to account ${account}
+    `,
+    ACCOUNT_UNAUTHORIZED_TO_TRANSFER: (account: string) => singleLineString`
+        Transaction sender ${account} neither owns the specified token nor is approved to transfer it.
     `,
 };
 
@@ -122,19 +125,26 @@ export class DebtTokenAPI implements ERC721 {
         data?: string,
         options?: TxData,
     ): Promise<string> {
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ERC721_TRANSFER_GAS_MAXIMUM,
+            options,
+        );
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
-        await this.assert.debtToken.tokenBelongsToAccount(
+        await this.assert.debtToken.belongsToAccount(
             debtTokenContract,
             tokenID,
             from,
             DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
         );
 
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ERC721_TRANSFER_GAS_MAXIMUM,
-            options,
+        await this.assert.debtToken.canBeTransferredByAccount(
+            debtTokenContract,
+            tokenID,
+            options.from,
+            DebtTokenAPIErrors.ACCOUNT_UNAUTHORIZED_TO_TRANSFER(options.from),
         );
 
         return debtTokenContract.safeTransferFrom.sendTransactionAsync(
