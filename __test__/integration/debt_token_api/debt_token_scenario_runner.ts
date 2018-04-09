@@ -6,6 +6,7 @@ import {
     OwnerOfScenarioRunner,
     BalanceOfScenarioRunner,
     ExistsScenarioRunner,
+    ApproveScenarioRunner,
     TestAPIs,
     TestAdapters,
 } from "./runners";
@@ -31,6 +32,7 @@ export class DebtTokenScenarioRunner {
     private balanceOfScenarioRunner: BalanceOfScenarioRunner;
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
     private existsScenarioRunner: ExistsScenarioRunner;
+    private approveScenarioRunner: ApproveScenarioRunner;
 
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
@@ -56,10 +58,12 @@ export class DebtTokenScenarioRunner {
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);
         this.ownerOfScenarioRunner = new OwnerOfScenarioRunner(web3, testAPIs, testAdapters);
         this.existsScenarioRunner = new ExistsScenarioRunner(web3, testAPIs, testAdapters);
+        this.approveScenarioRunner = new ApproveScenarioRunner(web3, testAPIs, testAdapters);
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
         this.testExistsScenario = this.testExistsScenario.bind(this);
+        this.testApproveScenario = this.testApproveScenario.bind(this);
 
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
@@ -75,6 +79,10 @@ export class DebtTokenScenarioRunner {
 
     public async testExistsScenario(scenario: DebtTokenScenario.ExistsScenario) {
         return this.existsScenarioRunner.testScenario(scenario);
+    }
+
+    public async testApproveScenario(scenario: DebtTokenScenario.ApproveScenario) {
+        return this.approveScenarioRunner.testScenario(scenario);
     }
 
     public async saveSnapshotAsync() {
