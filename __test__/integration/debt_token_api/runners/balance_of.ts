@@ -4,7 +4,6 @@ import * as Web3 from "web3";
 // Types
 import { ScenarioRunner, TestAPIs, TestAdapters } from "./";
 import { DebtTokenScenario } from "../scenarios";
-import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
 
 export class BalanceOfScenarioRunner extends ScenarioRunner {
     public testScenario(
