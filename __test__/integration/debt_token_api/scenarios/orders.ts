@@ -7,14 +7,18 @@ export namespace Orders {
     export const CREDITOR = ACCOUNTS[0].address;
     export const DEBTOR = ACCOUNTS[1].address;
 
+    export const WHO = {
+        creditor: CREDITOR,
+        debtor: DEBTOR,
+    };
+
     export const ORDER_ONE: SimpleInterestLoanOrder = {
         principalAmount: new BigNumber(10 * 10 ** 18),
         principalTokenSymbol: ERC20TokenSymbol.ZRX,
         interestRate: new BigNumber(4.135),
         amortizationUnit: "months",
         termLength: new BigNumber(3),
-        debtor: DEBTOR,
-        creditor: CREDITOR,
+        ...WHO,
     };
 
     export const ORDER_TWO: SimpleInterestLoanOrder = {
@@ -23,8 +27,7 @@ export namespace Orders {
         interestRate: new BigNumber(8.937),
         amortizationUnit: "years",
         termLength: new BigNumber(2),
-        debtor: DEBTOR,
-        creditor: CREDITOR,
+        ...WHO,
     };
 
     export const ORDER_THREE: SimpleInterestLoanOrder = {
@@ -33,8 +36,7 @@ export namespace Orders {
         interestRate: new BigNumber(1.987),
         amortizationUnit: "weeks",
         termLength: new BigNumber(10),
-        debtor: DEBTOR,
-        creditor: CREDITOR,
+        ...WHO,
     };
 
     export const ALL_ORDERS = [ORDER_ONE, ORDER_TWO, ORDER_THREE];
