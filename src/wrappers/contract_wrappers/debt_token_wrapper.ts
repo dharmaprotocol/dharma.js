@@ -536,8 +536,6 @@ export class DebtTokenContract extends BaseContract {
             //      1. Figure out which overloaded function we want to call based on
             //          the presence or absence of data parameter
             //      2. Manually construct the transaction and send it via a web3 sendTransaction call.
-            console.log(self.web3ContractInstance.sendTransaction);
-
             const txHash = await TransactionUtils.sendRawTransaction(
                 self.web3,
                 self.web3ContractInstance,

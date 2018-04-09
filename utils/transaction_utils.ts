@@ -32,7 +32,7 @@ export namespace TransactionUtils {
     // method of a contract.
     // Truffle contract instance cannot handle overloaded methods
     // (truffle will only handle the first implementation of the method).
-    export function sendRawTransaction(
+    export async function sendRawTransaction(
         web3: Web3,
         web3ContractInstance: Web3.ContractInstance,
         methodName: string,
@@ -43,9 +43,10 @@ export namespace TransactionUtils {
         const abiMethod = findMethod(web3ContractInstance.abi, methodName, inputTypes);
         const encodedData = ethjsABI.encodeMethod(abiMethod, inputVals);
 
-        return promisify<string>(web3.eth.sendTransaction, web3.eth)({
+        return promisify<string>(web3.eth.sendTransaction)({
             data: encodedData,
             ...txData,
+            to: web3ContractInstance.address,
         });
     }
 }
