@@ -5,6 +5,7 @@ import * as Web3 from "web3";
 // Types
 import { DebtTokenScenario } from "../scenarios";
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
+import { DebtOrder } from "src/types";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
@@ -45,7 +46,7 @@ export abstract class ScenarioRunner {
         web3: Web3,
         testAPIs: TestAPIs,
         testAdapters: TestAdapters,
-    ) {
+    ): Promise<DebtOrder.Instance> {
         const { orderAPI, signerAPI, tokenAPI } = testAPIs;
         const { simpleInterestLoanAdapter } = testAdapters;
 
@@ -71,6 +72,8 @@ export abstract class ScenarioRunner {
         await orderAPI.fillAsync(order, {
             from: order.creditor,
         });
+
+        return order;
     }
 
     private async getDummyTokenBySymbol(
