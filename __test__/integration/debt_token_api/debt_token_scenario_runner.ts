@@ -59,6 +59,8 @@ export class DebtTokenScenarioRunner {
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
+        this.testExistsScenario = this.testExistsScenario.bind(this);
+
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -72,7 +74,7 @@ export class DebtTokenScenarioRunner {
     }
 
     public async testExistsScenario(scenario: DebtTokenScenario.ExistsScenario) {
-        return this.ownerOfScenarioRunner.testScenario(scenario);
+        return this.existsScenarioRunner.testScenario(scenario);
     }
 
     public async saveSnapshotAsync() {
