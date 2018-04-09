@@ -26,7 +26,7 @@ export interface ERC721 {
     ): Promise<string>;
 }
 
-const ERC721_TRANSFER_GAS_MAXIMUM = 70000;
+const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
 
 export class DebtTokenAPI implements ERC721 {
     private web3: Web3;

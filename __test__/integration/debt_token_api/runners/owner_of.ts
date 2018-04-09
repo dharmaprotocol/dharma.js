@@ -26,15 +26,27 @@ export class OwnerOfScenarioRunner extends ScenarioRunner {
                         testAPIs,
                         testAdapters,
                     );
-                    const tokenID = await orderAPI.getIssuanceHash(order);
-                    tokenIDs.push(new BigNumber(tokenID));
+                    const tokenIDAsString = await orderAPI.getIssuanceHash(order);
+                    const tokenID = new BigNumber(tokenIDAsString);
+
+                    if (scenario.shouldTransferTo) {
+                        await debtTokenAPI.transfer(scenario.shouldTransferTo, tokenID, {
+                            from: scenario.creditor,
+                        });
+                    }
+
+                    tokenIDs.push(tokenID);
                 }
             });
 
             test("returns the correct owner", async () => {
                 for (let tokenID of tokenIDs) {
                     const owner = await debtTokenAPI.ownerOf(tokenID);
-                    expect(owner).toEqual(scenario.creditor);
+                    if (scenario.shouldTransferTo) {
+                        expect(owner).toEqual(scenario.shouldTransferTo);
+                    } else {
+                        expect(owner).toEqual(scenario.creditor);
+                    }
                 }
             });
         });
