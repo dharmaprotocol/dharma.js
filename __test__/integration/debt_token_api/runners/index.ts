@@ -34,27 +34,24 @@ export interface TestAdapters {
 }
 
 export abstract class ScenarioRunner {
-    public abstract testScenario(
-        scenario: DebtTokenScenario.Scenario,
-        web3: Web3,
-        testAPIs: TestAPIs,
-        testAdapters: TestAdapters,
-    ): void;
+    constructor(
+        protected web3: Web3,
+        protected testAPIs: TestAPIs,
+        protected testAdapters: TestAdapters,
+    ) {}
 
-    public async generateDebtTokenForOrder(
+    public abstract testScenario(scenario: DebtTokenScenario.Scenario);
+
+    public generateDebtTokenForOrder = async (
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-        web3: Web3,
-        testAPIs: TestAPIs,
-        testAdapters: TestAdapters,
-    ): Promise<DebtOrder.Instance> {
-        const { orderAPI, signerAPI, tokenAPI } = testAPIs;
-        const { simpleInterestLoanAdapter } = testAdapters;
+    ): Promise<BigNumber> => {
+        const { orderAPI, signerAPI, tokenAPI } = this.testAPIs;
+        const { simpleInterestLoanAdapter } = this.testAdapters;
 
         const principalToken = await this.getDummyTokenBySymbol(
-            web3,
-            testAPIs,
             simpleInterestLoanOrder.principalTokenSymbol,
         );
+
         await this.configureTokenBalance(
             principalToken,
             simpleInterestLoanOrder.creditor,
@@ -73,18 +70,16 @@ export abstract class ScenarioRunner {
             from: order.creditor,
         });
 
-        return order;
-    }
+        const tokenIDAsString = await orderAPI.getIssuanceHash(order);
 
-    private async getDummyTokenBySymbol(
-        web3: Web3,
-        testAPIs: TestAPIs,
-        tokenSymbol: string,
-    ): Promise<DummyTokenContract> {
-        const { contractsAPI } = testAPIs;
+        return new BigNumber(tokenIDAsString);
+    };
+
+    private async getDummyTokenBySymbol(tokenSymbol: string): Promise<DummyTokenContract> {
+        const { contractsAPI } = this.testAPIs;
         const tokenAddress = await contractsAPI.getTokenAddressBySymbolAsync(tokenSymbol);
 
-        return DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
+        return DummyTokenContract.at(tokenAddress, this.web3, TX_DEFAULTS);
     }
 
     private async configureTokenBalance(
