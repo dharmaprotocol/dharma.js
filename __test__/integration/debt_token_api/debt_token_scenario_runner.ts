@@ -17,30 +17,24 @@ import { SimpleInterestLoanAdapter } from "src/adapters";
 import { Web3Utils } from "utils/web3_utils";
 
 export class DebtTokenScenarioRunner {
+    // Snapshotting.
     private web3Utils: Web3Utils;
-    private web3: Web3;
-    // APIs
-    private testAPIs: TestAPIs;
-
-    // Adapters
-    private testAdapters: TestAdapters;
+    private currentSnapshotId: number;
 
     // Scenario Runners
     private balanceOfScenarioRunner: BalanceOfScenarioRunner;
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
 
-    private currentSnapshotId: number;
-
     constructor(web3: Web3) {
-        this.web3 = web3;
         this.web3Utils = new Web3Utils(web3);
 
-        const contractsAPI = new ContractsAPI(this.web3);
-        const debtTokenAPI = new DebtTokenAPI(this.web3, contractsAPI);
-        const tokenAPI = new TokenAPI(this.web3, contractsAPI);
-        const orderAPI = new OrderAPI(this.web3, contractsAPI);
-        const signerAPI = new SignerAPI(this.web3, contractsAPI);
-        this.testAPIs = {
+        const contractsAPI = new ContractsAPI(web3);
+        const debtTokenAPI = new DebtTokenAPI(web3, contractsAPI);
+        const tokenAPI = new TokenAPI(web3, contractsAPI);
+        const orderAPI = new OrderAPI(web3, contractsAPI);
+        const signerAPI = new SignerAPI(web3, contractsAPI);
+
+        const testAPIs = {
             contractsAPI,
             debtTokenAPI,
             orderAPI,
@@ -48,13 +42,12 @@ export class DebtTokenScenarioRunner {
             tokenAPI,
         };
 
-        // Adapters
-        this.testAdapters = {
+        const testAdapters = {
             simpleInterestLoanAdapter: new SimpleInterestLoanAdapter(contractsAPI),
         };
 
-        this.balanceOfScenarioRunner = new BalanceOfScenarioRunner();
-        this.ownerOfScenarioRunner = new OwnerOfScenarioRunner();
+        this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);
+        this.ownerOfScenarioRunner = new OwnerOfScenarioRunner(web3, testAPIs, testAdapters);
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
@@ -63,21 +56,11 @@ export class DebtTokenScenarioRunner {
     }
 
     public async testBalanceOfScenario(scenario: DebtTokenScenario.BalanceOfScenario) {
-        return this.balanceOfScenarioRunner.testScenario(
-            scenario,
-            this.web3,
-            this.testAPIs,
-            this.testAdapters,
-        );
+        return this.balanceOfScenarioRunner.testScenario(scenario);
     }
 
     public async testOwnerOfScenario(scenario: DebtTokenScenario.OwnerOfScenario) {
-        return this.ownerOfScenarioRunner.testScenario(
-            scenario,
-            this.web3,
-            this.testAPIs,
-            this.testAdapters,
-        );
+        return this.ownerOfScenarioRunner.testScenario(scenario);
     }
 
     public async saveSnapshotAsync() {
