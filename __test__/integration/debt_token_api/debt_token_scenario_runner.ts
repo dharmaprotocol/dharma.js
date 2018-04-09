@@ -2,7 +2,7 @@
 import * as Web3 from "web3";
 
 // Scenario Runners
-import { BalanceOfScenarioRunner, TestAPIs, TestAdapters } from "./runners";
+import { OwnerOfScenarioRunner, BalanceOfScenarioRunner, TestAPIs, TestAdapters } from "./runners";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis/";
@@ -27,6 +27,7 @@ export class DebtTokenScenarioRunner {
 
     // Scenario Runners
     private balanceOfScenarioRunner: BalanceOfScenarioRunner;
+    private ownerOfScenarioRunner: OwnerOfScenarioRunner;
 
     private currentSnapshotId: number;
 
@@ -53,7 +54,9 @@ export class DebtTokenScenarioRunner {
         };
 
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner();
+        this.ownerOfScenarioRunner = new OwnerOfScenarioRunner();
 
+        this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
@@ -61,6 +64,15 @@ export class DebtTokenScenarioRunner {
 
     public async testBalanceOfScenario(scenario: DebtTokenScenario.BalanceOfScenario) {
         return this.balanceOfScenarioRunner.testScenario(
+            scenario,
+            this.web3,
+            this.testAPIs,
+            this.testAdapters,
+        );
+    }
+
+    public async testOwnerOfScenario(scenario: DebtTokenScenario.OwnerOfScenario) {
+        return this.ownerOfScenarioRunner.testScenario(
             scenario,
             this.web3,
             this.testAPIs,
