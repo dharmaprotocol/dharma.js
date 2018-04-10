@@ -33,6 +33,7 @@ export const DebtTokenAPIErrors = {
     ONLY_OWNER: (account: string) => singleLineString`
         Specified debt token does not belong to account ${account}`,
     NOT_OWNER: () => singleLineString`The recipient cannot be the owner of the debt token.`,
+    TOKEN_WITH_ID_DOES_NOT_EXIST: () => singleLineString`The debt token specified does not exist.`,
 };
 
 export class DebtTokenAPI implements ERC721 {
@@ -71,6 +72,12 @@ export class DebtTokenAPI implements ERC721 {
         );
 
         const { from } = txOptions;
+
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(tokenID),
+        );
 
         await this.assert.debtToken.onlyOwner(
             debtTokenContract,
