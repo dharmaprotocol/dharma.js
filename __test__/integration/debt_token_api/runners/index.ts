@@ -5,7 +5,6 @@ import * as Web3 from "web3";
 // Types
 import { DebtTokenScenario } from "../scenarios";
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
-import { DebtOrder } from "src/types";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
@@ -38,13 +37,16 @@ export abstract class ScenarioRunner {
         protected web3: Web3,
         protected testAPIs: TestAPIs,
         protected testAdapters: TestAdapters,
-    ) {}
+    ) {
+        this.generateDebtTokenForOrder = this.generateDebtTokenForOrder.bind(this);
+        this.getDebtTokenIDFromUnfilledOrder = this.getDebtTokenIDFromUnfilledOrder.bind(this);
+    }
 
     public abstract testScenario(scenario: DebtTokenScenario.Scenario);
 
-    public generateDebtTokenForOrder = async (
+    public async generateDebtTokenForOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<BigNumber> => {
+    ): Promise<BigNumber> {
         const { orderAPI, signerAPI, tokenAPI } = this.testAPIs;
         const { simpleInterestLoanAdapter } = this.testAdapters;
 
@@ -73,11 +75,11 @@ export abstract class ScenarioRunner {
         const tokenIDAsString = await orderAPI.getIssuanceHash(order);
 
         return new BigNumber(tokenIDAsString);
-    };
+    }
 
-    public getDebtTokenIDFromUnfilledOrder = async (
+    public async getDebtTokenIDFromUnfilledOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<BigNumber> => {
+    ): Promise<BigNumber> {
         const { orderAPI } = this.testAPIs;
         const { simpleInterestLoanAdapter } = this.testAdapters;
 
@@ -86,7 +88,7 @@ export abstract class ScenarioRunner {
         const tokenIDAsString = await orderAPI.getIssuanceHash(order);
 
         return new BigNumber(tokenIDAsString);
-    };
+    }
 
     private async getDummyTokenBySymbol(tokenSymbol: string): Promise<DummyTokenContract> {
         const { contractsAPI } = this.testAPIs;
@@ -107,3 +109,4 @@ export abstract class ScenarioRunner {
 export { BalanceOfScenarioRunner } from "./balance_of";
 export { OwnerOfScenarioRunner } from "./owner_of";
 export { ExistsScenarioRunner } from "./exists";
+export { ApproveScenarioRunner } from "./approve";

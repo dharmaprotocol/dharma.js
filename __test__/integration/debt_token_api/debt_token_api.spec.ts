@@ -8,7 +8,13 @@ import * as Web3 from "web3";
 
 import { DebtTokenScenarioRunner } from "./debt_token_scenario_runner";
 
-import { BALANCE_OF_SCENARIOS, OWNER_OF_SCENARIOS, EXISTS_SCENARIOS } from "./scenarios";
+import {
+    BALANCE_OF_SCENARIOS,
+    OWNER_OF_SCENARIOS,
+    EXISTS_SCENARIOS,
+    SUCCESSFUL_APPROVE_SCENARIOS,
+    UNSUCCESSFUL_APPROVE_SCENARIOS,
+} from "./scenarios";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -16,9 +22,13 @@ const web3 = new Web3(provider);
 const scenarioRunner = new DebtTokenScenarioRunner(web3);
 
 describe("Debt Token API (Integration Tests)", () => {
-    beforeEach(scenarioRunner.saveSnapshotAsync);
+    beforeEach(() => {
+        return scenarioRunner.saveSnapshotAsync();
+    });
 
-    afterEach(scenarioRunner.revertToSavedSnapshot);
+    afterEach(() => {
+        return scenarioRunner.revertToSavedSnapshot();
+    });
 
     describe("#balanceOf", () => {
         describe("debt token balances should be retrievable", () => {
@@ -35,6 +45,16 @@ describe("Debt Token API (Integration Tests)", () => {
     describe("#exists", () => {
         describe("the existence of a given debt token id should be confirmable", () => {
             EXISTS_SCENARIOS.forEach(scenarioRunner.testExistsScenario);
+        });
+    });
+
+    describe("#approve", () => {
+        describe("should succeed", () => {
+            SUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+        });
+
+        describe("should fail", () => {
+            UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
         });
     });
 });

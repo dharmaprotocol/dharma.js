@@ -1,7 +1,8 @@
 import * as Web3 from "web3";
+import * as singleLineString from "single-line-string";
+
 import { TxData, TransactionOptions } from "../types";
 import { BigNumber } from "bignumber.js";
-import { Web3Utils } from "../../utils/web3_utils";
 import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";
 
@@ -27,6 +28,13 @@ export interface ERC721 {
 }
 
 const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
+
+export const DebtTokenAPIErrors = {
+    ONLY_OWNER: (account: string) => singleLineString`
+        Specified debt token does not belong to account ${account}`,
+    NOT_OWNER: () => singleLineString`The recipient cannot be the owner of the debt token.`,
+    TOKEN_WITH_ID_DOES_NOT_EXIST: () => singleLineString`The debt token specified does not exist.`,
+};
 
 export class DebtTokenAPI implements ERC721 {
     private web3: Web3;
@@ -56,11 +64,35 @@ export class DebtTokenAPI implements ERC721 {
 
     public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
+
+        const { from } = txOptions;
+
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
+        );
+
+        await this.assert.debtToken.onlyOwner(
+            debtTokenContract,
+            tokenID,
+            from,
+            DebtTokenAPIErrors.ONLY_OWNER(from),
+        );
+
+        await this.assert.debtToken.notOwner(
+            debtTokenContract,
+            tokenID,
+            to,
+            DebtTokenAPIErrors.NOT_OWNER(),
+        );
+
         return debtTokenContract.approve.sendTransactionAsync(to, tokenID, txOptions);
     }
 
