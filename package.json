@@ -93,7 +93,7 @@
         "cross-env": "^5.0.1",
         "cz-conventional-changelog": "^2.0.0",
         "ethereumjs-abi": "^0.6.5",
-        "ganache-cli": "beta",
+        "ganache-cli": "6.1.0",
         "husky": "^0.14.0",
         "jest": "^22.0.2",
         "lint-staged": "^6.0.0",
