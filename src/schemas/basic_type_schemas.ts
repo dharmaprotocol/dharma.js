@@ -10,6 +10,12 @@ export const bytes32Schema = {
     pattern: "^0x[0-9a-fA-F]{64}$",
 };
 
+export const bytesSchema = {
+    id: "/Bytes",
+    type: "string",
+    pattern: "^0x[0-9a-fA-F]*$",
+};
+
 export const numberSchema = {
     id: "/Number",
     type: "object",

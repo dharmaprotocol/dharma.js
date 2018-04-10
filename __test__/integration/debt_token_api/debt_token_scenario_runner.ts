@@ -7,8 +7,6 @@ import {
     BalanceOfScenarioRunner,
     ExistsScenarioRunner,
     TransferFromScenarioRunner,
-    TestAPIs,
-    TestAdapters,
 } from "./runners";
 
 // APIs
@@ -35,8 +33,6 @@ export class DebtTokenScenarioRunner {
     private existsScenarioRunner: ExistsScenarioRunner;
     private transferFromScenarioRunner: TransferFromScenarioRunner;
 
-    private currentSnapshotId: number;
-
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
 
@@ -61,6 +57,11 @@ export class DebtTokenScenarioRunner {
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);
         this.ownerOfScenarioRunner = new OwnerOfScenarioRunner(web3, testAPIs, testAdapters);
         this.existsScenarioRunner = new ExistsScenarioRunner(web3, testAPIs, testAdapters);
+        this.transferFromScenarioRunner = new TransferFromScenarioRunner(
+            web3,
+            testAPIs,
+            testAdapters,
+        );
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
@@ -92,6 +93,8 @@ export class DebtTokenScenarioRunner {
     }
 
     public async revertToSavedSnapshot() {
-        await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+        if (this.currentSnapshotId) {
+            await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+        }
     }
 }

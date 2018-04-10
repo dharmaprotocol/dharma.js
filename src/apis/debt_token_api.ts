@@ -12,6 +12,9 @@ import { Assertions } from "../invariants";
 // APIs
 import { ContractsAPI } from "./";
 
+// Wrappers
+import { DebtTokenContract } from "../wrappers";
+
 export interface ERC721 {
     balanceOf(owner: string): Promise<BigNumber>;
     ownerOf(tokenID: BigNumber): Promise<string>;
@@ -36,11 +39,19 @@ export interface ERC721 {
 const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
 
 export const DebtTokenAPIErrors = {
+    TOKEN_DOES_NOT_EXIST: (tokenID: BigNumber) => singleLineString`
+        Token with ID ${tokenID.toNumber()} does not exist.
+    `,
     TOKEN_DOES_NOT_BELONG_TO_ACCOUNT: (account: string) => singleLineString`
         Specified token does not belong to account ${account}
     `,
     ACCOUNT_UNAUTHORIZED_TO_TRANSFER: (account: string) => singleLineString`
         Transaction sender ${account} neither owns the specified token nor is approved to transfer it.
+    `,
+    RECIPIENT_WONT_RECOGNIZE_TOKEN: (recipient: string) => singleLineString`
+        Recipient ${recipient} is a contract that does not implement the
+        ERC721Receiver interface, and therefore cannot have ERC721 tokens
+        transferred to it.
     `,
 };
 
@@ -125,6 +136,8 @@ export class DebtTokenAPI implements ERC721 {
         data?: string,
         options?: TxData,
     ): Promise<string> {
+        this.validateTransferFromArguments(from, to, tokenID, data);
+
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
@@ -133,19 +146,7 @@ export class DebtTokenAPI implements ERC721 {
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
-        await this.assert.debtToken.belongsToAccount(
-            debtTokenContract,
-            tokenID,
-            from,
-            DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
-        );
-
-        await this.assert.debtToken.canBeTransferredByAccount(
-            debtTokenContract,
-            tokenID,
-            options.from,
-            DebtTokenAPIErrors.ACCOUNT_UNAUTHORIZED_TO_TRANSFER(options.from),
-        );
+        await this.assertTransferFromValid(debtTokenContract, from, to, tokenID, data, txOptions);
 
         return debtTokenContract.safeTransferFrom.sendTransactionAsync(
             from,
@@ -154,5 +155,62 @@ export class DebtTokenAPI implements ERC721 {
             data,
             txOptions,
         );
+    }
+
+    private async assertTransferFromValid(
+        debtTokenContract: DebtTokenContract,
+        from: string,
+        to: string,
+        tokenID: BigNumber,
+        data: string,
+        txOptions: TxData,
+    ): Promise<void> {
+        // Assert token exists
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_DOES_NOT_EXIST(tokenID),
+        );
+
+        // Assert token belongs to `from`
+        await this.assert.debtToken.belongsToAccount(
+            debtTokenContract,
+            tokenID,
+            from,
+            DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
+        );
+
+        // Assert that message sender can transfer said token
+        await this.assert.debtToken.canBeTransferredByAccount(
+            debtTokenContract,
+            tokenID,
+            txOptions.from,
+            DebtTokenAPIErrors.ACCOUNT_UNAUTHORIZED_TO_TRANSFER(txOptions.from),
+        );
+
+        // Assert that `to` can be the recipient of an ERC721 token
+        await this.assert.debtToken.canBeReceivedByAccountWithData(
+            this.web3,
+            tokenID,
+            to,
+            from,
+            data,
+            DebtTokenAPIErrors.RECIPIENT_WONT_RECOGNIZE_TOKEN(to),
+        );
+    }
+
+    private validateTransferFromArguments(
+        from: string,
+        to: string,
+        tokenID: BigNumber,
+        data?: string,
+    ): void {
+        this.assert.schema.address("from", from);
+        this.assert.schema.address("to", to);
+        this.assert.schema.wholeNumber("tokenID", tokenID);
+
+        if (data) {
+            this.assert.schema.bytes("data", data);
+        }
     }
 }
