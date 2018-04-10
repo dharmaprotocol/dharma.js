@@ -9,11 +9,12 @@ import { ACCOUNTS } from "../../../accounts";
 
 // Scenarios
 import { UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessful_return_collateral_scenarios";
-
 import { SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS } from "./scenarios/successful_return_collateral_scenarios";
+import { SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/successful_seize_collateral_scenarios";
+import { UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessful_seize_collateral_scenarios";
 
 // Runners
-import { ReturnCollateralRunner } from "./runners";
+import { ReturnCollateralRunner, SeizeCollateralRunner } from "./runners";
 
 import { Assertions } from "src/invariants";
 
@@ -43,6 +44,8 @@ jest.unmock("@dharmaprotocol/contracts");
 
 describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () => {
     let returnCollateralRunner = new ReturnCollateralRunner();
+    let seizeCollateralRunner = new SeizeCollateralRunner();
+
     let principalToken: DummyTokenContract;
     let collateralToken: DummyTokenContract;
 
@@ -98,6 +101,24 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
                 servicingApi,
             },
         );
+
+        seizeCollateralRunner.initialize(
+            web3,
+            adapter,
+            tokenTransferProxy,
+            {
+                debtKernel,
+                repaymentRouter,
+                principalToken,
+                collateralToken,
+                termsContract,
+            },
+            {
+                orderApi,
+                signerApi,
+                servicingApi,
+            },
+        );
     });
 
     describe("#returnCollateral", () => {
@@ -107,6 +128,16 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
 
         describe("Unsuccessful attempt to return collateral", () => {
             UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
+        });
+    });
+
+    describe("#seizeCollateral", () => {
+        describe("Successful seizure of collateral", () => {
+            SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
+        });
+
+        describe("Unsuccessful attempt to seize collateral", () => {
+            UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
         });
     });
 });

@@ -18,6 +18,31 @@ import { CollateralizedTermsContractParameters } from "src/adapters/collateraliz
 // Types
 import { DebtOrder } from "src/types/debt_order";
 
+export interface SeizeCollateralScenario {
+    // The test's description.
+    description: string;
+    // True if the scenario succeeds in returning collateral.
+    succeeds: boolean;
+    simpleTerms: SimpleInterestTermsContractParameters;
+    collateralTerms: CollateralizedTermsContractParameters;
+    // A function that returns a valid DebtOrder instance.
+    generateDebtOrder: (
+        debtKernel: DebtKernelContract,
+        repaymentRouter: RepaymentRouterContract,
+        principalToken: DummyTokenContract,
+        termsContract: CollateralizedSimpleInterestTermsContractContract,
+        termsParams: string,
+    ) => DebtOrder.Instance;
+    // Typically the underwriter fills the debt order.
+    orderFiller: string;
+    // True if the debt order's term has lapsed.
+    termLapsed: boolean;
+    // True if the entire debt has been repaid to the creditor.
+    debtRepaid: boolean;
+    // If there is an error in returning collateral, this defines the expected message.
+    error?: RegExp | string;
+}
+
 export interface ReturnCollateralScenario {
     // The test's description.
     description: string;
@@ -60,7 +85,9 @@ defaultCollateralTerms = {
     gracePeriodInDays: new BigNumber(30),
 };
 
-export function scenarioDefaults(accounts: Array<any>): ReturnCollateralScenario {
+export function scenarioDefaults(
+    accounts: Array<any>,
+): ReturnCollateralScenario | SeizeCollateralScenario {
     const debtor = accounts[1];
     const creditor = accounts[2];
     const underwriter = accounts[3];
