@@ -493,4 +493,12 @@ describe("Token API (Integration Tests)", () => {
             });
         });
     });
+
+    describe("#getTokenSymbolList", () => {
+        describe("token registry has tokens", () => {
+            test("should return the list of token symbols", async () => {
+                await expect(tokenApi.getTokenSymbolList()).resolves.toEqual(["REP", "MKR", "ZRX"]);
+            });
+        });
+    });
 });
