@@ -93,7 +93,7 @@
         "cross-env": "^5.0.1",
         "cz-conventional-changelog": "^2.0.0",
         "ethereumjs-abi": "^0.6.5",
-        "ganache-cli": "beta",
+        "ganache-cli": "6.1.0",
         "husky": "^0.14.0",
         "jest": "^22.0.2",
         "lint-staged": "^6.0.0",
@@ -124,7 +124,7 @@
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.0.27",
+        "@dharmaprotocol/contracts": "0.0.30",
         "@types/lodash": "^4.14.104",
         "abi-decoder": "https://github.com/dharmaprotocol/abi-decoder",
         "bignumber.js": "^5.0.0",
