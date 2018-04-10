@@ -75,7 +75,7 @@ export abstract class ScenarioRunner {
         return new BigNumber(tokenIDAsString);
     };
 
-    public generateDebtTokenIDWithoutFulfillment = async (
+    public getDebtTokenIDFromUnfilledOrder = async (
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
     ): Promise<BigNumber> => {
         const { orderAPI } = this.testAPIs;

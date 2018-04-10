@@ -19,7 +19,7 @@ export class ExistsScenarioRunner extends ScenarioRunner {
                     );
                 } else {
                     tokenIDs = await Promise.all(
-                        scenario.orders.map(this.generateDebtTokenIDWithoutFulfillment),
+                        scenario.orders.map(this.getDebtTokenIDFromUnfilledOrder),
                     );
                 }
             });
