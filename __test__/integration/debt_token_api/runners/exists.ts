@@ -1,5 +1,4 @@
 // External
-import * as Web3 from "web3";
 import { BigNumber } from "bignumber.js";
 
 // Types
@@ -8,7 +7,7 @@ import { DebtTokenScenario } from "../scenarios";
 
 export class ExistsScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.ExistsScenario) {
-        const { debtTokenAPI, orderAPI } = this.testAPIs;
+        const { debtTokenAPI } = this.testAPIs;
         let tokenIDs: BigNumber[];
 
         describe(scenario.description, () => {
@@ -19,7 +18,7 @@ export class ExistsScenarioRunner extends ScenarioRunner {
                     );
                 } else {
                     tokenIDs = await Promise.all(
-                        scenario.orders.map(this.generateDebtTokenIDWithoutFulfillment),
+                        scenario.orders.map(this.getDebtTokenIDFromUnfilledOrder),
                     );
                 }
             });

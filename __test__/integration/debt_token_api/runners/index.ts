@@ -40,9 +40,7 @@ export abstract class ScenarioRunner {
         protected testAdapters: TestAdapters,
     ) {
         this.generateDebtTokenForOrder = this.generateDebtTokenForOrder.bind(this);
-        this.generateDebtTokenIDWithoutFulfillment = this.generateDebtTokenIDWithoutFulfillment.bind(
-            this,
-        );
+        this.getDebtTokenIDFromUnfilledOrder = this.getDebtTokenIDFromUnfilledOrder.bind(this);
     }
 
     public abstract testScenario(scenario: DebtTokenScenario.Scenario);
@@ -80,7 +78,7 @@ export abstract class ScenarioRunner {
         return new BigNumber(tokenIDAsString);
     }
 
-    public async generateDebtTokenIDWithoutFulfillment(
+    public async getDebtTokenIDFromUnfilledOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
     ): Promise<BigNumber> {
         const { orderAPI } = this.testAPIs;

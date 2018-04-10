@@ -44,7 +44,7 @@ describe("Debt Token API (Integration Tests)", () => {
 
     describe("#exists", () => {
         describe("the existence of a given debt token id should be confirmable", () => {
-            EXISTS_SCENARIOS.forEach(scenarioRunner.testOwnerOfScenario);
+            EXISTS_SCENARIOS.forEach(scenarioRunner.testExistsScenario);
         });
     });
 
