@@ -18,6 +18,10 @@ export namespace DebtTokenScenario {
         shouldTransferTo?: string;
     }
 
+    export interface ExistsScenario extends Scenario {
+        shouldExist: boolean;
+    }
+
     export interface TransferFromScenario extends Scenario {
         from: string;
         to: string;

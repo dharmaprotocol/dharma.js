@@ -75,6 +75,19 @@ export abstract class ScenarioRunner {
         return new BigNumber(tokenIDAsString);
     };
 
+    public getDebtTokenIDFromUnfilledOrder = async (
+        simpleInterestLoanOrder: SimpleInterestLoanOrder,
+    ): Promise<BigNumber> => {
+        const { orderAPI } = this.testAPIs;
+        const { simpleInterestLoanAdapter } = this.testAdapters;
+
+        const order = await orderAPI.generate(simpleInterestLoanAdapter, simpleInterestLoanOrder);
+
+        const tokenIDAsString = await orderAPI.getIssuanceHash(order);
+
+        return new BigNumber(tokenIDAsString);
+    };
+
     private async getDummyTokenBySymbol(tokenSymbol: string): Promise<DummyTokenContract> {
         const { contractsAPI } = this.testAPIs;
         const tokenAddress = await contractsAPI.getTokenAddressBySymbolAsync(tokenSymbol);
@@ -93,3 +106,4 @@ export abstract class ScenarioRunner {
 
 export { BalanceOfScenarioRunner } from "./balance_of";
 export { OwnerOfScenarioRunner } from "./owner_of";
+export { ExistsScenarioRunner } from "./exists";
