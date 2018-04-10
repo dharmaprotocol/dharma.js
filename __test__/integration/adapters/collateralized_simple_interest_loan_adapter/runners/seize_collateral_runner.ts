@@ -138,11 +138,27 @@ export class SeizeCollateralRunner {
 
                     expect(txHash.length).toEqual(66);
                 });
+
+                it("transfers the collateral to the creditor", async () => {
+                    const collateralAmount = await this.collateralToken.balanceOf.callAsync(
+                        this.debtOrder.creditor
+                    );
+
+                    expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
+                });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(this.adapter.seizeCollateral(agreementId)).rejects.toThrow(
                         scenario.error,
                     );
+                });
+
+                it("does not transfer the collateral to the creditor", async () => {
+                    const collateralAmount = await this.collateralToken.balanceOf.callAsync(
+                        this.debtOrder.creditor
+                    );
+
+                    expect(collateralAmount.toNumber()).toEqual(0);
                 });
             }
         });
