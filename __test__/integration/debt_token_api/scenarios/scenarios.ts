@@ -24,6 +24,7 @@ export namespace DebtTokenScenario {
 
     export interface ApproveScenario extends Scenario {
         shouldSucceed: boolean;
+        shouldGenerateTokens: boolean;
         approver: string;
         approvee: string;
         errorType?: string;
