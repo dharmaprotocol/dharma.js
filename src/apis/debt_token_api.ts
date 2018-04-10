@@ -76,7 +76,7 @@ export class DebtTokenAPI implements ERC721 {
         await this.assert.debtToken.exists(
             debtTokenContract,
             tokenID,
-            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(tokenID),
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
         );
 
         await this.assert.debtToken.onlyOwner(
