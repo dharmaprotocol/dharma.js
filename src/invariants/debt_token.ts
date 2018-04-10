@@ -92,6 +92,7 @@ export class DebtTokenAssertions {
         // If a transfer recipient is a contract, it must implement the ERC721 Wallet interface
         if (isRecipientContract) {
             const EMPTY_TX_DEFAULTS = {};
+
             const erc721Receiver = await ERC721ReceiverContract.at(
                 recipient,
                 web3,
