@@ -36,6 +36,9 @@ export interface ERC721 {
 const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
 
 export const DebtTokenAPIErrors = {
+    TOKEN_DOES_NOT_EXIST: (tokenID: BigNumber) => singleLineString`
+        Token with ID ${tokenID.toNumber()} does not exist.
+    `,
     TOKEN_DOES_NOT_BELONG_TO_ACCOUNT: (account: string) => singleLineString`
         Specified token does not belong to account ${account}
     `,
@@ -125,6 +128,8 @@ export class DebtTokenAPI implements ERC721 {
         data?: string,
         options?: TxData,
     ): Promise<string> {
+        this.validateTransferFromArguments(from, to, tokenID, data);
+
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
@@ -133,6 +138,14 @@ export class DebtTokenAPI implements ERC721 {
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
+        // Assert token exists
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_DOES_NOT_EXIST(tokenID),
+        );
+
+        // Assert token belongs to `from`
         await this.assert.debtToken.belongsToAccount(
             debtTokenContract,
             tokenID,
@@ -140,6 +153,7 @@ export class DebtTokenAPI implements ERC721 {
             DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
         );
 
+        // Assert that message sender can transfer said token
         await this.assert.debtToken.canBeTransferredByAccount(
             debtTokenContract,
             tokenID,
@@ -154,5 +168,20 @@ export class DebtTokenAPI implements ERC721 {
             data,
             txOptions,
         );
+    }
+
+    private validateTransferFromArguments(
+        from: string,
+        to: string,
+        tokenID: BigNumber,
+        data?: string,
+    ): void {
+        this.assert.schema.address("from", from);
+        this.assert.schema.address("to", to);
+        this.assert.schema.wholeNumber("tokenID", tokenID);
+
+        if (data) {
+            this.assert.schema.bytes("data", data);
+        }
     }
 }

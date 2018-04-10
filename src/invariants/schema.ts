@@ -31,6 +31,10 @@ export class SchemaAssertions {
         this.assertConformsToSchema(variableName, value, Schemas.bytes32Schema);
     }
 
+    public bytes(variableName: string, value: any) {
+        this.assertConformsToSchema(variableName, value, Schemas.bytesSchema);
+    }
+
     public number(variableName: string, value: any) {
         this.assertConformsToSchema(variableName, value, Schemas.numberSchema);
     }
