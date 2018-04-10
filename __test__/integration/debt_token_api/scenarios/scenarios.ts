@@ -24,8 +24,8 @@ export namespace DebtTokenScenario {
 
     export interface ApproveScenario extends Scenario {
         shouldSucceed: boolean;
-        transferer: string;
-        transferee: string;
+        approver: string;
+        approvee: string;
     }
 
     export interface TransferFromScenario extends Scenario {
