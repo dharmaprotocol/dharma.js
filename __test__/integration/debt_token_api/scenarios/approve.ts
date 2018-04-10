@@ -1,31 +1,41 @@
 import { DebtTokenScenario } from "./scenarios";
 import { Orders } from "./orders";
 import { ACCOUNTS } from "../../../accounts";
-import { NULL_ADDRESS } from "utils/constants";
+import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
 
-export const APPROVE_SCENARIOS: DebtTokenScenario.ApproveScenario[] = [
+export const APPROVEE = ACCOUNTS[2].address;
+
+export const SUCCESSFUL_APPROVE_SCENARIOS: DebtTokenScenario.ApproveScenario[] = [
     {
-        description: "the debt token is transferred to the null address",
-        orders: [Orders.ORDER_ONE],
-        ...Orders.WHO,
-        shouldSucceed: true,
-        transferer: Orders.CREDITOR,
-        transferee: NULL_ADDRESS,
-    },
-    {
-        description: "the debt token is transferred to the existing owner",
-        orders: [Orders.ORDER_ONE],
-        ...Orders.WHO,
-        shouldSucceed: false,
-        transferer: Orders.CREDITOR,
-        transferee: Orders.CREDITOR,
-    },
-    {
-        description: "the debt token is transferred by the owner to another account",
+        description: "`approve` is invoked by the token owner and specifies a valid approvee",
         orders: Orders.ALL_ORDERS,
         ...Orders.WHO,
         shouldSucceed: true,
-        transferer: Orders.CREDITOR,
-        transferee: ACCOUNTS[2].address,
+        approver: Orders.CREDITOR,
+        approvee: APPROVEE,
+    },
+];
+
+export const UNSUCCESSFUL_APPROVE_SCENARIOS: DebtTokenScenario.ApproveScenario[] = [
+    {
+        description: "`approve` is not invoked by the token owner",
+        orders: [Orders.ORDER_ONE],
+        ...Orders.WHO,
+        shouldSucceed: false,
+        approver: Orders.DEBTOR, // this account is not the token owner and thus cannot invoke `approve`
+        approvee: APPROVEE,
+        errorType: "ONLY OWNER",
+        errorMessage: DebtTokenAPIErrors.ONLY_OWNER(Orders.DEBTOR),
+    },
+    {
+        description:
+            "`approve` is invoked by the token owner but specifies the token owner as the approvee",
+        orders: Orders.ALL_ORDERS,
+        ...Orders.WHO,
+        shouldSucceed: false,
+        approver: Orders.CREDITOR,
+        approvee: Orders.CREDITOR, // approvee cannot be the current token owner.
+        errorType: "NOT OWNER",
+        errorMessage: DebtTokenAPIErrors.NOT_OWNER(),
     },
 ];
