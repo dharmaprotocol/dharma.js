@@ -1,6 +1,5 @@
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
 import { BigNumber } from "bignumber.js";
-import { TxData } from "src/types";
 
 export namespace DebtTokenScenario {
     export interface Scenario {
@@ -19,11 +18,29 @@ export namespace DebtTokenScenario {
     }
 
     export interface TransferFromScenario extends Scenario {
+        // Setup arguments
+        tokensApprovedOperator: string;
+        ownersApprovedOperator: string;
+
+        // TransferFrom method arguments
         from: string;
-        to: string;
-        tokenID: (ordersIssuanceHash: BigNumber, other: BigNumber) => BigNumber;
+        to: (
+            userRecipient: string,
+            validContractRecipient: string,
+            invalidContractRecipient: string,
+            malformed: string,
+        ) => string;
+        tokenID: (
+            ordersIssuanceHash: BigNumber,
+            otherTokenId: BigNumber,
+            nonexistentTokenId: BigNumber,
+        ) => BigNumber;
         data?: string;
-        options?: TxData;
+
+        // Transaction options
+        sender: string;
+
+        // Scenario outcome
         succeeds: boolean;
         errorType?: string;
         errorMessage?: string;

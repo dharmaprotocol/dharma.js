@@ -10,6 +10,7 @@ import {
     TransferFromScenarioRunner,
     TestAPIs,
     TestAdapters,
+    TestContracts,
 } from "./runners";
 >>>>>>> test: add test scaffolding for safeTransferFrom tests
 
@@ -24,6 +25,12 @@ import { SimpleInterestLoanAdapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
+import { ACCOUNTS } from "../../accounts";
+
+// Wrappers
+import { DummyTokenContract, MockERC721ReceiverContract } from "src/wrappers";
+
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 export class DebtTokenScenarioRunner {
     // Snapshotting.
