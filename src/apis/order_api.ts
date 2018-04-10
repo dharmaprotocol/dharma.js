@@ -1,6 +1,7 @@
 // External
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import { BigNumber } from "../../utils/bignumber";
 
 // APIs
 import { AdaptersAPI, ContractsAPI } from ".";
@@ -191,6 +192,21 @@ export class OrderAPI {
             debtOrderWrapped.getOrderBytes32(),
             transactionOptions,
         );
+    }
+
+    /**
+     * Asynchronously checks whether the order is filled.
+     *
+     * @param  debtOrder a debt order.
+     * @return           boolean representing whether the debt order is filled or not.
+     */
+    public async checkOrderFilledAsync(debtOrder: DebtOrder.Instance): Promise<boolean> {
+        const transactionOptions = await this.getTxDefaultOptions();
+        const { debtToken } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+
+        const issuanceHash = await this.getIssuanceHash(debtOrder);
+
+        return debtToken.exists.callAsync(new BigNumber(issuanceHash));
     }
 
     /**

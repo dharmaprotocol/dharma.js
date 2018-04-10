@@ -120,6 +120,12 @@ describe("Order API (Integration Tests)", () => {
         });
     });
 
+    describe("#checkOrderFilledAsync", () => {
+        describe("Filled and unfilled orders", () => {
+            VALID_ORDERS.forEach(scenarioRunner.testCheckOrderFilledScenario);
+        });
+    });
+
     describe("#generate", () => {
         describe("Valid order generation", () => {
             SUCCESSFUL_ORDER_GENERATION.forEach(scenarioRunner.testOrderGenerationScenario);

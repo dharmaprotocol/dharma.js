@@ -54,6 +54,7 @@ export class OrderScenarioRunner {
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
 
+        this.testCheckOrderFilledScenario = this.testCheckOrderFilledScenario.bind(this);
         this.testFillScenario = this.testFillScenario.bind(this);
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
@@ -62,6 +63,36 @@ export class OrderScenarioRunner {
 
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
+    }
+
+    public testCheckOrderFilledScenario(scenario: FillScenario) {
+        describe(scenario.description, () => {
+            let debtOrder: DebtOrder.Instance;
+
+            beforeAll(() => {
+                ABIDecoder.addABI(this.debtKernel.abi);
+            });
+
+            afterAll(() => {
+                ABIDecoder.removeABI(this.debtKernel.abi);
+            });
+
+            beforeEach(async () => {
+                debtOrder = await this.setUpFillScenario(scenario);
+            });
+
+            test("returns false if order has not been filled", async () => {
+                expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(false);
+            });
+
+            test("returns true if order has been filled", async () => {
+                const txHash = await this.orderApi.fillAsync(debtOrder, {
+                    from: scenario.filler,
+                });
+
+                expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(true);
+            });
+        });
     }
 
     public testFillScenario(scenario: FillScenario) {
@@ -77,49 +108,7 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = scenario.generateDebtOrder(
-                    this.debtKernel,
-                    this.repaymentRouter,
-                    this.principalToken,
-                    this.termsContract,
-                );
-
-                // We dynamically set the creditor's balance and
-                // allowance of a given principal token to either
-                // their assigned values in the fill scenario, or
-                // to a default amount (i.e sufficient balance / allowance
-                // necessary for order fill)
-                const creditorBalance =
-                    scenario.creditorBalance || debtOrder.principalAmount.times(2);
-                const creditorAllowance =
-                    scenario.creditorAllowance || debtOrder.principalAmount.times(2);
-
-                await this.principalToken.setBalance.sendTransactionAsync(
-                    debtOrder.creditor,
-                    creditorBalance,
-                );
-                await this.principalToken.approve.sendTransactionAsync(
-                    this.tokenTransferProxy.address,
-                    creditorAllowance,
-                    { from: debtOrder.creditor },
-                );
-
-                // We dynamically attach signatures based on whether the
-                // the scenario specifies that a signature from a signatory
-                // ought to be attached.
-                debtOrder.debtorSignature = scenario.signatories.debtor
-                    ? await this.orderSigner.asDebtor(debtOrder, false)
-                    : null;
-                debtOrder.creditorSignature = scenario.signatories.creditor
-                    ? await this.orderSigner.asCreditor(debtOrder, false)
-                    : null;
-                debtOrder.underwriterSignature = scenario.signatories.underwriter
-                    ? await this.orderSigner.asUnderwriter(debtOrder, false)
-                    : null;
-
-                if (scenario.beforeBlock) {
-                    await scenario.beforeBlock(debtOrder, this.debtKernel);
-                }
+                debtOrder = await this.setUpFillScenario(scenario);
             });
 
             if (scenario.successfullyFills) {
@@ -341,5 +330,51 @@ export class OrderScenarioRunner {
 
     public async revertToSavedSnapshot() {
         await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+    }
+
+    private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrder.Instance> {
+        let debtOrder = scenario.generateDebtOrder(
+            this.debtKernel,
+            this.repaymentRouter,
+            this.principalToken,
+            this.termsContract,
+        );
+
+        // We dynamically set the creditor's balance and
+        // allowance of a given principal token to either
+        // their assigned values in the fill scenario, or
+        // to a default amount (i.e sufficient balance / allowance
+        // necessary for order fill)
+        const creditorBalance = scenario.creditorBalance || debtOrder.principalAmount.times(2);
+        const creditorAllowance = scenario.creditorAllowance || debtOrder.principalAmount.times(2);
+
+        await this.principalToken.setBalance.sendTransactionAsync(
+            debtOrder.creditor,
+            creditorBalance,
+        );
+        await this.principalToken.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            creditorAllowance,
+            { from: debtOrder.creditor },
+        );
+
+        // We dynamically attach signatures based on whether the
+        // the scenario specifies that a signature from a signatory
+        // ought to be attached.
+        debtOrder.debtorSignature = scenario.signatories.debtor
+            ? await this.orderSigner.asDebtor(debtOrder, false)
+            : null;
+        debtOrder.creditorSignature = scenario.signatories.creditor
+            ? await this.orderSigner.asCreditor(debtOrder, false)
+            : null;
+        debtOrder.underwriterSignature = scenario.signatories.underwriter
+            ? await this.orderSigner.asUnderwriter(debtOrder, false)
+            : null;
+
+        if (scenario.beforeBlock) {
+            await scenario.beforeBlock(debtOrder, this.debtKernel);
+        }
+
+        return debtOrder;
     }
 }
