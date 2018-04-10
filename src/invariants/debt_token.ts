@@ -1,5 +1,7 @@
-import { DebtTokenContract } from "../wrappers";
+import { DebtTokenContract, ERC721ReceiverContract } from "../wrappers";
 import { BigNumber } from "bignumber.js";
+import * as Web3 from "web3";
+import { Web3Utils } from "utils/web3_utils";
 
 export class DebtTokenAssertions {
     public async exists(
@@ -73,6 +75,37 @@ export class DebtTokenAssertions {
             }
         } catch (e) {
             throw new Error(errorMessage);
+        }
+    }
+
+    public async canBeReceivedByAccountWithData(
+        web3: Web3,
+        tokenID: BigNumber,
+        recipient: string,
+        sender: string,
+        data: string = "",
+        errorMessage: string,
+    ): Promise<void> {
+        const utils = new Web3Utils(web3);
+        const isRecipientContract = await utils.doesContractExistAtAddressAsync(recipient);
+
+        // If a transfer recipient is a contract, it must implement the ERC721 Wallet interface
+        if (isRecipientContract) {
+            const EMPTY_TX_DEFAULTS = {};
+            const erc721Receiver = await ERC721ReceiverContract.at(
+                recipient,
+                web3,
+                EMPTY_TX_DEFAULTS,
+            );
+
+            // We check whether the recipient will accurately register a 721 interface
+            // by sending a message call to onERC721Received method (which is not mined)
+            // and seeing whether the call reverts.
+            try {
+                await erc721Receiver.onERC721Received.callAsync(sender, tokenID, data);
+            } catch (e) {
+                throw new Error(errorMessage);
+            }
         }
     }
 }
