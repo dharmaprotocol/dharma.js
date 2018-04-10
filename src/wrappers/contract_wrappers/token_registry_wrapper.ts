@@ -14,6 +14,16 @@ import * as Web3 from "web3";
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
 export class TokenRegistryContract extends BaseContract {
+    public symbolHashToTokenIndex = {
+        async callAsync(index_0: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<BigNumber>(
+                self.web3ContractInstance.symbolHashToTokenIndex.call,
+                self.web3ContractInstance,
+            )(index_0);
+            return result;
+        },
+    };
     public setTokenAddress = {
         async sendTransactionAsync(
             symbol: string,
@@ -50,13 +60,13 @@ export class TokenRegistryContract extends BaseContract {
             return abiEncodedTransactionData;
         },
     };
-    public symbolToTokenAddress = {
-        async callAsync(index: string, defaultBlock?: Web3.BlockParam): Promise<string> {
+    public getTokenIndexBySymbol = {
+        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
             const self = this as TokenRegistryContract;
-            const result = await promisify<string>(
-                self.web3ContractInstance.symbolToTokenAddress.call,
+            const result = await promisify<BigNumber>(
+                self.web3ContractInstance.getTokenIndexBySymbol.call,
                 self.web3ContractInstance,
-            )(index);
+            )(symbol);
             return result;
         },
     };
@@ -80,16 +90,6 @@ export class TokenRegistryContract extends BaseContract {
             return result;
         },
     };
-    public getTokenIndexBySymbol = {
-        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
-            const self = this as TokenRegistryContract;
-            const result = await promisify<string>(
-                self.web3ContractInstance.getTokenIndexBySymbol.call,
-                self.web3ContractInstance,
-            )(symbol);
-            return result;
-        },
-    };
     public getTokenSymbolByIndex = {
         async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
             const self = this as TokenRegistryContract;
@@ -97,6 +97,46 @@ export class TokenRegistryContract extends BaseContract {
                 self.web3ContractInstance.getTokenSymbolByIndex.call,
                 self.web3ContractInstance,
             )(index);
+            return result;
+        },
+    };
+    public owner = {
+        async callAsync(defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.owner.call,
+                self.web3ContractInstance,
+            )();
+            return result;
+        },
+    };
+    public tokenSymbolList = {
+        async callAsync(index_0: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.tokenSymbolList.call,
+                self.web3ContractInstance,
+            )(index_0);
+            return result;
+        },
+    };
+    public tokenSymbolListLength = {
+        async callAsync(defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<BigNumber>(
+                self.web3ContractInstance.tokenSymbolListLength.call,
+                self.web3ContractInstance,
+            )();
+            return result;
+        },
+    };
+    public symbolHashToTokenAddress = {
+        async callAsync(index_0: string, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.symbolHashToTokenAddress.call,
+                self.web3ContractInstance,
+            )(index_0);
             return result;
         },
     };
