@@ -141,7 +141,7 @@ export class SeizeCollateralRunner {
 
                 it("transfers the collateral to the creditor", async () => {
                     const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrder.creditor
+                        this.debtOrder.creditor,
                     );
 
                     expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
@@ -155,7 +155,7 @@ export class SeizeCollateralRunner {
 
                 it("does not transfer the collateral to the creditor", async () => {
                     const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrder.creditor
+                        this.debtOrder.creditor,
                     );
 
                     expect(collateralAmount.toNumber()).toEqual(0);
