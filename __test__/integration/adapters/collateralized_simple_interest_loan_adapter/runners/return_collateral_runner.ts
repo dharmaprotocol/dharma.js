@@ -134,12 +134,20 @@ export class ReturnCollateralRunner {
 
             if (scenario.succeeds) {
                 it("returns a valid transaction hash", async () => {
+                    const canReturn = await this.adapter.canReturnCollateral(agreementId);
+
+                    expect(canReturn).toEqual(true);
+
                     const txHash = await this.adapter.returnCollateral(agreementId);
 
                     expect(txHash.length).toEqual(66);
                 });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
+                    const canReturn = await this.adapter.canReturnCollateral(agreementId);
+
+                    expect(canReturn).toEqual(false);
+
                     await expect(this.adapter.returnCollateral(agreementId)).rejects.toThrow(
                         scenario.error,
                     );
