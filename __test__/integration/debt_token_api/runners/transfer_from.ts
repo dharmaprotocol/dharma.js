@@ -55,13 +55,9 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
                     MALFORMED_TOKEN_RECIPIENT,
                 );
 
-                let tokenIDs = [];
-
-                for (let i = 0; i < scenario.orders.length; i++) {
-                    const issuanceHash = await this.generateDebtTokenForOrder(scenario.orders[i]);
-
-                    tokenIDs.push(new BigNumber(issuanceHash));
-                }
+                const tokenIDs = await Promise.all(
+                    scenario.orders.map(this.generateDebtTokenForOrder),
+                );
 
                 const [creditorsTokenID, nonCreditorsTokenID] = tokenIDs;
 
