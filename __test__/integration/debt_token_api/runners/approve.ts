@@ -9,29 +9,35 @@ import { DebtTokenScenario } from "../scenarios";
 export class ApproveScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.ApproveScenario) {
         const { debtTokenAPI, orderAPI } = this.testAPIs;
+
         let tokenIDs: BigNumber[];
 
         describe(scenario.description, () => {
             beforeEach(async () => {
                 tokenIDs = await Promise.all(scenario.orders.map(this.generateDebtTokenForOrder));
-
-                for (let tokenID of tokenIDs) {
-                    await debtTokenAPI.transfer(scenario.transferee, tokenID, {
-                        from: scenario.transferer,
-                    });
-                }
             });
 
-            test("returns the correct owner of the debt token", async () => {
-                for (let tokenID of tokenIDs) {
-                    const owner = await debtTokenAPI.ownerOf(tokenID);
-                    if (scenario.shouldSucceed) {
-                        expect(owner).toEqual(scenario.transferee);
-                    } else {
-                        expect(owner).toEqual(scenario.creditor);
+            if (scenario.shouldSucceed) {
+                test("approvee is approved", async () => {
+                    for (let tokenID of tokenIDs) {
+                        await debtTokenAPI.approve(scenario.approvee, tokenID, {
+                            from: scenario.approver,
+                        });
+                        const approved = await debtTokenAPI.getApproved(tokenID);
+                        expect(approved).toEqual(scenario.approvee);
                     }
-                }
-            });
+                });
+            } else {
+                test(`throws ${scenario.errorType}`, async () => {
+                    for (let tokenID of tokenIDs) {
+                        await expect(
+                            debtTokenAPI.approve(scenario.approvee, tokenID, {
+                                from: scenario.approver,
+                            }),
+                        ).rejects.toThrow(scenario.errorMessage);
+                    }
+                });
+            }
         });
     }
 }
