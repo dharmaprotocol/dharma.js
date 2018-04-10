@@ -1,9 +1,8 @@
 // External
-import * as Web3 from "web3";
 import { BigNumber } from "bignumber.js";
 
 // Types
-import { ScenarioRunner, TestAPIs, TestAdapters } from "./";
+import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
 
 // Wrappers
@@ -15,12 +14,7 @@ import { ACCOUNTS } from "../../../accounts";
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 export class TransferFromScenarioRunner extends ScenarioRunner {
-    public testScenario(
-        scenario: DebtTokenScenario.TransferFromScenario,
-        web3: Web3,
-        testAPIs: TestAPIs,
-        testAdapters: TestAdapters,
-    ) {
+    public testScenario(scenario: DebtTokenScenario.TransferFromScenario) {
         const NONEXISTENT_TOKEN_ID = new BigNumber(13);
         const USER_RECIPIENT = ACCOUNTS[5].address;
 
@@ -31,18 +25,18 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
         let recipientIsContract: boolean;
         let erc721ReceiverContract: MockERC721ReceiverContract;
 
-        const { debtTokenAPI } = testAPIs;
+        const { debtTokenAPI } = this.testAPIs;
         let scenarioTokenID: BigNumber;
         let transferFromPromise: Promise<string>;
 
         describe(scenario.description, () => {
             beforeEach(async () => {
                 erc721ReceiverContract = await MockERC721ReceiverContract.deployed(
-                    web3,
+                    this.web3,
                     TX_DEFAULTS,
                 );
                 const tokenRegistryContract = await TokenRegistryContract.deployed(
-                    web3,
+                    this.web3,
                     TX_DEFAULTS,
                 );
 
@@ -64,12 +58,7 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
                 let tokenIDs = [];
 
                 for (let i = 0; i < scenario.orders.length; i++) {
-                    const issuanceHash = await this.generateDebtTokenForOrder(
-                        scenario.orders[i],
-                        web3,
-                        testAPIs,
-                        testAdapters,
-                    );
+                    const issuanceHash = await this.generateDebtTokenForOrder(scenario.orders[i]);
 
                     tokenIDs.push(new BigNumber(issuanceHash));
                 }

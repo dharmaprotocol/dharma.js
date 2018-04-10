@@ -5,7 +5,6 @@ import * as Web3 from "web3";
 // Types
 import { DebtTokenScenario } from "../scenarios";
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
-import { DebtOrder } from "src/types";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
