@@ -7,6 +7,7 @@ import { DummyTokenContract } from "./contract_wrappers/dummy_token_wrapper";
 import { TokenRegistryContract } from "./contract_wrappers/token_registry_wrapper";
 import { TokenTransferProxyContract } from "./contract_wrappers/token_transfer_proxy_wrapper";
 import { ERC20Contract } from "./contract_wrappers/erc20_wrapper";
+import { MockERC721ReceiverContract } from "./contract_wrappers/mock_erc721_receiver_wrapper";
 import { TermsContract } from "./contract_wrappers/terms_contract_wrapper";
 import { RepaymentRouterContract } from "./contract_wrappers/repayment_router_wrapper";
 import { SimpleInterestTermsContractContract } from "./contract_wrappers/simple_interest_terms_contract_wrapper";
@@ -18,6 +19,7 @@ export type ContractWrapper =
     | DebtTokenContract
     | TokenTransferProxyContract
     | ERC20Contract
+    | MockERC721ReceiverContract
     | RepaymentRouterContract
     | SimpleInterestTermsContractContract
     | CollateralizedSimpleInterestTermsContractContract
@@ -34,6 +36,7 @@ export {
     TokenRegistryContract,
     TokenTransferProxyContract,
     ERC20Contract,
+    MockERC721ReceiverContract,
     TermsContract,
     SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,

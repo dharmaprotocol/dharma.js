@@ -2,7 +2,11 @@
 import * as Web3 from "web3";
 
 // Scenario Runners
-import { OwnerOfScenarioRunner, BalanceOfScenarioRunner, TestAPIs, TestAdapters } from "./runners";
+import {
+    OwnerOfScenarioRunner,
+    BalanceOfScenarioRunner,
+    TransferFromScenarioRunner,
+} from "./runners";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis/";
@@ -19,11 +23,13 @@ import { Web3Utils } from "utils/web3_utils";
 export class DebtTokenScenarioRunner {
     // Snapshotting.
     private web3Utils: Web3Utils;
+
     private currentSnapshotId: number;
 
     // Scenario Runners
     private balanceOfScenarioRunner: BalanceOfScenarioRunner;
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
+    private transferFromScenarioRunner: TransferFromScenarioRunner;
 
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
@@ -48,9 +54,16 @@ export class DebtTokenScenarioRunner {
 
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);
         this.ownerOfScenarioRunner = new OwnerOfScenarioRunner(web3, testAPIs, testAdapters);
+        this.transferFromScenarioRunner = new TransferFromScenarioRunner(
+            web3,
+            testAPIs,
+            testAdapters,
+        );
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
+        this.testTransferFromScenario = this.testTransferFromScenario.bind(this);
+
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -63,11 +76,17 @@ export class DebtTokenScenarioRunner {
         return this.ownerOfScenarioRunner.testScenario(scenario);
     }
 
+    public async testTransferFromScenario(scenario: DebtTokenScenario.TransferFromScenario) {
+        return this.transferFromScenarioRunner.testScenario(scenario);
+    }
+
     public async saveSnapshotAsync() {
         this.currentSnapshotId = await this.web3Utils.saveTestSnapshot();
     }
 
     public async revertToSavedSnapshot() {
-        await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+        if (this.currentSnapshotId) {
+            await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+        }
     }
 }

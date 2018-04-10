@@ -1,5 +1,5 @@
-import { DebtTokenScenario } from "./scenarios";
-import { BALANCE_OF_SCENARIOS } from "./balance_of";
-import { OWNER_OF_SCENARIOS } from "./owner_of";
-
-export { DebtTokenScenario, BALANCE_OF_SCENARIOS, OWNER_OF_SCENARIOS };
+export { DebtTokenScenario } from "./scenarios";
+export { BALANCE_OF_SCENARIOS } from "./balance_of";
+export { OWNER_OF_SCENARIOS } from "./owner_of";
+export { UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS } from "./unsuccessful_transfer_from";
+export { SUCCESSFUL_TRANSFER_FROM_SCENARIOS } from "./successful_transfer_from";
