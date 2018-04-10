@@ -11,6 +11,7 @@ import { DebtTokenScenarioRunner } from "./debt_token_scenario_runner";
 import {
     BALANCE_OF_SCENARIOS,
     OWNER_OF_SCENARIOS,
+    EXISTS_SCENARIOS,
     SUCCESSFUL_TRANSFER_FROM_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS,
 } from "./scenarios";
