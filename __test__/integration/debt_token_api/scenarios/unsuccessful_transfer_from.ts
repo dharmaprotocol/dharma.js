@@ -125,20 +125,20 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
         errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
         errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]{40}$"',
     },
-    // {
-    //     ...defaults,
-    //     description: "recipient account is contract that does not implement ERC721Receiver",
-    //     tokenID: (
-    //         ordersIssuanceHash: BigNumber,
-    //         nonCreditorsTokenID: BigNumber,
-    //         nonExistentTokenId: BigNumber,
-    //     ) => ordersIssuanceHash,
-    //     errorType: "CONTRACT_RECIPIENT_DOES_NOT_RECOGNIZE_721",
-    //     errorMessage: DebtTokenAPIErrors.CONTRACT_RECIPIENT_DOES_NOT_RECOGNIZE_721(),
-    //     to: (
-    //         userRecipient: string,
-    //         validContractRecipient: string,
-    //         invalidContractRecipient: string,
-    //     ) => invalidContractRecipient,
-    // },
+    {
+        ...defaults,
+        description: "recipient account is contract that does not implement ERC721Receiver",
+        tokenID: (
+            ordersIssuanceHash: BigNumber,
+            nonCreditorsTokenID: BigNumber,
+            nonExistentTokenId: BigNumber,
+        ) => ordersIssuanceHash,
+        errorType: "CONTRACT_RECIPIENT_DOES_NOT_RECOGNIZE_721",
+        errorMessage: "does not implement the ERC721Receiver interface",
+        to: (
+            userRecipient: string,
+            validContractRecipient: string,
+            invalidContractRecipient: string,
+        ) => invalidContractRecipient,
+    },
 ];
