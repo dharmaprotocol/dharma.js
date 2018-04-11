@@ -52,7 +52,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
             nonExistentTokenId: BigNumber,
         ) => nonExistentTokenId,
         errorType: "TOKEN_DOES_NOT_EXIST",
-        errorMessage: DebtTokenAPIErrors.TOKEN_DOES_NOT_EXIST(new BigNumber(13)),
+        errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
     },
     {
         ...defaults,
@@ -63,7 +63,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
             nonExistentTokenId: BigNumber,
         ) => nonCreditorsTokenID,
         errorType: "TOKEN_DOES_NOT_BELONG_TO_ACCOUNT",
-        errorMessage: DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(Orders.CREDITOR),
+        errorMessage: DebtTokenAPIErrors.ONLY_OWNER(Orders.CREDITOR),
     },
     {
         ...defaults,
