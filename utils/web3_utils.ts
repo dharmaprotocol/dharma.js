@@ -54,7 +54,11 @@ export class Web3Utils {
      * @returns {Promise<number>}
      */
     public async getCurrentBlockTime(): Promise<number> {
-        return this.web3.eth.getBlock("latest").timestamp;
+        const latestBlock = await promisify(
+            this.web3.eth.getBlock
+        )("latest");
+
+        return latestBlock.timestamp;
     }
 
     /**

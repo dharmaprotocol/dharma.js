@@ -1,7 +1,6 @@
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
-import * as moment from "moment";
+import * as Web3 from "web3";
 
 import { BigNumber } from "utils/bignumber";
 import { Web3Utils } from "utils/web3_utils";
@@ -22,7 +21,6 @@ import {
 import { TermsContract } from "src/wrappers";
 
 import { NULL_ADDRESS } from "../../utils/constants";
-import { ACCOUNTS } from "../../__test__/accounts";
 
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
@@ -82,8 +80,8 @@ export const CollateralizerAdapterErrors = {
 export class CollateralizedLoanTerms {
     private assert: Assertions;
 
-    constructor(web3: Web3, contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(web3, contractsAPI);
+    constructor(contractsAPI: ContractsAPI) {
+        this.assert = new Assertions(contractsAPI);
     }
 
     public packParameters(params: CollateralizedTermsContractParameters): string {
@@ -179,13 +177,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private web3Utils: Web3Utils;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(web3, contractsAPI);
+        this.assert = new Assertions(contractsAPI);
         this.web3Utils = new Web3Utils(web3);
 
         this.contractsAPI = contractsAPI;
 
-        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
-        this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
+        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(contractsAPI);
+        this.collateralizedLoanTerms = new CollateralizedLoanTerms(contractsAPI);
     }
 
     public async toDebtOrder(
@@ -406,6 +404,26 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         return packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
     }
 
+    public async canReturnCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralReturnable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async canSeizeCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralSeizeable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     private async assertTokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
@@ -436,7 +454,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
     /**
      * Collateral is seizable if the collateral has not been withdrawn yet, and the
-     * loan has been defaulted for the duration of the grace period.
+     * loan has been in a state of default for a duration of time greater than the grace period.
      *
      * @param {string} agreementId
      * @returns {Promise<void>}
@@ -444,7 +462,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private async assertCollateralSeizeable(agreementId: string): Promise<void> {
         const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
 
-        const termsContractParameters = (await debtRegistry.getTerms.callAsync(agreementId))[1];
+        const [termsContract, termsContractParameters] = await debtRegistry.getTerms.callAsync(
+            agreementId,
+        );
 
         const unpackedParams = this.unpackParameters(termsContractParameters);
 
@@ -465,7 +485,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private async assertCollateralReturnable(agreementId: string): Promise<void> {
         const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
 
-        const termsContractParameters = (await debtRegistry.getTerms.callAsync(agreementId))[1];
+        const [termsContract, termsContractParameters] = await debtRegistry.getTerms.callAsync(
+            agreementId,
+        );
 
         const unpackedParams = this.unpackParameters(termsContractParameters);
 

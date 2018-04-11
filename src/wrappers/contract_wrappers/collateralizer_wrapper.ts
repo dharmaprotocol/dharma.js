@@ -388,7 +388,7 @@ export class CollateralizerContract extends BaseContract {
             );
         });
     }
-    
+
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
         super(web3ContractInstance, defaults);
         classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);

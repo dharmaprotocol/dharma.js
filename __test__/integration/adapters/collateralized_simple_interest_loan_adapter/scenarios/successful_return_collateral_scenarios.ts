@@ -1,8 +1,4 @@
-import { scenarioDefaults, ReturnCollateralScenario } from "./";
-
-import { ACCOUNTS } from "__test__/accounts";
-
-const defaultArgs = scenarioDefaults(ACCOUNTS);
+import { defaultArgs, ReturnCollateralScenario } from "./";
 
 export const SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS: ReturnCollateralScenario[] = [
     {

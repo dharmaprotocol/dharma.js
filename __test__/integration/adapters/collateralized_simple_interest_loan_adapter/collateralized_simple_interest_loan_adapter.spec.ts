@@ -4,13 +4,13 @@ import * as Web3 from "web3";
 // APIs
 import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
 
-// Utils
-import { ACCOUNTS } from "../../../accounts";
-
 // Scenarios
 import { UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessful_return_collateral_scenarios";
+
 import { SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS } from "./scenarios/successful_return_collateral_scenarios";
+
 import { SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/successful_seize_collateral_scenarios";
+
 import { UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessful_seize_collateral_scenarios";
 
 // Runners
@@ -32,10 +32,10 @@ import { CollateralizedSimpleInterestLoanAdapter } from "src/adapters/collateral
 
 import { ServicingAPI } from "src/apis/servicing_api";
 
+import { TokenAPI } from "../../../../src/apis/token_api";
+
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
-
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 // Given that this is an integration test, we unmock the Dharma
 // smart contracts artifacts package to pull the most recently
@@ -43,82 +43,34 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 jest.unmock("@dharmaprotocol/contracts");
 
 describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () => {
-    let returnCollateralRunner = new ReturnCollateralRunner();
-    let seizeCollateralRunner = new SeizeCollateralRunner();
+    const contractsApi = new ContractsAPI(web3);
 
-    let principalToken: DummyTokenContract;
-    let collateralToken: DummyTokenContract;
+    const adaptersApi = new AdaptersAPI(web3, contractsApi);
 
-    beforeAll(async () => {
-        const contractsApi = new ContractsAPI(web3);
+    const servicingApi = new ServicingAPI(web3, contractsApi);
 
-        const adaptersApi = new AdaptersAPI(web3, contractsApi);
+    const adapter = new CollateralizedSimpleInterestLoanAdapter(web3, contractsApi);
 
-        const servicingApi = new ServicingAPI(web3, contractsApi);
+    const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 
-        const adapter = new CollateralizedSimpleInterestLoanAdapter(web3, contractsApi);
+    const signerApi = new SignerAPI(web3, contractsApi);
 
-        const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
+    const tokenApi = new TokenAPI(web3, contractsApi);
 
-        const signerApi = new SignerAPI(web3, contractsApi);
+    const returnCollateralRunner = new ReturnCollateralRunner(web3, adapter, {
+        orderApi,
+        signerApi,
+        servicingApi,
+        contractsApi,
+        tokenApi,
+    });
 
-        const debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS);
-
-        const repaymentRouter = await RepaymentRouterContract.deployed(web3, TX_DEFAULTS);
-
-        const termsContract = await contractsApi.loadCollateralizedSimpleInterestTermsContract(
-            TX_DEFAULTS,
-        );
-
-        principalToken = await DummyTokenContract.at(
-            (await contractsApi.loadTokenBySymbolAsync("REP")).address,
-            web3,
-            TX_DEFAULTS,
-        );
-
-        collateralToken = await DummyTokenContract.at(
-            (await contractsApi.loadTokenBySymbolAsync("ZRX")).address,
-            web3,
-            TX_DEFAULTS,
-        );
-
-        const tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
-
-        returnCollateralRunner.initialize(
-            web3,
-            adapter,
-            tokenTransferProxy,
-            {
-                debtKernel,
-                repaymentRouter,
-                principalToken,
-                collateralToken,
-                termsContract,
-            },
-            {
-                orderApi,
-                signerApi,
-                servicingApi,
-            },
-        );
-
-        seizeCollateralRunner.initialize(
-            web3,
-            adapter,
-            tokenTransferProxy,
-            {
-                debtKernel,
-                repaymentRouter,
-                principalToken,
-                collateralToken,
-                termsContract,
-            },
-            {
-                orderApi,
-                signerApi,
-                servicingApi,
-            },
-        );
+    const seizeCollateralRunner = new SeizeCollateralRunner(web3, adapter, {
+        orderApi,
+        signerApi,
+        servicingApi,
+        contractsApi,
+        tokenApi,
     });
 
     describe("#returnCollateral", () => {

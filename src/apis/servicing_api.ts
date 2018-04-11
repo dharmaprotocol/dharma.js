@@ -11,7 +11,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
 
 // types
-import { DebtRegistryEntry, TxData, RepaymentSchedule } from "../types";
+import { DebtRegistryEntry, TxData } from "../types";
 import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
 
 const REPAYMENT_GAS_MAXIMUM = 150000;
@@ -38,7 +38,7 @@ export class ServicingAPI {
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
         this.contracts = contracts;
-        this.assert = new Assertions(this.web3, this.contracts);
+        this.assert = new Assertions(this.contracts);
     }
 
     /**
@@ -258,7 +258,7 @@ export class ServicingAPI {
 
         switch (termsContractType) {
             case "SimpleInterestTermsContractContract":
-                return new SimpleInterestLoanAdapter(this.web3, this.contracts);
+                return new SimpleInterestLoanAdapter(this.contracts);
         }
 
         throw new Error(ServicingAPIErrors.UNKNOWN_LOAN_ADAPTER(termsContract));

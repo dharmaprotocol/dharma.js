@@ -46,15 +46,13 @@ export class AdaptersAPI {
     public collateralizedSimpleInterestLoan: CollateralizedSimpleInterestLoanAdapter;
 
     private contracts: ContractsAPI;
-    private web3: Web3;
 
     constructor(web3: Web3, contractsApi: ContractsAPI) {
-        this.web3 = web3;
         this.contracts = contractsApi;
 
-        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.web3, this.contracts);
+        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.contracts);
         this.collateralizedSimpleInterestLoan = new CollateralizedSimpleInterestLoanAdapter(
-            this.web3,
+            web3,
             this.contracts,
         );
     }

@@ -1,4 +1,2 @@
-import { ReturnCollateralRunner } from "./return_collateral_runner";
-import { SeizeCollateralRunner } from "./seize_collateral_runner";
-
-export { ReturnCollateralRunner, SeizeCollateralRunner };
+export { ReturnCollateralRunner } from "./return_collateral_runner";
+export { SeizeCollateralRunner } from "./seize_collateral_runner";

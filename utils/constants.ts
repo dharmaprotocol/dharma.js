@@ -1,6 +1,12 @@
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const NULL_BYTES32 = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
+export namespace ERC20TokenSymbol {
+    export const REP = "REP";
+    export const ZRX = "ZRX";
+    export const MKR = "MKR";
+}
+
 export const NULL_ECDSA_SIGNATURE = {
     r: "",
     s: "",
