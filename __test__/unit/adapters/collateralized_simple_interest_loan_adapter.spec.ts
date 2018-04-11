@@ -55,7 +55,7 @@ const collateralizedSimpleInterestLoanAdapter = new CollateralizedSimpleInterest
 );
 const collateralizedLoanTerms = new CollateralizedLoanTerms(contracts);
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 const REP_TOKEN_SYMBOL = "REP";
 const ZRX_TOKEN_SYMBOL = "ZRX";

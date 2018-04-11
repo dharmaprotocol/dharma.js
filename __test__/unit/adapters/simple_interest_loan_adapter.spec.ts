@@ -37,7 +37,7 @@ const contracts = new ContractsAPI(web3);
 const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(contracts);
 const simpleInterestLoanTerms = new SimpleInterestLoanTerms(contracts);
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 // Given that we rely on having access to the deployed Dharma smart contracts,
 // we unmock the Dharma smart contracts artifacts package to pull the most recently

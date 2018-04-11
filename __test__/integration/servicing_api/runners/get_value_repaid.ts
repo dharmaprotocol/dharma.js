@@ -24,7 +24,7 @@ const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 import { GetValueRepaidScenario } from "../scenarios";
 

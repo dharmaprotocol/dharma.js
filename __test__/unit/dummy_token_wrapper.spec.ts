@@ -24,7 +24,7 @@ const DUMMY_TOKEN_ARTIFACTS_PATH =
 const TOKEN_REGISTRY_ARTIFACTS_PATH =
     "node_modules/@dharmaprotocol/contracts/artifacts/json/TokenRegistry.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 describe("Dummy Token Contract Wrapper (Unit)", () => {
     let networkId: number;

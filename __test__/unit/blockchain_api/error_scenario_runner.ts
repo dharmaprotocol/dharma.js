@@ -28,7 +28,7 @@ const ZERO_AMOUNT = Units.ether(0);
 const REPAYMENT_AMOUNT = Units.ether(10);
 const PRINCIPAL_AMOUNT = REPAYMENT_AMOUNT.mul(3);
 
-const TX_DEFAULTS = { from: CONTRACT_OWNER, gas: 400000 };
+const TX_DEFAULTS = { from: CONTRACT_OWNER };
 
 export class ErrorScenarioRunner {
     private web3Utils: Web3Utils;

@@ -22,7 +22,7 @@ const web3Utils = new Web3Utils(web3);
 const DEBT_TOKEN_ARTIFACTS_PATH =
     "node_modules/@dharmaprotocol/contracts/artifacts/json/DebtToken.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 describe("Debt Token Contract Wrapper (Unit)", () => {
     let networkId: number;

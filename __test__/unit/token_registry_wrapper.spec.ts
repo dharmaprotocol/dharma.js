@@ -19,7 +19,7 @@ const web3Utils = new Web3Utils(web3);
 const TOKEN_REGISTRY_ARTIFACTS_PATH =
     "node_modules/@dharmaprotocol/contracts/artifacts/json/TokenRegistry.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 describe("Token Registry Contract Wrapper (Unit)", () => {
     let networkId: number;
