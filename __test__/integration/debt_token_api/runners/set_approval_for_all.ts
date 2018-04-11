@@ -8,7 +8,13 @@ export class SetApprovalForAllScenarioRunner extends ScenarioRunner {
         let apiCall: Promise<string>;
 
         describe(scenario.description, () => {
-            beforeEach(() => {
+            beforeEach(async () => {
+                if (scenario.alreadyApproved) {
+                    await debtTokenAPI.setApprovalForAll(scenario.operator, true, {
+                        from: scenario.from,
+                    });
+                }
+
                 apiCall = debtTokenAPI.setApprovalForAll(scenario.operator, scenario.approved, {
                     from: scenario.from,
                 });

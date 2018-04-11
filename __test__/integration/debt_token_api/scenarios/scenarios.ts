@@ -46,6 +46,7 @@ export namespace DebtTokenScenario {
         operator: string;
         from: string;
         approved: boolean;
+        alreadyApproved: boolean;
     }
 
     export interface TransferFromScenario extends Scenario {
