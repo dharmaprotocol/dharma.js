@@ -59,8 +59,8 @@ describe("Debt Token API (Integration Tests)", () => {
         describe("should fail", () => {
             UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
         });
-    });  
-  
+    });
+
     describe("#transferFrom", () => {
         describe("should fail", () => {
             UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS.forEach(scenarioRunner.testTransferFromScenario);
