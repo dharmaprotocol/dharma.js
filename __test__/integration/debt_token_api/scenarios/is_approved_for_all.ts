@@ -8,7 +8,7 @@ const defaults = {
     shouldSucceed: true,
     owner: OWNER,
     operator: OPERATOR,
-    isApproved: true,
+    isOperatorApproved: true,
 };
 
 export const IS_APPROVED_FOR_ALL_SCENARIOS: DebtTokenScenario.IsApprovedForAllScenario[] = [
@@ -19,7 +19,7 @@ export const IS_APPROVED_FOR_ALL_SCENARIOS: DebtTokenScenario.IsApprovedForAllSc
     {
         description: "operator is not approved by owner",
         ...defaults,
-        isApproved: false,
+        isOperatorApproved: false,
     },
     {
         description: "operator field is malformed",
