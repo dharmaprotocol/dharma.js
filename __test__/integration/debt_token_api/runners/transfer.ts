@@ -1,8 +1,7 @@
-// Types
-import { TransferFromScenarioRunner } from "./";
-import { TransferAPICallParameters } from "./transfer_from";
+// Base Runner
+import { TransferBaseScenarioRunner, TransferAPICallParameters } from "./transfer_base";
 
-export class TransferScenarioRunner extends TransferFromScenarioRunner {
+export class TransferScenarioRunner extends TransferBaseScenarioRunner {
     protected getAPICallPromise(params: TransferAPICallParameters): Promise<string> {
         const { api, to, tokenID, txOptions } = params;
 

@@ -35,7 +35,7 @@ export class DebtTokenScenarioRunner {
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
     private existsScenarioRunner: ExistsScenarioRunner;
     private transferFromScenarioRunner: TransferFromScenarioRunner;
-    private transferScenarioRunner: TransferFromScenarioRunner;
+    private transferScenarioRunner: TransferScenarioRunner;
     private approveScenarioRunner: ApproveScenarioRunner;
     private getApprovedScenarioRunner: GetApprovedScenarioRunner;
 
