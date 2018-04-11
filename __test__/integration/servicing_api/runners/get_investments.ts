@@ -16,7 +16,7 @@ import { DummyTokenContract } from "src/wrappers";
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 const contractsApi = new ContractsAPI(web3);
-const adaptersApi = new AdaptersAPI(contractsApi);
+const adaptersApi = new AdaptersAPI(web3, contractsApi);
 const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
