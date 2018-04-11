@@ -67,7 +67,7 @@ export const CollateralizerAdapterErrors = {
                          a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
                          not interface with the terms contract as expected`,
     COLLATERAL_NOT_FOUND: (agreementId: string) =>
-        singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure
+        singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure 
                          that the agreement ID is correct, and that the collateral has not already
                          been withdrawn.`,
     DEBT_NOT_YET_REPAID: (agreementId: string) =>
