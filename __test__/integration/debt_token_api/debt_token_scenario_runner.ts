@@ -23,6 +23,7 @@ import { SimpleInterestLoanAdapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
+import { AdaptersAPI } from "../../../src/apis/adapters_api";
 
 export class DebtTokenScenarioRunner {
     // Snapshotting.
@@ -44,8 +45,9 @@ export class DebtTokenScenarioRunner {
 
         const contractsAPI = new ContractsAPI(web3);
         const debtTokenAPI = new DebtTokenAPI(web3, contractsAPI);
+        const adaptersApi = new AdaptersAPI(web3, contractsAPI);
         const tokenAPI = new TokenAPI(web3, contractsAPI);
-        const orderAPI = new OrderAPI(web3, contractsAPI);
+        const orderAPI = new OrderAPI(web3, contractsAPI, adaptersApi);
         const signerAPI = new SignerAPI(web3, contractsAPI);
 
         const testAPIs = {
