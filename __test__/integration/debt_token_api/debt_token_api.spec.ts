@@ -12,6 +12,8 @@ import {
     BALANCE_OF_SCENARIOS,
     OWNER_OF_SCENARIOS,
     EXISTS_SCENARIOS,
+    SUCCESSFUL_TRANSFER_FROM_SCENARIOS,
+    UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS,
     SUCCESSFUL_APPROVE_SCENARIOS,
     UNSUCCESSFUL_APPROVE_SCENARIOS,
     GET_APPROVED_SCENARIOS,
@@ -56,6 +58,16 @@ describe("Debt Token API (Integration Tests)", () => {
 
         describe("should fail", () => {
             UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+        });
+    });  
+  
+    describe("#transferFrom", () => {
+        describe("should fail", () => {
+            UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS.forEach(scenarioRunner.testTransferFromScenario);
+        });
+
+        describe("should succeed", () => {
+            SUCCESSFUL_TRANSFER_FROM_SCENARIOS.forEach(scenarioRunner.testTransferFromScenario);
         });
     });
 

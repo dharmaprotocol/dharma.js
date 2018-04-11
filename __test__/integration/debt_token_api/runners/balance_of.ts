@@ -1,6 +1,3 @@
-// External
-import * as Web3 from "web3";
-
 // Types
 import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
