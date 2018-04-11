@@ -265,10 +265,12 @@ export class ReturnCollateralRunner {
         });
     }
 
-    private generateDebtOrder(
-        scenario: ReturnCollateralScenario,
-        termsParams: string,
-    ): DebtOrder.Instance {
+    private generateDebtOrder(scenario: ReturnCollateralScenario,): DebtOrder.Instance {
+        const termsParams = this.adapter.packParameters(
+            scenario.simpleTerms,
+            scenario.collateralTerms,
+        );
+
         return {
             kernelVersion: this.debtKernel.address,
             issuanceVersion: this.repaymentRouter.address,
@@ -295,12 +297,7 @@ export class ReturnCollateralRunner {
     }
 
     private async generateAndFillOrder(scenario: ReturnCollateralScenario): Promise<void> {
-        const termsParams = this.adapter.packParameters(
-            scenario.simpleTerms,
-            scenario.collateralTerms,
-        );
-
-        this.debtOrder = this.generateDebtOrder(scenario, termsParams);
+        this.debtOrder = this.generateDebtOrder(scenario);
 
         await this.signOrder();
 
