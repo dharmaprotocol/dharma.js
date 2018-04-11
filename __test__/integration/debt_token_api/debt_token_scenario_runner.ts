@@ -92,6 +92,7 @@ export class DebtTokenScenarioRunner {
         this.testTransferScenario = this.testTransferScenario.bind(this);
         this.testApproveScenario = this.testApproveScenario.bind(this);
         this.testGetApprovedScenario = this.testGetApprovedScenario.bind(this);
+        this.testSetApprovalForAll = this.testSetApprovalForAll.bind(this);
 
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
