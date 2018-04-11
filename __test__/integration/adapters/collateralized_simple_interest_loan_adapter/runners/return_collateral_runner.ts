@@ -265,7 +265,7 @@ export class ReturnCollateralRunner {
         });
     }
 
-    private generateDebtOrder(scenario: ReturnCollateralScenario,): DebtOrder.Instance {
+    private generateDebtOrder(scenario: ReturnCollateralScenario): DebtOrder.Instance {
         const termsParams = this.adapter.packParameters(
             scenario.simpleTerms,
             scenario.collateralTerms,
