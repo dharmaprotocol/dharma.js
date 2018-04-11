@@ -402,6 +402,26 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         return packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
     }
 
+    public async canReturnCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralReturnable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async canSeizeCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralSeizeable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     private async assertTokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
