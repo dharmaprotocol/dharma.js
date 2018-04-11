@@ -16,21 +16,28 @@ export class DebtTokenAssertions {
         }
     }
 
-    public async belongsToAccount(
+    public async onlyOwner(
         debtTokenContract: DebtTokenContract,
         tokenID: BigNumber,
         account: string,
         errorMessage: string,
     ): Promise<void> {
-        // We include a try-catch here because the Zeppelin 721 implementation
-        // reverts on `ownerOf` if the token's owner is NULL_ADDRESS
-        try {
-            const tokenOwner = await debtTokenContract.ownerOf.callAsync(tokenID);
+        const tokenOwner = await debtTokenContract.ownerOf.callAsync(tokenID);
 
-            if (tokenOwner !== account) {
-                throw new Error(errorMessage);
-            }
-        } catch (e) {
+        if (tokenOwner !== account) {
+            throw new Error(errorMessage);
+        }
+    }
+
+    public async notOwner(
+        debtTokenContract: DebtTokenContract,
+        tokenID: BigNumber,
+        account: string,
+        errorMessage: string,
+    ): Promise<void> {
+        const tokenOwner = await debtTokenContract.ownerOf.callAsync(tokenID);
+
+        if (tokenOwner === account) {
             throw new Error(errorMessage);
         }
     }

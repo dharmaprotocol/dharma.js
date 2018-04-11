@@ -39,12 +39,11 @@ export interface ERC721 {
 const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
 
 export const DebtTokenAPIErrors = {
-    TOKEN_DOES_NOT_EXIST: (tokenID: BigNumber) => singleLineString`
-        Token with ID ${tokenID.toNumber()} does not exist.
+    ONLY_OWNER: (account: string) => singleLineString`
+        Specified debt token does not belong to account ${account}
     `,
-    TOKEN_DOES_NOT_BELONG_TO_ACCOUNT: (account: string) => singleLineString`
-        Specified token does not belong to account ${account}
-    `,
+    NOT_OWNER: () => singleLineString`The recipient cannot be the owner of the debt token.`,
+    TOKEN_WITH_ID_DOES_NOT_EXIST: () => singleLineString`The debt token specified does not exist.`,
     ACCOUNT_UNAUTHORIZED_TO_TRANSFER: (account: string) => singleLineString`
         Transaction sender ${account} neither owns the specified token nor is approved to transfer it.
     `,
@@ -83,11 +82,35 @@ export class DebtTokenAPI implements ERC721 {
 
     public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
+
+        const { from } = txOptions;
+
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
+        );
+
+        await this.assert.debtToken.onlyOwner(
+            debtTokenContract,
+            tokenID,
+            from,
+            DebtTokenAPIErrors.ONLY_OWNER(from),
+        );
+
+        await this.assert.debtToken.notOwner(
+            debtTokenContract,
+            tokenID,
+            to,
+            DebtTokenAPIErrors.NOT_OWNER(),
+        );
+
         return debtTokenContract.approve.sendTransactionAsync(to, tokenID, txOptions);
     }
 
@@ -169,7 +192,7 @@ export class DebtTokenAPI implements ERC721 {
         await this.assert.debtToken.exists(
             debtTokenContract,
             tokenID,
-            DebtTokenAPIErrors.TOKEN_DOES_NOT_EXIST(tokenID),
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
         );
 
         // Assert token belongs to `from`
@@ -177,7 +200,7 @@ export class DebtTokenAPI implements ERC721 {
             debtTokenContract,
             tokenID,
             from,
-            DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(from),
+            DebtTokenAPIErrors.ONLY_OWNER(from),
         );
 
         // Assert that message sender can transfer said token

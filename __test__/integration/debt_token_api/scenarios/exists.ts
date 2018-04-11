@@ -1,7 +1,5 @@
 import { DebtTokenScenario } from "./scenarios";
 import { Orders } from "./orders";
-import { ACCOUNTS } from "../../../accounts";
-import * as singleLineString from "single-line-string";
 
 export const EXISTS_SCENARIOS: DebtTokenScenario.ExistsScenario[] = [
     {

@@ -14,6 +14,8 @@ import {
     EXISTS_SCENARIOS,
     SUCCESSFUL_TRANSFER_FROM_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS,
+    SUCCESSFUL_APPROVE_SCENARIOS,
+    UNSUCCESSFUL_APPROVE_SCENARIOS,
 } from "./scenarios";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
@@ -48,6 +50,16 @@ describe("Debt Token API (Integration Tests)", () => {
         });
     });
 
+    describe("#approve", () => {
+        describe("should succeed", () => {
+            SUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+        });
+
+        describe("should fail", () => {
+            UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+        });
+    });  
+  
     describe("#transferFrom", () => {
         describe("should fail", () => {
             UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS.forEach(scenarioRunner.testTransferFromScenario);
