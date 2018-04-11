@@ -28,7 +28,7 @@ export default class Dharma {
 
         this.servicing = new ServicingAPI(this.web3, this.contracts);
         this.sign = new SignerAPI(this.web3, this.contracts);
-        this.adapters = new AdaptersAPI(this.contracts);
+        this.adapters = new AdaptersAPI(this.web3, this.contracts);
         this.order = new OrderAPI(this.web3, this.contracts, this.adapters);
         this.token = new TokenAPI(this.web3, this.contracts);
         this.blockchain = new BlockchainAPI(this.web3, this.contracts);
