@@ -1,30 +1,33 @@
+import * as _ from "lodash";
+
 import { defaultArgs, ReturnCollateralScenario } from "./";
 
 // These tests all fail to return the collateral.
-defaultArgs.succeeds = false;
+const failArgs = _.clone(defaultArgs);
+failArgs.succeeds = false;
 
 export const UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS: ReturnCollateralScenario[] = [
     {
-        ...defaultArgs,
+        ...failArgs,
         description: "when the debt's term has lapsed and the debt is in a state of default",
         debtRepaid: false,
         error: /Debt has not been fully repaid for loan with agreement ID/,
     },
     {
-        ...defaultArgs,
+        ...failArgs,
         description: "when the debt's term has not lapsed and the debt is in a state of default",
         debtRepaid: false,
         termLapsed: false,
         error: /Debt has not been fully repaid for loan with agreement ID/,
     },
     {
-        ...defaultArgs,
+        ...failArgs,
         description: "when given a malformed agreement id",
         givenAgreementId: (agreementId: string) => "0x0001",
         error: /Expected agreementId to conform to schema/,
     },
     {
-        ...defaultArgs,
+        ...failArgs,
         description: "when an agreement id that does not match a loan",
         // Use a randomly generated agreement ID.
         givenAgreementId: (agreementId: string) =>
@@ -32,7 +35,7 @@ export const UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS: ReturnCollateralScenario[
         error: /Collateral was not found for given agreement ID/,
     },
     {
-        ...defaultArgs,
+        ...failArgs,
         description: "when the collateral has already been withdrawn",
         collateralWithdrawn: true,
         error: /Collateral was not found for given agreement ID/,
