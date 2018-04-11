@@ -20,6 +20,7 @@ import {
     UNSUCCESSFUL_APPROVE_SCENARIOS,
     GET_APPROVED_SCENARIOS,
     SET_APPROVAL_FOR_ALL_SCENARIOS,
+    IS_APPROVED_FOR_ALL_SCENARIOS,
 } from "./scenarios";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
@@ -93,6 +94,12 @@ describe("Debt Token API (Integration Tests)", () => {
     describe("#setApprovalForAll", () => {
         describe("user should be able to set operator as proxy", () => {
             SET_APPROVAL_FOR_ALL_SCENARIOS.forEach(scenarioRunner.testSetApprovalForAll);
+        });
+    });
+
+    describe("#isApprovedForAll", () => {
+        describe("user should be able to determine if operator is approved for all", () => {
+            IS_APPROVED_FOR_ALL_SCENARIOS.forEach(scenarioRunner.testIsApprovedForAll);
         });
     });
 });
