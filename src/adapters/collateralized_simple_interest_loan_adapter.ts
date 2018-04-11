@@ -28,6 +28,8 @@ const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfL
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
+const TRANSFER_GAS_MAXIMUM = 200000;
+
 // Extend order to include parameters necessary for a collateralized terms contract.
 export interface CollateralizedSimpleInterestLoanOrder extends SimpleInterestLoanOrder {
     collateralTokenSymbol: string;
@@ -333,14 +335,15 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     public async seizeCollateral(agreementId: string): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
+        const transactionOptions = await this.getTxDefaultOptions();
+
         await this.assertCollateralSeizeable(agreementId);
 
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
 
         return collateralizerContract.seizeCollateral.sendTransactionAsync(
             agreementId,
-            // FIXME: For default "from", was getting "invalid address" and default gas reverts.
-            { from: ACCOUNTS[1].address, gas: 4712388 },
+            transactionOptions,
         );
     }
 
@@ -357,12 +360,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         await this.assertCollateralReturnable(agreementId);
 
+        const transactionOptions = await this.getTxDefaultOptions();
+
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
 
         return collateralizerContract.returnCollateral.sendTransactionAsync(
             agreementId,
-            // FIXME: For default "from", was getting "invalid address" and default gas reverts.
-            { from: ACCOUNTS[1].address, gas: 4712388 },
+            transactionOptions,
         );
     }
 
@@ -400,6 +404,26 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         return packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
     }
 
+    public async canReturnCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralReturnable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async canSeizeCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralSeizeable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     private async assertTokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
@@ -430,7 +454,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
     /**
      * Collateral is seizable if the collateral has not been withdrawn yet, and the
-     * loan has been defaulted for the duration of the grace period.
+     * loan has been in a state of default for a duration of time greater than the grace period.
      *
      * @param {string} agreementId
      * @returns {Promise<void>}
@@ -438,7 +462,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private async assertCollateralSeizeable(agreementId: string): Promise<void> {
         const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
 
-        const termsContractParameters = (await debtRegistry.getTerms.callAsync(agreementId))[1];
+        const [termsContract, termsContractParameters] = await debtRegistry.getTerms.callAsync(
+            agreementId,
+        );
 
         const unpackedParams = this.unpackParameters(termsContractParameters);
 
@@ -459,7 +485,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private async assertCollateralReturnable(agreementId: string): Promise<void> {
         const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
 
-        const termsContractParameters = (await debtRegistry.getTerms.callAsync(agreementId))[1];
+        const [termsContract, termsContractParameters] = await debtRegistry.getTerms.callAsync(
+            agreementId,
+        );
 
         const unpackedParams = this.unpackParameters(termsContractParameters);
 
@@ -536,5 +564,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         );
 
         return repaymentToDate.gte(expectedTotalRepayment);
+    }
+
+    private async getTxDefaultOptions(): Promise<object> {
+        const accounts = await this.web3Utils.getAvailableAddressesAsync();
+
+        // TODO: Add fault tolerance to scenario in which not addresses are available
+
+        return {
+            from: accounts[0],
+            gas: TRANSFER_GAS_MAXIMUM,
+        };
     }
 }
