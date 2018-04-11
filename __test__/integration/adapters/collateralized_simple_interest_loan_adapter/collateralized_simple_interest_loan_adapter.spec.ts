@@ -27,6 +27,7 @@ import {
 import { CollateralizedSimpleInterestLoanAdapter } from "src/adapters/collateralized_simple_interest_loan_adapter";
 
 import { ServicingAPI } from "src/apis/servicing_api";
+import { TokenAPI } from "../../../../src/apis/token_api";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -49,11 +50,14 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
 
     const signerApi = new SignerAPI(web3, contractsApi);
 
+    const tokenApi = new TokenAPI(web3, contractsApi);
+
     const returnCollateralRunner = new ReturnCollateralRunner(web3, adapter, {
         orderApi,
         signerApi,
         servicingApi,
         contractsApi,
+        tokenApi,
     });
 
     describe("#returnCollateral", () => {

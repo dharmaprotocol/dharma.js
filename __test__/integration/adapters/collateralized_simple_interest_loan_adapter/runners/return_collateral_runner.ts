@@ -28,6 +28,7 @@ import { DebtOrder } from "src/types/debt_order";
 // Accounts
 import { ACCOUNTS } from "__test__/accounts";
 import { ContractsAPI } from "../../../../../src/apis/contracts_api";
+import { TokenAPI } from "../../../../../src/apis/token_api";
 
 const CONTRACT_OWNER = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
@@ -41,6 +42,7 @@ export interface APIs {
     signerApi: SignerAPI;
     servicingApi: ServicingAPI;
     contractsApi: ContractsAPI;
+    tokenApi: TokenAPI;
 }
 
 export class ReturnCollateralRunner {
@@ -57,6 +59,7 @@ export class ReturnCollateralRunner {
     private web3Utils: Web3Utils;
     private servicingApi: ServicingAPI;
     private contractsApi: ContractsAPI;
+    private tokenApi: TokenAPI;
     private snapshotId: number;
     private debtOrder: DebtOrder.Instance;
 
@@ -67,6 +70,7 @@ export class ReturnCollateralRunner {
         this.signerApi = apis.signerApi;
         this.servicingApi = apis.servicingApi;
         this.contractsApi = apis.contractsApi;
+        this.tokenApi = apis.tokenApi;
 
         this.adapter = adapter;
 
@@ -215,23 +219,23 @@ export class ReturnCollateralRunner {
         const { debtor, creditor, principalAmount } = this.debtOrder;
 
         // The debtor grants the transfer proxy an allowance for moving the collateral.
-        await this.collateralToken.approve.sendTransactionAsync(
-            this.tokenTransferProxy.address,
+        await this.tokenApi.setProxyAllowanceAsync(
+            this.collateralToken.address,
             scenario.collateralTerms.collateralAmount,
             { from: debtor },
         );
 
         // The debtor grants the transfer proxy some sufficient allowance for making repayments.
-        await this.principalToken.approve.sendTransactionAsync(
-            this.tokenTransferProxy.address,
+        await this.tokenApi.setProxyAllowanceAsync(
+            this.principalToken.address,
             principalAmount.mul(2),
             { from: debtor },
         );
 
         // The creditor grants allowance of the principal token being loaned,
         // as well as the creditor fee.
-        await this.principalToken.approve.sendTransactionAsync(
-            this.tokenTransferProxy.address,
+        await this.tokenApi.setProxyAllowanceAsync(
+            this.principalToken.address,
             principalAmount.add(this.debtOrder.creditorFee),
             { from: creditor },
         );
