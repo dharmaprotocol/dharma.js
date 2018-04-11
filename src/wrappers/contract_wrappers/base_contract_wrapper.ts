@@ -51,9 +51,7 @@ export class BaseContract {
         } as TxData;
         if (isUndefined(txDataWithDefaults.gas) && !isUndefined(estimateGasAsync)) {
             const estimatedGas = await estimateGasAsync(txData);
-            txDataWithDefaults.gas = Math.min(
-                estimatedGas + GAS_SAFETY_MARGIN, MAXIMUM_GAS
-            );
+            txDataWithDefaults.gas = Math.min(estimatedGas + GAS_SAFETY_MARGIN, MAXIMUM_GAS);
         }
         return txDataWithDefaults;
     }
