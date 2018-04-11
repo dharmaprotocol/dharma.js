@@ -201,11 +201,19 @@ export class OrderAPI {
      * Asynchronously checks whether the order is filled.
      *
      * @param  debtOrder a debt order.
+     * @param  options   any params needed to modify the Ethereum transaction.
      * @return           boolean representing whether the debt order is filled or not.
      */
-    public async checkOrderFilledAsync(debtOrder: DebtOrder.Instance): Promise<boolean> {
-        const transactionOptions = await this.getTxDefaultOptions();
-        const { debtToken } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+    public async checkOrderFilledAsync(
+        debtOrder: DebtOrder.Instance,
+        options?: TxData,
+    ): Promise<boolean> {
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            ORDER_FILL_GAS_MAXIMUM,
+            options,
+        );
+        const { debtToken } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         const issuanceHash = await this.getIssuanceHash(debtOrder);
 
