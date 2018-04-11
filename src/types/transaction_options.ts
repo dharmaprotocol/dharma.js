@@ -4,6 +4,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 
 export interface TxData {
     from?: string;
+    to?: string;
     gas?: number;
     gasPrice?: BigNumber;
     nonce?: number;

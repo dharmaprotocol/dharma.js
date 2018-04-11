@@ -8,6 +8,7 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
+import { TransactionUtils } from "../../../utils/transaction_utils";
 import { DebtToken as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
@@ -530,10 +531,20 @@ export class DebtTokenContract extends BaseContract {
                 txData,
                 self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId, _data),
             );
-            const txHash = await promisify<string>(
-                self.web3ContractInstance.safeTransferFrom,
+
+            // Since truffle does not play nice with overloaded functions, we have to
+            //      1. Figure out which overloaded function we want to call based on
+            //          the presence or absence of data parameter
+            //      2. Manually construct the transaction and send it via a web3 sendTransaction call.
+            const txHash = await TransactionUtils.sendRawTransaction(
+                self.web3,
                 self.web3ContractInstance,
-            )(_from, _to, _tokenId, _data, txDataWithDefaults);
+                "safeTransferFrom",
+                `address,address,uint256${_data.length > 0 ? ",bytes" : ""}`,
+                _data.length > 0 ? [_from, _to, _tokenId, _data] : [_from, _to, _tokenId],
+                txDataWithDefaults,
+            );
+
             return txHash;
         },
         async estimateGasAsync(
@@ -616,9 +627,20 @@ export class DebtTokenContract extends BaseContract {
         },
     };
 
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+    private web3: Web3;
+
+    constructor(
+        web3: Web3,
+        web3ContractInstance: Web3.ContractInstance,
+        defaults: Partial<TxData>,
+    ) {
         super(web3ContractInstance, defaults);
-        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
+
+        // This particular wrapper needs access to the raw web3 object
+        // in order to allow us to call overloaded functions (see safeTransferFrom)
+        this.web3 = web3;
+
+        classUtils.bindAll(this, ["web3", "web3ContractInstance", "defaults"]);
     }
 
     public static async deployed(
@@ -637,7 +659,7 @@ export class DebtTokenContract extends BaseContract {
 
             if (contractExists) {
                 const web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
-                return new DebtTokenContract(web3ContractInstance, defaults);
+                return new DebtTokenContract(web3, web3ContractInstance, defaults);
             } else {
                 throw new Error(
                     CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
@@ -667,7 +689,7 @@ export class DebtTokenContract extends BaseContract {
         if (contractExists) {
             const web3ContractInstance = web3.eth.contract(abi).at(address);
 
-            return new DebtTokenContract(web3ContractInstance, defaults);
+            return new DebtTokenContract(web3, web3ContractInstance, defaults);
         } else {
             throw new Error(
                 CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DebtToken", currentNetwork),

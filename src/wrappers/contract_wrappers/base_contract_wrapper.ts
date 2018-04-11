@@ -3,17 +3,7 @@ import * as isUndefined from "lodash.isundefined";
 import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
-
-export interface TxData {
-    from?: string;
-    gas?: number;
-    gasPrice?: BigNumber;
-    nonce?: number;
-}
-
-export interface TxDataPayable extends TxData {
-    value?: BigNumber;
-}
+import { TxData, TxDataPayable } from "src/types/";
 
 export const CONTRACT_WRAPPER_ERRORS = {
     CONTRACT_NOT_FOUND_ON_NETWORK: (contractName: string, networkId: number) =>

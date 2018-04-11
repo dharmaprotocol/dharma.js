@@ -2,6 +2,7 @@ import {
     addressSchema,
     numberSchema,
     bytes32Schema,
+    bytesSchema,
     wholeNumberSchema,
 } from "./basic_type_schemas";
 import {
@@ -17,6 +18,7 @@ export const Schemas = {
     addressSchema,
     numberSchema,
     bytes32Schema,
+    bytesSchema,
     debtOrderSchema,
     debtOrderWithTermsSpecifiedSchema,
     debtOrderWithTermsAndDebtorSpecifiedSchema,
