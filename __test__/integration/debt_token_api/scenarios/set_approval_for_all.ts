@@ -5,20 +5,22 @@ import { ACCOUNTS } from "../../../accounts";
 const APPROVER = ACCOUNTS[5].address;
 const OPERATOR = ACCOUNTS[6].address;
 
+const defaults = {
+    shouldSucceed: true,
+    operator: OPERATOR,
+    from: APPROVER,
+    approved: true,
+    alreadyApproved: false,
+};
+
 export const SET_APPROVAL_FOR_ALL_SCENARIOS: DebtTokenScenario.SetApprovalForAllScenario[] = [
     {
         description: "user grants approval to operator",
-        shouldSucceed: true,
-        operator: OPERATOR,
-        from: APPROVER,
-        approved: true,
-        alreadyApproved: false,
+        ...defaults,
     },
     {
         description: "user revokes approval for existing operator",
-        shouldSucceed: true,
-        operator: OPERATOR,
-        from: APPROVER,
+        ...defaults,
         approved: false,
         alreadyApproved: true,
     },
