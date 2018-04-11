@@ -134,6 +134,10 @@ export class SeizeCollateralRunner {
 
             if (scenario.succeeds) {
                 it("returns a valid transaction hash", async () => {
+                    const canSeize = await this.adapter.canSeizeCollateral(agreementId);
+
+                    expect(canSeize).toEqual(true);
+
                     const txHash = await this.adapter.seizeCollateral(agreementId);
 
                     expect(txHash.length).toEqual(66);
@@ -148,6 +152,10 @@ export class SeizeCollateralRunner {
                 });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
+                    const canSeize = await this.adapter.canSeizeCollateral(agreementId);
+
+                    expect(canSeize).toEqual(false);
+
                     await expect(this.adapter.seizeCollateral(agreementId)).rejects.toThrow(
                         scenario.error,
                     );

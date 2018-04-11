@@ -362,6 +362,26 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         );
     }
 
+    public async canReturnCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralReturnable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    public async canSeizeCollateral(agreementId: string): Promise<boolean> {
+        try {
+            await this.assertCollateralSeizeable(agreementId);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     public unpackParameters(
         termsContractParameters: string,
     ): CollateralizedSimpleInterestTermsContractParameters {
