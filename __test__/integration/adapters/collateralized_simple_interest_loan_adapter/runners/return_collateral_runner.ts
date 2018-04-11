@@ -1,5 +1,8 @@
 // External libraries
 import * as Web3 from "web3";
+import { BigNumber } from "bignumber.js";
+import * as moment from "moment";
+import * as Units from "utils/units";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
@@ -34,6 +37,7 @@ const CONTRACT_OWNER = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
 const CREDITOR = ACCOUNTS[2];
 const UNDERWRITER = ACCOUNTS[3];
+const RELAYER = ACCOUNTS[4];
 
 const TX_DEFAULTS = { from: CONTRACT_OWNER.address, gas: 4712388 };
 
@@ -261,19 +265,42 @@ export class ReturnCollateralRunner {
         });
     }
 
+    private generateDebtOrder(
+        scenario: ReturnCollateralScenario,
+        termsParams: string,
+    ): DebtOrder.Instance {
+        return {
+            kernelVersion: this.debtKernel.address,
+            issuanceVersion: this.repaymentRouter.address,
+            principalAmount: scenario.simpleTerms.principalAmount,
+            principalToken: this.principalToken.address,
+            debtor: DEBTOR.address,
+            debtorFee: Units.ether(0.001),
+            creditor: CREDITOR.address,
+            creditorFee: Units.ether(0.002),
+            relayer: RELAYER.address,
+            relayerFee: Units.ether(0.0015),
+            termsContract: this.termsContract.address,
+            termsContractParameters: termsParams,
+            expirationTimestampInSec: new BigNumber(
+                moment()
+                    .add(7, "days")
+                    .unix(),
+            ),
+            underwriter: UNDERWRITER.address,
+            underwriterFee: Units.ether(0.0015),
+            underwriterRiskRating: new BigNumber(1350),
+            salt: new BigNumber(0),
+        };
+    }
+
     private async generateAndFillOrder(scenario: ReturnCollateralScenario): Promise<void> {
         const termsParams = this.adapter.packParameters(
             scenario.simpleTerms,
             scenario.collateralTerms,
         );
 
-        this.debtOrder = scenario.generateDebtOrder(
-            this.debtKernel,
-            this.repaymentRouter,
-            this.principalToken,
-            this.termsContract,
-            termsParams,
-        );
+        this.debtOrder = this.generateDebtOrder(scenario, termsParams);
 
         await this.signOrder();
 
@@ -282,7 +309,7 @@ export class ReturnCollateralRunner {
         await this.setApprovals(scenario);
 
         await this.orderApi.fillAsync(this.debtOrder, {
-            from: scenario.orderFiller,
+            from: CREDITOR.address,
             // NOTE: Using the maximum gas here, to prevent potentially confusing
             // reverts due to insufficient gas. This wouldn't be applied in practice.
             gas: 4712388,

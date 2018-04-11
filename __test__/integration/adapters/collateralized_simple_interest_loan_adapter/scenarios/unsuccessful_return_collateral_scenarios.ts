@@ -1,8 +1,4 @@
-import { scenarioDefaults, ReturnCollateralScenario } from "./";
-
-import { ACCOUNTS } from "__test__/accounts";
-
-const defaultArgs = scenarioDefaults(ACCOUNTS);
+import { defaultArgs, ReturnCollateralScenario } from "./";
 
 // These tests all fail to return the collateral.
 defaultArgs.succeeds = false;
