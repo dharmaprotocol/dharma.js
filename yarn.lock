@@ -3579,9 +3579,15 @@ fwd-stream@^1.0.4:
   dependencies:
     readable-stream "~1.0.26-4"
 
+<<<<<<< HEAD
 ganache-cli@beta:
   version "6.1.0-beta.4"
   resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.1.0-beta.4.tgz#658dac95913adf80c88214deab38adcad46973b3"
+=======
+ganache-cli@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/ganache-cli/-/ganache-cli-6.1.0.tgz#486c846497204b644166b5f0f74c9b41d02bdc25"
+>>>>>>> feat: add mock erc721 receiver wrapper
   dependencies:
     source-map-support "^0.5.3"
     webpack-cli "^2.0.9"

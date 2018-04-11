@@ -7,12 +7,13 @@ import {
     BalanceOfScenarioRunner,
     ExistsScenarioRunner,
     TransferFromScenarioRunner,
+    TransferScenarioRunner,
     ApproveScenarioRunner,
     GetApprovedScenarioRunner,
 } from "./runners";
 
 // APIs
-import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis/";
+import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI, AdaptersAPI } from "src/apis/";
 
 // Types
 import { DebtTokenScenario } from "./scenarios";
@@ -34,6 +35,7 @@ export class DebtTokenScenarioRunner {
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
     private existsScenarioRunner: ExistsScenarioRunner;
     private transferFromScenarioRunner: TransferFromScenarioRunner;
+    private transferScenarioRunner: TransferScenarioRunner;
     private approveScenarioRunner: ApproveScenarioRunner;
     private getApprovedScenarioRunner: GetApprovedScenarioRunner;
 
@@ -41,9 +43,10 @@ export class DebtTokenScenarioRunner {
         this.web3Utils = new Web3Utils(web3);
 
         const contractsAPI = new ContractsAPI(web3);
+        const adaptersAPI = new AdaptersAPI(contractsAPI);
         const debtTokenAPI = new DebtTokenAPI(web3, contractsAPI);
         const tokenAPI = new TokenAPI(web3, contractsAPI);
-        const orderAPI = new OrderAPI(web3, contractsAPI);
+        const orderAPI = new OrderAPI(web3, contractsAPI, adaptersAPI);
         const signerAPI = new SignerAPI(web3, contractsAPI);
 
         const testAPIs = {
@@ -52,6 +55,7 @@ export class DebtTokenScenarioRunner {
             orderAPI,
             signerAPI,
             tokenAPI,
+            adaptersAPI,
         };
 
         const testAdapters = {
@@ -66,6 +70,7 @@ export class DebtTokenScenarioRunner {
             testAPIs,
             testAdapters,
         );
+        this.transferScenarioRunner = new TransferScenarioRunner(web3, testAPIs, testAdapters);
         this.approveScenarioRunner = new ApproveScenarioRunner(web3, testAPIs, testAdapters);
         this.getApprovedScenarioRunner = new GetApprovedScenarioRunner(
             web3,
@@ -77,6 +82,7 @@ export class DebtTokenScenarioRunner {
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
         this.testExistsScenario = this.testExistsScenario.bind(this);
         this.testTransferFromScenario = this.testTransferFromScenario.bind(this);
+        this.testTransferScenario = this.testTransferScenario.bind(this);
         this.testApproveScenario = this.testApproveScenario.bind(this);
         this.testGetApprovedScenario = this.testGetApprovedScenario.bind(this);
 
@@ -98,6 +104,10 @@ export class DebtTokenScenarioRunner {
 
     public async testTransferFromScenario(scenario: DebtTokenScenario.TransferFromScenario) {
         return this.transferFromScenarioRunner.testScenario(scenario);
+    }
+
+    public async testTransferScenario(scenario: DebtTokenScenario.TransferScenario) {
+        return this.transferScenarioRunner.testScenario(scenario);
     }
 
     public async testApproveScenario(scenario: DebtTokenScenario.ApproveScenario) {
