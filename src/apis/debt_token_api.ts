@@ -147,6 +147,9 @@ export class DebtTokenAPI implements ERC721 {
     }
 
     public async isApprovedForAll(owner: string, operator: string): Promise<boolean> {
+        this.assert.schema.address("operator", operator);
+        this.assert.schema.address("owner", owner);
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.isApprovedForAll.callAsync(owner, operator);
     }
