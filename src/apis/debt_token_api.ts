@@ -126,11 +126,14 @@ export class DebtTokenAPI implements ERC721 {
         options?: TxData,
     ): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
+
+        this.assert.schema.address("operator", operator);
 
         if (operator === txOptions.from) {
             throw new Error(DebtTokenAPIErrors.OWNER_CANNOT_BE_OPERATOR());
