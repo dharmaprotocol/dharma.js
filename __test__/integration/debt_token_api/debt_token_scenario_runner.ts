@@ -93,8 +93,6 @@ export class DebtTokenScenarioRunner {
     }
 
     public async revertToSavedSnapshot() {
-        if (this.currentSnapshotId) {
-            await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
-        }
+        await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
     }
 }
