@@ -33,7 +33,6 @@ export interface ReturnCollateralScenario {
         termsContract: CollateralizedSimpleInterestTermsContractContract,
         termsParams: string,
     ) => DebtOrder.Instance;
-    // Typically the underwriter fills the debt order.
     orderFiller: string;
     // True if the debt order's term has lapsed.
     termLapsed: boolean;

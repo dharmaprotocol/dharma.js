@@ -1,3 +1,1 @@
-import { ReturnCollateralRunner } from "./return_collateral_runner";
-
-export { ReturnCollateralRunner };
+export { ReturnCollateralRunner } from "./return_collateral_runner";

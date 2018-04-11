@@ -59,9 +59,9 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
 
         const signerApi = new SignerAPI(web3, contractsApi);
 
-        const debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS);
+        const debtKernel = await DebtKernelContract.deployed(web3);
 
-        const repaymentRouter = await RepaymentRouterContract.deployed(web3, TX_DEFAULTS);
+        const repaymentRouter = await RepaymentRouterContract.deployed(web3);
 
         const termsContract = await contractsApi.loadCollateralizedSimpleInterestTermsContract(
             TX_DEFAULTS,

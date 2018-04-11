@@ -292,7 +292,7 @@ export class ReturnCollateralRunner {
         await this.setApprovals(scenario);
 
         await this.orderApi.fillAsync(this.debtOrder, {
-            from: UNDERWRITER.address,
+            from: scenario.orderFiller,
             // NOTE: Using the maximum gas here, to prevent potentially confusing
             // reverts due to insufficient gas. This wouldn't be applied in practice.
             gas: 4712388,
