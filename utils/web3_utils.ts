@@ -51,7 +51,7 @@ export class Web3Utils {
     /**
      * Returns the current blocktime in seconds.
      *
-     * @returns {Promise<number>}
+     * @returns {number}
      */
     public async getCurrentBlockTime(): Promise<number> {
         const latestBlock = await promisify(
