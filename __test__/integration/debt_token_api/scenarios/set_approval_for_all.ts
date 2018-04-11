@@ -1,3 +1,4 @@
+import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
 import { DebtTokenScenario } from "./scenarios";
 import { ACCOUNTS } from "../../../accounts";
 
@@ -13,5 +14,14 @@ export const SET_APPROVAL_FOR_ALL_SCENARIOS: DebtTokenScenario.SetApprovalForAll
         operator: OPERATOR_ONE,
         from: APPROVER,
         approved: true,
+    },
+    {
+        description: "user specifes themselves as operator",
+        shouldSucceed: false,
+        operator: OPERATOR_ONE,
+        from: OPERATOR_ONE,
+        approved: true,
+        errorType: "OWNER_CANNOT_BE_OPERATOR",
+        errorMessage: DebtTokenAPIErrors.OWNER_CANNOT_BE_OPERATOR(),
     },
 ];
