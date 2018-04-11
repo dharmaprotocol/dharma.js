@@ -6,8 +6,7 @@ import {
     OwnerOfScenarioRunner,
     BalanceOfScenarioRunner,
     ExistsScenarioRunner,
-    TestAPIs,
-    TestAdapters,
+    TransferFromScenarioRunner,
 } from "./runners";
 
 // APIs
@@ -25,12 +24,14 @@ import { Web3Utils } from "utils/web3_utils";
 export class DebtTokenScenarioRunner {
     // Snapshotting.
     private web3Utils: Web3Utils;
+
     private currentSnapshotId: number;
 
     // Scenario Runners
     private balanceOfScenarioRunner: BalanceOfScenarioRunner;
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
     private existsScenarioRunner: ExistsScenarioRunner;
+    private transferFromScenarioRunner: TransferFromScenarioRunner;
 
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
@@ -56,10 +57,16 @@ export class DebtTokenScenarioRunner {
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);
         this.ownerOfScenarioRunner = new OwnerOfScenarioRunner(web3, testAPIs, testAdapters);
         this.existsScenarioRunner = new ExistsScenarioRunner(web3, testAPIs, testAdapters);
+        this.transferFromScenarioRunner = new TransferFromScenarioRunner(
+            web3,
+            testAPIs,
+            testAdapters,
+        );
 
         this.testOwnerOfScenario = this.testOwnerOfScenario.bind(this);
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
         this.testExistsScenario = this.testExistsScenario.bind(this);
+        this.testTransferFromScenario = this.testTransferFromScenario.bind(this);
 
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
@@ -75,6 +82,10 @@ export class DebtTokenScenarioRunner {
 
     public async testExistsScenario(scenario: DebtTokenScenario.ExistsScenario) {
         return this.existsScenarioRunner.testScenario(scenario);
+    }
+
+    public async testTransferFromScenario(scenario: DebtTokenScenario.TransferFromScenario) {
+        return this.transferFromScenarioRunner.testScenario(scenario);
     }
 
     public async saveSnapshotAsync() {

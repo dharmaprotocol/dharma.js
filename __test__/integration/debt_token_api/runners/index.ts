@@ -5,7 +5,6 @@ import * as Web3 from "web3";
 // Types
 import { DebtTokenScenario } from "../scenarios";
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
-import { DebtOrder } from "src/types";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
@@ -107,3 +106,4 @@ export abstract class ScenarioRunner {
 export { BalanceOfScenarioRunner } from "./balance_of";
 export { OwnerOfScenarioRunner } from "./owner_of";
 export { ExistsScenarioRunner } from "./exists";
+export { TransferFromScenarioRunner } from "./transfer_from";
