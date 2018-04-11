@@ -113,3 +113,4 @@ export { TransferFromScenarioRunner } from "./transfer_from";
 export { TransferScenarioRunner } from "./transfer";
 export { ApproveScenarioRunner } from "./approve";
 export { GetApprovedScenarioRunner } from "./get_approved";
+export { SetApprovalForAllScenarioRunner } from "./set_approval_for_all";

@@ -10,6 +10,7 @@ import {
     TransferScenarioRunner,
     ApproveScenarioRunner,
     GetApprovedScenarioRunner,
+    SetApprovalForAllScenarioRunner,
 } from "./runners";
 
 // APIs
@@ -38,6 +39,7 @@ export class DebtTokenScenarioRunner {
     private transferScenarioRunner: TransferScenarioRunner;
     private approveScenarioRunner: ApproveScenarioRunner;
     private getApprovedScenarioRunner: GetApprovedScenarioRunner;
+    private setApprovalForAllScenarioRunner: SetApprovalForAllScenarioRunner;
 
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
@@ -73,6 +75,11 @@ export class DebtTokenScenarioRunner {
         this.transferScenarioRunner = new TransferScenarioRunner(web3, testAPIs, testAdapters);
         this.approveScenarioRunner = new ApproveScenarioRunner(web3, testAPIs, testAdapters);
         this.getApprovedScenarioRunner = new GetApprovedScenarioRunner(
+            web3,
+            testAPIs,
+            testAdapters,
+        );
+        this.setApprovalForAllScenarioRunner = new SetApprovalForAllScenarioRunner(
             web3,
             testAPIs,
             testAdapters,
@@ -116,6 +123,10 @@ export class DebtTokenScenarioRunner {
 
     public async testGetApprovedScenario(scenario: DebtTokenScenario.GetApprovedScenario) {
         return this.getApprovedScenarioRunner.testScenario(scenario);
+    }
+
+    public async testSetApprovalForAll(scenario: DebtTokenScenario.SetApprovalForAllScenario) {
+        return this.setApprovalForAllScenarioRunner.testScenario(scenario);
     }
 
     public async saveSnapshotAsync() {
