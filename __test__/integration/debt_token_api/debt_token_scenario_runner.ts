@@ -13,7 +13,7 @@ import {
 } from "./runners";
 
 // APIs
-import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis/";
+import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI, AdaptersAPI } from "src/apis/";
 
 // Types
 import { DebtTokenScenario } from "./scenarios";
@@ -43,9 +43,10 @@ export class DebtTokenScenarioRunner {
         this.web3Utils = new Web3Utils(web3);
 
         const contractsAPI = new ContractsAPI(web3);
+        const adaptersAPI = new AdaptersAPI(contractsAPI);
         const debtTokenAPI = new DebtTokenAPI(web3, contractsAPI);
         const tokenAPI = new TokenAPI(web3, contractsAPI);
-        const orderAPI = new OrderAPI(web3, contractsAPI);
+        const orderAPI = new OrderAPI(web3, contractsAPI, adaptersAPI);
         const signerAPI = new SignerAPI(web3, contractsAPI);
 
         const testAPIs = {
@@ -54,6 +55,7 @@ export class DebtTokenScenarioRunner {
             orderAPI,
             signerAPI,
             tokenAPI,
+            adaptersAPI,
         };
 
         const testAdapters = {
