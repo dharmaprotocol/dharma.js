@@ -6,6 +6,7 @@ import { ERC20TokenSymbol } from "utils/constants";
 export namespace Orders {
     export const CREDITOR = ACCOUNTS[0].address;
     export const DEBTOR = ACCOUNTS[1].address;
+    export const APPROVED = ACCOUNTS[2].address;
 
     export const WHO = {
         creditor: CREDITOR,

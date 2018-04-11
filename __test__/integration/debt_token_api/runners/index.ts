@@ -111,3 +111,4 @@ export { OwnerOfScenarioRunner } from "./owner_of";
 export { ExistsScenarioRunner } from "./exists";
 export { TransferFromScenarioRunner } from "./transfer_from";
 export { ApproveScenarioRunner } from "./approve";
+export { GetApprovedScenarioRunner } from "./get_approved";
