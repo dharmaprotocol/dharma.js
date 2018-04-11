@@ -30,6 +30,8 @@ const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfL
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
+const TRANSFER_GAS_MAXIMUM = 200000;
+
 // Extend order to include parameters necessary for a collateralized terms contract.
 export interface CollateralizedSimpleInterestLoanOrder extends SimpleInterestLoanOrder {
     collateralTokenSymbol: string;
@@ -335,14 +337,15 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     public async seizeCollateral(agreementId: string): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
+        const transactionOptions = await this.getTxDefaultOptions();
+
         await this.assertCollateralSeizeable(agreementId);
 
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
 
         return collateralizerContract.seizeCollateral.sendTransactionAsync(
             agreementId,
-            // FIXME: For default "from", was getting "invalid address" and default gas reverts.
-            { from: ACCOUNTS[1].address, gas: 4712388 },
+            transactionOptions
         );
     }
 
@@ -359,12 +362,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         await this.assertCollateralReturnable(agreementId);
 
+        const transactionOptions = await this.getTxDefaultOptions();
+
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
 
         return collateralizerContract.returnCollateral.sendTransactionAsync(
             agreementId,
-            // FIXME: For default "from", was getting "invalid address" and default gas reverts.
-            { from: ACCOUNTS[1].address, gas: 4712388 },
+            transactionOptions
         );
     }
 
@@ -538,5 +542,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         );
 
         return repaymentToDate.gte(expectedTotalRepayment);
+    }
+
+    private async getTxDefaultOptions(): Promise<object> {
+        const accounts = await this.web3Utils.getAvailableAddressesAsync();
+
+        // TODO: Add fault tolerance to scenario in which not addresses are available
+
+        return {
+            from: accounts[0],
+            gas: TRANSFER_GAS_MAXIMUM,
+        };
     }
 }
