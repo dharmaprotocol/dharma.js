@@ -5,10 +5,10 @@ import * as singleLineString from "single-line-string";
 import { TxData, TxDataPayable } from "src/types/";
 
 // Gas estimates can vary from the amount in practise. To prevent reverts,
-// we add a small amount to the estimate.
-const GAS_SAFETY_MARGIN = 2000;
+// we add some amount to the estimate.
+const GAS_SAFETY_MARGIN = 40000;
 // The maximum amount of gas that should be used for any transaction.
-const MAXIMUM_GAS = 4712388;
+const MAXIMUM_GAS = 4000000;
 
 export const CONTRACT_WRAPPER_ERRORS = {
     CONTRACT_NOT_FOUND_ON_NETWORK: (contractName: string, networkId: number) =>
@@ -51,7 +51,9 @@ export class BaseContract {
         } as TxData;
         if (isUndefined(txDataWithDefaults.gas) && !isUndefined(estimateGasAsync)) {
             const estimatedGas = await estimateGasAsync(txData);
-            txDataWithDefaults.gas = Math.min(estimatedGas + GAS_SAFETY_MARGIN, MAXIMUM_GAS);
+            txDataWithDefaults.gas = Math.min(
+                estimatedGas + GAS_SAFETY_MARGIN, MAXIMUM_GAS
+            );
         }
         return txDataWithDefaults;
     }
