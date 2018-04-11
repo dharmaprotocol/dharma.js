@@ -60,11 +60,7 @@ export class ReturnCollateralRunner {
     private snapshotId: number;
     private debtOrder: DebtOrder.Instance;
 
-    constructor(
-        web3: Web3,
-        adapter: CollateralizedSimpleInterestLoanAdapter,
-        apis: APIs,
-    ) {
+    constructor(web3: Web3, adapter: CollateralizedSimpleInterestLoanAdapter, apis: APIs) {
         this.web3 = web3;
 
         this.orderApi = apis.orderApi;

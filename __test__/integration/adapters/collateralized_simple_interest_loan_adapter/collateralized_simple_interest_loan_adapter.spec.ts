@@ -49,16 +49,12 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
 
     const signerApi = new SignerAPI(web3, contractsApi);
 
-    const returnCollateralRunner = new ReturnCollateralRunner(
-        web3,
-        adapter,
-        {
-            orderApi,
-            signerApi,
-            servicingApi,
-            contractsApi,
-        },
-    );
+    const returnCollateralRunner = new ReturnCollateralRunner(web3, adapter, {
+        orderApi,
+        signerApi,
+        servicingApi,
+        contractsApi,
+    });
 
     describe("#returnCollateral", () => {
         describe("Successful return of collateral", () => {
