@@ -24,8 +24,6 @@ import { DebtOrder, IssuanceCommitment, TxData, TransactionOptions } from "../ty
 import { NULL_ADDRESS } from "../../utils/constants";
 import { Assertions } from "../invariants";
 
-const ORDER_FILL_GAS_MAXIMUM = 600000;
-
 export const OrderAPIErrors = {
     EXPIRED: () =>
         singleLineString`Unable to fill debt order because
