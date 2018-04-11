@@ -2,7 +2,7 @@ jest.mock("@dharmaprotocol/contracts");
 
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
-import { BigNumber } from "bignumber.js";
+
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";

@@ -33,7 +33,7 @@ import { DebtOrder, DebtRegistryEntry } from "src/types";
 import {
     CollateralizedSimpleInterestLoanAdapter,
     CollateralizedLoanTerms,
-    CollateralizedAdapterErrors,
+    CollateralizerAdapterErrors,
     CollateralizedTermsContractParameters,
     CollateralizedSimpleInterestLoanOrder,
 } from "src/adapters/collateralized_simple_interest_loan_adapter";
@@ -114,7 +114,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         collateralTokenIndex: invalidCollateralTokenIndex,
                     });
                 }).toThrow(
-                    CollateralizedAdapterErrors.INVALID_TOKEN_INDEX(invalidCollateralTokenIndex),
+                    CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(invalidCollateralTokenIndex),
                 );
             });
         });
@@ -125,7 +125,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         ...scenario_1.unpackedParams,
                         collateralAmount: new BigNumber(3.5 * 10 ** 38),
                     });
-                }).toThrow(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
+                }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
             });
         });
         describe("...with collateral amount < 0", () => {
@@ -135,7 +135,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         ...scenario_1.unpackedParams,
                         collateralAmount: new BigNumber(-1),
                     });
-                }).toThrow(CollateralizedAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
+                }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
             });
         });
         describe("...with collateral amount containing decimals", () => {
@@ -145,7 +145,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         ...scenario_1.unpackedParams,
                         collateralAmount: new BigNumber(100.4567),
                     });
-                }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+                }).toThrowError(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
             });
         });
         describe("...with grace period in days < 0", () => {
@@ -155,7 +155,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         ...scenario_1.unpackedParams,
                         gracePeriodInDays: new BigNumber(-1),
                     });
-                }).toThrowError(CollateralizedAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
+                }).toThrowError(CollateralizerAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
             });
         });
         describe("...with grace period in days > 255", () => {
@@ -165,7 +165,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         ...scenario_1.unpackedParams,
                         gracePeriodInDays: new BigNumber(256),
                     });
-                }).toThrowError(CollateralizedAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
+                }).toThrowError(CollateralizerAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
             });
         });
         describe("...with grace period containing decimals", () => {
@@ -175,7 +175,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                         ...scenario_1.unpackedParams,
                         gracePeriodInDays: new BigNumber(1.567),
                     });
-                }).toThrowError(CollateralizedAdapterErrors.INVALID_DECIMAL_VALUE());
+                }).toThrowError(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
             });
         });
         describe("...with valid collateral token index, collateral amount, and grace period in days", () => {
@@ -540,7 +540,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                             "0x010000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                     }),
                 ).rejects.toThrow(
-                    CollateralizedAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
+                    CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
                         scenario_1.debtOrder.principalToken,
                         MKR_TOKEN_SYMBOL,
                     ),
@@ -626,7 +626,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                         termsContract: INVALID_ADDRESS,
                     }),
                 ).rejects.toThrow(
-                    CollateralizedAdapterErrors.MISMATCHED_TERMS_CONTRACT(INVALID_ADDRESS),
+                    CollateralizerAdapterErrors.MISMATCHED_TERMS_CONTRACT(INVALID_ADDRESS),
                 );
             });
         });

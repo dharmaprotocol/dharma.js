@@ -2,6 +2,8 @@
 import * as Web3 from "web3";
 import * as compact from "lodash.compact";
 import * as ABIDecoder from "abi-decoder";
+import { BigNumber } from "bignumber.js";
+import * as moment from "moment";
 
 // Wrappers
 import {
@@ -14,7 +16,7 @@ import {
 } from "src/wrappers";
 
 // APIs
-import { AdaptersAPI, OrderAPI, SignerAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
 
 // Scenarios
 import {
@@ -22,6 +24,7 @@ import {
     OrderCancellationScenario,
     OrderGenerationScenario,
     IssuanceCancellationScenario,
+    UnpackTermsScenario,
 } from "./scenarios/";
 
 // Types
@@ -30,6 +33,8 @@ import { Adapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
+import { ACCOUNTS } from "../../accounts";
+import * as Units from "utils/units";
 
 export class OrderScenarioRunner {
     public web3Utils: Web3Utils;
@@ -39,6 +44,7 @@ export class OrderScenarioRunner {
     public principalToken: DummyTokenContract;
     public termsContract: SimpleInterestTermsContractContract;
     public orderApi: OrderAPI;
+    public contractsApi: ContractsAPI;
     public orderSigner: SignerAPI;
     public adaptersApi: AdaptersAPI;
     public abiDecoder: any;
@@ -48,12 +54,45 @@ export class OrderScenarioRunner {
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
 
+        this.testCheckOrderFilledScenario = this.testCheckOrderFilledScenario.bind(this);
         this.testFillScenario = this.testFillScenario.bind(this);
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
         this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
+        this.testUnpackTermsScenario = this.testUnpackTermsScenario.bind(this);
+
         this.saveSnapshotAsync = this.saveSnapshotAsync.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
+    }
+
+    public testCheckOrderFilledScenario(scenario: FillScenario) {
+        describe(scenario.description, () => {
+            let debtOrder: DebtOrder.Instance;
+
+            beforeAll(() => {
+                ABIDecoder.addABI(this.debtKernel.abi);
+            });
+
+            afterAll(() => {
+                ABIDecoder.removeABI(this.debtKernel.abi);
+            });
+
+            beforeEach(async () => {
+                debtOrder = await this.setUpFillScenario(scenario);
+            });
+
+            test("returns false if order has not been filled", async () => {
+                expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(false);
+            });
+
+            test("returns true if order has been filled", async () => {
+                const txHash = await this.orderApi.fillAsync(debtOrder, {
+                    from: scenario.filler,
+                });
+
+                expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(true);
+            });
+        });
     }
 
     public testFillScenario(scenario: FillScenario) {
@@ -69,49 +108,7 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = scenario.generateDebtOrder(
-                    this.debtKernel,
-                    this.repaymentRouter,
-                    this.principalToken,
-                    this.termsContract,
-                );
-
-                // We dynamically set the creditor's balance and
-                // allowance of a given principal token to either
-                // their assigned values in the fill scenario, or
-                // to a default amount (i.e sufficient balance / allowance
-                // necessary for order fill)
-                const creditorBalance =
-                    scenario.creditorBalance || debtOrder.principalAmount.times(2);
-                const creditorAllowance =
-                    scenario.creditorAllowance || debtOrder.principalAmount.times(2);
-
-                await this.principalToken.setBalance.sendTransactionAsync(
-                    debtOrder.creditor,
-                    creditorBalance,
-                );
-                await this.principalToken.approve.sendTransactionAsync(
-                    this.tokenTransferProxy.address,
-                    creditorAllowance,
-                    { from: debtOrder.creditor },
-                );
-
-                // We dynamically attach signatures based on whether the
-                // the scenario specifies that a signature from a signatory
-                // ought to be attached.
-                debtOrder.debtorSignature = scenario.signatories.debtor
-                    ? await this.orderSigner.asDebtor(debtOrder, false)
-                    : null;
-                debtOrder.creditorSignature = scenario.signatories.creditor
-                    ? await this.orderSigner.asCreditor(debtOrder, false)
-                    : null;
-                debtOrder.underwriterSignature = scenario.signatories.underwriter
-                    ? await this.orderSigner.asUnderwriter(debtOrder, false)
-                    : null;
-
-                if (scenario.beforeBlock) {
-                    await scenario.beforeBlock(debtOrder, this.debtKernel);
-                }
+                debtOrder = await this.setUpFillScenario(scenario);
             });
 
             if (scenario.successfullyFills) {
@@ -276,11 +273,108 @@ export class OrderScenarioRunner {
         });
     }
 
+    public testUnpackTermsScenario(scenario: UnpackTermsScenario) {
+        describe(scenario.description, () => {
+            let debtOrder: DebtOrder.Instance;
+
+            beforeEach(async () => {
+                const simpleInterestTermsContract = this.termsContract;
+                const collateralizedSimpleInterestTermsContract = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
+                const otherTermsContractAddress = ACCOUNTS[4].address;
+
+                debtOrder = {
+                    kernelVersion: this.debtKernel.address,
+                    issuanceVersion: this.repaymentRouter.address,
+                    principalAmount: Units.ether(1),
+                    principalToken: this.principalToken.address,
+                    debtor: ACCOUNTS[1].address,
+                    debtorFee: Units.ether(0.001),
+                    creditor: ACCOUNTS[2].address,
+                    creditorFee: Units.ether(0.001),
+                    relayer: ACCOUNTS[3].address,
+                    relayerFee: Units.ether(0.002),
+                    termsContract: scenario.termsContract(
+                        simpleInterestTermsContract.address,
+                        collateralizedSimpleInterestTermsContract.address,
+                        otherTermsContractAddress,
+                    ),
+                    termsContractParameters: scenario.termsContractParameters,
+                    expirationTimestampInSec: new BigNumber(
+                        moment()
+                            .add(7, "days")
+                            .unix(),
+                    ),
+                    salt: new BigNumber(0),
+                };
+            });
+
+            if (!scenario.throws) {
+                test("returns correctly unpacked parameters", async () => {
+                    await expect(this.orderApi.unpackTerms(debtOrder)).resolves.toEqual(
+                        scenario.expectedParameters,
+                    );
+                });
+            } else {
+                test(`throws ${scenario.errorType}`, async () => {
+                    await expect(this.orderApi.unpackTerms(debtOrder)).rejects.toThrow(
+                        scenario.errorMessage,
+                    );
+                });
+            }
+        });
+    }
+
     public async saveSnapshotAsync() {
         this.currentSnapshotId = await this.web3Utils.saveTestSnapshot();
     }
 
     public async revertToSavedSnapshot() {
         await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+    }
+
+    private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrder.Instance> {
+        let debtOrder = scenario.generateDebtOrder(
+            this.debtKernel,
+            this.repaymentRouter,
+            this.principalToken,
+            this.termsContract,
+        );
+
+        // We dynamically set the creditor's balance and
+        // allowance of a given principal token to either
+        // their assigned values in the fill scenario, or
+        // to a default amount (i.e sufficient balance / allowance
+        // necessary for order fill)
+        const creditorBalance = scenario.creditorBalance || debtOrder.principalAmount.times(2);
+        const creditorAllowance = scenario.creditorAllowance || debtOrder.principalAmount.times(2);
+
+        await this.principalToken.setBalance.sendTransactionAsync(
+            debtOrder.creditor,
+            creditorBalance,
+        );
+        await this.principalToken.approve.sendTransactionAsync(
+            this.tokenTransferProxy.address,
+            creditorAllowance,
+            { from: debtOrder.creditor },
+        );
+
+        // We dynamically attach signatures based on whether the
+        // the scenario specifies that a signature from a signatory
+        // ought to be attached.
+        debtOrder.debtorSignature = scenario.signatories.debtor
+            ? await this.orderSigner.asDebtor(debtOrder, false)
+            : null;
+        debtOrder.creditorSignature = scenario.signatories.creditor
+            ? await this.orderSigner.asCreditor(debtOrder, false)
+            : null;
+        debtOrder.underwriterSignature = scenario.signatories.underwriter
+            ? await this.orderSigner.asUnderwriter(debtOrder, false)
+            : null;
+
+        if (scenario.beforeBlock) {
+            await scenario.beforeBlock(debtOrder, this.debtKernel);
+        }
+
+        return debtOrder;
     }
 }

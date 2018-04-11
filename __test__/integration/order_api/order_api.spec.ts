@@ -19,6 +19,8 @@ import {
     NONCONSENUAL_ORDERS,
     SUCCESSFUL_ORDER_GENERATION,
     UNSUCCESSFUL_ORDER_GENERATION,
+    SUCCESSFUL_UNPACK_TERMS,
+    UNSUCCESSFUL_UNPACK_TERMS,
 } from "./scenarios";
 
 // Runners
@@ -41,7 +43,6 @@ jest.unmock("@dharmaprotocol/contracts");
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
-const contractsApi = new ContractsAPI(web3);
 
 let scenarioRunner = new OrderScenarioRunner(web3);
 
@@ -55,9 +56,14 @@ describe("Order API (Integration Tests)", () => {
         );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
-        scenarioRunner.orderSigner = new SignerAPI(web3, contractsApi);
-        scenarioRunner.adaptersApi = new AdaptersAPI(contractsApi);
-        scenarioRunner.orderApi = new OrderAPI(web3, contractsApi);
+        scenarioRunner.contractsApi = new ContractsAPI(web3);
+        scenarioRunner.orderSigner = new SignerAPI(web3, scenarioRunner.contractsApi);
+        scenarioRunner.adaptersApi = new AdaptersAPI(scenarioRunner.contractsApi);
+        scenarioRunner.orderApi = new OrderAPI(
+            web3,
+            scenarioRunner.contractsApi,
+            scenarioRunner.adaptersApi,
+        );
         scenarioRunner.principalToken = await DummyTokenContract.at(
             principalTokenAddress,
             web3,
@@ -114,6 +120,12 @@ describe("Order API (Integration Tests)", () => {
         });
     });
 
+    describe("#checkOrderFilledAsync", () => {
+        describe("Filled and unfilled orders", () => {
+            VALID_ORDERS.forEach(scenarioRunner.testCheckOrderFilledScenario);
+        });
+    });
+
     describe("#generate", () => {
         describe("Valid order generation", () => {
             SUCCESSFUL_ORDER_GENERATION.forEach(scenarioRunner.testOrderGenerationScenario);
@@ -121,6 +133,16 @@ describe("Order API (Integration Tests)", () => {
 
         describe("Invalid order generation", () => {
             UNSUCCESSFUL_ORDER_GENERATION.forEach(scenarioRunner.testOrderGenerationScenario);
+        });
+    });
+
+    describe("#unpackTerms", () => {
+        describe("Successful terms unpacking", () => {
+            SUCCESSFUL_UNPACK_TERMS.forEach(scenarioRunner.testUnpackTermsScenario);
+        });
+
+        describe("Unsuccessful terms unpacking", () => {
+            UNSUCCESSFUL_UNPACK_TERMS.forEach(scenarioRunner.testUnpackTermsScenario);
         });
     });
 });

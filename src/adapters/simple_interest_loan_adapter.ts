@@ -308,7 +308,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             interestRate,
             termLength,
             amortizationUnit,
-        } = this.termsContractInterface.unpackParameters(debtOrder.termsContractParameters);
+        } = this.unpackParameters(debtOrder.termsContractParameters);
 
         const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
             principalTokenIndex,
@@ -345,7 +345,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             interestRate,
             termLength,
             amortizationUnit,
-        } = this.termsContractInterface.unpackParameters(entry.termsContractParameters);
+        } = this.unpackParameters(entry.termsContractParameters);
 
         const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
             principalTokenIndex,
@@ -373,6 +373,10 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             termLength,
             issuanceBlockTimestamp.toNumber(),
         ).toArray();
+    }
+
+    public unpackParameters(packedParams: string): SimpleInterestTermsContractParameters {
+        return this.termsContractInterface.unpackParameters(packedParams);
     }
 
     private async assertPrincipalTokenCorrespondsToSymbol(

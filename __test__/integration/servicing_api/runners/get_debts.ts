@@ -17,7 +17,7 @@ const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 const contractsApi = new ContractsAPI(web3);
 const adaptersApi = new AdaptersAPI(contractsApi);
-const orderApi = new OrderAPI(web3, contractsApi);
+const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
@@ -68,7 +68,7 @@ export class GetDebtsRunner {
                         salt: new BigNumber(i),
                     });
 
-                    debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
+                    debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
                     const issuanceHash = await orderApi.getIssuanceHash(debtOrder);
                     issuanceHashes.push(issuanceHash);

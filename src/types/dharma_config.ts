@@ -8,4 +8,5 @@ export interface DharmaConfig {
     termsContractRegistry?: string;
     simpleInterestTermsContractAddress?: string;
     collateralizedSimpleInterestTermsContractAddress?: string;
+    collateralizerAddress?: string;
 }

@@ -47,6 +47,7 @@ export class ErrorScenarioRunner {
     private contractsAPI: ContractsAPI;
     private blockchainAPI: BlockchainAPI;
     private signerAPI: SignerAPI;
+    private adaptersApi: AdaptersAPI;
     private orderAPI: OrderAPI;
 
     // Adapters
@@ -75,7 +76,8 @@ export class ErrorScenarioRunner {
         this.contractsAPI = new ContractsAPI(this.web3);
         this.blockchainAPI = new BlockchainAPI(this.web3, this.contractsAPI);
         this.signerAPI = new SignerAPI(this.web3, this.contractsAPI);
-        this.orderAPI = new OrderAPI(this.web3, this.contractsAPI);
+        this.adaptersApi = new AdaptersAPI(this.web3, this.contractsAPI);
+        this.orderAPI = new OrderAPI(this.web3, this.contractsAPI, this.adaptersApi);
 
         const {
             debtKernel,
@@ -201,13 +203,13 @@ export class ErrorScenarioRunner {
                 // the scenario specifies that a signature from a signatory
                 // ought to be attached.
                 debtOrder.debtorSignature = scenario.signatories.debtor
-                    ? await this.signerAPI.asDebtor(debtOrder)
+                    ? await this.signerAPI.asDebtor(debtOrder, false)
                     : undefined;
                 debtOrder.creditorSignature = scenario.signatories.creditor
-                    ? await this.signerAPI.asCreditor(debtOrder)
+                    ? await this.signerAPI.asCreditor(debtOrder, false)
                     : undefined;
                 debtOrder.underwriterSignature = scenario.signatories.underwriter
-                    ? await this.signerAPI.asUnderwriter(debtOrder)
+                    ? await this.signerAPI.asUnderwriter(debtOrder, false)
                     : undefined;
 
                 if (scenario.beforeBlock) {

@@ -1,9 +1,10 @@
 // External
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import { BigNumber } from "../../utils/bignumber";
 
 // APIs
-import { ContractsAPI } from ".";
+import { AdaptersAPI, ContractsAPI } from ".";
 
 // Adapters
 import { Adapter } from "../adapters";
@@ -85,10 +86,12 @@ export class OrderAPI {
     private web3: Web3;
     private assert: Assertions;
     private contracts: ContractsAPI;
+    private adapters: AdaptersAPI;
 
-    public constructor(web3: Web3, contracts: ContractsAPI) {
+    public constructor(web3: Web3, contracts: ContractsAPI, adapters: AdaptersAPI) {
         this.web3 = web3;
         this.contracts = contracts;
+        this.adapters = adapters;
 
         this.assert = new Assertions(this.contracts);
     }
@@ -195,6 +198,21 @@ export class OrderAPI {
     }
 
     /**
+     * Asynchronously checks whether the order is filled.
+     *
+     * @param  debtOrder a debt order.
+     * @return           boolean representing whether the debt order is filled or not.
+     */
+    public async checkOrderFilledAsync(debtOrder: DebtOrder.Instance): Promise<boolean> {
+        const transactionOptions = await this.getTxDefaultOptions();
+        const { debtToken } = await this.contracts.loadDharmaContractsAsync(transactionOptions);
+
+        const issuanceHash = await this.getIssuanceHash(debtOrder);
+
+        return debtToken.exists.callAsync(new BigNumber(issuanceHash));
+    }
+
+    /**
      * Given a complete debt order, asynchronously computes the issuanceHash
      * (alias of debtAgreementId) of the debt order.
      *
@@ -230,6 +248,26 @@ export class OrderAPI {
         );
 
         return adapter.toDebtOrder(params);
+    }
+
+    /**
+     * Decode tightly-packed representation of debt agreement's terms in a
+     * given debt order into an object with human-interpretable keys and values.
+     *
+     * NOTE: If the terms contract in the given debt order does not correspond
+     *       to any of the built-in adapters bundled into dharma.js, this method
+     *       will throw.
+     *
+     * @param debtOrder A Dharma debt order
+     * @return An object containing human-interpretable terms for the loan
+     */
+    public async unpackTerms(debtOrder: DebtOrder.Instance): Promise<object> {
+        const { termsContract, termsContractParameters } = debtOrder;
+
+        // Will throw if adapter cannot be found for given terms contract
+        const adapter = await this.adapters.getAdapterByTermsContractAddress(termsContract);
+
+        return adapter.unpackParameters(termsContractParameters);
     }
 
     public async cancelIssuanceAsync(

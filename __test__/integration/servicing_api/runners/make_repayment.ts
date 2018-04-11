@@ -23,7 +23,7 @@ const web3Utils = new Web3Utils(web3);
 
 const contractsApi = new ContractsAPI(web3);
 const adaptersApi = new AdaptersAPI(contractsApi);
-const orderApi = new OrderAPI(web3, contractsApi);
+const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
 
@@ -108,7 +108,7 @@ export class MakeRepaymentRunner {
                     termLength: new BigNumber(2),
                 });
 
-                debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder);
+                debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
                 issuanceHash = await orderApi.getIssuanceHash(debtOrder);
 
