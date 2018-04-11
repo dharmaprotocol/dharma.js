@@ -62,4 +62,8 @@ export namespace DebtTokenScenario {
         errorType?: string;
         errorMessage?: string;
     }
+
+    // Transfer scenario ingests the same parameters as transferFrom so that
+    // we can reuse our test runners for both methods
+    export interface TransferScenario extends TransferFromScenario {}
 }

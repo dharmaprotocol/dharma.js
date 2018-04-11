@@ -4,14 +4,27 @@ import { BigNumber } from "bignumber.js";
 // Types
 import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
+import { TxData } from "src/types";
 
 // Wrappers
 import { MockERC721ReceiverContract, TokenRegistryContract } from "src/wrappers";
+
+// APIs
+import { DebtTokenAPI } from "src/apis";
 
 // Utils
 import { ACCOUNTS } from "../../../accounts";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+
+export interface TransferAPICallParameters {
+    api: DebtTokenAPI;
+    from: string;
+    to: string;
+    tokenID: BigNumber;
+    data: string;
+    txOptions: TxData;
+}
 
 export class TransferFromScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.TransferFromScenario) {
@@ -27,7 +40,7 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
 
         const { debtTokenAPI } = this.testAPIs;
         let scenarioTokenID: BigNumber;
-        let transferFromPromise: Promise<string>;
+        let apiCallPromise: Promise<string>;
 
         describe(scenario.description, () => {
             beforeEach(async () => {
@@ -96,21 +109,22 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
                 //       for different transferFrom calls (depending on how much gas the recipient contract
                 //       guzzles in the onER721Received method call).  A more permanent solution is tracked
                 //       in this Pivotal story: https://www.pivotaltracker.com/story/show/156644350
-                const transferFromGas = recipientIsContract ? 300000 : 250000;
+                const gas = recipientIsContract ? 300000 : 250000;
 
-                transferFromPromise = debtTokenAPI.transferFrom(
-                    scenario.from,
-                    scenarioRecipient,
-                    scenarioTokenID,
-                    scenario.data,
-                    {
+                apiCallPromise = this.getAPICallPromise({
+                    api: debtTokenAPI,
+                    from: scenario.from,
+                    to: scenarioRecipient,
+                    tokenID: scenarioTokenID,
+                    data: scenario.data,
+                    txOptions: {
                         from: scenario.sender,
-                        gas: transferFromGas,
+                        gas,
                     },
-                );
+                });
 
                 if (scenario.succeeds) {
-                    await transferFromPromise;
+                    await apiCallPromise;
                 }
             });
 
@@ -134,9 +148,15 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
                 });
             } else {
                 test(`throws ${scenario.errorType}`, async () => {
-                    await expect(transferFromPromise).rejects.toThrow(scenario.errorMessage);
+                    await expect(apiCallPromise).rejects.toThrow(scenario.errorMessage);
                 });
             }
         });
+    }
+
+    protected getAPICallPromise(params: TransferAPICallParameters): Promise<string> {
+        const { api, from, to, tokenID, data, txOptions } = params;
+
+        return api.transferFrom(from, to, tokenID, data, txOptions);
     }
 }
