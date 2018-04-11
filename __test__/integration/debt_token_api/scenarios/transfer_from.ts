@@ -15,18 +15,17 @@ const TOKENS_APPROVED_OPERATOR = ACCOUNTS[2].address;
 const OWNERS_APPROVED_OPERATOR = ACCOUNTS[3].address;
 const UNAPPROVED_TRANSFER_FROM_SENDER = ACCOUNTS[4].address;
 
-const defaults: DebtTokenScenario.TransferFromScenario = {
+const successfulDefaults = {
     // Scenario Setup Parameters
-    description: `Default Description`,
     orders: Orders.ALL_ORDERS,
     ...Orders.WHO,
-    succeeds: false,
+    succeeds: true,
 
     // TransferFrom Setup Parameters
     tokensApprovedOperator: TOKENS_APPROVED_OPERATOR,
     ownersApprovedOperator: OWNERS_APPROVED_OPERATOR,
 
-    // TransferFrom Scenario parameters
+    // TransferFrom Scenario Parameters
     from: Orders.CREDITOR,
     to: (
         userRecipient: string,
@@ -37,14 +36,72 @@ const defaults: DebtTokenScenario.TransferFromScenario = {
     tokenID: (
         ordersIssuanceHash: BigNumber,
         otherTokenId: BigNumber,
-        nonExistentTokenId: BigNumber,
+        nonexistentTokenId: BigNumber,
     ) => ordersIssuanceHash,
     sender: Orders.CREDITOR,
 };
 
+const unsuccessfulDefaults = {
+    ...successfulDefaults,
+    succeeds: false,
+};
+
+export const SUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFromScenario[] = [
+    {
+        ...successfulDefaults,
+        description: "called by tokens owner to a non-contract recipient",
+    },
+    {
+        ...successfulDefaults,
+        description:
+            "called by token's approved operator (i.e. `approve`) to a non-contract recipient",
+        sender: TOKENS_APPROVED_OPERATOR,
+    },
+    {
+        ...successfulDefaults,
+        description:
+            "called by token owner's approved operator (i.e. `setApprovalForAll`) to a non-contract recipient",
+        sender: OWNERS_APPROVED_OPERATOR,
+    },
+    {
+        ...successfulDefaults,
+        description: "called by tokens owner to a valid contract recipient",
+        to: (
+            userRecipient: string,
+            validContractRecipient: string,
+            invalidContractRecipient: string,
+            malformed: string,
+        ) => validContractRecipient,
+    },
+    {
+        ...successfulDefaults,
+        description:
+            "called by token's approved operator (i.e. `approve`) to a valid contract recipient",
+        sender: TOKENS_APPROVED_OPERATOR,
+        to: (
+            userRecipient: string,
+            validContractRecipient: string,
+            invalidContractRecipient: string,
+            malformed: string,
+        ) => validContractRecipient,
+    },
+    {
+        ...successfulDefaults,
+        description:
+            "called by token owner's approved operator (i.e. `setApprovalForAll`) to a valid contract recipient",
+        sender: OWNERS_APPROVED_OPERATOR,
+        to: (
+            userRecipient: string,
+            validContractRecipient: string,
+            invalidContractRecipient: string,
+            malformed: string,
+        ) => validContractRecipient,
+    },
+];
+
 export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFromScenario[] = [
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "debt token does not exist",
         tokenID: (
             ordersIssuanceHash: BigNumber,
@@ -55,7 +112,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
         errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
     },
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "account being transferred from does not own debt token",
         tokenID: (
             ordersIssuanceHash: BigNumber,
@@ -66,7 +123,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
         errorMessage: DebtTokenAPIErrors.ONLY_OWNER(Orders.CREDITOR),
     },
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "account sending transferFrom not approved to transfer debt token",
         sender: UNAPPROVED_TRANSFER_FROM_SENDER,
         errorType: "ACCOUNT_UNAUTHORIZED_TO_TRANSFER",
@@ -75,21 +132,21 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
         ),
     },
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "data field is non-hexadecimal",
         data: "non-hexadecimal string",
         errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
         errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]*$"',
     },
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "from field is malformed",
         from: "0x123",
         errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
         errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]{40}$"',
     },
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "to field is malformed",
         to: (
             userRecipient: string,
@@ -101,7 +158,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
         errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]{40}$"',
     },
     {
-        ...defaults,
+        ...unsuccessfulDefaults,
         description: "recipient account is contract that does not implement ERC721Receiver",
         tokenID: (
             ordersIssuanceHash: BigNumber,
