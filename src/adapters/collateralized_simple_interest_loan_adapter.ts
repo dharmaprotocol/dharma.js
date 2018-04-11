@@ -345,7 +345,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         return collateralizerContract.seizeCollateral.sendTransactionAsync(
             agreementId,
-            transactionOptions
+            transactionOptions,
         );
     }
 
@@ -368,7 +368,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         return collateralizerContract.returnCollateral.sendTransactionAsync(
             agreementId,
-            transactionOptions
+            transactionOptions,
         );
     }
 
