@@ -196,7 +196,7 @@ export class DebtTokenAPI implements ERC721 {
         );
 
         // Assert token belongs to `from`
-        await this.assert.debtToken.belongsToAccount(
+        await this.assert.debtToken.onlyOwner(
             debtTokenContract,
             tokenID,
             from,
