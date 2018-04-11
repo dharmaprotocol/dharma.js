@@ -7,6 +7,7 @@ import {
     BalanceOfScenarioRunner,
     ExistsScenarioRunner,
     TransferFromScenarioRunner,
+    TransferScenarioRunner,
     ApproveScenarioRunner,
     GetApprovedScenarioRunner,
 } from "./runners";
@@ -34,6 +35,7 @@ export class DebtTokenScenarioRunner {
     private ownerOfScenarioRunner: OwnerOfScenarioRunner;
     private existsScenarioRunner: ExistsScenarioRunner;
     private transferFromScenarioRunner: TransferFromScenarioRunner;
+    private transferScenarioRunner: TransferScenarioRunner;
     private approveScenarioRunner: ApproveScenarioRunner;
     private getApprovedScenarioRunner: GetApprovedScenarioRunner;
 
@@ -66,6 +68,7 @@ export class DebtTokenScenarioRunner {
             testAPIs,
             testAdapters,
         );
+        this.transferScenarioRunner = new TransferScenarioRunner(web3, testAPIs, testAdapters);
         this.approveScenarioRunner = new ApproveScenarioRunner(web3, testAPIs, testAdapters);
         this.getApprovedScenarioRunner = new GetApprovedScenarioRunner(
             web3,
@@ -77,6 +80,7 @@ export class DebtTokenScenarioRunner {
         this.testBalanceOfScenario = this.testBalanceOfScenario.bind(this);
         this.testExistsScenario = this.testExistsScenario.bind(this);
         this.testTransferFromScenario = this.testTransferFromScenario.bind(this);
+        this.testTransferScenario = this.testTransferScenario.bind(this);
         this.testApproveScenario = this.testApproveScenario.bind(this);
         this.testGetApprovedScenario = this.testGetApprovedScenario.bind(this);
 
@@ -98,6 +102,10 @@ export class DebtTokenScenarioRunner {
 
     public async testTransferFromScenario(scenario: DebtTokenScenario.TransferFromScenario) {
         return this.transferFromScenarioRunner.testScenario(scenario);
+    }
+
+    public async testTransferScenario(scenario: DebtTokenScenario.TransferScenario) {
+        return this.transferScenarioRunner.testScenario(scenario);
     }
 
     public async testApproveScenario(scenario: DebtTokenScenario.ApproveScenario) {

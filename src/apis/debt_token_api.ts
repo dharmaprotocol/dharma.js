@@ -143,13 +143,26 @@ export class DebtTokenAPI implements ERC721 {
     }
 
     public async transfer(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+        this.validateTransferArguments(to, tokenID);
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
-        return debtTokenContract.transfer.sendTransactionAsync(to, tokenID, txOptions);
+
+        await this.assertTransferValid(debtTokenContract, to, tokenID, txOptions);
+
+        const owner = await this.ownerOf(tokenID);
+
+        return debtTokenContract.safeTransferFrom.sendTransactionAsync(
+            owner,
+            to,
+            tokenID,
+            "",
+            txOptions,
+        );
     }
 
     public async transferFrom(
@@ -177,6 +190,38 @@ export class DebtTokenAPI implements ERC721 {
             tokenID,
             data,
             txOptions,
+        );
+    }
+
+    private async assertTransferValid(
+        debtTokenContract: DebtTokenContract,
+        to: string,
+        tokenID: BigNumber,
+        txOptions: TxData,
+    ): Promise<void> {
+        // Assert token exists
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
+        );
+
+        // Assert that message sender can transfer said token
+        await this.assert.debtToken.canBeTransferredByAccount(
+            debtTokenContract,
+            tokenID,
+            txOptions.from,
+            DebtTokenAPIErrors.ACCOUNT_UNAUTHORIZED_TO_TRANSFER(txOptions.from),
+        );
+
+        // Assert that `to` can be the recipient of an ERC721 token
+        await this.assert.debtToken.canBeReceivedByAccountWithData(
+            this.web3,
+            tokenID,
+            to,
+            txOptions.from,
+            "",
+            DebtTokenAPIErrors.RECIPIENT_WONT_RECOGNIZE_TOKEN(to),
         );
     }
 
@@ -222,15 +267,20 @@ export class DebtTokenAPI implements ERC721 {
         );
     }
 
+    private validateTransferArguments(to: string, tokenID: BigNumber): void {
+        this.assert.schema.address("to", to);
+        this.assert.schema.wholeNumber("tokenID", tokenID);
+    }
+
     private validateTransferFromArguments(
         from: string,
         to: string,
         tokenID: BigNumber,
         data?: string,
     ): void {
+        this.validateTransferArguments(to, tokenID);
+
         this.assert.schema.address("from", from);
-        this.assert.schema.address("to", to);
-        this.assert.schema.wholeNumber("tokenID", tokenID);
 
         if (data) {
             this.assert.schema.bytes("data", data);
