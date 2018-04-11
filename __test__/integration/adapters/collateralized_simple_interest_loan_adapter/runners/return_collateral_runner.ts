@@ -27,25 +27,20 @@ import { DebtOrder } from "src/types/debt_order";
 
 // Accounts
 import { ACCOUNTS } from "__test__/accounts";
+import { ContractsAPI } from "../../../../../src/apis/contracts_api";
 
 const CONTRACT_OWNER = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
 const CREDITOR = ACCOUNTS[2];
 const UNDERWRITER = ACCOUNTS[3];
 
-// A list of contract wrappers that are required for the following test examples.
-export interface ContractWrappers {
-    debtKernel: DebtKernelContract;
-    repaymentRouter: RepaymentRouterContract;
-    principalToken: DummyTokenContract;
-    collateralToken: DummyTokenContract;
-    termsContract: CollateralizedSimpleInterestTermsContractContract;
-}
+const TX_DEFAULTS = { from: CONTRACT_OWNER.address, gas: 4712388 };
 
 export interface APIs {
     orderApi: OrderAPI;
     signerApi: SignerAPI;
     servicingApi: ServicingAPI;
+    contractsApi: ContractsAPI;
 }
 
 export class ReturnCollateralRunner {
@@ -58,12 +53,29 @@ export class ReturnCollateralRunner {
     private orderApi: OrderAPI;
     private signerApi: SignerAPI;
     private tokenTransferProxy: TokenTransferProxyContract;
+    private web3: Web3;
     private web3Utils: Web3Utils;
     private servicingApi: ServicingAPI;
+    private contractsApi: ContractsAPI;
     private snapshotId: number;
     private debtOrder: DebtOrder.Instance;
 
-    constructor() {
+    constructor(
+        web3: Web3,
+        adapter: CollateralizedSimpleInterestLoanAdapter,
+        apis: APIs,
+    ) {
+        this.web3 = web3;
+
+        this.orderApi = apis.orderApi;
+        this.signerApi = apis.signerApi;
+        this.servicingApi = apis.servicingApi;
+        this.contractsApi = apis.contractsApi;
+
+        this.adapter = adapter;
+
+        this.web3Utils = new Web3Utils(web3);
+
         this.testScenario = this.testScenario.bind(this);
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
     }
@@ -76,35 +88,13 @@ export class ReturnCollateralRunner {
         await this.web3Utils.revertToSnapshot(this.snapshotId);
     }
 
-    public initialize(
-        web3: Web3,
-        adapter: CollateralizedSimpleInterestLoanAdapter,
-        tokenTransferProxy: TokenTransferProxyContract,
-        contractWrappers: ContractWrappers,
-        apis: APIs,
-    ) {
-        this.debtKernel = contractWrappers.debtKernel;
-        this.termsContract = contractWrappers.termsContract;
-        this.repaymentRouter = contractWrappers.repaymentRouter;
-        this.principalToken = contractWrappers.principalToken;
-        this.collateralToken = contractWrappers.collateralToken;
-
-        this.orderApi = apis.orderApi;
-        this.signerApi = apis.signerApi;
-        this.servicingApi = apis.servicingApi;
-
-        this.adapter = adapter;
-
-        this.tokenTransferProxy = tokenTransferProxy;
-
-        this.web3Utils = new Web3Utils(web3);
-    }
-
     public testScenario(scenario: ReturnCollateralScenario) {
         let agreementId;
 
         describe(scenario.description, () => {
             beforeAll(async () => {
+                await this.initializeWrappers();
+
                 this.snapshotId = await this.web3Utils.saveTestSnapshot();
 
                 // We fill a generic collateralized loan order, against which
@@ -297,5 +287,29 @@ export class ReturnCollateralRunner {
             // reverts due to insufficient gas. This wouldn't be applied in practice.
             gas: 4712388,
         });
+    }
+
+    private async initializeWrappers() {
+        this.debtKernel = await DebtKernelContract.deployed(this.web3);
+
+        this.repaymentRouter = await RepaymentRouterContract.deployed(this.web3);
+
+        this.termsContract = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract(
+            TX_DEFAULTS,
+        );
+
+        this.principalToken = await DummyTokenContract.at(
+            (await this.contractsApi.loadTokenBySymbolAsync("REP")).address,
+            this.web3,
+            TX_DEFAULTS,
+        );
+
+        this.collateralToken = await DummyTokenContract.at(
+            (await this.contractsApi.loadTokenBySymbolAsync("ZRX")).address,
+            this.web3,
+            TX_DEFAULTS,
+        );
+
+        this.tokenTransferProxy = await this.contractsApi.loadTokenTransferProxyAsync();
     }
 }
