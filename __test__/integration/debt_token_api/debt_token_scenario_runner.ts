@@ -24,7 +24,6 @@ import { SimpleInterestLoanAdapter } from "src/adapters";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
-import { AdaptersAPI } from "../../../src/apis/adapters_api";
 
 export class DebtTokenScenarioRunner {
     // Snapshotting.
