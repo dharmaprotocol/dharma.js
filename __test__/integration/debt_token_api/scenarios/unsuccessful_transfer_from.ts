@@ -2,49 +2,24 @@
 import { BigNumber } from "bignumber.js";
 
 // Utils
-import * as Units from "utils/units";
-import { ERC20TokenSymbol } from "utils/constants";
 import { ACCOUNTS } from "../../../accounts";
+import { Orders } from "./orders";
 
 // Types
 import { DebtTokenScenario } from "./";
-import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
 
 // Errors
 import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
 
-const CREDITOR = ACCOUNTS[0].address;
-const DEBTOR = ACCOUNTS[1].address;
 const TOKENS_APPROVED_OPERATOR = ACCOUNTS[2].address;
 const OWNERS_APPROVED_OPERATOR = ACCOUNTS[3].address;
 const UNAPPROVED_TRANSFER_FROM_SENDER = ACCOUNTS[4].address;
 
-const ORDER_1: SimpleInterestLoanOrder = {
-    principalAmount: Units.ether(10),
-    principalTokenSymbol: ERC20TokenSymbol.ZRX,
-    interestRate: new BigNumber(4.135),
-    amortizationUnit: "months",
-    termLength: new BigNumber(3),
-    debtor: DEBTOR,
-    creditor: CREDITOR,
-};
-
-const ORDER_2: SimpleInterestLoanOrder = {
-    principalAmount: new BigNumber(11 * 10 ** 18),
-    principalTokenSymbol: ERC20TokenSymbol.MKR,
-    interestRate: new BigNumber(8.937),
-    amortizationUnit: "years",
-    termLength: new BigNumber(2),
-    debtor: DEBTOR,
-    creditor: CREDITOR,
-};
-
 const defaults: DebtTokenScenario.TransferFromScenario = {
     // Scenario Setup Parameters
     description: `Default Description`,
-    orders: [ORDER_1, ORDER_2],
-    debtor: DEBTOR,
-    creditor: CREDITOR,
+    orders: Orders.ALL_ORDERS,
+    ...Orders.WHO,
     succeeds: false,
 
     // TransferFrom Setup Parameters
@@ -52,7 +27,7 @@ const defaults: DebtTokenScenario.TransferFromScenario = {
     ownersApprovedOperator: OWNERS_APPROVED_OPERATOR,
 
     // TransferFrom Scenario parameters
-    from: CREDITOR,
+    from: Orders.CREDITOR,
     to: (
         userRecipient: string,
         validContractRecipient: string,
@@ -64,7 +39,7 @@ const defaults: DebtTokenScenario.TransferFromScenario = {
         otherTokenId: BigNumber,
         nonExistentTokenId: BigNumber,
     ) => ordersIssuanceHash,
-    sender: CREDITOR,
+    sender: Orders.CREDITOR,
 };
 
 export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFromScenario[] = [
@@ -88,7 +63,7 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
             nonExistentTokenId: BigNumber,
         ) => nonCreditorsTokenID,
         errorType: "TOKEN_DOES_NOT_BELONG_TO_ACCOUNT",
-        errorMessage: DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(CREDITOR),
+        errorMessage: DebtTokenAPIErrors.TOKEN_DOES_NOT_BELONG_TO_ACCOUNT(Orders.CREDITOR),
     },
     {
         ...defaults,
