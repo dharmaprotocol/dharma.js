@@ -42,6 +42,12 @@ export namespace DebtTokenScenario {
         isApproved: boolean;
     }
 
+    export interface SetApprovalForAllScenario extends BaseScenario, Throwable {
+        operator: string;
+        from: string;
+        approved: boolean;
+    }
+
     export interface TransferFromScenario extends Scenario {
         // Setup arguments
         tokensApprovedOperator: string;
