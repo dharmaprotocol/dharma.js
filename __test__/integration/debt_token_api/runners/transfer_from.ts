@@ -96,7 +96,7 @@ export class TransferFromScenarioRunner extends ScenarioRunner {
                 //       for different transferFrom calls (depending on how much gas the recipient contract
                 //       guzzles in the onER721Received method call).  A more permanent solution is tracked
                 //       in this Pivotal story: https://www.pivotaltracker.com/story/show/156644350
-                const transferFromGas = recipientIsContract ? 300000 : 200000;
+                const transferFromGas = recipientIsContract ? 300000 : 250000;
 
                 transferFromPromise = debtTokenAPI.transferFrom(
                     scenario.from,
