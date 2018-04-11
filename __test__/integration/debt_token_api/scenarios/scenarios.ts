@@ -2,12 +2,23 @@ import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapt
 import { BigNumber } from "bignumber.js";
 
 export namespace DebtTokenScenario {
-    export interface Scenario {
+    export interface BaseScenario {
         description: string;
+    }
+
+    export interface Scenario extends BaseScenario {
         orders: SimpleInterestLoanOrder[];
         creditor: string;
         debtor: string;
     }
+
+    export interface Throwable {
+        shouldSucceed: boolean;
+        errorType?: string;
+        errorMessage?: string;
+    }
+
+    export interface ThrowableScenario extends Scenario, Throwable {}
 
     export interface BalanceOfScenario extends Scenario {
         balance: number;
@@ -21,13 +32,10 @@ export namespace DebtTokenScenario {
         shouldExist: boolean;
     }
 
-    export interface ApproveScenario extends Scenario {
-        shouldSucceed: boolean;
+    export interface ApproveScenario extends ThrowableScenario {
         shouldGenerateTokens: boolean;
         approver: string;
         approvee: string;
-        errorType?: string;
-        errorMessage?: string;
     }
 
     export interface GetApprovedScenario extends Scenario {

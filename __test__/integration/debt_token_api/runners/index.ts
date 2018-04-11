@@ -42,7 +42,7 @@ export abstract class ScenarioRunner {
         this.getDebtTokenIDFromUnfilledOrder = this.getDebtTokenIDFromUnfilledOrder.bind(this);
     }
 
-    public abstract testScenario(scenario: DebtTokenScenario.Scenario);
+    public abstract testScenario(scenario: DebtTokenScenario.BaseScenario);
 
     public async generateDebtTokenForOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
