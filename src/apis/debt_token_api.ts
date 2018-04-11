@@ -52,6 +52,7 @@ export const DebtTokenAPIErrors = {
         ERC721Receiver interface, and therefore cannot have ERC721 tokens
         transferred to it.
     `,
+    OWNER_CANNOT_BE_OPERATOR: () => singleLineString`Owner cannot list themselves as operator.`,
 };
 
 export class DebtTokenAPI implements ERC721 {
@@ -130,6 +131,11 @@ export class DebtTokenAPI implements ERC721 {
             ERC721_TRANSFER_GAS_MAXIMUM,
             options,
         );
+
+        if (operator === txOptions.from) {
+            throw new Error(DebtTokenAPIErrors.OWNER_CANNOT_BE_OPERATOR());
+        }
+
         return debtTokenContract.setApprovalForAll.sendTransactionAsync(
             operator,
             approved,
