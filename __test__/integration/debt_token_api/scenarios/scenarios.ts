@@ -31,6 +31,10 @@ export namespace DebtTokenScenario {
         errorMessage?: string;
     }
 
+    export interface GetApprovedScenario extends Scenario {
+        isApproved: boolean;
+    }
+
     export interface TransferFromScenario extends Scenario {
         from: string;
         to: string;
