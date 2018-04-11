@@ -177,12 +177,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private web3Utils: Web3Utils;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(web3, contractsAPI);
+        this.assert = new Assertions(contractsAPI);
         this.web3Utils = new Web3Utils(web3);
 
-        this.contractsAPI = new ContractsAPI(web3);
+        this.contractsAPI = contractsAPI;
 
-        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
+        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(contractsAPI);
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(contractsAPI);
     }
 
