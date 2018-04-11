@@ -180,7 +180,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         this.assert = new Assertions(web3, contractsAPI);
         this.web3Utils = new Web3Utils(web3);
 
-        this.contractsAPI = contractsAPI;
+        this.contractsAPI = new ContractsAPI(web3);
 
         this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(contractsAPI);
