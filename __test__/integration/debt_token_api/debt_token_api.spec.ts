@@ -14,6 +14,7 @@ import {
     EXISTS_SCENARIOS,
     SUCCESSFUL_APPROVE_SCENARIOS,
     UNSUCCESSFUL_APPROVE_SCENARIOS,
+    GET_APPROVED_SCENARIOS,
 } from "./scenarios";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
@@ -55,6 +56,12 @@ describe("Debt Token API (Integration Tests)", () => {
 
         describe("should fail", () => {
             UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+        });
+    });
+
+    describe("#getApproved", () => {
+        describe("approved accounts for a debt token should be retrievable", () => {
+            GET_APPROVED_SCENARIOS.forEach(scenarioRunner.testGetApprovedScenario);
         });
     });
 });
