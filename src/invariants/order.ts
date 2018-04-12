@@ -1,6 +1,7 @@
 import { DebtOrder, TxData } from "../types";
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
+import { Web3Utils } from "../../utils/web3_utils";
 import {
     DebtTokenContract,
     DebtOrderWrapper,
@@ -9,13 +10,17 @@ import {
     ERC20Contract,
 } from "../wrappers";
 import { SignatureUtils } from "../../utils/signature_utils";
-import * as moment from "moment";
+import * as Web3 from "web3";
 import { ContractsAPI } from "../apis";
 
+const BLOCK_TIME_ESTIMATE_SECONDS = 14;
+
 export class OrderAssertions {
+    private web3Utils: Web3Utils;
     private contracts: ContractsAPI;
 
-    public constructor(contracts: ContractsAPI) {
+    public constructor(web3: Web3, contracts: ContractsAPI) {
+        this.web3Utils = new Web3Utils(web3);
         this.contracts = contracts;
     }
 
@@ -60,8 +65,11 @@ export class OrderAssertions {
     }
 
     // Debt order must not be expired
-    public notExpired(debtOrder: DebtOrder.Instance, errorMessage: string) {
-        if (debtOrder.expirationTimestampInSec.lt(moment().unix())) {
+    public async notExpired(debtOrder: DebtOrder.Instance, errorMessage: string) {
+        const latestBlockTime = await this.web3Utils.getCurrentBlockTime();
+        const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
+
+        if (debtOrder.expirationTimestampInSec.lt(approximateNextBlockTime)) {
             throw new Error(errorMessage);
         }
     }

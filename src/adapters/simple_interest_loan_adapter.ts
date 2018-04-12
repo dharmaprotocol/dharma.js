@@ -1,6 +1,7 @@
 // libraries
 import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
+import * as Web3 from "web3";
 
 // utils
 import { BigNumber } from "../../utils/bignumber";
@@ -88,8 +89,8 @@ export const SimpleInterestAdapterErrors = {
 export class SimpleInterestLoanTerms {
     private assert: Assertions;
 
-    constructor(contracts: ContractsAPI) {
-        this.assert = new Assertions(contracts);
+    constructor(web3: Web3, contracts: ContractsAPI) {
+        this.assert = new Assertions(web3, contracts);
     }
 
     public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
@@ -233,10 +234,10 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
     private contracts: ContractsAPI;
     private termsContractInterface: SimpleInterestLoanTerms;
 
-    public constructor(contracts: ContractsAPI) {
-        this.assert = new Assertions(contracts);
+    public constructor(web3: Web3, contracts: ContractsAPI) {
+        this.assert = new Assertions(web3, contracts);
         this.contracts = contracts;
-        this.termsContractInterface = new SimpleInterestLoanTerms(contracts);
+        this.termsContractInterface = new SimpleInterestLoanTerms(web3, contracts);
     }
 
     /**
