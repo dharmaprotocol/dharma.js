@@ -1,6 +1,6 @@
 import * as Units from "utils/units";
 import * as moment from "moment";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { ACCOUNTS } from "__test__/accounts";
 import { NULL_BYTES32, NULL_ADDRESS } from "utils/constants";
 

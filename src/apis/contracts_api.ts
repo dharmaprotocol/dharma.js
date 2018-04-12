@@ -1,6 +1,6 @@
 // external
 import * as Web3 from "web3";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
 

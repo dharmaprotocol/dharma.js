@@ -1,5 +1,5 @@
 // External Libraries
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 // Utils
 import * as Units from "utils/units";

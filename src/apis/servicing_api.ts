@@ -4,7 +4,7 @@ import { ContractsAPI } from "./";
 // libraries
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 // utils
 import { Web3Utils } from "../../utils/web3_utils";

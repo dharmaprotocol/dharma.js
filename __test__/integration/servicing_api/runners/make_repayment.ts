@@ -1,6 +1,6 @@
 // libraries
 import * as Web3 from "web3";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import * as compact from "lodash.compact";
 import * as ABIDecoder from "abi-decoder";
 

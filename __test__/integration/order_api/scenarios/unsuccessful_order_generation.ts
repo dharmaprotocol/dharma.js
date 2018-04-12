@@ -1,5 +1,5 @@
 // External
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 // APIs
 import { AdaptersAPI } from "src/apis";

@@ -1,5 +1,5 @@
 import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 import {
     DebtKernelContract,
