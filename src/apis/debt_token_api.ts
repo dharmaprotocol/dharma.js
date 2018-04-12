@@ -67,21 +67,36 @@ export class DebtTokenAPI implements ERC721 {
     }
 
     public async balanceOf(owner: string): Promise<BigNumber> {
+        // Assert owner is a valid address.
+        this.assert.schema.address("owner", owner);
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.balanceOf.callAsync(owner);
     }
 
     public async ownerOf(tokenID: BigNumber): Promise<string> {
+        // Assert token is valid.
+        this.assert.schema.wholeNumber("tokenID", tokenID);
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.ownerOf.callAsync(tokenID);
     }
 
     public async exists(tokenID: BigNumber): Promise<boolean> {
+        // Assert token is valid.
+        this.assert.schema.wholeNumber("tokenID", tokenID);
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
         return debtTokenContract.exists.callAsync(tokenID);
     }
 
     public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+        // Assert `to` is a valid address.
+        this.assert.schema.address("to", to);
+
+        // Assert token is valid.
+        this.assert.schema.wholeNumber("tokenID", tokenID);
+
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
         const txOptions = await TransactionOptions.generateTxOptions(
@@ -116,10 +131,10 @@ export class DebtTokenAPI implements ERC721 {
     }
 
     public async getApproved(tokenID: BigNumber): Promise<string> {
-        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
-
         // Assert token is valid.
         this.assert.schema.wholeNumber("tokenID", tokenID);
+
+        const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
         // Assert token exists.
         await this.assert.debtToken.exists(
