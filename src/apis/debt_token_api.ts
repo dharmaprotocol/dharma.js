@@ -79,6 +79,14 @@ export class DebtTokenAPI implements ERC721 {
         this.assert.schema.wholeNumber("tokenID", tokenID);
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
+        // Assert token exists.
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
+        );
+
         return debtTokenContract.ownerOf.callAsync(tokenID);
     }
 
