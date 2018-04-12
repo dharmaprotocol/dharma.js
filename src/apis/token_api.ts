@@ -6,8 +6,6 @@ import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";
 import { TxData, TransactionOptions } from "../types";
 
-const TRANSFER_GAS_MAXIMUM = 70000;
-
 export const TokenAPIErrors = {
     INSUFFICIENT_SENDER_BALANCE: (address) =>
         singleLineString`SENDER with address ${address} does not have sufficient balance in the specified token
@@ -44,11 +42,7 @@ export class TokenAPI {
         value: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -81,11 +75,7 @@ export class TokenAPI {
         value: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -135,11 +125,7 @@ export class TokenAPI {
         allowance: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 

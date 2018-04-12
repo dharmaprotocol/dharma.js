@@ -22,7 +22,7 @@ const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 import { GetDebtsScenario } from "../scenarios";
 

@@ -1,9 +1,14 @@
 import * as pickBy from "lodash.pickby";
 import * as isUndefined from "lodash.isundefined";
-import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import { TxData, TxDataPayable } from "src/types/";
+
+// Gas estimates can vary from the amount in practise. To prevent reverts,
+// we add some amount to the estimate.
+const GAS_SAFETY_MARGIN = 60000;
+// The maximum amount of gas that should be used for any transaction.
+const MAXIMUM_GAS = 4000000;
 
 export const CONTRACT_WRAPPER_ERRORS = {
     CONTRACT_NOT_FOUND_ON_NETWORK: (contractName: string, networkId: number) =>
@@ -46,7 +51,7 @@ export class BaseContract {
         } as TxData;
         if (isUndefined(txDataWithDefaults.gas) && !isUndefined(estimateGasAsync)) {
             const estimatedGas = await estimateGasAsync(txData);
-            txDataWithDefaults.gas = estimatedGas;
+            txDataWithDefaults.gas = Math.min(estimatedGas + GAS_SAFETY_MARGIN, MAXIMUM_GAS);
         }
         return txDataWithDefaults;
     }

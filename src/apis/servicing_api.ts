@@ -7,14 +7,12 @@ import * as singleLineString from "single-line-string";
 import { BigNumber } from "bignumber.js";
 
 // utils
-import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
+import { TransactionOptions } from "../types/transaction_options";
 
 // types
 import { DebtRegistryEntry, TxData } from "../types";
 import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
-
-const REPAYMENT_GAS_MAXIMUM = 150000;
 
 export const ServicingAPIErrors = {
     DEBT_AGREEMENT_NONEXISTENT: (issuanceHash: string) =>
@@ -61,7 +59,7 @@ export class ServicingAPI {
         tokenAddress: string,
         options?: TxData,
     ): Promise<string> {
-        const transactionOptions = await this.getTxDefaultOptions();
+        const transactionOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         Object.assign(transactionOptions, options);
 
@@ -238,19 +236,6 @@ export class ServicingAPI {
         const adapter = await this.adapterForTermsContract(termsContract);
 
         return adapter.getRepaymentSchedule(debtRegistryEntry);
-    }
-
-    private async getTxDefaultOptions(): Promise<TxData> {
-        const web3Utils = new Web3Utils(this.web3);
-
-        const accounts = await web3Utils.getAvailableAddressesAsync();
-
-        // TODO: Add fault tolerance to scenario in which not addresses are available
-
-        return {
-            from: accounts[0],
-            gas: REPAYMENT_GAS_MAXIMUM,
-        };
     }
 
     private async adapterForTermsContract(termsContract: string): Promise<any> {

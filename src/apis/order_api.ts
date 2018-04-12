@@ -24,8 +24,6 @@ import { DebtOrder, IssuanceCommitment, TxData, TransactionOptions } from "../ty
 import { NULL_ADDRESS } from "../../utils/constants";
 import { Assertions } from "../invariants";
 
-const ORDER_FILL_GAS_MAXIMUM = 600000;
-
 export const OrderAPIErrors = {
     EXPIRED: () =>
         singleLineString`Unable to fill debt order because
@@ -112,11 +110,7 @@ export class OrderAPI {
      * @return           the hash of the ethereum transaction that fulfilled the debt order.
      */
     public async fillAsync(debtOrder: DebtOrder.Instance, options?: TxData): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ORDER_FILL_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
 
@@ -159,11 +153,7 @@ export class OrderAPI {
         debtOrder: DebtOrder.Instance,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ORDER_FILL_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
@@ -208,11 +198,7 @@ export class OrderAPI {
         debtOrder: DebtOrder.Instance,
         options?: TxData,
     ): Promise<boolean> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ORDER_FILL_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
         const { debtToken } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         const issuanceHash = await this.getIssuanceHash(debtOrder);

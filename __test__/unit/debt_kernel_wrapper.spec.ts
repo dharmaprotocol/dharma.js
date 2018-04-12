@@ -20,7 +20,7 @@ const web3Utils = new Web3Utils(web3);
 const DEBT_KERNEL_RAW_ARTIFACTS_PATH =
     "node_modules/@dharmaprotocol/contracts/artifacts/json/DebtKernel.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 describe("Debt Kernel Contract Wrapper (Unit)", () => {
     let networkId: number;

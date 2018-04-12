@@ -23,7 +23,7 @@ const TOKEN_REGISTRY_ARTIFACTS_PATH =
     "node_modules/@dharmaprotocol/contracts/artifacts/json/TokenRegistry.json";
 const ERC20_ARTIFACTS_PATH = "node_modules/@dharmaprotocol/contracts/artifacts/json/ERC20.json";
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 describe("ERC20 Token Contract Wrapper (Unit)", () => {
     let networkId: number;

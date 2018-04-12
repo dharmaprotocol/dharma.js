@@ -27,7 +27,7 @@ const web3Utils = new Web3Utils(web3);
 const contractsApi = new ContractsAPI(web3);
 const tokenApi = new TokenAPI(web3, contractsApi);
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 const CONTRACT_OWNER = ACCOUNTS[0].address;
 

@@ -46,7 +46,7 @@ const web3 = new Web3(provider);
 
 let scenarioRunner = new OrderScenarioRunner(web3);
 
-const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
+const TX_DEFAULTS = { from: ACCOUNTS[0].address };
 
 describe("Order API (Integration Tests)", () => {
     beforeAll(async () => {

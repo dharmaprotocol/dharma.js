@@ -7,7 +7,13 @@ import { Web3Utils } from "utils/web3_utils";
 
 import { ContractsAPI } from "src/apis";
 import { Assertions } from "src/invariants";
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "src/types";
+import {
+    DebtOrder,
+    DebtRegistryEntry,
+    RepaymentSchedule,
+    TxData,
+    TransactionOptions,
+} from "src/types";
 
 import { Adapter } from "./adapter";
 import { TermsContractParameters } from "./terms_contract_parameters";
@@ -18,8 +24,6 @@ import {
     SimpleInterestTermsContractParameters,
 } from "./simple_interest_loan_adapter";
 
-import { TermsContract } from "src/wrappers";
-
 import { NULL_ADDRESS } from "../../utils/constants";
 
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
@@ -27,8 +31,6 @@ const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLeng
 const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
-
-const TRANSFER_GAS_MAXIMUM = 200000;
 
 // Extend order to include parameters necessary for a collateralized terms contract.
 export interface CollateralizedSimpleInterestLoanOrder extends SimpleInterestLoanOrder {
@@ -67,7 +69,7 @@ export const CollateralizerAdapterErrors = {
                          a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
                          not interface with the terms contract as expected`,
     COLLATERAL_NOT_FOUND: (agreementId: string) =>
-        singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure 
+        singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure
                          that the agreement ID is correct, and that the collateral has not already
                          been withdrawn.`,
     DEBT_NOT_YET_REPAID: (agreementId: string) =>
@@ -174,10 +176,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
+    private web3: Web3;
     private web3Utils: Web3Utils;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
         this.assert = new Assertions(contractsAPI);
+
+        this.web3 = web3;
         this.web3Utils = new Web3Utils(web3);
 
         this.contractsAPI = contractsAPI;
@@ -332,10 +337,10 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * @param {string} agreementId
      * @returns {Promise<string>} The transaction's hash.
      */
-    public async seizeCollateral(agreementId: string): Promise<string> {
+    public async seizeCollateral(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
-        const transactionOptions = await this.getTxDefaultOptions();
+        const transactionOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         await this.assertCollateralSeizeable(agreementId);
 
@@ -355,12 +360,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * @param {string} agreementId
      * @returns {Promise<string>} The transaction's hash.
      */
-    public async returnCollateral(agreementId: string): Promise<string> {
+    public async returnCollateral(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
         await this.assertCollateralReturnable(agreementId);
 
-        const transactionOptions = await this.getTxDefaultOptions();
+        const transactionOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
 
@@ -564,16 +569,5 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         );
 
         return repaymentToDate.gte(expectedTotalRepayment);
-    }
-
-    private async getTxDefaultOptions(): Promise<object> {
-        const accounts = await this.web3Utils.getAvailableAddressesAsync();
-
-        // TODO: Add fault tolerance to scenario in which not addresses are available
-
-        return {
-            from: accounts[0],
-            gas: TRANSFER_GAS_MAXIMUM,
-        };
     }
 }

@@ -15,19 +15,13 @@ export interface TxDataPayable extends TxData {
 }
 
 export namespace TransactionOptions {
-    export async function generateTxOptions(
-        web3: Web3,
-        gas: number,
-        options?: TxData,
-    ): Promise<TxData> {
+    export async function generateTxOptions(web3: Web3, options?: TxData): Promise<TxData> {
         const web3Utils = new Web3Utils(web3);
         const accounts = await web3Utils.getAvailableAddressesAsync();
 
-        // TODO: Add fault tolerance to scenario in which not addresses are available
-
+        // TODO: Add fault tolerance to scenario in which no addresses are available
         return {
             from: accounts[0],
-            gas: gas,
             ...options,
         };
     }
