@@ -63,7 +63,7 @@ export class DebtTokenScenarioRunner {
         };
 
         const testAdapters = {
-            simpleInterestLoanAdapter: new SimpleInterestLoanAdapter(contractsAPI),
+            simpleInterestLoanAdapter: new SimpleInterestLoanAdapter(web3, contractsAPI),
         };
 
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);

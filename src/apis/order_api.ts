@@ -93,7 +93,7 @@ export class OrderAPI {
         this.contracts = contracts;
         this.adapters = adapters;
 
-        this.assert = new Assertions(this.contracts);
+        this.assert = new Assertions(web3, this.contracts);
     }
 
     /**
@@ -317,7 +317,8 @@ export class OrderAPI {
         this.assert.order.validUnderwriterFee(debtOrder, OrderAPIErrors.INVALID_UNDERWRITER_FEE());
         this.assert.order.validRelayerFee(debtOrder, OrderAPIErrors.INVALID_RELAYER_FEE());
         this.assert.order.validFees(debtOrder, OrderAPIErrors.INVALID_FEES());
-        this.assert.order.notExpired(debtOrder, OrderAPIErrors.EXPIRED());
+
+        await this.assert.order.notExpired(debtOrder, OrderAPIErrors.EXPIRED());
 
         await this.assert.order.debtOrderNotCancelledAsync(
             debtOrder,

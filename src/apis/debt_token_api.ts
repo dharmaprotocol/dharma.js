@@ -63,7 +63,7 @@ export class DebtTokenAPI implements ERC721 {
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
         this.contracts = contracts;
-        this.assert = new Assertions(this.contracts);
+        this.assert = new Assertions(web3, this.contracts);
     }
 
     public async balanceOf(owner: string): Promise<BigNumber> {
