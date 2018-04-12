@@ -36,8 +36,6 @@ export interface ERC721 {
     ): Promise<string>;
 }
 
-const ERC721_TRANSFER_GAS_MAXIMUM = 200000;
-
 export const DebtTokenAPIErrors = {
     ONLY_OWNER: (account: string) => singleLineString`
         Specified debt token does not belong to account ${account}
@@ -107,11 +105,7 @@ export class DebtTokenAPI implements ERC721 {
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ERC721_TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const { from } = txOptions;
 
@@ -161,11 +155,7 @@ export class DebtTokenAPI implements ERC721 {
     ): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ERC721_TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         this.assert.schema.address("operator", operator);
 
@@ -192,11 +182,7 @@ export class DebtTokenAPI implements ERC721 {
         this.validateTransferArguments(to, tokenID);
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ERC721_TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         await this.assertTransferValid(debtTokenContract, to, tokenID, txOptions);
 
@@ -220,11 +206,7 @@ export class DebtTokenAPI implements ERC721 {
     ): Promise<string> {
         this.validateTransferFromArguments(from, to, tokenID, data);
 
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ERC721_TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
 

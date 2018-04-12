@@ -42,11 +42,7 @@ export class TokenAPI {
         value: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -79,11 +75,7 @@ export class TokenAPI {
         value: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -133,11 +125,7 @@ export class TokenAPI {
         allowance: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            TRANSFER_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await TransactionOptions.generateTxOptions(this.web3, options);
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
