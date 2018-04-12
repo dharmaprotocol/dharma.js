@@ -34,8 +34,8 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 const contracts = new ContractsAPI(web3);
-const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(contracts);
-const simpleInterestLoanTerms = new SimpleInterestLoanTerms(contracts);
+const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(web3, contracts);
+const simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contracts);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
