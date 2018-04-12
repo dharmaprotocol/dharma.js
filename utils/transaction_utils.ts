@@ -40,13 +40,49 @@ export namespace TransactionUtils {
         inputVals: any[],
         txData: TxData = {},
     ): Promise<string> {
-        const abiMethod = findMethod(web3ContractInstance.abi, methodName, inputTypes);
-        const encodedData = ethjsABI.encodeMethod(abiMethod, inputVals);
+        const encodedData = encodeTransactionData(
+            web3ContractInstance.abi,
+            methodName,
+            inputTypes,
+            inputVals,
+        );
 
         return promisify<string>(web3.eth.sendTransaction)({
             data: encodedData,
             ...txData,
             to: web3ContractInstance.address,
         });
+    }
+
+    export async function estimateGasRaw(
+        web3: Web3,
+        web3ContractInstance: Web3.ContractInstance,
+        methodName: string,
+        inputTypes: string,
+        inputVals: any[],
+        txData: TxData = {},
+    ): Promise<number> {
+        const encodedData = encodeTransactionData(
+            web3ContractInstance.abi,
+            methodName,
+            inputTypes,
+            inputVals,
+        );
+
+        return promisify<number>(web3.eth.estimateGas)({
+            data: encodedData,
+            ...txData,
+            to: web3ContractInstance.address,
+        });
+    }
+
+    function encodeTransactionData(
+        abi: Web3.AbiDefinition[],
+        methodName: string,
+        inputTypes: string,
+        inputVals: any[],
+    ): string {
+        const abiMethod = findMethod(abi, methodName, inputTypes);
+        return ethjsABI.encodeMethod(abiMethod, inputVals);
     }
 }

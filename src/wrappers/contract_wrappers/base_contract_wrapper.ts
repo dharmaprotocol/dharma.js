@@ -6,7 +6,7 @@ import { TxData, TxDataPayable } from "src/types/";
 
 // Gas estimates can vary from the amount in practise. To prevent reverts,
 // we add some amount to the estimate.
-const GAS_SAFETY_MARGIN = 40000;
+const GAS_SAFETY_MARGIN = 60000;
 // The maximum amount of gas that should be used for any transaction.
 const MAXIMUM_GAS = 4000000;
 

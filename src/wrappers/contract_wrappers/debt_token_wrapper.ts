@@ -551,15 +551,26 @@ export class DebtTokenContract extends BaseContract {
             _from: string,
             _to: string,
             _tokenId: BigNumber,
-            _data: string,
+            _data: string = "",
             txData: TxData = {},
         ): Promise<number> {
             const self = this as DebtTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const gas = await promisify<number>(
-                self.web3ContractInstance.safeTransferFrom.estimateGas,
+
+            // Since truffle does not play nice with overloaded functions, we have to
+            //      1. Figure out which overloaded function we want to call based on
+            //          the presence or absence of data parameter
+            //      2. Manually construct the gas estimation call object and send it via a web3
+            //         estimateGas call.
+            const gas = await TransactionUtils.estimateGasRaw(
+                self.web3,
                 self.web3ContractInstance,
-            )(_from, _to, _tokenId, _data, txDataWithDefaults);
+                "safeTransferFrom",
+                `address,address,uint256${_data.length > 0 ? ",bytes" : ""}`,
+                _data.length > 0 ? [_from, _to, _tokenId, _data] : [_from, _to, _tokenId],
+                txDataWithDefaults,
+            );
+
             return gas;
         },
         getABIEncodedTransactionData(
