@@ -120,6 +120,14 @@ export class DebtTokenAPI implements ERC721 {
 
         // Assert token is valid.
         this.assert.schema.wholeNumber("tokenID", tokenID);
+
+        // Assert token exists.
+        await this.assert.debtToken.exists(
+            debtTokenContract,
+            tokenID,
+            DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
+        );
+
         return debtTokenContract.getApproved.callAsync(tokenID);
     }
 
