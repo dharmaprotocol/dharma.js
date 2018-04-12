@@ -117,6 +117,9 @@ export class DebtTokenAPI implements ERC721 {
 
     public async getApproved(tokenID: BigNumber): Promise<string> {
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
+
+        // Assert token is valid.
+        this.assert.schema.wholeNumber("tokenID", tokenID);
         return debtTokenContract.getApproved.callAsync(tokenID);
     }
 
