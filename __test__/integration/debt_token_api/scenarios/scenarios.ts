@@ -18,6 +18,14 @@ export namespace DebtTokenScenario {
         errorMessage?: string;
     }
 
+    export interface Tokenizable {
+        tokenID: (
+            ordersIssuanceHash: BigNumber,
+            otherTokenId: BigNumber,
+            nonexistentTokenId: BigNumber,
+        ) => BigNumber;
+    }
+
     export interface ThrowableScenario extends Scenario, Throwable {}
 
     export interface BalanceOfScenario extends Scenario {
