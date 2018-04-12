@@ -3,7 +3,7 @@ import { ReturnCollateralScenario } from "../scenarios";
 
 import { BaseCollateralRunner } from "./base_collateral_runner";
 
-export class ReturnCollateralRunner extends BaseCollateralRunner{
+export class ReturnCollateralRunner extends BaseCollateralRunner {
     public testScenario(scenario: ReturnCollateralScenario) {
         let agreementId;
 
