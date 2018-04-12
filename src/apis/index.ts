@@ -5,5 +5,15 @@ import { AdaptersAPI } from "./adapters_api";
 import { ServicingAPI } from "./servicing_api";
 import { TokenAPI } from "./token_api";
 import { BlockchainAPI } from "./blockchain_api";
+import { DebtTokenAPI } from "./debt_token_api";
 
-export { BlockchainAPI, ContractsAPI, OrderAPI, SignerAPI, AdaptersAPI, ServicingAPI, TokenAPI };
+export {
+    BlockchainAPI,
+    ContractsAPI,
+    OrderAPI,
+    SignerAPI,
+    AdaptersAPI,
+    ServicingAPI,
+    TokenAPI,
+    DebtTokenAPI,
+};

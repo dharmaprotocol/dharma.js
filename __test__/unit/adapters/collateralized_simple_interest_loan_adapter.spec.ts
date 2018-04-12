@@ -53,7 +53,7 @@ const collateralizedSimpleInterestLoanAdapter = new CollateralizedSimpleInterest
     web3,
     contracts,
 );
-const collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contracts);
+const collateralizedLoanTerms = new CollateralizedLoanTerms(contracts);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 

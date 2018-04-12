@@ -1,6 +1,3 @@
-// External Modules
-import * as Web3 from "web3";
-
 // Assertions
 import { AccountAssertions } from "./account";
 import { AdapterAssertions } from "./adapter";
@@ -8,6 +5,7 @@ import { TokenAssertions } from "./token";
 import { OrderAssertions } from "./order";
 import { SchemaAssertions } from "./schema";
 import { DebtAgreementAssertions } from "./debt_agreement";
+import { DebtTokenAssertions } from "./debt_token";
 
 // APIs
 import { ContractsAPI } from "../apis/";
@@ -19,19 +17,19 @@ export class Assertions {
     public token: TokenAssertions;
     public schema: SchemaAssertions;
     public debtAgreement: DebtAgreementAssertions;
+    public debtToken: DebtTokenAssertions;
 
-    private web3: Web3;
     private contracts: ContractsAPI;
 
-    public constructor(web3: Web3, contracts: ContractsAPI) {
-        this.web3 = web3;
+    public constructor(contracts: ContractsAPI) {
         this.contracts = contracts;
 
-        this.account = new AccountAssertions(this.web3);
+        this.account = new AccountAssertions();
         this.adapter = new AdapterAssertions();
         this.order = new OrderAssertions(this.contracts);
         this.token = new TokenAssertions();
         this.schema = new SchemaAssertions();
+        this.debtToken = new DebtTokenAssertions();
         this.debtAgreement = new DebtAgreementAssertions();
     }
 }

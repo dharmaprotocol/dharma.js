@@ -27,7 +27,7 @@ export class BlockchainAPI {
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3Utils = new Web3Utils(web3);
         this.intervalManager = new IntervalManager();
-        this.assert = new Assertions(web3, contracts);
+        this.assert = new Assertions(contracts);
         this.contracts = contracts;
 
         // We need to configure the ABI Decoder in order to pull out relevant logs.

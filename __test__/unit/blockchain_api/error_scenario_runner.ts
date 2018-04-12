@@ -96,7 +96,7 @@ export class ErrorScenarioRunner {
         this.tokenTransferProxy = tokenTransferProxy;
         this.tokenRegistry = tokenRegistry;
 
-        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.web3, this.contractsAPI);
+        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.contractsAPI);
 
         // Mark instance as configured.
         this.isConfigured = true;
@@ -284,7 +284,7 @@ export class ErrorScenarioRunner {
             // TODO(kayvon): increasing the allowance to be greater than the
             // repayment amount shouldn't be necessary. This appears to be an
             // error in the contracts.
-            REPAYMENT_AMOUNT.add(1),
+            REPAYMENT_AMOUNT.plus(1),
             {
                 from: DEBTOR,
             },

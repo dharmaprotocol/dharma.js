@@ -1,4 +1,6 @@
-import { BaseContract, CONTRACT_WRAPPER_ERRORS, TxData } from "./base_contract_wrapper";
+import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
+import { TxData } from "src/types/";
+
 import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
@@ -306,6 +308,7 @@ export class DebtKernelContract extends BaseContract {
                     signaturesS,
                 ),
             );
+
             const txHash = await promisify<string>(
                 self.web3ContractInstance.fillDebtOrder,
                 self.web3ContractInstance,

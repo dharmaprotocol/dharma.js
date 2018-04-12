@@ -2,11 +2,9 @@ import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
 import { BigNumber } from "bignumber.js";
 
-import { Web3Utils } from "../../utils/web3_utils";
-
 import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";
-import { TxData } from "../types";
+import { TxData, TransactionOptions } from "../types";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
@@ -27,7 +25,7 @@ export class TokenAPI {
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
         this.contracts = contracts;
-        this.assert = new Assertions(this.web3, this.contracts);
+        this.assert = new Assertions(this.contracts);
     }
 
     /**
@@ -46,9 +44,11 @@ export class TokenAPI {
         value: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const transactionOptions = await this.getTxDefaultOptions();
-
-        Object.assign(transactionOptions, options);
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            TRANSFER_GAS_MAXIMUM,
+            options,
+        );
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -59,7 +59,7 @@ export class TokenAPI {
             TokenAPIErrors.INSUFFICIENT_SENDER_BALANCE(options.from),
         );
 
-        return tokenContract.transfer.sendTransactionAsync(to, value, transactionOptions);
+        return tokenContract.transfer.sendTransactionAsync(to, value, txOptions);
     }
 
     /**
@@ -81,9 +81,11 @@ export class TokenAPI {
         value: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const transactionOptions = await this.getTxDefaultOptions();
-
-        Object.assign(transactionOptions, options);
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            TRANSFER_GAS_MAXIMUM,
+            options,
+        );
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -102,7 +104,7 @@ export class TokenAPI {
             TokenAPIErrors.INSUFFICIENT_SENDER_ALLOWANCE(from),
         );
 
-        return tokenContract.transferFrom.sendTransactionAsync(from, to, value, transactionOptions);
+        return tokenContract.transferFrom.sendTransactionAsync(from, to, value, txOptions);
     }
 
     /**
@@ -133,9 +135,11 @@ export class TokenAPI {
         allowance: BigNumber,
         options?: TxData,
     ): Promise<string> {
-        const transactionOptions = await this.getTxDefaultOptions();
-
-        Object.assign(transactionOptions, options);
+        const txOptions = await TransactionOptions.generateTxOptions(
+            this.web3,
+            TRANSFER_GAS_MAXIMUM,
+            options,
+        );
 
         const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
 
@@ -146,7 +150,7 @@ export class TokenAPI {
         return tokenContract.approve.sendTransactionAsync(
             tokenTransferProxy.address,
             allowance,
-            transactionOptions,
+            txOptions,
         );
     }
 
@@ -208,18 +212,5 @@ export class TokenAPI {
         ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
 
         return Promise.all(tokenSymbolList);
-    }
-
-    private async getTxDefaultOptions(): Promise<object> {
-        const web3Utils = new Web3Utils(this.web3);
-
-        const accounts = await web3Utils.getAvailableAddressesAsync();
-
-        // TODO: Add fault tolerance to scenario in which not addresses are available
-
-        return {
-            from: accounts[0],
-            gas: TRANSFER_GAS_MAXIMUM,
-        };
     }
 }
