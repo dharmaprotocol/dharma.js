@@ -4,9 +4,11 @@ import { BigNumber } from "bignumber.js";
 import { ERC20TokenSymbol } from "utils/constants";
 
 export namespace Orders {
+    export const NONEXISTENT_TOKEN_ID = new BigNumber(13);
+    export const MALFORMED_TOKEN_ID = new BigNumber(-5);
+
     export const CREDITOR = ACCOUNTS[0].address;
     export const DEBTOR = ACCOUNTS[1].address;
-    export const APPROVED = ACCOUNTS[2].address;
 
     export const WHO = {
         creditor: CREDITOR,
@@ -41,4 +43,28 @@ export namespace Orders {
     };
 
     export const ALL_ORDERS = [ORDER_ONE, ORDER_TWO, ORDER_THREE];
+
+    export const CREDITOR_ONE = ACCOUNTS[5].address;
+    export const CREDITOR_TWO = ACCOUNTS[6].address;
+    export const APPROVEE = ACCOUNTS[7].address;
+
+    export const CREDITOR_ONE_ORDER: SimpleInterestLoanOrder = {
+        principalAmount: new BigNumber(15 * 10 ** 18),
+        principalTokenSymbol: ERC20TokenSymbol.ZRX,
+        interestRate: new BigNumber(4.135),
+        amortizationUnit: "months",
+        termLength: new BigNumber(14),
+        creditor: CREDITOR_ONE,
+        debtor: DEBTOR,
+    };
+
+    export const CREDITOR_TWO_ORDER: SimpleInterestLoanOrder = {
+        principalAmount: new BigNumber(3 * 10 ** 18),
+        principalTokenSymbol: ERC20TokenSymbol.REP,
+        interestRate: new BigNumber(4.325),
+        amortizationUnit: "months",
+        termLength: new BigNumber(5),
+        creditor: CREDITOR_TWO,
+        debtor: DEBTOR,
+    };
 }

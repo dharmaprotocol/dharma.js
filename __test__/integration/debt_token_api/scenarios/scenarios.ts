@@ -49,8 +49,9 @@ export namespace DebtTokenScenario {
         approvee: string;
     }
 
-    export interface GetApprovedScenario extends Scenario {
+    export interface GetApprovedScenario extends BaseScenario, Throwable, Tokenizable {
         isApproved: boolean;
+        approvee: string;
     }
 
     export interface SetApprovalForAllScenario extends BaseScenario, Throwable {
