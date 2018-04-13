@@ -18,7 +18,7 @@ export namespace DebtTokenScenario {
         errorMessage?: string;
     }
 
-    export interface Tokenizable {
+    export interface TokenInjectable {
         orderFilledByCreditorOne: SimpleInterestLoanOrder;
         orderFilledByCreditorTwo: SimpleInterestLoanOrder;
         tokenID: (
@@ -49,7 +49,7 @@ export namespace DebtTokenScenario {
         approvee: string;
     }
 
-    export interface GetApprovedScenario extends BaseScenario, Throwable, Tokenizable {
+    export interface GetApprovedScenario extends BaseScenario, Throwable, TokenInjectable {
         isApproved: boolean;
         approvee: string;
     }
