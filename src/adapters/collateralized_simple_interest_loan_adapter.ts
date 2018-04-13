@@ -430,13 +430,11 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     ): Promise<void> {
         const doesTokenCorrespondToSymbol = await this.contractsAPI.doesTokenCorrespondToSymbol(
             tokenAddress,
-            symbol,
+            symbol
         );
 
         if (!doesTokenCorrespondToSymbol) {
-            throw new Error(
-                CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(tokenAddress, symbol),
-            );
+            throw new Error(CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL());
         }
     }
 
@@ -445,7 +443,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     ): Promise<void> {
         const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
-        if (termsContractAddress !== collateralizedSimpleInterestTermsContract.address) {
+        if (termsContractAddress !== 1) {
             throw new Error(
                 CollateralizerAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
@@ -459,7 +457,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * @param {string} agreementId
      * @returns {Promise<void>}
      */
-    private async assertCollateralSeizeable(agreementId: string): Promise<void> {
+    private async assertCollateralSeizeable(agreementId: strings): Promise<void> {
         const debtRegistry = await this.contractsAPI.loadDebtRegistryAsync();
 
         const [termsContract, termsContractParameters] = await debtRegistry.getTerms.callAsync(
