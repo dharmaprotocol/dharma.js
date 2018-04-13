@@ -1,39 +1,61 @@
-// External
-import * as Web3 from "web3";
-import { BigNumber } from "utils/bignumber";
-
 // Types
 import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
+import { Orders } from "../scenarios/orders";
 
 export class OwnerOfScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.OwnerOfScenario) {
-        const { debtTokenAPI, orderAPI } = this.testAPIs;
-        let tokenIDs: BigNumber[];
+        const { debtTokenAPI } = this.testAPIs;
+
+        let apiCallPromise: Promise<string>;
 
         describe(scenario.description, () => {
             beforeEach(async () => {
-                tokenIDs = await Promise.all(scenario.orders.map(this.generateDebtTokenForOrder));
+                const orderOneTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorOne,
+                );
 
-                if (scenario.shouldTransferTo) {
-                    for (let id of tokenIDs) {
-                        await debtTokenAPI.transfer(scenario.shouldTransferTo, id, {
-                            from: scenario.creditor,
-                        });
-                    }
+                const orderTwoTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorTwo,
+                );
+
+                const scenarioTokenID = scenario.tokenID(
+                    orderOneTokenID,
+                    orderTwoTokenID,
+                    Orders.NONEXISTENT_TOKEN_ID,
+                    Orders.MALFORMED_TOKEN_ID,
+                );
+
+                if (scenario.transferee) {
+                    await debtTokenAPI.transfer(scenario.transferee, orderOneTokenID, {
+                        from: scenario.orderFilledByCreditorOne.creditor,
+                    });
+
+                    await debtTokenAPI.transfer(scenario.transferee, orderTwoTokenID, {
+                        from: scenario.orderFilledByCreditorTwo.creditor,
+                    });
                 }
+
+                apiCallPromise = debtTokenAPI.ownerOf(scenarioTokenID);
             });
 
-            test("returns the correct owner", async () => {
-                for (let tokenID of tokenIDs) {
-                    const owner = await debtTokenAPI.ownerOf(tokenID);
-                    if (scenario.shouldTransferTo) {
-                        expect(owner).toEqual(scenario.shouldTransferTo);
-                    } else {
-                        expect(owner).toEqual(scenario.creditor);
-                    }
+            if (scenario.shouldSucceed) {
+                if (scenario.transferee) {
+                    test("returns the address of the transferee", async () => {
+                        await expect(apiCallPromise).resolves.toEqual(scenario.transferee);
+                    });
+                } else {
+                    test("returns the address of the creditor", async () => {
+                        await expect(apiCallPromise).resolves.toEqual(
+                            scenario.orderFilledByCreditorOne.creditor,
+                        );
+                    });
                 }
-            });
+            } else {
+                test(`throws ${scenario.errorType}`, async () => {
+                    await expect(apiCallPromise).rejects.toThrow(scenario.errorMessage);
+                });
+            }
         });
     }
 }

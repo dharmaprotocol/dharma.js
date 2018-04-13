@@ -10,6 +10,11 @@ export namespace Orders {
     export const CREDITOR = ACCOUNTS[0].address;
     export const DEBTOR = ACCOUNTS[1].address;
 
+    export const CREDITOR_ONE = ACCOUNTS[5].address;
+    export const CREDITOR_TWO = ACCOUNTS[6].address;
+    export const APPROVEE = ACCOUNTS[7].address;
+    export const TRANSFEREE = ACCOUNTS[8].address;
+
     export const WHO = {
         creditor: CREDITOR,
         debtor: DEBTOR,
@@ -43,10 +48,6 @@ export namespace Orders {
     };
 
     export const ALL_ORDERS = [ORDER_ONE, ORDER_TWO, ORDER_THREE];
-
-    export const CREDITOR_ONE = ACCOUNTS[5].address;
-    export const CREDITOR_TWO = ACCOUNTS[6].address;
-    export const APPROVEE = ACCOUNTS[7].address;
 
     export const CREDITOR_ONE_ORDER: SimpleInterestLoanOrder = {
         ...ORDER_ONE,

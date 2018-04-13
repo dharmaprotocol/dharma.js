@@ -10,7 +10,7 @@ import { DebtTokenScenarioRunner } from "./debt_token_scenario_runner";
 
 import {
     BALANCE_OF_SCENARIOS,
-    OWNER_OF_SCENARIOS,
+    OwnerOfScenarios,
     EXISTS_SCENARIOS,
     SUCCESSFUL_TRANSFER_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_SCENARIOS,
@@ -44,8 +44,12 @@ describe("Debt Token API (Integration Tests)", () => {
     });
 
     describe("#ownerOf", () => {
-        describe("debt token ownership should be retrievable", () => {
-            OWNER_OF_SCENARIOS.forEach(scenarioRunner.testOwnerOfScenario);
+        describe("should succeed", () => {
+            OwnerOfScenarios.SUCCESSFUL.forEach(scenarioRunner.testOwnerOfScenario);
+        });
+
+        describe("should fail", () => {
+            OwnerOfScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testOwnerOfScenario);
         });
     });
 
