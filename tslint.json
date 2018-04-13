@@ -1,6 +1,9 @@
 {
-  "extends": [
-//    "node_modules/tslint-config-standard",
-    "node_modules/tslint-config-prettier/lib/index.json"
-  ]
+    "extends": [
+        "node_modules/tslint-config-standard",
+        "node_modules/tslint-config-prettier/lib/index.json"
+    ],
+    "compilerOptions": {
+        "moduleResolution": "node"
+    }
 }
