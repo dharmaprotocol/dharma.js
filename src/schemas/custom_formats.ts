@@ -1,4 +1,4 @@
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 // NOTE: The input's format only matters if the input is required (since, if an input
 // is required by the schema but undefined, the validator will throw an error at another point.)
 // Hence, we can skip validating format if the input is undefined.

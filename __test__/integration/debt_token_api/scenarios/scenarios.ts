@@ -1,5 +1,5 @@
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 export namespace DebtTokenScenario {
     export interface BaseScenario {

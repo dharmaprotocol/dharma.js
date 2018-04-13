@@ -1,6 +1,6 @@
 // External
 import * as Web3 from "web3";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 // Types
 import { ScenarioRunner } from "./";

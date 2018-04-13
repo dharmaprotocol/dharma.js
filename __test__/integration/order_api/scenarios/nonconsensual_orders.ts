@@ -6,7 +6,7 @@ import {
 } from "src/wrappers";
 import * as Units from "utils/units";
 import * as moment from "moment";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { DebtOrder } from "src/types";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
 import { ACCOUNTS } from "__test__/accounts";
