@@ -115,12 +115,14 @@ export class DebtTokenAPI implements ERC721 {
 
         const { from } = txOptions;
 
+        // Ensure the token exists.
         await this.assert.debtToken.exists(
             debtTokenContract,
             tokenID,
             DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
         );
 
+        // Ensure the owner of the token is the one invoking `approve`
         await this.assert.debtToken.onlyOwner(
             debtTokenContract,
             tokenID,
@@ -128,6 +130,7 @@ export class DebtTokenAPI implements ERC721 {
             DebtTokenAPIErrors.ONLY_OWNER(from),
         );
 
+        // Ensure the approvee is not the owner.
         await this.assert.debtToken.notOwner(
             debtTokenContract,
             tokenID,
