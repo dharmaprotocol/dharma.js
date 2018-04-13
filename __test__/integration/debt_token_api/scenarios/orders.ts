@@ -49,22 +49,12 @@ export namespace Orders {
     export const APPROVEE = ACCOUNTS[7].address;
 
     export const CREDITOR_ONE_ORDER: SimpleInterestLoanOrder = {
-        principalAmount: new BigNumber(15 * 10 ** 18),
-        principalTokenSymbol: ERC20TokenSymbol.ZRX,
-        interestRate: new BigNumber(4.135),
-        amortizationUnit: "months",
-        termLength: new BigNumber(14),
+        ...ORDER_ONE,
         creditor: CREDITOR_ONE,
-        debtor: DEBTOR,
     };
 
     export const CREDITOR_TWO_ORDER: SimpleInterestLoanOrder = {
-        principalAmount: new BigNumber(3 * 10 ** 18),
-        principalTokenSymbol: ERC20TokenSymbol.REP,
-        interestRate: new BigNumber(4.325),
-        amortizationUnit: "months",
-        termLength: new BigNumber(5),
+        ...ORDER_TWO,
         creditor: CREDITOR_TWO,
-        debtor: DEBTOR,
     };
 }
