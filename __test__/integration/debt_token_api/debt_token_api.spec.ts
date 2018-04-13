@@ -16,8 +16,7 @@ import {
     UNSUCCESSFUL_TRANSFER_SCENARIOS,
     SUCCESSFUL_TRANSFER_FROM_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS,
-    SUCCESSFUL_APPROVE_SCENARIOS,
-    UNSUCCESSFUL_APPROVE_SCENARIOS,
+    ApproveScenarios,
     GetApprovedScenarios,
     SET_APPROVAL_FOR_ALL_SCENARIOS,
     IS_APPROVED_FOR_ALL_SCENARIOS,
@@ -61,11 +60,11 @@ describe("Debt Token API (Integration Tests)", () => {
 
     describe("#approve", () => {
         describe("should succeed", () => {
-            SUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+            ApproveScenarios.SUCCESSFUL.forEach(scenarioRunner.testApproveScenario);
         });
 
         describe("should fail", () => {
-            UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+            ApproveScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testApproveScenario);
         });
     });
 
