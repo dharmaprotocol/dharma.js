@@ -1,5 +1,6 @@
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
 import { BigNumber } from "utils/bignumber";
+import { Orders } from "./orders";
 
 export namespace DebtTokenScenario {
     export interface BaseScenario {
@@ -28,6 +29,13 @@ export namespace DebtTokenScenario {
             malFormedTokenID: BigNumber,
         ) => BigNumber;
     }
+
+    export const TOKEN_INJECTABLE_DEFAULTS: TokenInjectable = {
+        orderFilledByCreditorOne: Orders.CREDITOR_ONE_ORDER,
+        orderFilledByCreditorTwo: Orders.CREDITOR_TWO_ORDER,
+        tokenID: (creditorOneTokenID, creditorTwoTokenID, nonexistentTokenID, malFormedTokenID) =>
+            creditorOneTokenID,
+    };
 
     export interface ThrowableScenario extends Scenario, Throwable {}
 
