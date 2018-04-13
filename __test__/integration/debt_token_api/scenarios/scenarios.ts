@@ -43,8 +43,7 @@ export namespace DebtTokenScenario {
         shouldExist: boolean;
     }
 
-    export interface ApproveScenario extends ThrowableScenario {
-        shouldGenerateTokens: boolean;
+    export interface ApproveScenario extends BaseScenario, Throwable, TokenInjectable {
         approver: string;
         approvee: string;
     }
