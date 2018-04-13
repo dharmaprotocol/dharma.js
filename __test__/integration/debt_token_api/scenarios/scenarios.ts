@@ -19,10 +19,13 @@ export namespace DebtTokenScenario {
     }
 
     export interface Tokenizable {
+        orderFilledByCreditorOne: SimpleInterestLoanOrder;
+        orderFilledByCreditorTwo: SimpleInterestLoanOrder;
         tokenID: (
-            ordersIssuanceHash: BigNumber,
-            otherTokenId: BigNumber,
-            nonexistentTokenId: BigNumber,
+            creditorOneTokenID: BigNumber,
+            creditorTwoTokenID: BigNumber,
+            nonexistentTokenID: BigNumber,
+            malFormedTokenID: BigNumber,
         ) => BigNumber;
     }
 
