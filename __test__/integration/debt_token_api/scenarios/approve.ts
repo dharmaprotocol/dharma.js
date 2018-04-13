@@ -68,5 +68,12 @@ export namespace ApproveScenarios {
             errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
             errorMessage: /instance does not conform to the "wholeBigNumber" format/,
         },
+        {
+            description: "`approve` is invoked with a malformed approvee address",
+            ...unsuccessfulDefaults,
+            approvee: "invalid receipient address",
+            errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
+            errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]{40}$"',
+        },
     ];
 }
