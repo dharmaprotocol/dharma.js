@@ -8,7 +8,7 @@ import * as Units from "utils/units";
 import * as moment from "moment";
 import { DebtOrder } from "src/types";
 import { DebtOrderWrapper } from "src/wrappers";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { ACCOUNTS } from "__test__/accounts";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
 import { OrderAPIErrors } from "src/apis/order_api";

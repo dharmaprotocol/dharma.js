@@ -1,6 +1,6 @@
 import { ACCOUNTS } from "../../../accounts";
 import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 import { ERC20TokenSymbol } from "utils/constants";
 
 export namespace Orders {

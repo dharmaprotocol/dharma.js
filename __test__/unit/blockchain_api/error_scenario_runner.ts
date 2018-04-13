@@ -1,6 +1,6 @@
 import * as Web3 from "web3";
 import * as Units from "utils/units";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
 import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";

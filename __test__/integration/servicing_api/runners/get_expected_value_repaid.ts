@@ -2,7 +2,7 @@
 import * as Web3 from "web3";
 import * as ABIDecoder from "abi-decoder";
 import * as moment from "moment";
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 // utils
 import * as Units from "utils/units";

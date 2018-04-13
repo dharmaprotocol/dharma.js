@@ -6,7 +6,7 @@ import { GET_REPAYMENT_SCHEDULE } from "./get_repayment_schedule";
 import { GET_DEBTS } from "./get_debts";
 import { GET_INVESTMENTS } from "./get_investments";
 
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 export interface MakeRepaymentScenario {
     // The test's description, e.g. "payer's balance is insufficient"

@@ -1,5 +1,5 @@
 // libraries
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 import { GetRepaymentScheduleScenario } from "./";
 

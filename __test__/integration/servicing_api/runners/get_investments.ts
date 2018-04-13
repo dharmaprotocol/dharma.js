@@ -1,7 +1,7 @@
 // libraries
 import * as Web3 from "web3";
 // tslint:disable-next-line
-import { BigNumber } from "bignumber.js";
+import { BigNumber } from "utils/bignumber";
 
 // utils
 import * as Units from "utils/units";
