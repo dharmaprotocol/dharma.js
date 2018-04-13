@@ -56,5 +56,17 @@ export namespace ApproveScenarios {
             errorType: "NOT_OWNER",
             errorMessage: DebtTokenAPIErrors.NOT_OWNER(),
         },
+        {
+            description: "`approve` is invoked with a malformed token id",
+            ...unsuccessfulDefaults,
+            tokenID: (
+                creditorOneTokenID,
+                creditorTwoTokenID,
+                nonexistentTokenID,
+                malFormedTokenID,
+            ) => malFormedTokenID,
+            errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
+            errorMessage: /instance does not conform to the "wholeBigNumber" format/,
+        },
     ];
 }
