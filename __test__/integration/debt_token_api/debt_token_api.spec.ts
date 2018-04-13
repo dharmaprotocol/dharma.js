@@ -18,7 +18,7 @@ import {
     UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS,
     SUCCESSFUL_APPROVE_SCENARIOS,
     UNSUCCESSFUL_APPROVE_SCENARIOS,
-    GET_APPROVED_SCENARIOS,
+    GetApprovedScenarios,
     SET_APPROVAL_FOR_ALL_SCENARIOS,
     IS_APPROVED_FOR_ALL_SCENARIOS,
 } from "./scenarios";
@@ -86,8 +86,12 @@ describe("Debt Token API (Integration Tests)", () => {
     });
 
     describe("#getApproved", () => {
-        describe("approved accounts for a debt token should be retrievable", () => {
-            GET_APPROVED_SCENARIOS.forEach(scenarioRunner.testGetApprovedScenario);
+        describe("should succeed", () => {
+            GetApprovedScenarios.SUCCESSFUL.forEach(scenarioRunner.testGetApprovedScenario);
+        });
+
+        describe("should fail", () => {
+            GetApprovedScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testGetApprovedScenario);
         });
     });
 

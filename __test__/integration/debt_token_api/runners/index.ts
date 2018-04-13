@@ -63,6 +63,9 @@ export abstract class ScenarioRunner {
         await tokenAPI.setProxyAllowanceAsync(
             principalToken.address,
             simpleInterestLoanOrder.principalAmount,
+            {
+                from: simpleInterestLoanOrder.creditor,
+            },
         );
 
         const order = await orderAPI.generate(simpleInterestLoanAdapter, simpleInterestLoanOrder);
