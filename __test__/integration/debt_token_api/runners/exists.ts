@@ -1,38 +1,43 @@
-// External
-import { BigNumber } from "utils/bignumber";
-
 // Types
 import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
+import { Orders } from "../scenarios/orders";
 
 export class ExistsScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.ExistsScenario) {
         const { debtTokenAPI } = this.testAPIs;
-        let tokenIDs: BigNumber[];
+
+        let apiCallPromise: Promise<boolean>;
 
         describe(scenario.description, () => {
             beforeEach(async () => {
-                if (scenario.shouldExist) {
-                    tokenIDs = await Promise.all(
-                        scenario.orders.map(this.generateDebtTokenForOrder),
-                    );
-                } else {
-                    tokenIDs = await Promise.all(
-                        scenario.orders.map(this.getDebtTokenIDFromUnfilledOrder),
-                    );
-                }
+                const orderOneTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorOne,
+                );
+
+                const orderTwoTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorTwo,
+                );
+
+                const scenarioTokenID = scenario.tokenID(
+                    orderOneTokenID,
+                    orderTwoTokenID,
+                    Orders.NONEXISTENT_TOKEN_ID,
+                    Orders.MALFORMED_TOKEN_ID,
+                );
+
+                apiCallPromise = debtTokenAPI.exists(scenarioTokenID);
             });
 
-            test("returns whether the token for a given id exists or not", async () => {
-                for (let tokenID of tokenIDs) {
-                    const exists = await debtTokenAPI.exists(tokenID);
-                    if (scenario.shouldExist) {
-                        expect(exists).toBeTruthy();
-                    } else {
-                        expect(exists).toBeFalsy();
-                    }
-                }
-            });
+            if (scenario.shouldSucceed) {
+                test("approvee is approved", async () => {
+                    await expect(apiCallPromise).resolves.toEqual(scenario.shouldExist);
+                });
+            } else {
+                test(`throws ${scenario.errorType}`, async () => {
+                    await expect(apiCallPromise).rejects.toThrow(scenario.errorMessage);
+                });
+            }
         });
     }
 }

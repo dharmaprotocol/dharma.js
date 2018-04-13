@@ -11,7 +11,7 @@ import { DebtTokenScenarioRunner } from "./debt_token_scenario_runner";
 import {
     BALANCE_OF_SCENARIOS,
     OwnerOfScenarios,
-    EXISTS_SCENARIOS,
+    ExistsScenarios,
     SUCCESSFUL_TRANSFER_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_SCENARIOS,
     SUCCESSFUL_TRANSFER_FROM_SCENARIOS,
@@ -53,8 +53,12 @@ describe("Debt Token API (Integration Tests)", () => {
     });
 
     describe("#exists", () => {
-        describe("the existence of a given debt token id should be confirmable", () => {
-            EXISTS_SCENARIOS.forEach(scenarioRunner.testExistsScenario);
+        describe("should succeed", () => {
+            ExistsScenarios.SUCCESSFUL.forEach(scenarioRunner.testExistsScenario);
+        });
+
+        describe("should fail", () => {
+            ExistsScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testExistsScenario);
         });
     });
 

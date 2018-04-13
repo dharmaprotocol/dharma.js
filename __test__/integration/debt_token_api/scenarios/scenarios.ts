@@ -16,7 +16,7 @@ export namespace DebtTokenScenario {
     export interface Throwable {
         shouldSucceed: boolean;
         errorType?: string;
-        errorMessage?: string;
+        errorMessage?: string | RegExp;
     }
 
     export interface TokenInjectable {
@@ -47,7 +47,7 @@ export namespace DebtTokenScenario {
         transferee?: string;
     }
 
-    export interface ExistsScenario extends Scenario {
+    export interface ExistsScenario extends BaseScenario, Throwable, TokenInjectable {
         shouldExist: boolean;
     }
 
