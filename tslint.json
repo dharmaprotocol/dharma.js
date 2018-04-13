@@ -1,6 +1,6 @@
 {
-    "extends": ["tslint:latest"],
-    "rules": {
-        "no-implicit-dependencies": [true, "dev"]
-    }
+  "extends": [
+//    "node_modules/tslint-config-standard",
+    "node_modules/tslint-config-prettier/lib/index.json"
+  ]
 }
