@@ -9,8 +9,12 @@ import { UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessf
 
 import { SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS } from "./scenarios/successful_return_collateral_scenarios";
 
+import { SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/successful_seize_collateral_scenarios";
+
+import { UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessful_seize_collateral_scenarios";
+
 // Runners
-import { ReturnCollateralRunner } from "./runners";
+import { ReturnCollateralRunner, SeizeCollateralRunner } from "./runners";
 
 import { Assertions } from "src/invariants";
 
@@ -27,6 +31,7 @@ import {
 import { CollateralizedSimpleInterestLoanAdapter } from "src/adapters/collateralized_simple_interest_loan_adapter";
 
 import { ServicingAPI } from "src/apis/servicing_api";
+
 import { TokenAPI } from "../../../../src/apis/token_api";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
@@ -60,6 +65,14 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
         tokenApi,
     });
 
+    const seizeCollateralRunner = new SeizeCollateralRunner(web3, adapter, {
+        orderApi,
+        signerApi,
+        servicingApi,
+        contractsApi,
+        tokenApi,
+    });
+
     describe("#returnCollateral", () => {
         describe("Successful return of collateral", () => {
             SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
@@ -67,6 +80,16 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
 
         describe("Unsuccessful attempt to return collateral", () => {
             UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
+        });
+    });
+
+    describe("#seizeCollateral", () => {
+        describe("Successful seizure of collateral", () => {
+            SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
+        });
+
+        describe("Unsuccessful attempt to seize collateral", () => {
+            UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
         });
     });
 });
