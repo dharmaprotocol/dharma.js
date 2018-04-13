@@ -67,7 +67,7 @@ export const CollateralizerAdapterErrors = {
                          a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
                          not interface with the terms contract as expected`,
     COLLATERAL_NOT_FOUND: (agreementId: string) =>
-        singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure 
+        singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure
                          that the agreement ID is correct, and that the collateral has not already
                          been withdrawn.`,
     DEBT_NOT_YET_REPAID: (agreementId: string) =>
@@ -80,8 +80,8 @@ export const CollateralizerAdapterErrors = {
 export class CollateralizedLoanTerms {
     private assert: Assertions;
 
-    constructor(contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(contractsAPI);
+    constructor(web3: Web3, contractsAPI: ContractsAPI) {
+        this.assert = new Assertions(web3, contractsAPI);
     }
 
     public packParameters(params: CollateralizedTermsContractParameters): string {
@@ -177,13 +177,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private web3Utils: Web3Utils;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
-        this.assert = new Assertions(contractsAPI);
+        this.assert = new Assertions(web3, contractsAPI);
         this.web3Utils = new Web3Utils(web3);
 
         this.contractsAPI = contractsAPI;
 
-        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(contractsAPI);
-        this.collateralizedLoanTerms = new CollateralizedLoanTerms(contractsAPI);
+        this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
+        this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
     }
 
     public async toDebtOrder(

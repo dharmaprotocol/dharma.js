@@ -18,6 +18,17 @@ export namespace DebtTokenScenario {
         errorMessage?: string;
     }
 
+    export interface Tokenizable {
+        orderFilledByCreditorOne: SimpleInterestLoanOrder;
+        orderFilledByCreditorTwo: SimpleInterestLoanOrder;
+        tokenID: (
+            creditorOneTokenID: BigNumber,
+            creditorTwoTokenID: BigNumber,
+            nonexistentTokenID: BigNumber,
+            malFormedTokenID: BigNumber,
+        ) => BigNumber;
+    }
+
     export interface ThrowableScenario extends Scenario, Throwable {}
 
     export interface BalanceOfScenario extends Scenario {
@@ -38,8 +49,9 @@ export namespace DebtTokenScenario {
         approvee: string;
     }
 
-    export interface GetApprovedScenario extends Scenario {
+    export interface GetApprovedScenario extends BaseScenario, Throwable, Tokenizable {
         isApproved: boolean;
+        approvee: string;
     }
 
     export interface SetApprovalForAllScenario extends BaseScenario, Throwable {

@@ -1,10 +1,10 @@
 // Scenarios
-import { ReturnCollateralScenario } from "../scenarios";
+import { SeizeCollateralScenario } from "../scenarios";
 
 import { BaseCollateralRunner } from "./base_collateral_runner";
 
-export class ReturnCollateralRunner extends BaseCollateralRunner {
-    public testScenario(scenario: ReturnCollateralScenario) {
+export class SeizeCollateralRunner extends BaseCollateralRunner {
+    public testScenario(scenario: SeizeCollateralScenario) {
         let agreementId;
 
         describe(scenario.description, () => {
@@ -44,16 +44,16 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
 
             if (scenario.succeeds) {
                 it("returns a valid transaction hash", async () => {
-                    const txHash = await this.adapter.returnCollateral(
+                    const txHash = await this.adapter.seizeCollateral(
                         scenario.givenAgreementId(agreementId),
                     );
 
                     expect(txHash.length).toEqual(66);
                 });
 
-                it("transfers collateral back to the debtor", async () => {
+                it("transfers the collateral to the creditor", async () => {
                     const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrder.debtor,
+                        this.debtOrder.creditor,
                     );
 
                     expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
@@ -61,19 +61,17 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
-                        this.adapter.returnCollateral(scenario.givenAgreementId(agreementId)),
+                        this.adapter.seizeCollateral(scenario.givenAgreementId(agreementId)),
                     ).rejects.toThrow(scenario.error);
                 });
 
-                if (!scenario.collateralWithdrawn) {
-                    it("does not transfer collateral back to the debtor", async () => {
-                        const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                            this.debtOrder.debtor,
-                        );
+                it("does not transfer the collateral to the creditor", async () => {
+                    const collateralAmount = await this.collateralToken.balanceOf.callAsync(
+                        this.debtOrder.creditor,
+                    );
 
-                        expect(collateralAmount.toNumber()).toEqual(0);
-                    });
-                }
+                    expect(collateralAmount.toNumber()).toEqual(0);
+                });
             }
         });
     }

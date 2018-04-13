@@ -258,7 +258,7 @@ export class ServicingAPI {
 
         switch (termsContractType) {
             case "SimpleInterestTermsContractContract":
-                return new SimpleInterestLoanAdapter(this.contracts);
+                return new SimpleInterestLoanAdapter(this.web3, this.contracts);
         }
 
         throw new Error(ServicingAPIErrors.UNKNOWN_LOAN_ADAPTER(termsContract));

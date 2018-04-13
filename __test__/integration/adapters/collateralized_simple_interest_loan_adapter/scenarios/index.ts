@@ -8,6 +8,25 @@ import * as Units from "utils/units";
 import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
 import { CollateralizedTermsContractParameters } from "src/adapters/collateralized_simple_interest_loan_adapter";
 
+export interface SeizeCollateralScenario {
+    // The test's description.
+    description: string;
+    // True if the scenario succeeds in returning collateral.
+    succeeds: boolean;
+    simpleTerms: SimpleInterestTermsContractParameters;
+    collateralTerms: CollateralizedTermsContractParameters;
+    // True if the debt order's term has lapsed.
+    termLapsed: boolean;
+    // True if the entire debt has been repaid to the creditor.
+    debtRepaid: boolean;
+    // True if the collateral has already been withdrawn.
+    collateralWithdrawn: boolean;
+    // Returns the agreement id that should be provided to the function.
+    givenAgreementId: (agreementId: string) => string;
+    // If there is an error in returning collateral, this defines the expected message.
+    error?: RegExp | string;
+}
+
 export interface ReturnCollateralScenario {
     // The test's description.
     description: string;
