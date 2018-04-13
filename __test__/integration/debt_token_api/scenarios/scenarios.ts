@@ -74,7 +74,7 @@ export namespace DebtTokenScenario {
         isOperatorApproved: boolean;
     }
 
-    export interface TransferFromScenario extends Scenario {
+    export interface TransferFromScenario extends BaseScenario, Throwable, TokenInjectable {
         // Setup arguments
         tokensApprovedOperator: string;
         ownersApprovedOperator: string;
@@ -87,20 +87,10 @@ export namespace DebtTokenScenario {
             invalidContractRecipient: string,
             malformed: string,
         ) => string;
-        tokenID: (
-            ordersIssuanceHash: BigNumber,
-            otherTokenId: BigNumber,
-            nonexistentTokenId: BigNumber,
-        ) => BigNumber;
         data?: string;
 
         // Transaction options
         sender: string;
-
-        // Scenario outcome
-        succeeds: boolean;
-        errorType?: string;
-        errorMessage?: string;
     }
 
     // Transfer scenario ingests the same parameters as transferFrom so that
