@@ -9,7 +9,7 @@ import * as Web3 from "web3";
 import { DebtTokenScenarioRunner } from "./debt_token_scenario_runner";
 
 import {
-    BALANCE_OF_SCENARIOS,
+    BalanceOfScenarios,
     OwnerOfScenarios,
     ExistsScenarios,
     SUCCESSFUL_TRANSFER_SCENARIOS,
@@ -37,8 +37,12 @@ describe("Debt Token API (Integration Tests)", () => {
     });
 
     describe("#balanceOf", () => {
-        describe("debt token balances should be retrievable", () => {
-            BALANCE_OF_SCENARIOS.forEach(scenarioRunner.testBalanceOfScenario);
+        describe("should succeed", () => {
+            BalanceOfScenarios.SUCCESSFUL.forEach(scenarioRunner.testBalanceOfScenario);
+        });
+
+        describe("should fail", () => {
+            BalanceOfScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testBalanceOfScenario);
         });
     });
 

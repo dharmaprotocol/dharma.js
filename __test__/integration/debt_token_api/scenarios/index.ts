@@ -1,5 +1,5 @@
 export { DebtTokenScenario } from "./scenarios";
-export { BALANCE_OF_SCENARIOS } from "./balance_of";
+export { BalanceOfScenarios } from "./balance_of";
 export { OwnerOfScenarios } from "./owner_of";
 export { ExistsScenarios } from "./exists";
 export { SUCCESSFUL_TRANSFER_SCENARIOS, UNSUCCESSFUL_TRANSFER_SCENARIOS } from "./transfer";

@@ -39,7 +39,9 @@ export namespace DebtTokenScenario {
 
     export interface ThrowableScenario extends Scenario, Throwable {}
 
-    export interface BalanceOfScenario extends Scenario {
+    export interface BalanceOfScenario extends BaseScenario, Throwable {
+        orders: SimpleInterestLoanOrder[];
+        owner: string;
         balance: number;
     }
 
