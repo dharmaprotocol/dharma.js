@@ -74,15 +74,6 @@ export abstract class TransferBaseScenarioRunner extends ScenarioRunner {
                     scenario.orderFilledByCreditorTwo,
                 );
 
-                // Transfer nonCreditorsToken to a different address
-                await debtTokenAPI.transferFrom(
-                    scenario.orderFilledByCreditorTwo.creditor,
-                    Orders.TRANSFEREE,
-                    orderTwoTokenID,
-                    "",
-                    { from: scenario.orderFilledByCreditorTwo.creditor },
-                );
-
                 // Set token approvals
                 await debtTokenAPI.approve(scenario.tokensApprovedOperator, orderOneTokenID, {
                     from: scenario.orderFilledByCreditorOne.creditor,
