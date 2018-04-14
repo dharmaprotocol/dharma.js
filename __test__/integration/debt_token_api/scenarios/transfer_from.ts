@@ -1,6 +1,3 @@
-// External
-import { BigNumber } from "utils/bignumber";
-
 // Utils
 import {
     unsuccessfulDefaults,
@@ -10,6 +7,7 @@ import {
 
 // Types
 import { DebtTokenScenario } from "./";
+import { Orders } from "./orders";
 
 // Errors
 import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
@@ -20,15 +18,11 @@ export const UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS: DebtTokenScenario.TransferFro
     {
         ...unsuccessfulDefaults,
         description: "'from' account does not own debt token",
-        tokenID: (
-            ordersIssuanceHash: BigNumber,
-            nonCreditorsTokenID: BigNumber,
-            nonExistentTokenId: BigNumber,
-        ) => nonCreditorsTokenID,
+        tokenID: (creditorOneTokenID, creditorTwoTokenID, nonexistentTokenID, malFormedTokenID) =>
+            creditorTwoTokenID,
         errorType: "ONLY_OWNER",
-        errorMessage: DebtTokenAPIErrors.ONLY_OWNER(unsuccessfulDefaults.creditor),
+        errorMessage: DebtTokenAPIErrors.ONLY_OWNER(Orders.CREDITOR_ONE),
     },
-    ,
     {
         ...unsuccessfulDefaults,
         description: "data field is non-hexadecimal",

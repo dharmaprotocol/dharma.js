@@ -10,6 +10,9 @@ export namespace Orders {
     export const CREDITOR = ACCOUNTS[0].address;
     export const DEBTOR = ACCOUNTS[1].address;
 
+    export const TOKENS_APPROVED_OPERATOR = ACCOUNTS[2].address;
+    export const OWNERS_APPROVED_OPERATOR = ACCOUNTS[3].address;
+    export const UNAPPROVED_TRANSFER_SENDER = ACCOUNTS[4].address;
     export const CREDITOR_ONE = ACCOUNTS[5].address;
     export const CREDITOR_TWO = ACCOUNTS[6].address;
     export const APPROVEE = ACCOUNTS[7].address;

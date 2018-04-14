@@ -11,14 +11,27 @@ function generateScenarioForBalanceOf(balance: number): DebtTokenScenario.Balanc
     return {
         description: DESCRIPTION(balance),
         orders: Orders.ALL_ORDERS.slice(0, balance),
-        creditor: Orders.CREDITOR,
-        debtor: Orders.DEBTOR,
+        owner: Orders.CREDITOR,
         balance: balance,
+        shouldSucceed: true,
     };
 }
 
 const BALANCES = Array.from(Array(Orders.ALL_ORDERS.length + 1).keys()); // [0, 1, 2, 3]
 
-export const BALANCE_OF_SCENARIOS: DebtTokenScenario.BalanceOfScenario[] = BALANCES.map(
-    generateScenarioForBalanceOf,
-);
+export namespace BalanceOfScenarios {
+    export const SUCCESSFUL: DebtTokenScenario.BalanceOfScenario[] = BALANCES.map(
+        generateScenarioForBalanceOf,
+    );
+    export const UNSUCCESSFUL: DebtTokenScenario.BalanceOfScenario[] = [
+        {
+            description: "owner field is malformed",
+            orders: [],
+            balance: 0,
+            owner: "0x123",
+            shouldSucceed: false,
+            errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
+            errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]{40}$"',
+        },
+    ];
+}

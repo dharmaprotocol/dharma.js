@@ -9,15 +9,14 @@ import * as Web3 from "web3";
 import { DebtTokenScenarioRunner } from "./debt_token_scenario_runner";
 
 import {
-    BALANCE_OF_SCENARIOS,
+    BalanceOfScenarios,
     OwnerOfScenarios,
-    EXISTS_SCENARIOS,
+    ExistsScenarios,
     SUCCESSFUL_TRANSFER_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_SCENARIOS,
     SUCCESSFUL_TRANSFER_FROM_SCENARIOS,
     UNSUCCESSFUL_TRANSFER_FROM_SCENARIOS,
-    SUCCESSFUL_APPROVE_SCENARIOS,
-    UNSUCCESSFUL_APPROVE_SCENARIOS,
+    ApproveScenarios,
     GetApprovedScenarios,
     SET_APPROVAL_FOR_ALL_SCENARIOS,
     IS_APPROVED_FOR_ALL_SCENARIOS,
@@ -38,8 +37,12 @@ describe("Debt Token API (Integration Tests)", () => {
     });
 
     describe("#balanceOf", () => {
-        describe("debt token balances should be retrievable", () => {
-            BALANCE_OF_SCENARIOS.forEach(scenarioRunner.testBalanceOfScenario);
+        describe("should succeed", () => {
+            BalanceOfScenarios.SUCCESSFUL.forEach(scenarioRunner.testBalanceOfScenario);
+        });
+
+        describe("should fail", () => {
+            BalanceOfScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testBalanceOfScenario);
         });
     });
 
@@ -54,18 +57,22 @@ describe("Debt Token API (Integration Tests)", () => {
     });
 
     describe("#exists", () => {
-        describe("the existence of a given debt token id should be confirmable", () => {
-            EXISTS_SCENARIOS.forEach(scenarioRunner.testExistsScenario);
+        describe("should succeed", () => {
+            ExistsScenarios.SUCCESSFUL.forEach(scenarioRunner.testExistsScenario);
+        });
+
+        describe("should fail", () => {
+            ExistsScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testExistsScenario);
         });
     });
 
     describe("#approve", () => {
         describe("should succeed", () => {
-            SUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+            ApproveScenarios.SUCCESSFUL.forEach(scenarioRunner.testApproveScenario);
         });
 
         describe("should fail", () => {
-            UNSUCCESSFUL_APPROVE_SCENARIOS.forEach(scenarioRunner.testApproveScenario);
+            ApproveScenarios.UNSUCCESSFUL.forEach(scenarioRunner.testApproveScenario);
         });
     });
 

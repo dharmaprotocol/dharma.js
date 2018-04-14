@@ -1,54 +1,72 @@
 import { DebtTokenScenario } from "./scenarios";
 import { Orders } from "./orders";
-import { ACCOUNTS } from "../../../accounts";
 import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
 
-export const APPROVEE = ACCOUNTS[2].address;
-
-const DEFAULTS = {
-    orders: Orders.ALL_ORDERS,
-    shouldGenerateTokens: true,
-    ...Orders.WHO,
+const successfulDefaults = {
+    ...DebtTokenScenario.TOKEN_INJECTABLE_DEFAULTS,
+    shouldSucceed: true,
+    approver: Orders.CREDITOR_ONE,
+    approvee: Orders.APPROVEE,
 };
 
-export const SUCCESSFUL_APPROVE_SCENARIOS: DebtTokenScenario.ApproveScenario[] = [
-    {
-        ...DEFAULTS,
-        description: "`approve` is invoked by the token owner and specifies a valid approvee",
-        shouldSucceed: true,
-        approver: Orders.CREDITOR,
-        approvee: APPROVEE,
-    },
-];
+const unsuccessfulDefaults = {
+    ...successfulDefaults,
+    shouldSucceed: false,
+};
 
-export const UNSUCCESSFUL_APPROVE_SCENARIOS: DebtTokenScenario.ApproveScenario[] = [
-    {
-        ...DEFAULTS,
-        description: "`approve` is invoked with a token id that does not exist",
-        shouldSucceed: false,
-        shouldGenerateTokens: false,
-        approver: Orders.CREDITOR, // this account is not the token owner and thus cannot invoke `approve`
-        approvee: APPROVEE,
-        errorType: "TOKEN_WITH_ID_DOES_NOT_EXIST",
-        errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
-    },
-    {
-        ...DEFAULTS,
-        description: "`approve` is not invoked by the token owner",
-        shouldSucceed: false,
-        approver: Orders.DEBTOR, // this account is not the token owner and thus cannot invoke `approve`
-        approvee: APPROVEE,
-        errorType: "ONLY_OWNER",
-        errorMessage: DebtTokenAPIErrors.ONLY_OWNER(Orders.DEBTOR),
-    },
-    {
-        ...DEFAULTS,
-        description:
-            "`approve` is invoked by the token owner but specifies the token owner as the approvee",
-        shouldSucceed: false,
-        approver: Orders.CREDITOR,
-        approvee: Orders.CREDITOR, // approvee cannot be the current token owner.
-        errorType: "NOT_OWNER",
-        errorMessage: DebtTokenAPIErrors.NOT_OWNER(),
-    },
-];
+export namespace ApproveScenarios {
+    export const SUCCESSFUL: DebtTokenScenario.ApproveScenario[] = [
+        {
+            description: "`approve` is invoked by the token owner and specifies a valid approvee",
+            ...successfulDefaults,
+        },
+    ];
+    export const UNSUCCESSFUL: DebtTokenScenario.ApproveScenario[] = [
+        {
+            description: "`approve` is invoked with a token id that does not exist",
+            ...unsuccessfulDefaults,
+            tokenID: (
+                creditorOneTokenID,
+                creditorTwoTokenID,
+                nonexistentTokenID,
+                malFormedTokenID,
+            ) => nonexistentTokenID,
+            errorType: "TOKEN_WITH_ID_DOES_NOT_EXIST",
+            errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
+        },
+        {
+            description: "`approve` is not invoked by the token's owner",
+            ...unsuccessfulDefaults,
+            approver: Orders.DEBTOR, // this account is not the token owner and thus cannot invoke `approve`
+            errorType: "ONLY_OWNER",
+            errorMessage: DebtTokenAPIErrors.ONLY_OWNER(Orders.DEBTOR),
+        },
+        {
+            description:
+                "`approve` is invoked by the token's owner but specifies the token owner as the approvee",
+            ...unsuccessfulDefaults,
+            approvee: Orders.CREDITOR_ONE, // approvee cannot be the current token owner.
+            errorType: "NOT_OWNER",
+            errorMessage: DebtTokenAPIErrors.NOT_OWNER(),
+        },
+        {
+            description: "`approve` is invoked with a malformed token id",
+            ...unsuccessfulDefaults,
+            tokenID: (
+                creditorOneTokenID,
+                creditorTwoTokenID,
+                nonexistentTokenID,
+                malFormedTokenID,
+            ) => malFormedTokenID,
+            errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
+            errorMessage: /instance does not conform to the "wholeBigNumber" format/,
+        },
+        {
+            description: "`approve` is invoked with a malformed approvee address",
+            ...unsuccessfulDefaults,
+            approvee: "invalid receipient address",
+            errorType: "DOES_NOT_CONFORM_TO_SCHEMA",
+            errorMessage: 'instance does not match pattern "^0x[0-9a-fA-F]{40}$"',
+        },
+    ];
+}

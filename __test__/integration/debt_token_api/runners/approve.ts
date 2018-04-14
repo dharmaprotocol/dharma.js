@@ -1,48 +1,49 @@
-// External
 import { BigNumber } from "utils/bignumber";
 
 // Types
 import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
+import { Orders } from "../scenarios/orders";
 
 export class ApproveScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.ApproveScenario) {
         const { debtTokenAPI } = this.testAPIs;
 
-        let tokenIDs: BigNumber[];
+        let apiCallPromise: Promise<string>;
+
+        let scenarioTokenID: BigNumber;
 
         describe(scenario.description, () => {
             beforeEach(async () => {
-                if (scenario.shouldGenerateTokens) {
-                    tokenIDs = await Promise.all(
-                        scenario.orders.map(this.generateDebtTokenForOrder),
-                    );
-                } else {
-                    tokenIDs = await Promise.all(
-                        scenario.orders.map(this.getDebtTokenIDFromUnfilledOrder),
-                    );
-                }
+                const orderOneTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorOne,
+                );
+
+                const orderTwoTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorTwo,
+                );
+
+                scenarioTokenID = scenario.tokenID(
+                    orderOneTokenID,
+                    orderTwoTokenID,
+                    Orders.NONEXISTENT_TOKEN_ID,
+                    Orders.MALFORMED_TOKEN_ID,
+                );
+
+                apiCallPromise = debtTokenAPI.approve(scenario.approvee, scenarioTokenID, {
+                    from: scenario.approver,
+                });
             });
 
             if (scenario.shouldSucceed) {
                 test("approvee is approved", async () => {
-                    for (let tokenID of tokenIDs) {
-                        await debtTokenAPI.approve(scenario.approvee, tokenID, {
-                            from: scenario.approver,
-                        });
-                        const approved = await debtTokenAPI.getApproved(tokenID);
-                        expect(approved).toEqual(scenario.approvee);
-                    }
+                    await apiCallPromise;
+                    const approved = await debtTokenAPI.getApproved(scenarioTokenID);
+                    expect(approved).toEqual(scenario.approvee);
                 });
             } else {
                 test(`throws ${scenario.errorType}`, async () => {
-                    for (let tokenID of tokenIDs) {
-                        await expect(
-                            debtTokenAPI.approve(scenario.approvee, tokenID, {
-                                from: scenario.approver,
-                            }),
-                        ).rejects.toThrow(scenario.errorMessage);
-                    }
+                    await expect(apiCallPromise).rejects.toThrow(scenario.errorMessage);
                 });
             }
         });

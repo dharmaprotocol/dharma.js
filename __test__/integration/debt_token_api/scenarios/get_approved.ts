@@ -2,21 +2,14 @@ import { DebtTokenScenario } from "./scenarios";
 import { Orders } from "./orders";
 import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
 
-const defaults = {
-    orderFilledByCreditorOne: Orders.CREDITOR_ONE_ORDER,
-    orderFilledByCreditorTwo: Orders.CREDITOR_TWO_ORDER,
-    tokenID: (creditorOneTokenID, creditorTwoTokenID, nonexistentTokenID, malFormedTokenID) =>
-        creditorOneTokenID,
-    approvee: Orders.APPROVEE,
-};
-
 const successfulDefaults = {
-    ...defaults,
+    ...DebtTokenScenario.TOKEN_INJECTABLE_DEFAULTS,
+    approvee: Orders.APPROVEE,
     shouldSucceed: true,
 };
 
 const unsuccessfulDefaults = {
-    ...defaults,
+    ...successfulDefaults,
     shouldSucceed: false,
     isApproved: false,
 };

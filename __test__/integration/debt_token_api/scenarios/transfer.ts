@@ -13,39 +13,28 @@ import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapt
 // Errors
 import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
 
-const TOKENS_APPROVED_OPERATOR = ACCOUNTS[2].address;
-const OWNERS_APPROVED_OPERATOR = ACCOUNTS[3].address;
-const UNAPPROVED_TRANSFER_SENDER = ACCOUNTS[4].address;
-
 export const successfulDefaults = {
-    // Scenario Setup Parameters
-    orders: Orders.ALL_ORDERS,
-    ...Orders.WHO,
-    succeeds: true,
+    ...DebtTokenScenario.TOKEN_INJECTABLE_DEFAULTS,
+    shouldSucceed: true,
 
     // TransferFrom Setup Parameters
-    tokensApprovedOperator: TOKENS_APPROVED_OPERATOR,
-    ownersApprovedOperator: OWNERS_APPROVED_OPERATOR,
+    tokensApprovedOperator: Orders.TOKENS_APPROVED_OPERATOR,
+    ownersApprovedOperator: Orders.OWNERS_APPROVED_OPERATOR,
 
     // TransferFrom Scenario Parameters
-    from: Orders.CREDITOR,
+    from: Orders.CREDITOR_ONE,
     to: (
         userRecipient: string,
         validContractRecipient: string,
         invalidContractRecipient: string,
         malformed: string,
     ) => userRecipient,
-    tokenID: (
-        ordersIssuanceHash: BigNumber,
-        otherTokenId: BigNumber,
-        nonexistentTokenId: BigNumber,
-    ) => ordersIssuanceHash,
-    sender: Orders.CREDITOR,
+    sender: Orders.CREDITOR_ONE,
 };
 
 export const unsuccessfulDefaults = {
     ...successfulDefaults,
-    succeeds: false,
+    shouldSucceed: false,
 };
 
 export const SUCCESSFUL_TRANSFER_SCENARIOS: DebtTokenScenario.TransferScenario[] = [
@@ -57,13 +46,13 @@ export const SUCCESSFUL_TRANSFER_SCENARIOS: DebtTokenScenario.TransferScenario[]
         ...successfulDefaults,
         description:
             "called by token's approved operator (i.e. `approve`) to a non-contract recipient",
-        sender: TOKENS_APPROVED_OPERATOR,
+        sender: Orders.TOKENS_APPROVED_OPERATOR,
     },
     {
         ...successfulDefaults,
         description:
             "called by token owner's approved operator (i.e. `setApprovalForAll`) to a non-contract recipient",
-        sender: OWNERS_APPROVED_OPERATOR,
+        sender: Orders.OWNERS_APPROVED_OPERATOR,
     },
     {
         ...successfulDefaults,
@@ -79,7 +68,7 @@ export const SUCCESSFUL_TRANSFER_SCENARIOS: DebtTokenScenario.TransferScenario[]
         ...successfulDefaults,
         description:
             "called by token's approved operator (i.e. `approve`) to a valid contract recipient",
-        sender: TOKENS_APPROVED_OPERATOR,
+        sender: Orders.TOKENS_APPROVED_OPERATOR,
         to: (
             userRecipient: string,
             validContractRecipient: string,
@@ -91,7 +80,7 @@ export const SUCCESSFUL_TRANSFER_SCENARIOS: DebtTokenScenario.TransferScenario[]
         ...successfulDefaults,
         description:
             "called by token owner's approved operator (i.e. `setApprovalForAll`) to a valid contract recipient",
-        sender: OWNERS_APPROVED_OPERATOR,
+        sender: Orders.OWNERS_APPROVED_OPERATOR,
         to: (
             userRecipient: string,
             validContractRecipient: string,
@@ -105,21 +94,18 @@ export const UNSUCCESSFUL_TRANSFER_SCENARIOS: DebtTokenScenario.TransferScenario
     {
         ...unsuccessfulDefaults,
         description: "debt token does not exist",
-        tokenID: (
-            ordersIssuanceHash: BigNumber,
-            nonCreditorsTokenID: BigNumber,
-            nonExistentTokenId: BigNumber,
-        ) => nonExistentTokenId,
+        tokenID: (creditorOneTokenID, creditorTwoTokenID, nonexistentTokenID, malFormedTokenID) =>
+            nonexistentTokenID,
         errorType: "TOKEN_DOES_NOT_EXIST",
         errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
     },
     {
         ...unsuccessfulDefaults,
         description: "sending account not approved to transfer debt token",
-        sender: UNAPPROVED_TRANSFER_SENDER,
+        sender: Orders.UNAPPROVED_TRANSFER_SENDER,
         errorType: "ACCOUNT_UNAUTHORIZED_TO_TRANSFER",
         errorMessage: DebtTokenAPIErrors.ACCOUNT_UNAUTHORIZED_TO_TRANSFER(
-            UNAPPROVED_TRANSFER_SENDER,
+            Orders.UNAPPROVED_TRANSFER_SENDER,
         ),
     },
     {

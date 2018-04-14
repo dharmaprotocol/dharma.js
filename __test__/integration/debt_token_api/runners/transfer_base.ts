@@ -5,6 +5,7 @@ import { BigNumber } from "utils/bignumber";
 import { ScenarioRunner } from "./";
 import { DebtTokenScenario } from "../scenarios";
 import { TxData } from "src/types";
+import { Orders } from "../scenarios/orders";
 
 // Wrappers
 import { MockERC721ReceiverContract, TokenRegistryContract } from "src/wrappers";
@@ -28,10 +29,7 @@ export interface TransferAPICallParameters {
 
 export abstract class TransferBaseScenarioRunner extends ScenarioRunner {
     public testScenario(scenario: DebtTokenScenario.TransferFromScenario) {
-        const NONEXISTENT_TOKEN_ID = new BigNumber(13);
         const USER_RECIPIENT = ACCOUNTS[5].address;
-
-        const NON_CREDITOR_ADDRESS = ACCOUNTS[8].address;
         const MALFORMED_TOKEN_RECIPIENT = "0x123";
 
         let scenarioRecipient: string;
@@ -68,33 +66,29 @@ export abstract class TransferBaseScenarioRunner extends ScenarioRunner {
                     MALFORMED_TOKEN_RECIPIENT,
                 );
 
-                const tokenIDs = await Promise.all(
-                    scenario.orders.map(this.generateDebtTokenForOrder),
+                const orderOneTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorOne,
                 );
 
-                const [creditorsTokenID, nonCreditorsTokenID] = tokenIDs;
-
-                // Transfer nonCreditorsToken to a different address
-                await debtTokenAPI.transferFrom(
-                    scenario.creditor,
-                    NON_CREDITOR_ADDRESS,
-                    nonCreditorsTokenID,
-                    "",
-                    { from: scenario.creditor },
+                const orderTwoTokenID = await this.generateDebtTokenForOrder(
+                    scenario.orderFilledByCreditorTwo,
                 );
 
                 // Set token approvals
-                await debtTokenAPI.approve(scenario.tokensApprovedOperator, creditorsTokenID, {
-                    from: scenario.creditor,
+                await debtTokenAPI.approve(scenario.tokensApprovedOperator, orderOneTokenID, {
+                    from: scenario.orderFilledByCreditorOne.creditor,
                 });
 
                 // Set owner's approvals
-                await debtTokenAPI.setApprovalForAll(scenario.ownersApprovedOperator, true);
+                await debtTokenAPI.setApprovalForAll(scenario.ownersApprovedOperator, true, {
+                    from: scenario.orderFilledByCreditorOne.creditor,
+                });
 
                 scenarioTokenID = scenario.tokenID(
-                    creditorsTokenID,
-                    nonCreditorsTokenID,
-                    NONEXISTENT_TOKEN_ID,
+                    orderOneTokenID,
+                    orderTwoTokenID,
+                    Orders.NONEXISTENT_TOKEN_ID,
+                    Orders.MALFORMED_TOKEN_ID,
                 );
 
                 // If the recipient is the MockERC721Recipient contract, we have to budget
@@ -123,12 +117,12 @@ export abstract class TransferBaseScenarioRunner extends ScenarioRunner {
                     },
                 });
 
-                if (scenario.succeeds) {
+                if (scenario.shouldSucceed) {
                     await apiCallPromise;
                 }
             });
 
-            if (scenario.succeeds) {
+            if (scenario.shouldSucceed) {
                 test(`token's owner has changed to scenario's recipient`, async () => {
                     await expect(debtTokenAPI.ownerOf(scenarioTokenID)).resolves.toEqual(
                         scenarioRecipient,
