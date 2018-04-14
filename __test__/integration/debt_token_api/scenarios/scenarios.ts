@@ -7,12 +7,6 @@ export namespace DebtTokenScenario {
         description: string;
     }
 
-    export interface Scenario extends BaseScenario {
-        orders: SimpleInterestLoanOrder[];
-        creditor: string;
-        debtor: string;
-    }
-
     export interface Throwable {
         shouldSucceed: boolean;
         errorType?: string;
@@ -36,8 +30,6 @@ export namespace DebtTokenScenario {
         tokenID: (creditorOneTokenID, creditorTwoTokenID, nonexistentTokenID, malFormedTokenID) =>
             creditorOneTokenID,
     };
-
-    export interface ThrowableScenario extends Scenario, Throwable {}
 
     export interface BalanceOfScenario extends BaseScenario, Throwable {
         orders: SimpleInterestLoanOrder[];
