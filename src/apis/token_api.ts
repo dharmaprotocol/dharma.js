@@ -1,10 +1,10 @@
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 
-import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";
-import { TxData, TransactionOptions } from "../types";
+import { TransactionOptions, TxData } from "../types";
+import { ContractsAPI } from "./";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
@@ -207,7 +207,7 @@ export class TokenAPI {
 
         const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
 
-        const tokenSymbolList: Promise<String>[] = Array.from(
+        const tokenSymbolList: Array<Promise<String>> = Array.from(
             Array(tokenSymbolListLength.toNumber()).keys(),
         ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
 

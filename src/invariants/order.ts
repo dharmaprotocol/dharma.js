@@ -1,17 +1,17 @@
-import { DebtOrder, TxData } from "../types";
+import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
-import { Web3Utils } from "../../utils/web3_utils";
-import {
-    DebtTokenContract,
-    DebtOrderWrapper,
-    DebtKernelContract,
-    TokenTransferProxyContract,
-    ERC20Contract,
-} from "../wrappers";
 import { SignatureUtils } from "../../utils/signature_utils";
-import * as Web3 from "web3";
+import { Web3Utils } from "../../utils/web3_utils";
 import { ContractsAPI } from "../apis";
+import { DebtOrder, TxData } from "../types";
+import {
+    DebtKernelContract,
+    DebtOrderWrapper,
+    DebtTokenContract,
+    ERC20Contract,
+    TokenTransferProxyContract,
+} from "../wrappers";
 
 const BLOCK_TIME_ESTIMATE_SECONDS = 14;
 

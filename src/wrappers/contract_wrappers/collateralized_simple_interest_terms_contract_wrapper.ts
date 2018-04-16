@@ -3,13 +3,13 @@
  * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
  */
 // tslint:disable-next-line:no-unused-variable
-import { TxData, TxDataPayable } from "../../types";
+import { CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as promisify from "tiny-promisify";
+import * as Web3 from "web3";
+import { BigNumber } from "../../../utils/bignumber";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
-import { BigNumber } from "../../../utils/bignumber";
-import { CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
-import * as Web3 from "web3";
+import { TxData, TxDataPayable } from "../../types";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
@@ -395,7 +395,7 @@ export class CollateralizedSimpleInterestTermsContractContract extends BaseContr
         classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
     }
 
-    static async deployed(
+    public static async deployed(
         web3: Web3,
         defaults: Partial<TxData>,
     ): Promise<CollateralizedSimpleInterestTermsContractContract> {
@@ -433,7 +433,7 @@ export class CollateralizedSimpleInterestTermsContractContract extends BaseContr
         }
     }
 
-    static async at(
+    public static async at(
         address: string,
         web3: Web3,
         defaults: Partial<TxData>,

@@ -1,6 +1,6 @@
 // External
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 
 // APIs
@@ -18,7 +18,7 @@ import {
 } from "../wrappers";
 
 // Types
-import { DebtOrder, IssuanceCommitment, TxData, TransactionOptions } from "../types";
+import { DebtOrder, IssuanceCommitment, TransactionOptions, TxData } from "../types";
 
 // Utils
 import { NULL_ADDRESS } from "../../utils/constants";

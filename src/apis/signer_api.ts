@@ -1,16 +1,16 @@
-import * as Web3 from "web3";
-import { ContractsAPI } from "./";
-import { ECDSASignature, DebtOrder } from "../types";
-import * as promisify from "tiny-promisify";
-import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
-import { SignatureUtils } from "../../utils/signature_utils";
-import { Assertions } from "../invariants";
 import * as singleLineString from "single-line-string";
+import * as promisify from "tiny-promisify";
+import * as Web3 from "web3";
 import {
-    WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_ACCOUNT_NOT_FOUND,
+    WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_NO_PRIVATE_KEY,
 } from "../../utils/constants";
+import { SignatureUtils } from "../../utils/signature_utils";
+import { Assertions } from "../invariants";
+import { DebtOrder, ECDSASignature } from "../types";
+import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
+import { ContractsAPI } from "./";
 
 export const SignerAPIErrors = {
     INVALID_SIGNING_KEY: (unavailableKey: string) =>
@@ -45,7 +45,7 @@ export class SignerAPI {
      *              allows users to specify which behavior they prefer.
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
-    async asDebtor(
+    public async asDebtor(
         debtOrder: DebtOrder.Instance,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
@@ -77,7 +77,7 @@ export class SignerAPI {
      *              allows users to specify which behavior they prefer.
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
-    async asCreditor(
+    public async asCreditor(
         debtOrder: DebtOrder.Instance,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
@@ -109,7 +109,7 @@ export class SignerAPI {
      *              allows users to specify which behavior they prefer.
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
-    async asUnderwriter(
+    public async asUnderwriter(
         debtOrder: DebtOrder.Instance,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {

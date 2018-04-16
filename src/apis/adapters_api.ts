@@ -1,6 +1,6 @@
 // External
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import * as Web3 from "web3";
 
 // APIs
 import { ContractsAPI } from "./";
@@ -8,14 +8,14 @@ import { ContractsAPI } from "./";
 // Adapters
 import {
     Adapter,
-    SimpleInterestLoanAdapter,
     CollateralizedSimpleInterestLoanAdapter,
+    SimpleInterestLoanAdapter,
 } from "../adapters";
 
 // Wrappers
 import {
-    SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
+    SimpleInterestTermsContractContract,
 } from "../wrappers";
 
 export const AdaptersErrors = {
