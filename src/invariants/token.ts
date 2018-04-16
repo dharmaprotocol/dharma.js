@@ -1,4 +1,4 @@
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 import { ERC20Contract } from "../wrappers";
 
 import * as singleLineString from "single-line-string";

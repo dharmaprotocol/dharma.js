@@ -232,7 +232,7 @@ export class RepaymentRouterContract extends BaseContract {
 
     public static async deployed(
         web3: Web3,
-        defaults: Partial<TxData>,
+        defaults?: Partial<TxData>,
     ): Promise<RepaymentRouterContract> {
         const web3Utils = new Web3Utils(web3);
 
