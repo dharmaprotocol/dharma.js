@@ -1,7 +1,7 @@
 import { DebtTokenContract, ERC721ReceiverContract } from "../wrappers";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 import * as Web3 from "web3";
-import { Web3Utils } from "utils/web3_utils";
+import { Web3Utils } from "../../utils/web3_utils";
 
 export class DebtTokenAssertions {
     public async exists(

@@ -2,23 +2,21 @@ import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
 import * as Web3 from "web3";
 
-import { BigNumber } from "utils/bignumber";
-import { Web3Utils } from "utils/web3_utils";
+import { BigNumber } from "../../utils/bignumber";
+import { Web3Utils } from "../../utils/web3_utils";
 
-import { ContractsAPI } from "src/apis";
-import { Assertions } from "src/invariants";
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "src/types";
+import { ContractsAPI } from "../apis";
+import { Assertions } from "../invariants";
+import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
 import { Adapter } from "./adapter";
 import { TermsContractParameters } from "./terms_contract_parameters";
 
 import {
-    SimpleInterestLoanTerms,
     SimpleInterestLoanOrder,
+    SimpleInterestLoanTerms,
     SimpleInterestTermsContractParameters,
 } from "./simple_interest_loan_adapter";
-
-import { TermsContract } from "src/wrappers";
 
 import { NULL_ADDRESS } from "../../utils/constants";
 

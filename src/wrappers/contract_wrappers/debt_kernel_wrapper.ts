@@ -422,7 +422,7 @@ export class DebtKernelContract extends BaseContract {
 
     public static async deployed(
         web3: Web3,
-        defaults: Partial<TxData>,
+        defaults?: Partial<TxData>,
     ): Promise<DebtKernelContract> {
         const web3Utils = new Web3Utils(web3);
 

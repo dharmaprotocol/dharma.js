@@ -1,5 +1,5 @@
 import { DebtTokenContract } from "../wrappers";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 
 export class DebtAgreementAssertions {
     public async exists(

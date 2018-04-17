@@ -4,7 +4,7 @@ import { ContractsAPI } from "./";
 // libraries
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 
 // utils
 import { Web3Utils } from "../../utils/web3_utils";
@@ -38,7 +38,7 @@ export class ServicingAPI {
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
         this.contracts = contracts;
-        this.assert = new Assertions(this.contracts);
+        this.assert = new Assertions(web3, this.contracts);
     }
 
     /**

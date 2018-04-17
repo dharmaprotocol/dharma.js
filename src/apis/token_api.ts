@@ -1,6 +1,6 @@
 import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 
 import { ContractsAPI } from "./";
 import { Assertions } from "../invariants";

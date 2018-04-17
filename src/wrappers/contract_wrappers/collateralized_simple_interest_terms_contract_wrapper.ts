@@ -7,7 +7,7 @@ import { TxData, TxDataPayable } from "../../types";
 import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../../utils/bignumber";
 import { CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 

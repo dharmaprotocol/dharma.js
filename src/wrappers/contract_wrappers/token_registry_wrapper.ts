@@ -8,7 +8,7 @@ import * as promisify from "tiny-promisify";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { classUtils } from "../../../utils/class_utils";
 import { TokenRegistry as ContractArtifacts } from "@dharmaprotocol/contracts";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../../utils/bignumber";
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";

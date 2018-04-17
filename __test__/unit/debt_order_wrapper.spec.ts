@@ -1,13 +1,14 @@
-import { BigNumber } from "utils/bignumber";
-import { DebtOrderWrapper } from "src/wrappers";
-import * as Units from "utils/units";
 import * as moment from "moment";
-import * as Web3 from "web3";
-import { Web3Utils } from "utils/web3_utils";
+
+import { BigNumber } from "../../utils/bignumber";
+import * as Units from "../../utils/units";
+import { Web3Utils } from "../../utils/web3_utils";
+
+import { DebtOrderWrapper } from "../../src/wrappers";
 
 import { ACCOUNTS } from "../accounts";
 
-let debtOrderWrapper: DebtOrder.InstanceWrapper;
+let debtOrderWrapper: DebtOrderWrapper;
 
 // For the unit test's purposes, we use arbitrary
 // addresses for all debt order fields that expect addresses.

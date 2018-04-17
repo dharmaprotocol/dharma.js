@@ -1,6 +1,6 @@
 // External
 import * as Web3 from "web3";
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 import * as singleLineString from "single-line-string";
 
 // Types
