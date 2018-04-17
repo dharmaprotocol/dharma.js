@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.0.36",
+    "version": "0.0.37",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -37,6 +37,9 @@
         "commitmsg": "commitlint -e $GIT_PARAMS",
         "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts"
     },
+    "prepublishOnly": [
+        "build"
+    ],
     "lint-staged": {
         "{src,__test__,__mocks__}/**/*.ts": [
             "prettier --write"
