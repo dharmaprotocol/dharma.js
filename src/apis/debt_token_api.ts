@@ -1,10 +1,10 @@
 // External
+import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
-import * as singleLineString from "single-line-string";
 
 // Types
-import { TxData, TransactionOptions } from "../types";
+import { TransactionOptions, TxData } from "../types";
 
 // Utils
 import { Assertions } from "../invariants";

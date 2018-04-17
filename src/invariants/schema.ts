@@ -1,5 +1,5 @@
-import { SchemaValidator, Schema, Schemas, ValidatorResult } from "../schemas";
 import * as singleLineString from "single-line-string";
+import { Schema, Schemas, SchemaValidator, ValidatorResult } from "../schemas";
 
 export const SchemaAssertionsError = {
     DOES_NOT_CONFORM_TO_SCHEMA: (

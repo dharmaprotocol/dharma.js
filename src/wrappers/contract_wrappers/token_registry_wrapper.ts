@@ -3,13 +3,13 @@
  * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
  */
 // tslint:disable-next-line:no-unused-variable
-import { TxData, TxDataPayable } from "../../types";
-import * as promisify from "tiny-promisify";
-import { Web3Utils } from "../../../utils/web3_utils";
-import { classUtils } from "../../../utils/class_utils";
 import { TokenRegistry as ContractArtifacts } from "@dharmaprotocol/contracts";
-import { BigNumber } from "../../../utils/bignumber";
+import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
+import { BigNumber } from "../../../utils/bignumber";
+import { classUtils } from "../../../utils/class_utils";
+import { Web3Utils } from "../../../utils/web3_utils";
+import { TxData, TxDataPayable } from "../../types";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 

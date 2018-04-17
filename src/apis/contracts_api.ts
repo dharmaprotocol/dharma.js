@@ -1,37 +1,37 @@
 // external
-import * as Web3 from "web3";
-import { BigNumber } from "../../utils/bignumber";
 import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
+import * as Web3 from "web3";
+import { BigNumber } from "../../utils/bignumber";
 
 // wrappers
 import {
+    CollateralizedSimpleInterestTermsContractContract,
+    CollateralizerContract,
     ContractWrapper,
     DebtKernelContract,
     DebtRegistryContract,
     DebtTokenContract,
-    TermsContract,
-    TokenTransferProxyContract,
-    TokenRegistryContract,
     ERC20Contract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
-    CollateralizedSimpleInterestTermsContractContract,
-    CollateralizerContract,
+    TermsContract,
+    TokenRegistryContract,
+    TokenTransferProxyContract,
 } from "../wrappers";
 
 // utils
 import {
+    COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
+    COLLATERALIZER_CONTRACT_CACHE_KEY,
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_REGISTRY_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
+    NULL_ADDRESS,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
-    NULL_ADDRESS,
-    COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
-    COLLATERALIZER_CONTRACT_CACHE_KEY,
 } from "../../utils/constants";
 
 // types
@@ -209,7 +209,7 @@ export class ContractsAPI {
             return this.cache[cacheKey] as RepaymentRouterContract;
         }
 
-        let repaymentRouter = await RepaymentRouterContract.at(
+        const repaymentRouter = await RepaymentRouterContract.at(
             address,
             this.web3,
             transactionOptions,

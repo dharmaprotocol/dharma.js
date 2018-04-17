@@ -2,8 +2,8 @@
 import { ContractsAPI } from "./";
 
 // libraries
-import * as Web3 from "web3";
 import * as singleLineString from "single-line-string";
+import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 
 // utils
@@ -11,8 +11,8 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
 
 // types
-import { DebtRegistryEntry, TxData } from "../types";
 import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
+import { DebtRegistryEntry, TxData } from "../types";
 
 const REPAYMENT_GAS_MAXIMUM = 150000;
 
@@ -214,7 +214,7 @@ export class ServicingAPI {
         // they own.
         const numInvestments = await debtToken.balanceOf.callAsync(account);
 
-        let userDebtTokenIds = [];
+        const userDebtTokenIds = [];
 
         for (let i = 0; i < numInvestments.toNumber(); i++) {
             const tokenId = await debtToken.tokenOfOwnerByIndex.callAsync(
@@ -229,7 +229,7 @@ export class ServicingAPI {
         );
     }
 
-    public async getRepaymentScheduleAsync(issuanceHash: string): Promise<Array<number>> {
+    public async getRepaymentScheduleAsync(issuanceHash: string): Promise<number[]> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
         const debtRegistryEntry = await this.getDebtRegistryEntry(issuanceHash);
