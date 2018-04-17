@@ -37,7 +37,7 @@
         "commitmsg": "commitlint -e $GIT_PARAMS",
         "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts"
     },
-    "prepublishOnly": [
+    "prepare": [
         "build"
     ],
     "lint-staged": {
