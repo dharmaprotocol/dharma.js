@@ -1,5 +1,5 @@
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
-import { TxData } from "src/types/";
+import { TxData } from "../../../src/types/";
 
 import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
