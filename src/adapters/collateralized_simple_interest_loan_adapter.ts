@@ -43,8 +43,7 @@ export interface CollateralizedTermsContractParameters {
 
 export interface CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        CollateralizedTermsContractParameters {
-}
+        CollateralizedTermsContractParameters {}
 
 export const CollateralizerAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>

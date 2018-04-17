@@ -115,7 +115,7 @@ export class SimpleInterestLoanTerms {
         const interestRateFixedPointHex = interestRateFixedPoint.toString(16);
         const amortizationUnitTypeHex = AmortizationUnitCode[
             amortizationUnit.toUpperCase()
-            ].toString(16);
+        ].toString(16);
         const termLengthHex = termLength.toString(16);
 
         return (
