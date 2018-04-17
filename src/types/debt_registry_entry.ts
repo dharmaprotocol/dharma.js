@@ -1,5 +1,4 @@
 import { BigNumber } from "../../utils/bignumber";
-import { Web3Utils } from "../../utils/web3_utils";
 
 /*
 This type represents the data as received from calls to the `DebtRegistry`'s

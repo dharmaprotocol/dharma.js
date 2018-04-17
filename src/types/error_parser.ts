@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 
-import { Logging } from "./logging";
 import { DebtKernelError } from "./debt_kernel_error";
+import { Logging } from "./logging";
 import { RepaymentRouterError } from "./repayment_router_error";
 
 export interface ContractAddressBook {
@@ -25,11 +25,11 @@ export class ErrorParser {
             .filter(this.isParseableEntry) // filter out any non-parseable entries
             .flatMap(this.parseEntry) // parse out errors
             .value();
-    };
+    }
 
     private isParseableEntry = (log: any): boolean => {
         return log.hasOwnProperty("name");
-    };
+    }
 
     private parseEntry = (entry: Logging.Entry): string[] => {
         if (entry.name === Logging.LOG_ERROR_NAME) {
@@ -42,7 +42,7 @@ export class ErrorParser {
         } else {
             return [];
         }
-    };
+    }
 
     private parseOrigin = (entry: Logging.Entry): Origin => {
         if (entry.address === this.contractAddressBook.debtKernel) {
@@ -50,7 +50,7 @@ export class ErrorParser {
         } else if (entry.address === this.contractAddressBook.repaymentRouter) {
             return Origin.RepaymentRouter;
         }
-    };
+    }
 
     private messageForErrorWithID = (id: number, origin: Origin): string => {
         switch (origin) {
@@ -59,9 +59,9 @@ export class ErrorParser {
             case Origin.RepaymentRouter:
                 return RepaymentRouterError.messageForError(id);
         }
-    };
+    }
 
     private parseErrorID = (event: Logging.Event): number | undefined => {
         return event.name === Logging.ERROR_ID ? Number(event.value) : undefined;
-    };
+    }
 }

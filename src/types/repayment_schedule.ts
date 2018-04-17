@@ -1,5 +1,5 @@
-import { BigNumber } from "../../utils/bignumber";
 import * as map from "lodash.map";
+import { BigNumber } from "../../utils/bignumber";
 
 // The repayment schedule is calculated on basis of how charta computes it,
 // which simplifies the "months" unit as equal to 30 days.
@@ -26,7 +26,7 @@ const AMORTIZATION_UNIT_TO_SECONDS = {
  *  => [1521506879]
  */
 export class RepaymentSchedule {
-    private repaymentDates: Array<number>;
+    private repaymentDates: number[];
 
     constructor(
         private amortizationUnit: "hours" | "days" | "weeks" | "months" | "years",
@@ -46,7 +46,7 @@ export class RepaymentSchedule {
      *
      * @returns {Array<number>}
      */
-    public toArray(): Array<number> {
+    public toArray(): number[] {
         return this.repaymentDates;
     }
 
