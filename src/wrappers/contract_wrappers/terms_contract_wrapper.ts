@@ -141,10 +141,7 @@ export class TermsContract extends BaseContract {
         },
     };
     public getTermEndTimestamp = {
-        async callAsync(
-            agreementId: string,
-            defaultBlock?: Web3.BlockParam,
-        ): Promise<BigNumber> {
+        async callAsync(agreementId: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
             const self = this as TermsContract;
             const result = await promisify<BigNumber>(
                 self.web3ContractInstance.getTermEndTimestamp.call,

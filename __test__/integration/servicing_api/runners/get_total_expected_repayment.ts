@@ -104,11 +104,9 @@ export class GetTotalExpectedRepaymentRunner {
             });
 
             test(`returns a value of ${scenario.expected}`, async () => {
-                await expect(
-                    servicingApi.getTotalExpectedRepayment(
-                        issuanceHash,
-                    ),
-                ).resolves.toEqual(scenario.expected);
+                await expect(servicingApi.getTotalExpectedRepayment(issuanceHash)).resolves.toEqual(
+                    scenario.expected,
+                );
             });
         });
     }

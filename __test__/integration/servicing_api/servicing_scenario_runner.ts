@@ -44,7 +44,9 @@ export class ServicingScenarioRunner {
         );
         this.testGetDebtsScenario = GetDebtsRunner.testScenario.bind(this);
         this.testGetInvestmentsScenario = GetInvestmentsRunner.testScenario.bind(this);
-        this.testGetTotalExpectedRepayment = GetTotalExpectedRepaymentRunner.testScenario.bind(this);
+        this.testGetTotalExpectedRepayment = GetTotalExpectedRepaymentRunner.testScenario.bind(
+            this,
+        );
     }
 
     public async saveSnapshotAsync() {

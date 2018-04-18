@@ -157,9 +157,7 @@ export class ServicingAPI {
         );
     }
 
-    public async getTotalExpectedRepayment(
-        issuanceHash: string,
-    ): Promise<BigNumber> {
+    public async getTotalExpectedRepayment(issuanceHash: string): Promise<BigNumber> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
         const debtRegistry = await this.contracts.loadDebtRegistryAsync();
@@ -170,12 +168,8 @@ export class ServicingAPI {
 
         const termEnd = await termsContract.getTermEndTimestamp.callAsync(issuanceHash);
 
-        return termsContract.getExpectedRepaymentValue.callAsync(
-            issuanceHash,
-            termEnd,
-        );
+        return termsContract.getExpectedRepaymentValue.callAsync(issuanceHash, termEnd);
     }
-
 
     /**
      * Asynchronously retrieve the `DebtRegistryEntry` instance mapped to the
