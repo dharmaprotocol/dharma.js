@@ -12,6 +12,9 @@ import {
     SimpleInterestLoanAdapter,
 } from "../adapters";
 
+// Constants
+import { TERMS_CONTRACT_TYPES } from "../../utils/constants";
+
 // Wrappers
 import {
     CollateralizedSimpleInterestTermsContractContract,
@@ -63,9 +66,9 @@ export class AdaptersAPI {
         const termsContractType = await this.contracts.getTermsContractType(termsContractAddress);
 
         switch (termsContractType) {
-            case SimpleInterestTermsContractContract.name:
+            case TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN:
                 return this.simpleInterestLoan;
-            case CollateralizedSimpleInterestTermsContractContract.name:
+            case TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN:
                 return this.collateralizedSimpleInterestLoan;
             default:
                 throw new Error(AdaptersErrors.NO_ADAPTER_FOR_TERMS_CONTRACT(termsContractAddress));
