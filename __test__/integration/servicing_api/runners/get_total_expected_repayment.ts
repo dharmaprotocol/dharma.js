@@ -11,7 +11,6 @@ import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "..
 import { DebtOrder } from "../../../../src/types";
 import {
     DummyTokenContract,
-    RepaymentRouterContract,
     TokenTransferProxyContract,
 } from "../../../../src/wrappers";
 
@@ -33,7 +32,6 @@ export class GetTotalExpectedRepaymentRunner {
     public static testScenario(scenario: GetTotalExpectedRepaymentScenario) {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
-        let repaymentRouter: RepaymentRouterContract;
         let debtOrder: DebtOrder.Instance;
         let issuanceHash: string;
 
@@ -48,8 +46,6 @@ export class GetTotalExpectedRepaymentRunner {
             const principalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
                 "REP",
             );
-
-            repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
 
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
             principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);
@@ -85,12 +81,6 @@ export class GetTotalExpectedRepaymentRunner {
             debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
 
             issuanceHash = await orderApi.getIssuanceHash(debtOrder);
-
-            ABIDecoder.addABI(repaymentRouter.abi);
-        });
-
-        afterAll(() => {
-            ABIDecoder.removeABI(repaymentRouter.abi);
         });
 
         describe(scenario.description, () => {
