@@ -157,6 +157,12 @@ export class ServicingAPI {
         );
     }
 
+    /**
+     * Given an issuanceHash, returns the total amount that the borrower is expected to
+     * pay by the end of the associated terms agreement.
+     *
+     * @param issuanceHash
+     */
     public async getTotalExpectedRepayment(issuanceHash: string): Promise<BigNumber> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
