@@ -1,19 +1,19 @@
 // libraries
-import * as Web3 from "web3";
 import * as ABIDecoder from "abi-decoder";
 import * as moment from "moment";
-import { BigNumber } from "utils/bignumber";
+import * as Web3 from "web3";
+import { BigNumber } from "../../../../utils/bignumber";
 
 // utils
-import * as Units from "utils/units";
+import * as Units from "../../../../utils/units";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
-import { DebtOrder } from "src/types";
+import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "../../../../src/apis";
+import { DebtOrder } from "../../../../src/types";
 import {
     DummyTokenContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
-} from "src/wrappers";
+} from "../../../../src/wrappers";
 
 import { ACCOUNTS } from "../../../accounts";
 
@@ -27,10 +27,10 @@ const servicingApi = new ServicingAPI(web3, contractsApi);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
-import { GetExpectedValueRepaidScenario } from "../scenarios/index";
+import { GetTotalExpectedRepaymentScenario } from "../scenarios";
 
-export class GetExpectedValueRepaidRunner {
-    static testGetExpectedValueRepaidScenario(scenario: GetExpectedValueRepaidScenario) {
+export class GetTotalExpectedRepaymentRunner {
+    public static testScenario(scenario: GetTotalExpectedRepaymentScenario) {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
@@ -79,7 +79,7 @@ export class GetExpectedValueRepaidRunner {
                 principalTokenSymbol: "REP",
                 interestRate: scenario.interestRate,
                 amortizationUnit: scenario.amortizationUnit,
-                termLength: new BigNumber(2),
+                termLength: new BigNumber(scenario.termLength),
             });
 
             debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
@@ -105,11 +105,8 @@ export class GetExpectedValueRepaidRunner {
 
             test(`returns a value of ${scenario.expected}`, async () => {
                 await expect(
-                    servicingApi.getExpectedValueRepaid(
+                    servicingApi.getTotalExpectedRepayment(
                         issuanceHash,
-                        moment()
-                            .add(scenario.days, "days")
-                            .unix(),
                     ),
                 ).resolves.toEqual(scenario.expected);
             });

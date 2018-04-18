@@ -9,12 +9,13 @@ import * as Web3 from "web3";
 
 // scenarios
 import {
-    VALID_MAKE_REPAYMENT,
-    INVALID_MAKE_REPAYMENT,
-    GET_VALUE_REPAID,
-    GET_EXPECTED_VALUE_REPAID,
     GET_DEBTS,
+    GET_EXPECTED_VALUE_REPAID,
     GET_INVESTMENTS,
+    GET_TOTAL_EXPECTED_REPAYMENT,
+    GET_VALUE_REPAID,
+    INVALID_MAKE_REPAYMENT,
+    VALID_MAKE_REPAYMENT,
 } from "./scenarios";
 
 // scenario runner
@@ -22,7 +23,7 @@ import { ServicingScenarioRunner } from "./servicing_scenario_runner";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-let scenarioRunner = new ServicingScenarioRunner(web3);
+const scenarioRunner = new ServicingScenarioRunner(web3);
 
 describe("Debt Servicing API (Integration Tests)", () => {
     beforeEach(scenarioRunner.saveSnapshotAsync);
@@ -45,6 +46,10 @@ describe("Debt Servicing API (Integration Tests)", () => {
 
     describe("#getExpectedValueRepaid()", () => {
         GET_EXPECTED_VALUE_REPAID.forEach(scenarioRunner.testGetExpectedValueRepaidScenario);
+    });
+
+    describe("#getTotalExpectedRepayment()", () => {
+        GET_TOTAL_EXPECTED_REPAYMENT.forEach(scenarioRunner.testGetTotalExpectedRepayment);
     });
 
     describe("#getRepaymentSchedule", () => {

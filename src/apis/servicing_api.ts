@@ -157,6 +157,26 @@ export class ServicingAPI {
         );
     }
 
+    public async getTotalExpectedRepayment(
+        issuanceHash: string,
+    ): Promise<BigNumber> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        const termsContractAddress = await debtRegistry.getTermsContract.callAsync(issuanceHash);
+
+        const termsContract = await this.contracts.loadTermsContractAsync(termsContractAddress);
+
+        const termEnd = await termsContract.getTermEndTimestamp.callAsync(issuanceHash);
+
+        return termsContract.getExpectedRepaymentValue.callAsync(
+            issuanceHash,
+            termEnd,
+        );
+    }
+
+
     /**
      * Asynchronously retrieve the `DebtRegistryEntry` instance mapped to the
      * issuance hash specified.
