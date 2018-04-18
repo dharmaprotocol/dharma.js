@@ -160,6 +160,14 @@ export class ServicingAPI {
     public async getTotalExpectedRepayment(issuanceHash: string): Promise<BigNumber> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
+        const debtToken = await this.contracts.loadDebtTokenAsync();
+
+        await this.assert.debtAgreement.exists(
+            issuanceHash,
+            debtToken,
+            ServicingAPIErrors.DEBT_AGREEMENT_NONEXISTENT(issuanceHash),
+        );
+
         const debtRegistry = await this.contracts.loadDebtRegistryAsync();
 
         const termsContractAddress = await debtRegistry.getTermsContract.callAsync(issuanceHash);

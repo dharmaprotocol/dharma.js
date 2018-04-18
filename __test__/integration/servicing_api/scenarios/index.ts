@@ -64,6 +64,8 @@ export interface GetTotalExpectedRepaymentScenario {
     interestRate: BigNumber;
     principalAmount: BigNumber;
     termLength: BigNumber;
+    agreementExists: boolean;
+    error?: RegExp | string;
 }
 
 export interface GetRepaymentScheduleScenario {
