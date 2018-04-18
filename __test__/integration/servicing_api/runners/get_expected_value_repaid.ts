@@ -49,7 +49,7 @@ export class GetExpectedValueRepaidRunner {
                 "REP",
             );
 
-            const repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
+            repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
 
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
             principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);

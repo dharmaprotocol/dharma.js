@@ -1,12 +1,13 @@
-import { VALID_MAKE_REPAYMENT } from "./valid_make_repayment";
-import { INVALID_MAKE_REPAYMENT } from "./invalid_make_repayment";
-import { GET_VALUE_REPAID } from "./get_value_repaid";
-import { GET_EXPECTED_VALUE_REPAID } from "./get_expected_value_repaid";
-import { GET_REPAYMENT_SCHEDULE } from "./get_repayment_schedule";
-import { GET_DEBTS } from "./get_debts";
-import { GET_INVESTMENTS } from "./get_investments";
-
 import { BigNumber } from "utils/bignumber";
+
+export { VALID_MAKE_REPAYMENT } from "./valid_make_repayment";
+export { INVALID_MAKE_REPAYMENT } from "./invalid_make_repayment";
+export { GET_VALUE_REPAID } from "./get_value_repaid";
+export { GET_EXPECTED_VALUE_REPAID } from "./get_expected_value_repaid";
+export { GET_REPAYMENT_SCHEDULE } from "./get_repayment_schedule";
+export { GET_DEBTS } from "./get_debts";
+export { GET_INVESTMENTS } from "./get_investments";
+export { GET_TOTAL_EXPECTED_REPAYMENT } from "./get_total_expected_repayment";
 
 export interface MakeRepaymentScenario {
     // The test's description, e.g. "payer's balance is insufficient"
@@ -54,6 +55,19 @@ export interface GetExpectedValueRepaidScenario {
     expected: BigNumber;
 }
 
+export interface GetTotalExpectedRepaymentScenario {
+    amortizationUnit: "hours" | "days" | "weeks" | "months" | "years";
+    // The test's description.
+    description: string;
+    // The return value expected from the method.
+    expected: BigNumber;
+    interestRate: BigNumber;
+    principalAmount: BigNumber;
+    termLength: BigNumber;
+    agreementExists: boolean;
+    error?: RegExp | string;
+}
+
 export interface GetRepaymentScheduleScenario {
     // The test's description.
     description: string;
@@ -88,13 +102,3 @@ export interface GetInvestmentsScenario {
     // If the test fails, this field will contain the expected error message
     errorMessage?: string;
 }
-
-export {
-    VALID_MAKE_REPAYMENT,
-    INVALID_MAKE_REPAYMENT,
-    GET_VALUE_REPAID,
-    GET_EXPECTED_VALUE_REPAID,
-    GET_REPAYMENT_SCHEDULE,
-    GET_DEBTS,
-    GET_INVESTMENTS,
-};

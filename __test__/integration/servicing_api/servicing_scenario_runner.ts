@@ -5,12 +5,13 @@ import * as Web3 from "web3";
 import { Web3Utils } from "utils/web3_utils";
 
 // scenario runners
-import { MakeRepaymentRunner } from "./runners/make_repayment";
-import { GetValueRepaidRunner } from "./runners/get_value_repaid";
-import { GetExpectedValueRepaidRunner } from "./runners/get_expected_value_repaid";
-import { GetRepaymentScheduleRunner } from "./runners/get_repayment_schedule";
 import { GetDebtsRunner } from "./runners/get_debts";
+import { GetExpectedValueRepaidRunner } from "./runners/get_expected_value_repaid";
 import { GetInvestmentsRunner } from "./runners/get_investments";
+import { GetRepaymentScheduleRunner } from "./runners/get_repayment_schedule";
+import { GetTotalExpectedRepaymentRunner } from "./runners/get_total_expected_repayment";
+import { GetValueRepaidRunner } from "./runners/get_value_repaid";
+import { MakeRepaymentRunner } from "./runners/make_repayment";
 
 export class ServicingScenarioRunner {
     public web3Utils: Web3Utils;
@@ -21,6 +22,7 @@ export class ServicingScenarioRunner {
     public testGetRepaymentScheduleScenario;
     public testGetDebtsScenario;
     public testGetInvestmentsScenario;
+    public testGetTotalExpectedRepayment;
 
     private currentSnapshotId: number;
 
@@ -42,6 +44,9 @@ export class ServicingScenarioRunner {
         );
         this.testGetDebtsScenario = GetDebtsRunner.testScenario.bind(this);
         this.testGetInvestmentsScenario = GetInvestmentsRunner.testScenario.bind(this);
+        this.testGetTotalExpectedRepayment = GetTotalExpectedRepaymentRunner.testScenario.bind(
+            this,
+        );
     }
 
     public async saveSnapshotAsync() {

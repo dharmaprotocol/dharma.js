@@ -158,6 +158,34 @@ export class ServicingAPI {
     }
 
     /**
+     * Given an issuanceHash, returns the total amount that the borrower is expected to
+     * pay by the end of the associated terms agreement.
+     *
+     * @param issuanceHash
+     */
+    public async getTotalExpectedRepayment(issuanceHash: string): Promise<BigNumber> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const debtToken = await this.contracts.loadDebtTokenAsync();
+
+        await this.assert.debtAgreement.exists(
+            issuanceHash,
+            debtToken,
+            ServicingAPIErrors.DEBT_AGREEMENT_NONEXISTENT(issuanceHash),
+        );
+
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        const termsContractAddress = await debtRegistry.getTermsContract.callAsync(issuanceHash);
+
+        const termsContract = await this.contracts.loadTermsContractAsync(termsContractAddress);
+
+        const termEnd = await termsContract.getTermEndTimestamp.callAsync(issuanceHash);
+
+        return termsContract.getExpectedRepaymentValue.callAsync(issuanceHash, termEnd);
+    }
+
+    /**
      * Asynchronously retrieve the `DebtRegistryEntry` instance mapped to the
      * issuance hash specified.
      *
