@@ -1,6 +1,9 @@
 // contracts
 import { ContractsAPI } from "./";
 
+// constants
+import { TERMS_CONTRACT_TYPES } from "../../utils/constants";
+
 // libraries
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
@@ -11,6 +14,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
 
 // types
+import { CollateralizedSimpleInterestLoanAdapter } from "../adapters/collateralized_simple_interest_loan_adapter";
 import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
 import { DebtRegistryEntry, TxData } from "../types";
 
@@ -285,7 +289,9 @@ export class ServicingAPI {
         const termsContractType = await this.contracts.getTermsContractType(termsContract);
 
         switch (termsContractType) {
-            case "SimpleInterestTermsContractContract":
+            case TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN:
+                return new CollateralizedSimpleInterestLoanAdapter(this.web3, this.contracts);
+            case TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN:
                 return new SimpleInterestLoanAdapter(this.web3, this.contracts);
         }
 

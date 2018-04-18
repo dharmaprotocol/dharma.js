@@ -30,6 +30,7 @@ import {
     NULL_ADDRESS,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
+    TERMS_CONTRACT_TYPES,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
 } from "../../utils/constants";
@@ -292,7 +293,7 @@ export class ContractsAPI {
      *
      * Examples:
      *  getTermsContractType("0x069cb8891d9dbf02d89079a77169e0dc8bacda65")
-     *  => "SimpleInterestTermsContractContract"
+     *  => "SimpleInterestLoan"
      *
      * @param {string} tokenAddress
      * @returns {string}
@@ -301,21 +302,21 @@ export class ContractsAPI {
         const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
         const collateralizedSimpleInterestTermsContract = await this.loadCollateralizedSimpleInterestTermsContract();
 
-        const supportedTermsContracts = [
-            simpleInterestTermsContract,
-            collateralizedSimpleInterestTermsContract,
-        ];
+        const addressToContractType = new Map([
+            [
+                collateralizedSimpleInterestTermsContract.address,
+                TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
+            ],
+            [simpleInterestTermsContract.address, TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN],
+        ]);
 
-        const matchingTermsContract = _.find(
-            supportedTermsContracts,
-            (termsContract) => termsContract.address === contractAddress,
-        );
+        const termsContractType = addressToContractType.get(contractAddress);
 
-        if (!matchingTermsContract) {
+        if (!termsContractType) {
             throw new Error(ContractsError.TERMS_CONTRACT_NOT_FOUND(contractAddress));
         }
 
-        return matchingTermsContract.constructor.name;
+        return termsContractType;
     }
 
     public async loadSimpleInterestTermsContract(
