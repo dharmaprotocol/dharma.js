@@ -7,6 +7,7 @@ import * as Web3 from "web3";
 // utils
 import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
+import { TOKEN_REGISTRY_TRACKED_SYMBOLS } from "utils/constants";
 
 import { ContractsAPI, TokenAPI } from "src/apis";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
@@ -497,7 +498,9 @@ describe("Token API (Integration Tests)", () => {
     describe("#getTokenSymbolList", () => {
         describe("token registry has tokens", () => {
             test("should return the list of token symbols", async () => {
-                await expect(tokenApi.getTokenSymbolList()).resolves.toEqual(["REP", "MKR", "ZRX"]);
+                const tokenSymbolList = await tokenApi.getTokenSymbolList();
+
+                expect(tokenSymbolList.sort()).toEqual(TOKEN_REGISTRY_TRACKED_SYMBOLS.sort());
             });
         });
     });
