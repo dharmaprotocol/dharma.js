@@ -1,5 +1,5 @@
-import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
+import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 import { BigNumber } from "../../utils/bignumber";
@@ -13,8 +13,8 @@ import { Adapter } from "./adapter";
 import { TermsContractParameters } from "./terms_contract_parameters";
 
 import {
-    CollateralizerAdapterErrors,
     CollateralizedTermsContractParameters,
+    CollateralizerAdapterErrors,
 } from "./collateralized_simple_interest_loan_adapter";
 import {
     SimpleInterestLoanOrder,
