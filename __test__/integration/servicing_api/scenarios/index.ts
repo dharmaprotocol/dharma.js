@@ -63,7 +63,7 @@ export interface GetTotalExpectedRepaymentScenario {
     expected: BigNumber;
     interestRate: BigNumber;
     principalAmount: BigNumber;
-    termLength: BigNumber;
+    termLength: number;
     agreementExists: boolean;
     error?: RegExp | string;
 }
