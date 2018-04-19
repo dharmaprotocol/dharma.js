@@ -302,15 +302,13 @@ export class ContractsAPI {
         const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
         const collateralizedSimpleInterestTermsContract = await this.loadCollateralizedSimpleInterestTermsContract();
 
-        const addressToContractType = new Map([
-            [
-                collateralizedSimpleInterestTermsContract.address,
+        const addressToContractType = {
+            [collateralizedSimpleInterestTermsContract.address]:
                 TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
-            ],
-            [simpleInterestTermsContract.address, TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN],
-        ]);
+            [simpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN,
+        };
 
-        const termsContractType = addressToContractType.get(contractAddress);
+        const termsContractType = addressToContractType[contractAddress];
 
         if (!termsContractType) {
             throw new Error(ContractsError.TERMS_CONTRACT_NOT_FOUND(contractAddress));
