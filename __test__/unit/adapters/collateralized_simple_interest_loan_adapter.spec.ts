@@ -32,11 +32,11 @@ import { DebtOrder, DebtRegistryEntry } from "src/types";
 // adapters
 import {
     CollateralizedSimpleInterestLoanAdapter,
-    CollateralizedLoanTerms,
     CollateralizerAdapterErrors,
     CollateralizedTermsContractParameters,
     CollateralizedSimpleInterestLoanOrder,
 } from "src/adapters/collateralized_simple_interest_loan_adapter";
+import { CollateralizedLoanTerms } from "src/adapters/collateralized_simple_interest_loan_terms";
 import {
     SimpleInterestLoanAdapter,
     SimpleInterestAdapterErrors,
