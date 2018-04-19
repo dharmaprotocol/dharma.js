@@ -1,12 +1,13 @@
-// libraries
-import { BigNumber } from "utils/bignumber";
+// External Libraries
+import { BigNumber } from "../../../../utils/bignumber";
 
-// utils
-import * as Units from "utils/units";
-import { NULL_BYTES32 } from "utils/constants";
+// Utils
+import { NULL_BYTES32 } from "../../../../utils/constants";
+import * as Units from "../../../../utils/units";
 
 import { MakeRepaymentScenario } from "./";
-import { ServicingAPIErrors } from "src/apis/servicing_api";
+
+import { ServicingAPIErrors } from "../../../../src/apis/servicing_api";
 
 const defaultArgs = {
     amount: Units.ether(0.5),
@@ -16,15 +17,14 @@ const defaultArgs = {
     successfullyRepays: false,
     throws: true,
     agreementId: (issuanceHash: string) => issuanceHash,
-    repaymentToken: (principalToken: string, nonPrincipalToken: string) => principalToken,
+    repaymentToken: (principalToken: string) => principalToken,
 };
 
 export const INVALID_MAKE_REPAYMENT: MakeRepaymentScenario[] = [
     {
         description: "tokenAddress is malformed",
         ...defaultArgs,
-        repaymentToken: (principalToken: string, nonPrincipalToken: string) =>
-            principalToken.substr(5),
+        repaymentToken: (principalToken: string) => principalToken.substr(5),
         errorMessage: /instance does not match pattern/,
     },
     {
@@ -36,7 +36,7 @@ export const INVALID_MAKE_REPAYMENT: MakeRepaymentScenario[] = [
     {
         description: "no debt agreement with given id exists",
         ...defaultArgs,
-        agreementId: (issuanceHash: string) => NULL_BYTES32,
+        agreementId: () => NULL_BYTES32,
         errorMessage: ServicingAPIErrors.DEBT_AGREEMENT_NONEXISTENT(NULL_BYTES32),
     },
     {
