@@ -117,13 +117,14 @@
         "ts-jest": "^22.0.0",
         "ts-node": "^4.1.0",
         "tslint": "^5.8.0",
+        "tslint-config-prettier": "^1.10.0",
         "typedoc": "^0.10.0",
         "typescript": "^2.6.2",
         "web3-fake-provider": "^0.1.0",
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.0.32",
+        "@dharmaprotocol/contracts": "0.0.33",
         "@types/lodash": "^4.14.104",
         "abi-decoder": "https://github.com/dharmaprotocol/abi-decoder",
         "bignumber.js": "^5.0.0",

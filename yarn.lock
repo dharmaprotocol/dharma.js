@@ -132,9 +132,9 @@
   dependencies:
     find-up "^2.1.0"
 
-"@dharmaprotocol/contracts@0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.32.tgz#ae41ef1804d5244dcf000a2b18c95f45dfb9a677"
+"@dharmaprotocol/contracts@0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.0.33.tgz#103fe67f2226813144c55a58b333faf9647d2296"
   dependencies:
     zeppelin-solidity "^1.8.0"
 
@@ -7766,6 +7766,10 @@ tsconfig@^7.0.0:
 tslib@^1.8.0, tslib@^1.8.1:
   version "1.9.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
+
+tslint-config-prettier@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/tslint-config-prettier/-/tslint-config-prettier-1.10.0.tgz#5063c413d43de4f6988c73727f65ecfc239054ec"
 
 tslint@^5.8.0:
   version "5.9.1"
