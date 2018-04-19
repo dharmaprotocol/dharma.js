@@ -377,9 +377,9 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     await expect(
                         simpleInterestLoanAdapter.toDebtOrder({
                             ...defaultLoanOrder,
-                            principalTokenSymbol: "EOS", // EOS is not tracked in our test env's registry
+                            principalTokenSymbol: "XXX", // XXX is not tracked in our test env's registry
                         }),
-                    ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("EOS"));
+                    ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("XXX"));
                 });
             });
 
@@ -442,6 +442,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
         describe("simple interest loan's required parameters are present and well formed ", () => {
             let simpleInterestTermsContract: SimpleInterestTermsContractContract;
             let principalToken: ERC20Contract;
+            let principalTokenIndex: BigNumber;
 
             beforeAll(async () => {
                 simpleInterestTermsContract = await contracts.loadSimpleInterestTermsContract(
@@ -457,9 +458,13 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
                 beforeAll(async () => {
                     principalToken = await contracts.loadTokenBySymbolAsync("REP", TX_DEFAULTS);
+                    principalTokenIndex = await contracts.getTokenIndexBySymbolAsync("REP");
                 });
 
                 it("should return debt order with correctly packed values", async () => {
+                    const encodedIndex = principalTokenIndex.toString().padStart(2, "0");
+                    const termsContractParameters = `0x${encodedIndex}000000000de0b6b3a764000000057820002000000000000000000000000000`;
+
                     await expect(
                         simpleInterestLoanAdapter.toDebtOrder({
                             principalAmount,
@@ -475,8 +480,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         principalAmount,
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
-                        termsContractParameters:
-                            "0x00000000000de0b6b3a764000000057820002000000000000000000000000000",
+                        termsContractParameters,
                     });
                 });
             });
@@ -489,9 +493,13 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
                 beforeAll(async () => {
                     principalToken = await contracts.loadTokenBySymbolAsync("MKR", TX_DEFAULTS);
+                    principalTokenIndex = await contracts.getTokenIndexBySymbolAsync("MKR");
                 });
 
                 it("should return debt order with correctly packed values", async () => {
+                    const encodedIndex = principalTokenIndex.toString().padStart(2, "0");
+                    const termsContractParameters = `0x${encodedIndex}000000000429d069189e000000418c40001000000000000000000000000000`;
+
                     await expect(
                         simpleInterestLoanAdapter.toDebtOrder({
                             principalAmount,
@@ -507,8 +515,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         principalAmount,
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
-                        termsContractParameters:
-                            "0x01000000000429d069189e000000418c40001000000000000000000000000000",
+                        termsContractParameters,
                     });
                 });
             });
@@ -521,9 +528,13 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
                 beforeAll(async () => {
                     principalToken = await contracts.loadTokenBySymbolAsync("ZRX", TX_DEFAULTS);
+                    principalTokenIndex = await contracts.getTokenIndexBySymbolAsync("ZRX");
                 });
 
                 it("should return debt order with correctly packed values", async () => {
+                    const encodedIndex = principalTokenIndex.toString().padStart(2, "0");
+                    const termsContractParameters = `0x${encodedIndex}00002a5a058fc295ed0000000000013000c000000000000000000000000000`;
+
                     await expect(
                         simpleInterestLoanAdapter.toDebtOrder({
                             principalAmount,
@@ -539,8 +550,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         principalAmount,
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
-                        termsContractParameters:
-                            "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000",
+                        termsContractParameters,
                     });
                 });
             });
@@ -679,6 +689,10 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
         describe("terms contract does not match principal token's associated SimpleInterestTermsContract", () => {
             it("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
+                const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                    new BigNumber(1),
+                );
+
                 await expect(
                     simpleInterestLoanAdapter.fromDebtOrder({
                         principalToken: principalTokenAddress,
@@ -686,14 +700,14 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         termsContract: ACCOUNTS[0].address,
                         // We specify a token index of 1 in this parameter string,
                         // which is not the index of the specified principal token
-                        // in the debt order (i.e. REP);.
+                        // in the debt order (i.e. 0);.
                         termsContractParameters:
                             "0x0100000000002a5b1b1e089f00d000000300000000000000000000000000000c",
                     }),
                 ).rejects.toThrow(
                     SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
                         principalTokenAddress,
-                        "MKR",
+                        principalTokenSymbol,
                     ),
                 );
             });
@@ -714,7 +728,8 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
         });
 
         describe("debt order is valid and well-formed", () => {
-            let principalTokenAddress;
+            let principalTokenSymbol;
+            let principalToken;
             let termsContract;
 
             beforeAll(() => {
@@ -730,22 +745,28 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     "0x00000000000de0b6b3a764000000057820002000000000000000000000000000";
 
                 beforeAll(async () => {
-                    const principalToken = await contracts.loadTokenBySymbolAsync("REP");
-                    principalTokenAddress = principalToken.address;
+                    const principalTokenIndex = new BigNumber(termsContractParameters.substr(2, 2));
+
+                    principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        principalTokenIndex,
+                    );
+                    principalToken = await contracts.getTokenAddressBySymbolAsync(
+                        principalTokenSymbol,
+                    );
                 });
 
                 it("should return SimpleInterestLoanOrder with correctly unpacked values", async () => {
                     await expect(
                         simpleInterestLoanAdapter.fromDebtOrder({
                             principalAmount,
-                            principalToken: principalTokenAddress,
+                            principalToken,
                             termsContract,
                             termsContractParameters,
                         }),
                     ).resolves.toEqual({
                         principalAmount,
-                        principalToken: principalTokenAddress,
-                        principalTokenSymbol: "REP",
+                        principalToken,
+                        principalTokenSymbol,
                         termsContract,
                         termsContractParameters,
                         interestRate,
@@ -764,22 +785,28 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     "0x01000000000429d069189e000000418c40001000000000000000000000000000";
 
                 beforeAll(async () => {
-                    const principalToken = await contracts.loadTokenBySymbolAsync("MKR");
-                    principalTokenAddress = principalToken.address;
+                    const principalTokenIndex = new BigNumber(termsContractParameters.substr(2, 2));
+
+                    principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        principalTokenIndex,
+                    );
+                    principalToken = await contracts.getTokenAddressBySymbolAsync(
+                        principalTokenSymbol,
+                    );
                 });
 
                 it("should return SimpleInterestLoanOrder with correctly unpacked values", async () => {
                     await expect(
                         simpleInterestLoanAdapter.fromDebtOrder({
                             principalAmount,
-                            principalToken: principalTokenAddress,
+                            principalToken,
                             termsContract,
                             termsContractParameters,
                         }),
                     ).resolves.toEqual({
                         principalAmount,
-                        principalToken: principalTokenAddress,
-                        principalTokenSymbol: "MKR",
+                        principalToken,
+                        principalTokenSymbol,
                         termsContract,
                         termsContractParameters,
                         interestRate,
@@ -798,22 +825,28 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000";
 
                 beforeAll(async () => {
-                    const principalToken = await contracts.loadTokenBySymbolAsync("ZRX");
-                    principalTokenAddress = principalToken.address;
+                    const principalTokenIndex = new BigNumber(termsContractParameters.substr(2, 2));
+
+                    principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        principalTokenIndex,
+                    );
+                    principalToken = await contracts.getTokenAddressBySymbolAsync(
+                        principalTokenSymbol,
+                    );
                 });
 
                 it("should return SimpleInterestLoanOrder with correctly unpacked values", async () => {
                     await expect(
                         simpleInterestLoanAdapter.fromDebtOrder({
                             principalAmount,
-                            principalToken: principalTokenAddress,
+                            principalToken,
                             termsContract,
                             termsContractParameters,
                         }),
                     ).resolves.toEqual({
                         principalAmount,
-                        principalToken: principalTokenAddress,
-                        principalTokenSymbol: "ZRX",
+                        principalToken,
+                        principalTokenSymbol,
                         termsContract,
                         termsContractParameters,
                         interestRate,
@@ -852,9 +885,9 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         // Our test environment does not track a token at index 5 (which is packed
                         // into the first byte of the parameters)
                         termsContractParameters:
-                            "0x05000000000de0b6b3a764000000057820002000000000000000000000000000",
+                            "0xff000000000de0b6b3a764000000057820002000000000000000000000000000",
                     }),
-                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(5));
+                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(255));
             });
         });
 
@@ -893,10 +926,17 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
             describe("Scenario #1:", () => {
                 let expectedLoanOrder: SimpleInterestLoanOrder;
 
-                beforeAll(() => {
+                beforeAll(async () => {
+                    const { termsContractParameters } = defaultDebtRegistryEntry;
+
+                    const principalTokenIndex = new BigNumber(termsContractParameters.substr(2, 2));
+                    const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        principalTokenIndex,
+                    );
+
                     expectedLoanOrder = {
                         principalAmount: Units.ether(1),
-                        principalTokenSymbol: "REP",
+                        principalTokenSymbol,
                         interestRate: new BigNumber(0.14),
                         amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
                         termLength: new BigNumber(2),
@@ -912,11 +952,18 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
             describe("Scenario #2:", () => {
                 let expectedLoanOrder: SimpleInterestLoanOrder;
+                const termsContractParameters =
+                    "0x01000000000429d069189e000000418c40001000000000000000000000000000";
 
-                beforeAll(() => {
+                beforeAll(async () => {
+                    const principalTokenIndex = new BigNumber(termsContractParameters.substr(2, 2));
+                    const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        principalTokenIndex,
+                    );
+
                     expectedLoanOrder = {
                         principalAmount: Units.ether(0.3),
-                        principalTokenSymbol: "MKR",
+                        principalTokenSymbol,
                         interestRate: new BigNumber(1.678),
                         amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
                         termLength: new BigNumber(1),
@@ -927,8 +974,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     await expect(
                         simpleInterestLoanAdapter.fromDebtRegistryEntry({
                             ...defaultDebtRegistryEntry,
-                            termsContractParameters:
-                                "0x01000000000429d069189e000000418c40001000000000000000000000000000",
+                            termsContractParameters,
                         }),
                     ).resolves.toEqual(expectedLoanOrder);
                 });
@@ -936,11 +982,18 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
 
             describe("Scenario #3:", () => {
                 let expectedLoanOrder: SimpleInterestLoanOrder;
+                const termsContractParameters =
+                    "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000";
 
-                beforeAll(() => {
+                beforeAll(async () => {
+                    const principalTokenIndex = new BigNumber(termsContractParameters.substr(2, 2));
+                    const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        principalTokenIndex,
+                    );
+
                     expectedLoanOrder = {
                         principalAmount: Units.ether(200000),
-                        principalTokenSymbol: "ZRX",
+                        principalTokenSymbol,
                         interestRate: new BigNumber(0.0001),
                         amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
                         termLength: new BigNumber(12),
@@ -951,8 +1004,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     await expect(
                         simpleInterestLoanAdapter.fromDebtRegistryEntry({
                             ...defaultDebtRegistryEntry,
-                            termsContractParameters:
-                                "0x0200002a5a058fc295ed0000000000013000c000000000000000000000000000",
+                            termsContractParameters,
                         }),
                     ).resolves.toEqual(expectedLoanOrder);
                 });

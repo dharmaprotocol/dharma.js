@@ -277,11 +277,15 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             TX_DEFAULTS,
         );
 
-        const REP_TOKEN = await contracts.loadTokenBySymbolAsync(REP_TOKEN_SYMBOL, TX_DEFAULTS);
+        const tokenSymbols = await Promise.all(
+            Array.from(Array(3).keys()).map((index) =>
+                contracts.getTokenSymbolByIndexAsync(new BigNumber(index)),
+            ),
+        );
 
-        const MKR_TOKEN = await contracts.loadTokenBySymbolAsync(MKR_TOKEN_SYMBOL, TX_DEFAULTS);
-
-        const ZRX_TOKEN = await contracts.loadTokenBySymbolAsync(ZRX_TOKEN_SYMBOL, TX_DEFAULTS);
+        const tokenAddresses = await Promise.all(
+            tokenSymbols.map((symbol) => contracts.getTokenAddressBySymbolAsync(symbol)),
+        );
 
         const principalAmountForScenario1 = new BigNumber(1000 * 10 ** 18);
         const principalAmountForScenario2 = new BigNumber(12 * 10 ** 18);
@@ -297,7 +301,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         const debtOrderForScenario1 = {
             ...debtOrderBase,
             principalAmount: principalAmountForScenario1,
-            principalToken: REP_TOKEN.address,
+            principalToken: tokenAddresses[0],
             termsContractParameters:
                 "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
         };
@@ -305,7 +309,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         const debtOrderForScenario2 = {
             ...debtOrderBase,
             principalAmount: principalAmountForScenario2,
-            principalToken: MKR_TOKEN.address,
+            principalToken: tokenAddresses[1],
             termsContractParameters:
                 "0x0100000000a688906bd8b000000004b0400030000000004563918244f4000078",
         };
@@ -313,40 +317,40 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         const debtOrderForScenario3 = {
             ...debtOrderBase,
             principalAmount: principalAmountForScenario3,
-            principalToken: ZRX_TOKEN.address,
+            principalToken: tokenAddresses[2],
             termsContractParameters:
                 "0x0200000002b5e3af16b18800000007d02000a010000001bc16d674ec8000000a",
         };
 
         const loanOrderParamsForScenario1 = {
-            principalTokenSymbol: REP_TOKEN_SYMBOL,
+            principalTokenSymbol: tokenSymbols[0],
             principalAmount: principalAmountForScenario1,
             interestRate: new BigNumber(0.1),
             amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
             termLength: new BigNumber(2),
-            collateralTokenSymbol: ZRX_TOKEN_SYMBOL,
+            collateralTokenSymbol: tokenSymbols[2],
             collateralAmount: new BigNumber(10 * 10 ** 18),
             gracePeriodInDays: new BigNumber(90),
         };
 
         const loanOrderParamsForScenario2 = {
-            principalTokenSymbol: MKR_TOKEN_SYMBOL,
+            principalTokenSymbol: tokenSymbols[1],
             principalAmount: principalAmountForScenario2,
             interestRate: new BigNumber(0.12),
             amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
             termLength: new BigNumber(3),
-            collateralTokenSymbol: REP_TOKEN_SYMBOL,
+            collateralTokenSymbol: tokenSymbols[0],
             collateralAmount: new BigNumber(5 * 10 ** 18),
             gracePeriodInDays: new BigNumber(120),
         };
 
         const loanOrderParamsForScenario3 = {
-            principalTokenSymbol: ZRX_TOKEN_SYMBOL,
+            principalTokenSymbol: tokenSymbols[2],
             principalAmount: principalAmountForScenario3,
             interestRate: new BigNumber(0.2),
             amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
             termLength: new BigNumber(10),
-            collateralTokenSymbol: MKR_TOKEN_SYMBOL,
+            collateralTokenSymbol: tokenSymbols[1],
             collateralAmount: new BigNumber(32 * 10 ** 18),
             gracePeriodInDays: new BigNumber(10),
         };
@@ -415,9 +419,9 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
                             ...scenario_1.minimalLoanOrder,
-                            collateralTokenSymbol: "EOS", // EOS is not tracked in our test env's registry
+                            collateralTokenSymbol: "XXX", // XXX is not tracked in our test env's registry
                         }),
-                    ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("EOS"));
+                    ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("XXX"));
                 });
             });
             describe("`collateralAmount` is missing", async () => {
@@ -533,17 +537,21 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
 
         describe("terms contract does not match principal token's associated `CollateralizedSimpleInterestTermsContract`", () => {
             test("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
+                const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                    new BigNumber(1),
+                );
+
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
                         ...scenario_1.debtOrder,
-                        // the principal token index is encoded as 1 (which is MKR) instead of 0.
+                        // the principal token index is encoded as 1 instead of 0.
                         termsContractParameters:
                             "0x010000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                     }),
                 ).rejects.toThrow(
                     CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
                         scenario_1.debtOrder.principalToken,
-                        MKR_TOKEN_SYMBOL,
+                        principalTokenSymbol,
                     ),
                 );
             });
@@ -554,12 +562,12 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
                         ...scenario_1.debtOrder,
-                        // the principal token index is encoded as 9, which does not map to any
+                        // the principal token index is encoded as 255, which does not map to any
                         // token listed in our `TokenRegistry`
                         termsContractParameters:
-                            "0x090000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                            "0xff0000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                     }),
-                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(9));
+                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(255));
             });
         });
 
@@ -606,12 +614,12 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry({
                         ...scenario_1.entry,
-                        // Our test environment does not track a token at index 5 (which is packed
+                        // Our test environment does not track a token at index 255 (which is packed
                         // into the first byte of the parameters)
                         termsContractParameters:
-                            "0x05000000000de0b6b3a764000000057820002000000000000000000000000000",
+                            "0xff000000000de0b6b3a764000000057820002000000000000000000000000000",
                     }),
-                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(5));
+                ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(255));
             });
         });
 
