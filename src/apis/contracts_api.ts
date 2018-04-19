@@ -47,9 +47,6 @@ export interface DharmaContracts {
 }
 
 export const ContractsError = {
-    SIMPLE_INTEREST_TERMS_CONTRACT_NOT_SUPPORTED: (tokenAddress: string) =>
-        singleLineString`SimpleInterestTermsContract not supported for principal token at
-                address ${tokenAddress}`,
     CANNOT_FIND_TOKEN_WITH_SYMBOL: (symbol: string) =>
         singleLineString`Could not find token associated with symbol ${symbol}.`,
     CANNOT_FIND_TOKEN_WITH_INDEX: (index: number) =>

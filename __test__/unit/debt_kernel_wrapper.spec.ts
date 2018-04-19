@@ -1,13 +1,18 @@
 jest.mock("@dharmaprotocol/contracts");
 
+// External Libraries
+import { DebtKernel as ContractArtifactsMock } from "@dharmaprotocol/contracts";
 import * as promisify from "tiny-promisify";
-import { Web3Utils } from "utils/web3_utils";
-import { DebtKernelContract } from "src/wrappers";
-import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
-import { ACCOUNTS } from "../accounts";
 import * as Web3 from "web3";
 
-import { DebtKernel as ContractArtifactsMock } from "@dharmaprotocol/contracts";
+// Utils
+import { Web3Utils } from "../../utils/web3_utils";
+
+// Wrappers
+import { DebtKernelContract } from "../../src/wrappers";
+import { CONTRACT_WRAPPER_ERRORS } from "../../src/wrappers/contract_wrappers/base_contract_wrapper";
+
+import { ACCOUNTS } from "../accounts";
 
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
@@ -47,7 +52,6 @@ describe("Debt Kernel Contract Wrapper (Unit)", () => {
             });
 
             test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                const networkId = await web3Utils.getNetworkIdAsync();
                 await expect(DebtKernelContract.deployed(web3, TX_DEFAULTS)).rejects.toThrowError(
                     CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DebtKernel", networkId),
                 );
@@ -56,7 +60,7 @@ describe("Debt Kernel Contract Wrapper (Unit)", () => {
 
         describe("contract address associated w/ current network id does not point to contract", () => {
             beforeAll(async () => {
-                let mockNetworks = {};
+                const mockNetworks = {};
 
                 mockNetworks[networkId] = {
                     address: ACCOUNTS[0].address,
@@ -74,7 +78,7 @@ describe("Debt Kernel Contract Wrapper (Unit)", () => {
 
         describe("local artifacts readable and contract address associated w/ network id is valid", () => {
             beforeAll(async () => {
-                let mockNetworks = {};
+                const mockNetworks = {};
 
                 mockNetworks[networkId] = {
                     address: debtKernelContractAddress,
@@ -95,7 +99,7 @@ describe("Debt Kernel Contract Wrapper (Unit)", () => {
     describe("#at()", () => {
         describe("contract address does not point to contract", () => {
             beforeAll(async () => {
-                let mockNetworks = {};
+                const mockNetworks = {};
 
                 mockNetworks[networkId] = {
                     address: ACCOUNTS[0].address,
@@ -115,7 +119,7 @@ describe("Debt Kernel Contract Wrapper (Unit)", () => {
 
         describe("local artifacts readable and contract address associated w/ network id is valid", () => {
             beforeAll(async () => {
-                let mockNetworks = {};
+                const mockNetworks = {};
 
                 mockNetworks[networkId] = {
                     address: ACCOUNTS[0].address,

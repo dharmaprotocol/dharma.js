@@ -20,8 +20,8 @@ export const SignerAPIErrors = {
 };
 
 export class SignerAPI {
-    private web3: Web3;
-    private contracts: ContractsAPI;
+    private readonly web3: Web3;
+    private readonly contracts: ContractsAPI;
     private assert: Assertions;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
