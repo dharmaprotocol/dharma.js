@@ -1,18 +1,16 @@
-// libraries
-import * as singleLineString from "single-line-string";
+// External Libraries
 import * as omit from "lodash.omit";
+import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
-
-// utils
+// Utils
 import { BigNumber } from "../../utils/bignumber";
-
-// types
-import { DebtOrder, RepaymentSchedule } from "../types";
+// Types
+import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
-import { DebtRegistryEntry } from "../types/debt_registry_entry";
 import { Adapter } from "./adapter";
+import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
     // Required Debt Order Parameters
@@ -34,23 +32,9 @@ export interface SimpleInterestTermsContractParameters {
 }
 
 export type AmortizationUnit = "hours" | "days" | "weeks" | "months" | "years";
-const AmortizationUnitCodes = ["hours", "days", "weeks", "months", "years"];
 
-enum AmortizationUnitCode {
-    HOURS,
-    DAYS,
-    WEEKS,
-    MONTHS,
-    YEARS,
-}
-
-const MAX_PRINCIPAL_TOKEN_INDEX_HEX = "0xff";
-const MAX_PRINCIPAL_AMOUNT_HEX = "0xffffffffffffffffffffffff";
 const MAX_TERM_LENGTH_VALUE_HEX = "0xffff";
-
 const MAX_INTEREST_RATE_PRECISION = 4;
-const FIXED_POINT_SCALING_FACTOR = 10 ** MAX_INTEREST_RATE_PRECISION;
-const MAX_INTEREST_RATE = 2 ** 24 / FIXED_POINT_SCALING_FACTOR;
 
 export const SimpleInterestAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
@@ -69,13 +53,6 @@ export const SimpleInterestAdapterErrors = {
     INVALID_TERM_LENGTH: () =>
         singleLineString`Term length value cannot be negative or greater
                          than ${parseInt(MAX_TERM_LENGTH_VALUE_HEX, 16)}`,
-    INVALID_TERMS_CONTRACT: (principalToken: string, termsContract: string) =>
-        singleLineString`Terms Contract at address ${termsContract} does not
-                         correspond to the SimpleInterestTermsContract associated
-                         with the principal token at address ${principalToken}`,
-    UNSUPPORTED_PRINCIPAL_TOKEN: (principalTokenSymbol: string) =>
-        singleLineString`Token with symbol ${principalTokenSymbol} is not supported
-                         by the Dharma Token Registry`,
     MISMATCHED_TOKEN_SYMBOL: (principalTokenAddress: string, symbol: string) =>
         singleLineString`Terms contract parameters are invalid for the given debt order.
                          Principal token at address ${principalTokenAddress} does not
@@ -85,141 +62,6 @@ export const SimpleInterestAdapterErrors = {
                          a SimpleInterestTermsContract.  As such, this adapter will not
                          interface with the terms contract as expected`,
 };
-
-export class SimpleInterestLoanTerms {
-    private assert: Assertions;
-
-    constructor(web3: Web3, contracts: ContractsAPI) {
-        this.assert = new Assertions(web3, contracts);
-    }
-
-    public packParameters(termsContractParameters: SimpleInterestTermsContractParameters): string {
-        const {
-            principalTokenIndex,
-            principalAmount,
-            interestRate,
-            amortizationUnit,
-            termLength,
-        } = termsContractParameters;
-
-        this.assertPrincipalTokenIndexWithinBounds(principalTokenIndex);
-        this.assertPrincipalAmountWithinBounds(principalAmount);
-        this.assertInterestRateValid(interestRate);
-        this.assertValidAmortizationUnit(amortizationUnit);
-        this.assertTermLengthWholeAndWithinBounds(termLength);
-
-        const interestRateFixedPoint = interestRate.mul(FIXED_POINT_SCALING_FACTOR);
-
-        const principalTokenIndexHex = principalTokenIndex.toString(16);
-        const principalAmountHex = principalAmount.toString(16);
-        const interestRateFixedPointHex = interestRateFixedPoint.toString(16);
-        const amortizationUnitTypeHex = AmortizationUnitCode[
-            amortizationUnit.toUpperCase()
-        ].toString(16);
-        const termLengthHex = termLength.toString(16);
-
-        return (
-            "0x" +
-            principalTokenIndexHex.padStart(2, "0") +
-            principalAmountHex.padStart(24, "0") +
-            interestRateFixedPointHex.padStart(6, "0") +
-            amortizationUnitTypeHex.padStart(1, "0") +
-            termLengthHex.padStart(4, "0") +
-            "0".repeat(27)
-        );
-    }
-
-    public unpackParameters(
-        termsContractParametersPacked: string,
-    ): SimpleInterestTermsContractParameters {
-        this.assert.schema.bytes32("termsContractParametersPacked", termsContractParametersPacked);
-
-        const principalTokenIndexHex = termsContractParametersPacked.substr(0, 4);
-        const principalAmountHex = `0x${termsContractParametersPacked.substr(4, 24)}`;
-        const interestRateFixedPointHex = `0x${termsContractParametersPacked.substr(28, 6)}`;
-        const amortizationUnitTypeHex = `0x${termsContractParametersPacked.substr(34, 1)}`;
-        const termLengthHex = `0x${termsContractParametersPacked.substr(35, 4)}`;
-
-        const principalTokenIndex = new BigNumber(principalTokenIndexHex);
-        const principalAmount = new BigNumber(principalAmountHex);
-        const interestRateFixedPoint = new BigNumber(interestRateFixedPointHex);
-        const termLength = new BigNumber(termLengthHex);
-
-        // Given that our fixed point representation of the interest rate
-        // is scaled up by our chosen scaling factor, we scale it down
-        // for computations.
-        const interestRate = interestRateFixedPoint.div(FIXED_POINT_SCALING_FACTOR);
-
-        // Since the amortization unit type is stored in 1 byte, it can't exceed
-        // a value of 255.  As such, we're not concerned about using BigNumber's
-        // to represent amortization units.
-        const unitCode = parseInt(amortizationUnitTypeHex, 16);
-
-        // We only need to assert that the amortization unit type is valid,
-        // given that it's impossible for the parsed totalExpectedRepayment,
-        // principalTokenIndex, and termLength to exceed their bounds.
-        this.assertValidAmortizationUnitCode(unitCode);
-
-        const amortizationUnit = AmortizationUnitCode[unitCode].toLowerCase() as AmortizationUnit;
-
-        return {
-            principalTokenIndex,
-            principalAmount,
-            interestRate,
-            termLength,
-            amortizationUnit,
-        };
-    }
-
-    public assertPrincipalTokenIndexWithinBounds(principalTokenIndex: BigNumber) {
-        if (principalTokenIndex.lt(0) || principalTokenIndex.gt(MAX_PRINCIPAL_TOKEN_INDEX_HEX)) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_TOKEN_INDEX(principalTokenIndex));
-        }
-    }
-
-    public assertPrincipalAmountWithinBounds(principalAmount: BigNumber) {
-        if (principalAmount.lt(0) || principalAmount.gt(MAX_PRINCIPAL_AMOUNT_HEX)) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_PRINCIPAL_AMOUNT());
-        }
-    }
-
-    public assertInterestRateValid(interestRate: BigNumber) {
-        const [, rightOfDecimal] = interestRate.toString().split(".");
-
-        const numDecimals = typeof rightOfDecimal !== "undefined" ? rightOfDecimal.length : 0;
-
-        if (
-            interestRate.lt(0) ||
-            interestRate.gt(MAX_INTEREST_RATE) ||
-            numDecimals > MAX_INTEREST_RATE_PRECISION
-        ) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_INTEREST_RATE());
-        }
-    }
-
-    public assertValidAmortizationUnitCode(amortizationUnitCode: number) {
-        if (amortizationUnitCode > AmortizationUnitCodes.length - 1) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_AMORTIZATION_UNIT_TYPE());
-        }
-    }
-
-    public assertValidAmortizationUnit(amortizationUnitType: AmortizationUnit) {
-        if (!AmortizationUnitCodes.includes(amortizationUnitType)) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_AMORTIZATION_UNIT_TYPE());
-        }
-    }
-
-    public assertTermLengthWholeAndWithinBounds(termLengthInAmortizationUnits: BigNumber) {
-        if (
-            termLengthInAmortizationUnits.lt(0) ||
-            termLengthInAmortizationUnits.gt(MAX_TERM_LENGTH_VALUE_HEX)
-        ) {
-            throw new Error(SimpleInterestAdapterErrors.INVALID_TERM_LENGTH());
-        } else {
-            this.assert.schema.wholeNumber("termLength", termLengthInAmortizationUnits);
-        }
-    }
-}
 
 export class SimpleInterestLoanAdapter implements Adapter.Interface {
     public static Installments: { [type: string]: AmortizationUnit } = {
@@ -231,7 +73,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
     };
 
     private assert: Assertions;
-    private contracts: ContractsAPI;
+    private readonly contracts: ContractsAPI;
     private termsContractInterface: SimpleInterestLoanTerms;
 
     public constructor(web3: Web3, contracts: ContractsAPI) {
@@ -363,7 +205,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
         return loanOrder;
     }
 
-    public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
+    public getRepaymentSchedule(debtEntry: DebtRegistryEntry): number[] {
         const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
         const { termLength, amortizationUnit } = this.termsContractInterface.unpackParameters(
             termsContractParameters,

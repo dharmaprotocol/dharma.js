@@ -1,36 +1,20 @@
-import * as omit from "lodash.omit";
-import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 import { BigNumber } from "../../utils/bignumber";
-import { Web3Utils } from "../../utils/web3_utils";
 
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
-import { Adapter } from "./adapter";
 import { TermsContractParameters } from "./terms_contract_parameters";
 
 import {
     CollateralizedTermsContractParameters,
     CollateralizerAdapterErrors,
 } from "./collateralized_simple_interest_loan_adapter";
-import {
-    SimpleInterestLoanOrder,
-    SimpleInterestLoanTerms,
-    SimpleInterestTermsContractParameters,
-} from "./simple_interest_loan_adapter";
-
-import { NULL_ADDRESS } from "../../utils/constants";
 
 const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
 const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
-
-const SECONDS_IN_DAY = 60 * 60 * 24;
-
-const TRANSFER_GAS_MAXIMUM = 200000;
 
 export class CollateralizedLoanTerms {
     private assert: Assertions;

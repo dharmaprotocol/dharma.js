@@ -12,8 +12,8 @@ export { GET_TOTAL_EXPECTED_REPAYMENT } from "./get_total_expected_repayment";
 export interface MakeRepaymentScenario {
     // The test's description, e.g. "payer's balance is insufficient"
     description: string;
-    // The amount given as repayment. Can be a number in error-checking case.
-    amount: BigNumber | number;
+    // The amount given as repayment.
+    amount: BigNumber;
     // The sender's proxy allowance for the given repayment token.
     allowance: BigNumber;
     // The sender's balance for the given repayment token.
@@ -23,7 +23,7 @@ export interface MakeRepaymentScenario {
     // Whether the method should throw an error for the given arguments.
     throws: boolean;
     // The error message to expect if the method should throw an error.
-    errorMessage?: string;
+    errorMessage?: string | RegExp;
     // The number of times that the method should be called before test.
     repaymentAttempts: number;
     // The token address (principal or non-principal) to be used for the repayment.

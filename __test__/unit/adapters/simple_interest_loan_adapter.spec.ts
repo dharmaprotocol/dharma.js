@@ -23,12 +23,12 @@ import { DebtOrder, DebtRegistryEntry } from "src/types";
 import {
     SimpleInterestLoanAdapter,
     SimpleInterestLoanOrder,
-    SimpleInterestLoanTerms,
     SimpleInterestAdapterErrors,
     AmortizationUnit,
 } from "src/adapters/simple_interest_loan_adapter";
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
+import { SimpleInterestLoanTerms } from "../../../src/adapters/simple_interest_loan_terms";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
