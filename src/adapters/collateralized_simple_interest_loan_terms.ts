@@ -97,7 +97,7 @@ export class CollateralizedLoanTerms {
             throw new Error(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
-        if (collateralAmount.lt(0)) {
+        if (collateralAmount.isNegative()) {
             throw new Error(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
         }
 

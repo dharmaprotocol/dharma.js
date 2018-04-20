@@ -278,9 +278,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         );
 
         const tokenSymbols = await Promise.all(
-            Array.from(Array(3).keys()).map((index) =>
-                contracts.getTokenSymbolByIndexAsync(new BigNumber(index)),
-            ),
+            [0, 1, 2].map((index) => contracts.getTokenSymbolByIndexAsync(new BigNumber(index))),
         );
 
         const tokenAddresses = await Promise.all(
