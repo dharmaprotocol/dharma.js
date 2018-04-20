@@ -103,7 +103,9 @@ export abstract class BaseCollateralRunner {
         await this.web3Utils.increaseTime(secondsUntilNewTime + 1);
     }
 
-    protected async setBalances(scenario: ReturnCollateralScenario): Promise<void> {
+    protected async setBalances(
+        scenario: ReturnCollateralScenario | SeizeCollateralScenario,
+    ): Promise<void> {
         // 1. Set up Debtor balances.
 
         // The debtor has the exact amount of the collateral token as
@@ -149,7 +151,9 @@ export abstract class BaseCollateralRunner {
         );
     }
 
-    protected async setApprovals(scenario: ReturnCollateralScenario): Promise<void> {
+    protected async setApprovals(
+        scenario: ReturnCollateralScenario | SeizeCollateralScenario,
+    ): Promise<void> {
         const { debtor, creditor, principalAmount } = this.debtOrder;
 
         // The debtor grants the transfer proxy an allowance for moving the collateral.
@@ -195,7 +199,9 @@ export abstract class BaseCollateralRunner {
         });
     }
 
-    protected generateDebtOrder(scenario: ReturnCollateralScenario): DebtOrder.Instance {
+    protected generateDebtOrder(
+        scenario: ReturnCollateralScenario | SeizeCollateralScenario,
+    ): DebtOrder.Instance {
         const termsParams = this.adapter.packParameters(
             scenario.simpleTerms,
             scenario.collateralTerms,
@@ -226,7 +232,9 @@ export abstract class BaseCollateralRunner {
         };
     }
 
-    protected async generateAndFillOrder(scenario: ReturnCollateralScenario): Promise<void> {
+    protected async generateAndFillOrder(
+        scenario: ReturnCollateralScenario | SeizeCollateralScenario,
+    ): Promise<void> {
         this.debtOrder = this.generateDebtOrder(scenario);
 
         await this.signOrder();
@@ -243,7 +251,9 @@ export abstract class BaseCollateralRunner {
         });
     }
 
-    protected async initializeWrappers() {
+    protected async initializeWrappers(
+        scenario: ReturnCollateralScenario | SeizeCollateralScenario,
+    ) {
         this.debtKernel = await DebtKernelContract.deployed(this.web3);
 
         this.repaymentRouter = await RepaymentRouterContract.deployed(this.web3);
@@ -252,14 +262,21 @@ export abstract class BaseCollateralRunner {
             TX_DEFAULTS,
         );
 
+        const principalTokenSymbol = await this.contractsApi.getTokenSymbolByIndexAsync(
+            scenario.simpleTerms.principalTokenIndex,
+        );
+        const collateralTokenSymbol = await this.contractsApi.getTokenSymbolByIndexAsync(
+            scenario.collateralTerms.collateralTokenIndex,
+        );
+
         this.principalToken = await DummyTokenContract.at(
-            (await this.contractsApi.loadTokenBySymbolAsync("REP")).address,
+            (await this.contractsApi.loadTokenBySymbolAsync(principalTokenSymbol)).address,
             this.web3,
             TX_DEFAULTS,
         );
 
         this.collateralToken = await DummyTokenContract.at(
-            (await this.contractsApi.loadTokenBySymbolAsync("ZRX")).address,
+            (await this.contractsApi.loadTokenBySymbolAsync(collateralTokenSymbol)).address,
             this.web3,
             TX_DEFAULTS,
         );

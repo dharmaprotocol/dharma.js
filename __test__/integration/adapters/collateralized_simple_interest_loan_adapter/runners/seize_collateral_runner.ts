@@ -9,7 +9,7 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
 
         describe(scenario.description, () => {
             beforeAll(async () => {
-                await this.initializeWrappers();
+                await this.initializeWrappers(scenario);
 
                 this.snapshotId = await this.web3Utils.saveTestSnapshot();
 

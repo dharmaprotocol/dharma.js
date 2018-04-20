@@ -1,18 +1,19 @@
 // libraries
-import { BigNumber } from "utils/bignumber";
 import * as ABIDecoder from "abi-decoder";
 import * as compact from "lodash.compact";
 import * as Web3 from "web3";
+import { BigNumber } from "../../utils/bignumber";
 
 // utils
-import * as Units from "utils/units";
-import { Web3Utils } from "utils/web3_utils";
+import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
+import * as Units from "../../utils/units";
+import { Web3Utils } from "../../utils/web3_utils";
 
-import { ContractsAPI, TokenAPI } from "src/apis";
-import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
-import { TokenAPIErrors } from "src/apis/token_api";
-import { TokenAssertionErrors } from "src/invariants/token";
-import { DummyTokenContract, TokenTransferProxyContract } from "src/wrappers";
+import { ContractsAPI, TokenAPI } from "../../src/apis";
+import { TokenAPIErrors } from "../../src/apis/token_api";
+import { TokenAssertionErrors } from "../../src/invariants/token";
+import { DummyTokenContract, TokenTransferProxyContract } from "../../src/wrappers";
+import { CONTRACT_WRAPPER_ERRORS } from "../../src/wrappers/contract_wrappers/base_contract_wrapper";
 
 import { ACCOUNTS } from "../accounts";
 
@@ -65,12 +66,10 @@ describe("Token API (Integration Tests)", () => {
 
         const dummyTokens = [dummyREPToken, dummyZRXToken, dummyMKRToken];
 
-        for (let i = 0; i < TEST_ACCOUNTS.length; i++) {
-            for (let j = 0; j < dummyTokens.length; j++) {
-                const dummyToken = dummyTokens[j];
-
+        for (const testAccount of TEST_ACCOUNTS) {
+            for (const dummyToken of dummyTokens) {
                 await dummyToken.setBalance.sendTransactionAsync(
-                    TEST_ACCOUNTS[i],
+                    testAccount,
                     DEFAULT_STARTING_BALANCE,
                     { from: CONTRACT_OWNER },
                 );
@@ -497,7 +496,12 @@ describe("Token API (Integration Tests)", () => {
     describe("#getTokenSymbolList", () => {
         describe("token registry has tokens", () => {
             test("should return the list of token symbols", async () => {
-                await expect(tokenApi.getTokenSymbolList()).resolves.toEqual(["REP", "MKR", "ZRX"]);
+                const tokenSymbolList = await tokenApi.getTokenSymbolList();
+                const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map(
+                    (token) => token.symbol,
+                );
+
+                expect(tokenSymbolList.sort()).toEqual(expectedTokenSymbolList.sort());
             });
         });
     });
