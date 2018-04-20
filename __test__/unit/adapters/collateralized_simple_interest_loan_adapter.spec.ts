@@ -9,40 +9,40 @@ jest.unmock("@dharmaprotocol/contracts");
 jest.unmock("fs-extra");
 
 // libraries
-import * as Web3 from "web3";
 import * as moment from "moment";
+import * as Web3 from "web3";
 
 // utils
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../../utils/bignumber";
+import * as Units from "../../../utils/units";
+import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
-import * as Units from "utils/units";
-import { Web3Utils } from "utils/web3_utils";
 
 // wrappers
 import {
+    CollateralizedSimpleInterestTermsContractContract,
     DebtKernelContract,
     ERC20Contract,
     RepaymentRouterContract,
-    CollateralizedSimpleInterestTermsContractContract,
-} from "src/wrappers";
+} from "../../../src/wrappers";
 
 // types
-import { DebtOrder, DebtRegistryEntry } from "src/types";
+import { DebtOrder, DebtRegistryEntry } from "../../../src/types";
 
 // adapters
 import {
     CollateralizedSimpleInterestLoanAdapter,
-    CollateralizerAdapterErrors,
-    CollateralizedTermsContractParameters,
     CollateralizedSimpleInterestLoanOrder,
-} from "src/adapters/collateralized_simple_interest_loan_adapter";
-import { CollateralizedLoanTerms } from "src/adapters/collateralized_simple_interest_loan_terms";
+    CollateralizedTermsContractParameters,
+    CollateralizerAdapterErrors,
+} from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
+import { CollateralizedLoanTerms } from "../../../src/adapters/collateralized_simple_interest_loan_terms";
 import {
-    SimpleInterestLoanAdapter,
     SimpleInterestAdapterErrors,
-} from "src/adapters/simple_interest_loan_adapter";
+    SimpleInterestLoanAdapter,
+} from "../../../src/adapters/simple_interest_loan_adapter";
 
-import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
+import { ContractsAPI, ContractsError } from "../../../src/apis/contracts_api";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -77,7 +77,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
         await web3Utils.revertToSnapshot(snapshotId);
     });
 
-    const scenario_1: Scenario = {
+    const scenario1: Scenario = {
         unpackedParams: {
             collateralTokenIndex: new BigNumber(0),
             collateralAmount: new BigNumber(3.5 * 10 ** 18),
@@ -86,7 +86,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
         packedParams: "0x000000000000000000000000000000000000000000000030927f74c9de000005",
     };
 
-    const scenario_2: Scenario = {
+    const scenario2: Scenario = {
         unpackedParams: {
             collateralTokenIndex: new BigNumber(1),
             collateralAmount: new BigNumber(723489020 * 10 ** 18),
@@ -95,7 +95,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
         packedParams: "0x00000000000000000000000000000000000000125674c25cd7f81d067000001e",
     };
 
-    const scenario_3: Scenario = {
+    const scenario3: Scenario = {
         unpackedParams: {
             collateralTokenIndex: new BigNumber(8),
             collateralAmount: new BigNumber(1212234234 * 10 ** 18),
@@ -111,7 +111,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
 
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         collateralTokenIndex: invalidCollateralTokenIndex,
                     });
                 }).toThrow(
@@ -123,7 +123,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should throw COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         collateralAmount: new BigNumber(3.5 * 10 ** 38),
                     });
                 }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
@@ -133,7 +133,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should throw COLLATERAL_AMOUNT_IS_NEGATIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         collateralAmount: new BigNumber(-1),
                     });
                 }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
@@ -143,7 +143,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should throw INVALID_DECIMAL_VALUE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         collateralAmount: new BigNumber(100.4567),
                     });
                 }).toThrowError(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
@@ -153,7 +153,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should throw GRACE_PERIOD_IS_NEGATIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         gracePeriodInDays: new BigNumber(-1),
                     });
                 }).toThrowError(CollateralizerAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
@@ -163,7 +163,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should throw GRACE_PERIOD_EXCEEDS_MAXIMUM error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         gracePeriodInDays: new BigNumber(256),
                     });
                 }).toThrowError(CollateralizerAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
@@ -173,7 +173,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should throw INVALID_DECIMAL_VALUE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
-                        ...scenario_1.unpackedParams,
+                        ...scenario1.unpackedParams,
                         gracePeriodInDays: new BigNumber(1.567),
                     });
                 }).toThrowError(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
@@ -183,22 +183,22 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             describe("Scenario #1", () => {
                 test("should return correctly packed parameters", () => {
                     expect(
-                        collateralizedLoanTerms.packParameters(scenario_1.unpackedParams),
-                    ).toEqual(scenario_1.packedParams);
+                        collateralizedLoanTerms.packParameters(scenario1.unpackedParams),
+                    ).toEqual(scenario1.packedParams);
                 });
             });
             describe("Scenario #2", () => {
                 test("should return correctly packed parameters", () => {
                     expect(
-                        collateralizedLoanTerms.packParameters(scenario_2.unpackedParams),
-                    ).toEqual(scenario_2.packedParams);
+                        collateralizedLoanTerms.packParameters(scenario2.unpackedParams),
+                    ).toEqual(scenario2.packedParams);
                 });
             });
             describe("Scenario #3", () => {
                 test("should return correctly packed parameters", () => {
                     expect(
-                        collateralizedLoanTerms.packParameters(scenario_3.unpackedParams),
-                    ).toEqual(scenario_3.packedParams);
+                        collateralizedLoanTerms.packParameters(scenario3.unpackedParams),
+                    ).toEqual(scenario3.packedParams);
                 });
             });
         });
@@ -236,22 +236,22 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
     describe("...with valid termsContractParameters string", () => {
         describe("Scenario #1", () => {
             test("should return correctly unpacked parameters", () => {
-                expect(collateralizedLoanTerms.unpackParameters(scenario_1.packedParams)).toEqual(
-                    scenario_1.unpackedParams,
+                expect(collateralizedLoanTerms.unpackParameters(scenario1.packedParams)).toEqual(
+                    scenario1.unpackedParams,
                 );
             });
         });
         describe("Scenario #2", () => {
             test("should return correctly unpacked parameters", () => {
-                expect(collateralizedLoanTerms.unpackParameters(scenario_2.packedParams)).toEqual(
-                    scenario_2.unpackedParams,
+                expect(collateralizedLoanTerms.unpackParameters(scenario2.packedParams)).toEqual(
+                    scenario2.unpackedParams,
                 );
             });
         });
         describe("Scenario #3", () => {
             test("should return correctly unpacked parameters", () => {
-                expect(collateralizedLoanTerms.unpackParameters(scenario_3.packedParams)).toEqual(
-                    scenario_3.unpackedParams,
+                expect(collateralizedLoanTerms.unpackParameters(scenario3.packedParams)).toEqual(
+                    scenario3.unpackedParams,
                 );
             });
         });
@@ -266,9 +266,9 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         entry: DebtRegistryEntry;
     }
 
-    let scenario_1: AdapterScenario;
-    let scenario_2: AdapterScenario;
-    let scenario_3: AdapterScenario;
+    let scenario1: AdapterScenario;
+    let scenario2: AdapterScenario;
+    let scenario3: AdapterScenario;
 
     beforeAll(async () => {
         const debtKernel = await DebtKernelContract.deployed(web3, TX_DEFAULTS);
@@ -364,7 +364,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             issuanceBlockTimestamp: new BigNumber(moment().unix()),
         };
 
-        scenario_1 = {
+        scenario1 = {
             debtOrder: debtOrderForScenario1,
             fullLoanOrder: {
                 ...debtOrderForScenario1,
@@ -376,7 +376,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 termsContractParameters: debtOrderForScenario1.termsContractParameters,
             },
         };
-        scenario_2 = {
+        scenario2 = {
             debtOrder: debtOrderForScenario2,
             fullLoanOrder: {
                 ...debtOrderForScenario2,
@@ -388,7 +388,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 termsContractParameters: debtOrderForScenario2.termsContractParameters,
             },
         };
-        scenario_3 = {
+        scenario3 = {
             debtOrder: debtOrderForScenario3,
             fullLoanOrder: {
                 ...debtOrderForScenario3,
@@ -408,7 +408,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
-                            ...scenario_1.minimalLoanOrder,
+                            ...scenario1.minimalLoanOrder,
                             collateralTokenSymbol: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "collateralTokenSymbol"');
@@ -418,7 +418,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw CANNOT_FIND_TOKEN_WITH_SYMBOL", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
-                            ...scenario_1.minimalLoanOrder,
+                            ...scenario1.minimalLoanOrder,
                             collateralTokenSymbol: "XXX", // XXX is not tracked in our test env's registry
                         }),
                     ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("XXX"));
@@ -428,7 +428,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
-                            ...scenario_1.minimalLoanOrder,
+                            ...scenario1.minimalLoanOrder,
                             collateralAmount: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "collateralAmount"');
@@ -438,7 +438,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
-                            ...scenario_1.minimalLoanOrder,
+                            ...scenario1.minimalLoanOrder,
                             gracePeriodInDays: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "gracePeriodInDays"');
@@ -451,27 +451,27 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder(
-                            scenario_1.minimalLoanOrder,
+                            scenario1.minimalLoanOrder,
                         ),
-                    ).resolves.toEqual(scenario_1.debtOrder);
+                    ).resolves.toEqual(scenario1.debtOrder);
                 });
             });
             describe("Scenario #2", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder(
-                            scenario_2.minimalLoanOrder,
+                            scenario2.minimalLoanOrder,
                         ),
-                    ).resolves.toEqual(scenario_2.debtOrder);
+                    ).resolves.toEqual(scenario2.debtOrder);
                 });
             });
             describe("Scenario #3", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder(
-                            scenario_3.minimalLoanOrder,
+                            scenario3.minimalLoanOrder,
                         ),
-                    ).resolves.toEqual(scenario_3.debtOrder);
+                    ).resolves.toEqual(scenario3.debtOrder);
                 });
             });
         });
@@ -483,7 +483,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                            ...scenario_1.debtOrder,
+                            ...scenario1.debtOrder,
                             termsContract: "invalid terms contract",
                         }),
                     ).rejects.toThrow("instance.termsContract does not match pattern");
@@ -494,7 +494,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                            ...scenario_1.debtOrder,
+                            ...scenario1.debtOrder,
                             termsContract: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "termsContract"');
@@ -505,7 +505,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                            ...scenario_1.debtOrder,
+                            ...scenario1.debtOrder,
                             termsContractParameters: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "termsContractParameters"');
@@ -516,7 +516,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                            ...scenario_1.debtOrder,
+                            ...scenario1.debtOrder,
                             principalAmount: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "principalAmount"');
@@ -527,7 +527,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                            ...scenario_1.debtOrder,
+                            ...scenario1.debtOrder,
                             principalToken: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "principalToken"');
@@ -543,14 +543,14 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
 
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                        ...scenario_1.debtOrder,
+                        ...scenario1.debtOrder,
                         // the principal token index is encoded as 1 instead of 0.
                         termsContractParameters:
                             "0x010000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                     }),
                 ).rejects.toThrow(
                     CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
-                        scenario_1.debtOrder.principalToken,
+                        scenario1.debtOrder.principalToken,
                         principalTokenSymbol,
                     ),
                 );
@@ -561,7 +561,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             test("should throw CANNOT_FIND_TOKEN_WITH_INDEX", async () => {
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                        ...scenario_1.debtOrder,
+                        ...scenario1.debtOrder,
                         // the principal token index is encoded as 255, which does not map to any
                         // token listed in our `TokenRegistry`
                         termsContractParameters:
@@ -575,7 +575,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             it("should throw INVALID_AMORTIZATION_UNIT_TYPE", async () => {
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                        ...scenario_1.debtOrder,
+                        ...scenario1.debtOrder,
                         // The amortization unit is encoded as 6 (which is invalid) instead of 3.
                         termsContractParameters:
                             "0x000000003635c9adc5dea000000003e8600020200000008ac7230489e800005a",
@@ -588,22 +588,22 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             describe("Scenario #1", () => {
                 test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
                     await expect(
-                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario_1.debtOrder),
-                    ).resolves.toEqual(scenario_1.fullLoanOrder);
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario1.debtOrder),
+                    ).resolves.toEqual(scenario1.fullLoanOrder);
                 });
             });
             describe("Scenario #2", () => {
                 test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
                     await expect(
-                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario_2.debtOrder),
-                    ).resolves.toEqual(scenario_2.fullLoanOrder);
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario2.debtOrder),
+                    ).resolves.toEqual(scenario2.fullLoanOrder);
                 });
             });
             describe("Scenario #3", () => {
                 test("should return `CollateralizedSimpleInterestLoanOrder` with correctly unpacked values", async () => {
                     await expect(
-                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario_3.debtOrder),
-                    ).resolves.toEqual(scenario_3.fullLoanOrder);
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder(scenario3.debtOrder),
+                    ).resolves.toEqual(scenario3.fullLoanOrder);
                 });
             });
         });
@@ -613,7 +613,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             it("should throw CANNOT_FIND_TOKEN_WITH_INDEX", async () => {
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry({
-                        ...scenario_1.entry,
+                        ...scenario1.entry,
                         // Our test environment does not track a token at index 255 (which is packed
                         // into the first byte of the parameters)
                         termsContractParameters:
@@ -631,7 +631,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
 
                 await expect(
                     collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry({
-                        ...scenario_1.entry,
+                        ...scenario1.entry,
                         termsContract: INVALID_ADDRESS,
                     }),
                 ).rejects.toThrow(
@@ -645,27 +645,27 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                 test("should return correct collateralized simple interest loan order", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry(
-                            scenario_1.entry,
+                            scenario1.entry,
                         ),
-                    ).resolves.toEqual(scenario_1.minimalLoanOrder);
+                    ).resolves.toEqual(scenario1.minimalLoanOrder);
                 });
             });
             describe("Scenario #2:", () => {
                 test("should return correct collateralized simple interest loan order", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry(
-                            scenario_2.entry,
+                            scenario2.entry,
                         ),
-                    ).resolves.toEqual(scenario_2.minimalLoanOrder);
+                    ).resolves.toEqual(scenario2.minimalLoanOrder);
                 });
             });
             describe("Scenario #3:", () => {
                 test("should return correct collateralized simple interest loan order", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.fromDebtRegistryEntry(
-                            scenario_3.entry,
+                            scenario3.entry,
                         ),
-                    ).resolves.toEqual(scenario_3.minimalLoanOrder);
+                    ).resolves.toEqual(scenario3.minimalLoanOrder);
                 });
             });
         });
