@@ -54,12 +54,6 @@ export const TOKEN_REGISTRY_TRACKED_TOKENS = [
         decimals: 18,
     },
     {
-        address: "0x86fa049857e0209aa7d9e616f7eb3b3b78ecfdb0",
-        name: "EOS",
-        symbol: "EOS",
-        decimals: 18,
-    },
-    {
         address: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
         name: "Canonical Wrapped Ether",
         symbol: "WETH",
