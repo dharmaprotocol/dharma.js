@@ -326,6 +326,22 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         }
     }
 
+    /**
+     * Returns true if the collateral has already been seized.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<boolean>}
+     */
+    public async isCollateralWithdrawn(agreementId: string): Promise<boolean> {
+        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+
+        const collateralizerAddress = await collateralizerContract.agreementToCollateralizer.callAsync(
+            agreementId,
+        );
+
+        return collateralizerAddress === NULL_ADDRESS;
+    }
+
     private async assertTokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
@@ -443,13 +459,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     }
 
     private async assertCollateralNotWithdrawn(agreementId) {
-        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+        const collateralWithdrawn = await this.isCollateralWithdrawn(agreementId);
 
-        const collateralizerAddress = await collateralizerContract.agreementToCollateralizer.callAsync(
-            agreementId,
-        );
-
-        if (collateralizerAddress === NULL_ADDRESS) {
+        if (collateralWithdrawn) {
             throw new Error(CollateralizerAdapterErrors.COLLATERAL_NOT_FOUND(agreementId));
         }
     }
