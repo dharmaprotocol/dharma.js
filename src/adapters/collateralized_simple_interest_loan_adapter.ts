@@ -327,7 +327,8 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     }
 
     /**
-     * Returns true if the collateral has already been seized.
+     * Returns true if the collateral associated with the given agreement ID
+     * has already been seized.
      *
      * @param {string} agreementId
      * @returns {Promise<boolean>}
