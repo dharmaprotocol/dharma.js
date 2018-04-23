@@ -4,16 +4,16 @@ import * as Web3 from "web3";
 
 // Types
 import { DebtTokenScenario } from "../scenarios";
-import { SimpleInterestLoanOrder } from "src/adapters/simple_interest_loan_adapter";
+import { SimpleInterestLoanOrder } from "../../../../src/adapters/simple_interest_loan_adapter";
 
 // APIs
-import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
+import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "../../../../src/apis";
 
 // Adapters
-import { SimpleInterestLoanAdapter } from "src/adapters";
+import { SimpleInterestLoanAdapter } from "../../../../src/adapters";
 
 // Wrappers
-import { DummyTokenContract } from "src/wrappers";
+import { DummyTokenContract } from "../../../../src/wrappers";
 
 // Utils
 import { ACCOUNTS } from "../../../accounts";

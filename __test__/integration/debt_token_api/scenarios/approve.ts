@@ -1,6 +1,6 @@
-import { DebtTokenScenario } from "./scenarios";
+import { DebtTokenAPIErrors } from "../../../../src/apis/debt_token_api";
 import { Orders } from "./orders";
-import { DebtTokenAPIErrors } from "src/apis/debt_token_api";
+import { DebtTokenScenario } from "./scenarios";
 
 const successfulDefaults = {
     ...DebtTokenScenario.TOKEN_INJECTABLE_DEFAULTS,
@@ -29,7 +29,6 @@ export namespace ApproveScenarios {
                 creditorOneTokenID,
                 creditorTwoTokenID,
                 nonexistentTokenID,
-                malFormedTokenID,
             ) => nonexistentTokenID,
             errorType: "TOKEN_WITH_ID_DOES_NOT_EXIST",
             errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
