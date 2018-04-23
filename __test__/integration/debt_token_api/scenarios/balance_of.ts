@@ -1,6 +1,6 @@
-import { DebtTokenScenario } from "./scenarios";
 import * as singleLineString from "single-line-string";
 import { Orders } from "./orders";
+import { DebtTokenScenario } from "./scenarios";
 
 const DESCRIPTION = (balance: number) =>
     singleLineString`when user holds a balance of ${balance} debt token${
@@ -12,8 +12,8 @@ function generateScenarioForBalanceOf(balance: number): DebtTokenScenario.Balanc
         description: DESCRIPTION(balance),
         orders: Orders.ALL_ORDERS.slice(0, balance),
         owner: Orders.CREDITOR,
-        balance: balance,
         shouldSucceed: true,
+        balance,
     };
 }
 

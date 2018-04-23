@@ -1,5 +1,5 @@
-import * as singleLineString from "single-line-string";
 import * as omit from "lodash.omit";
+import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 import { BigNumber } from "../../utils/bignumber";
@@ -10,20 +10,15 @@ import { Assertions } from "../invariants";
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
 import { Adapter } from "./adapter";
-import { TermsContractParameters } from "./terms_contract_parameters";
 
 import { CollateralizedLoanTerms } from "./collateralized_simple_interest_loan_terms";
 import {
     SimpleInterestLoanOrder,
-    SimpleInterestLoanTerms,
     SimpleInterestTermsContractParameters,
 } from "./simple_interest_loan_adapter";
 
 import { NULL_ADDRESS } from "../../utils/constants";
-
-const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
-const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
-const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
+import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -78,7 +73,7 @@ export const CollateralizerAdapterErrors = {
 
 export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interface {
     private assert: Assertions;
-    private contractsAPI: ContractsAPI;
+    private readonly contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
     private web3Utils: Web3Utils;
@@ -221,7 +216,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         return loanOrder;
     }
 
-    public getRepaymentSchedule(debtEntry: DebtRegistryEntry): Array<number> {
+    public getRepaymentSchedule(debtEntry: DebtRegistryEntry): number[] {
         const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
         const { termLength, amortizationUnit } = this.unpackParameters(termsContractParameters);
 

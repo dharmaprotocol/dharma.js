@@ -54,6 +54,7 @@ export const INVALID_MAKE_REPAYMENT: MakeRepaymentScenario[] = [
     {
         description: "amount is not a BigNumber",
         ...defaultArgs,
+        // tslint:disable-next-line
         amount: 100,
         errorMessage: /instance does not conform to the "BigNumber" format/,
     },
