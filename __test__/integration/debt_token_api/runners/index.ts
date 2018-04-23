@@ -3,8 +3,8 @@ import { BigNumber } from "utils/bignumber";
 import * as Web3 from "web3";
 
 // Types
-import { DebtTokenScenario } from "../scenarios";
 import { SimpleInterestLoanOrder } from "../../../../src/adapters/simple_interest_loan_adapter";
+import { DebtTokenScenario } from "../scenarios";
 
 // APIs
 import { ContractsAPI, DebtTokenAPI, OrderAPI, SignerAPI, TokenAPI } from "../../../../src/apis";

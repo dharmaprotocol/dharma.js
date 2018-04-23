@@ -25,11 +25,8 @@ export namespace ApproveScenarios {
         {
             description: "`approve` is invoked with a token id that does not exist",
             ...unsuccessfulDefaults,
-            tokenID: (
-                creditorOneTokenID,
-                creditorTwoTokenID,
+            tokenID: (creditorOneTokenID, creditorTwoTokenID, nonexistentTokenID) =>
                 nonexistentTokenID,
-            ) => nonexistentTokenID,
             errorType: "TOKEN_WITH_ID_DOES_NOT_EXIST",
             errorMessage: DebtTokenAPIErrors.TOKEN_WITH_ID_DOES_NOT_EXIST(),
         },
