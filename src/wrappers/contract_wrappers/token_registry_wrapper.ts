@@ -180,6 +180,16 @@ export class TokenRegistryContract extends BaseContract {
             return result;
         },
     };
+    public getNumDecimalsFromSymbol = {
+        async callAsync(tokenSymbol: string): Promise<BigNumber> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<BigNumber>(
+                self.web3ContractInstance.getNumDecimalsFromSymbol.call,
+                self.web3ContractInstance,
+            )(tokenSymbol);
+            return result;
+        },
+    };
 
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
         super(web3ContractInstance, defaults);
