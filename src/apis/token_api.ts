@@ -217,18 +217,13 @@ export class TokenAPI {
         const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
 
         return Promise.all(
-            Array.from(
-                Array(tokenSymbolListLength.toNumber()).keys(),
-            ).map(async (tokenIndex) => {
+            Array.from(Array(tokenSymbolListLength.toNumber()).keys()).map(async (tokenIndex) => {
                 const tokenSymbol = await tokenRegistry.tokenSymbolList.callAsync(
                     new BigNumber(tokenIndex),
                 );
-
+                __test__/integration/token_api.spec.ts
                 // Reference the local dictionary of token information, using the token symbol.
-                const tokenInfo = _.find(
-                    TOKEN_REGISTRY_TRACKED_TOKENS,
-                    { symbol: tokenSymbol },
-                );
+                const tokenInfo = _.find(TOKEN_REGISTRY_TRACKED_TOKENS, { symbol: tokenSymbol });
 
                 return {
                     symbol: tokenSymbol,
