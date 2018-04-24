@@ -3,6 +3,7 @@ import * as ABIDecoder from "abi-decoder";
 import * as compact from "lodash.compact";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
+import * as _ from "lodash";
 
 // utils
 import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
@@ -493,15 +494,21 @@ describe("Token API (Integration Tests)", () => {
         });
     });
 
-    describe("#getTokenSymbolList", () => {
+    describe("#getSupportedTokens", () => {
         describe("token registry has tokens", () => {
-            test("should return the list of token symbols", async () => {
-                const tokenSymbolList = await tokenApi.getTokenSymbolList();
+            test("should return the list of token symbols and names", async () => {
+                const tokenSymbolList = await tokenApi.getSupportedTokens();
                 const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map(
-                    (token) => token.symbol,
+                    (token) => {
+                        return { symbol: token.symbol, name: token.name };
+                    },
                 );
 
-                expect(tokenSymbolList.sort()).toEqual(expectedTokenSymbolList.sort());
+                expect(
+                    _.sortBy(tokenSymbolList, "symbol"),
+                ).toEqual(
+                    _.sortBy(expectedTokenSymbolList, "symbol"),
+                );
             });
         });
     });

@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
@@ -6,7 +7,14 @@ import { Assertions } from "../invariants";
 import { TransactionOptions, TxData } from "../types";
 import { ContractsAPI } from "./";
 
+import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
+
 const TRANSFER_GAS_MAXIMUM = 70000;
+
+export interface TokenAttributes {
+    symbol: string;
+    name: string;
+}
 
 export const TokenAPIErrors = {
     INSUFFICIENT_SENDER_BALANCE: (address) =>
@@ -198,19 +206,35 @@ export class TokenAPI {
     }
 
     /**
-     * Asynchronously retrieve the list of symbols of the tokens in the TokenRegistry.
+     * Returns an array of token attributes, including symbol and name, for tokens that are
+     * listed in Dharma's token registry.
      *
-     * @return              the list of symbols of the tokens in the TokenRegistry.
+     * @returns {Promise<TokenAttributes[]>}
      */
-    public async getTokenSymbolList(): Promise<String[]> {
+    public async getSupportedTokens(): Promise<TokenAttributes[]> {
         const tokenRegistry = await this.contracts.loadTokenRegistry();
 
         const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
 
-        const tokenSymbolList: Array<Promise<String>> = Array.from(
-            Array(tokenSymbolListLength.toNumber()).keys(),
-        ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
+        return Promise.all(
+            Array.from(
+                Array(tokenSymbolListLength.toNumber()).keys(),
+            ).map(async (tokenIndex) => {
+                const tokenSymbol = await tokenRegistry.tokenSymbolList.callAsync(
+                    new BigNumber(tokenIndex),
+                );
 
-        return Promise.all(tokenSymbolList);
+                // Reference the local dictionary of token information, using the token symbol.
+                const tokenInfo = _.find(
+                    TOKEN_REGISTRY_TRACKED_TOKENS,
+                    { symbol: tokenSymbol },
+                );
+
+                return {
+                    symbol: tokenSymbol,
+                    name: tokenInfo.name,
+                };
+            }),
+        );
     }
 }
