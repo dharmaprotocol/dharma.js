@@ -508,4 +508,17 @@ describe("Token API (Integration Tests)", () => {
             });
         });
     });
+
+    describe("#getTokenSymbolList", () => {
+        describe("token registry has tokens", () => {
+            test("should return the list of token symbols", async () => {
+                const tokenSymbolList = await tokenApi.getTokenSymbolList();
+                const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map(
+                    (token) => token.symbol,
+                );
+
+                expect(tokenSymbolList.sort()).toEqual(expectedTokenSymbolList.sort());
+            });
+        });
+    });
 });

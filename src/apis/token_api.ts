@@ -232,4 +232,21 @@ export class TokenAPI {
             }),
         );
     }
+
+    /**
+     * Asynchronously retrieve the list of symbols of the tokens in the TokenRegistry.
+     *
+     * @returns {Promise<String[]>} the list of symbols of the tokens in the TokenRegistry.
+     */
+    public async getTokenSymbolList(): Promise<String[]> {
+        const tokenRegistry = await this.contracts.loadTokenRegistry();
+
+        const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
+
+        const tokenSymbolList: Array<Promise<String>> = Array.from(
+            Array(tokenSymbolListLength.toNumber()).keys(),
+        ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
+
+        return Promise.all(tokenSymbolList);
+    }
 }
