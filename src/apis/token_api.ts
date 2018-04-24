@@ -221,7 +221,7 @@ export class TokenAPI {
                 const tokenSymbol = await tokenRegistry.tokenSymbolList.callAsync(
                     new BigNumber(tokenIndex),
                 );
-                
+
                 // Reference the local dictionary of token information, using the token symbol.
                 const tokenInfo = _.find(TOKEN_REGISTRY_TRACKED_TOKENS, { symbol: tokenSymbol });
 
