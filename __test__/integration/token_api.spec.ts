@@ -499,7 +499,12 @@ describe("Token API (Integration Tests)", () => {
             test("should return the list of token symbols and names", async () => {
                 const tokenSymbolList = await tokenApi.getSupportedTokens();
                 const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => {
-                    return { symbol: token.symbol, name: token.name };
+                    return {
+                        address: token.address,
+                        symbol: token.symbol,
+                        name: token.name,
+                        numDecimals: token.decimals,
+                    };
                 });
 
                 expect(_.sortBy(tokenSymbolList, "symbol")).toEqual(
