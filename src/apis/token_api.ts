@@ -8,6 +8,13 @@ import { ContractsAPI } from "./";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
+export interface TokenAttributes {
+    address: string;
+    symbol: string;
+    name: string;
+    numDecimals: BigNumber;
+}
+
 export const TokenAPIErrors = {
     INSUFFICIENT_SENDER_BALANCE: (address) =>
         singleLineString`SENDER with address ${address} does not have sufficient balance in the specified token
@@ -198,16 +205,48 @@ export class TokenAPI {
     }
 
     /**
-     * Asynchronously retrieve the list of symbols of the tokens in the TokenRegistry.
+     * Returns an array of token attributes, including symbol and name, for tokens that are
+     * listed in Dharma's token registry.
      *
-     * @return              the list of symbols of the tokens in the TokenRegistry.
+     * @returns {Promise<TokenAttributes[]>}
      */
-    public async getTokenSymbolList(): Promise<String[]> {
+    public async getSupportedTokens(): Promise<TokenAttributes[]> {
         const tokenRegistry = await this.contracts.loadTokenRegistry();
 
         const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
 
-        const tokenSymbolList: Array<Promise<String>> = Array.from(
+        return Promise.all(
+            Array.from(Array(tokenSymbolListLength.toNumber()).keys()).map(async (tokenIndex) => {
+                const [
+                    address,
+                    symbol,
+                    name,
+                    numDecimals,
+                ] = await tokenRegistry.getTokenAttributesByIndex.callAsync(
+                    new BigNumber(tokenIndex),
+                );
+
+                return {
+                    address,
+                    symbol,
+                    name,
+                    numDecimals,
+                };
+            }),
+        );
+    }
+
+    /**
+     * Asynchronously retrieve the list of symbols of the tokens in the TokenRegistry.
+     *
+     * @returns {Promise<String[]>} the list of symbols of the tokens in the TokenRegistry.
+     */
+    public async getTokenSymbolList(): Promise<string[]> {
+        const tokenRegistry = await this.contracts.loadTokenRegistry();
+
+        const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
+
+        const tokenSymbolList: Array<Promise<string>> = Array.from(
             Array(tokenSymbolListLength.toNumber()).keys(),
         ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
 

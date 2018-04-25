@@ -1,13 +1,17 @@
-// libraries
+// External Libraries
 import * as ABIDecoder from "abi-decoder";
+import * as _ from "lodash";
 import * as compact from "lodash.compact";
 import * as Web3 from "web3";
-import { BigNumber } from "../../utils/bignumber";
 
-// utils
+// Utils
+import { BigNumber } from "../../utils/bignumber";
 import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
 import * as Units from "../../utils/units";
 import { Web3Utils } from "../../utils/web3_utils";
+
+// Test Utils
+import { isNonNullAddress } from "../utils/utils";
 
 import { ContractsAPI, TokenAPI } from "../../src/apis";
 import { TokenAPIErrors } from "../../src/apis/token_api";
@@ -488,6 +492,40 @@ describe("Token API (Integration Tests)", () => {
                     await expect(
                         tokenApi.getProxyAllowanceAsync(dummyMKRToken.address, OPERATOR),
                     ).resolves.toEqual(Units.ether(200));
+                });
+            });
+        });
+    });
+
+    describe("#getSupportedTokens", () => {
+        describe("token registry has tokens", () => {
+            test("should return the list of token symbols and names", async () => {
+                // Get the result of the function we are testing.
+                const tokenSymbolList = await tokenApi.getSupportedTokens();
+
+                // Get a reference from an unsorted array of data we know is correct.
+                const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => {
+                    return {
+                        symbol: token.symbol,
+                        name: token.name,
+                        numDecimals: token.decimals,
+                    };
+                });
+
+                // Sort both arrays for comparison.
+                const sortedResult = _.sortBy(tokenSymbolList, "symbol");
+                const sortedReference = _.sortBy(expectedTokenSymbolList, "symbol");
+
+                // For each set of token attributes, assert expectations.
+                sortedResult.forEach((tokenAttributes, index) => {
+                    const reference = sortedReference[index];
+
+                    expect(isNonNullAddress(tokenAttributes.address)).toEqual(true);
+                    expect(tokenAttributes.name).toEqual(reference.name);
+                    expect(tokenAttributes.symbol).toEqual(reference.symbol);
+                    expect(
+                        tokenAttributes.numDecimals.toNumber(),
+                    ).toEqual(reference.numDecimals);
                 });
             });
         });
