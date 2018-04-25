@@ -140,6 +140,46 @@ export class TokenRegistryContract extends BaseContract {
             return result;
         },
     };
+    public getTokenAttributesByIndex = {
+        async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<any[]> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenAttributesByIndex.call,
+                self.web3ContractInstance,
+            )(index);
+            return result;
+        },
+    };
+    public getTokenAttributesBySymbol = {
+        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<any[]> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenAttributesBySymbol.call,
+                self.web3ContractInstance,
+            )(symbol);
+            return result;
+        },
+    };
+    public getTokenNameBySymbol = {
+        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenNameBySymbol.call,
+                self.web3ContractInstance,
+            )(symbol);
+            return result;
+        },
+    };
+    public getTokenNameByIndex = {
+        async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
+            const self = this as TokenRegistryContract;
+            const result = await promisify<string>(
+                self.web3ContractInstance.getTokenNameByIndex.call,
+                self.web3ContractInstance,
+            )(index);
+            return result;
+        },
+    };
 
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
         super(web3ContractInstance, defaults);
