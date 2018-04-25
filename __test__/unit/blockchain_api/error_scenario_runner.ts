@@ -5,7 +5,7 @@ import { BigNumber } from "utils/bignumber";
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
 import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
 import { Web3Utils } from "utils/web3_utils";
-import { AdaptersAPI, ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
+import { AdaptersAPI, ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI, TokenAPI } from "src/apis/";
 import { SimpleInterestLoanAdapter } from "src/adapters";
 
 import {
@@ -49,6 +49,7 @@ export class ErrorScenarioRunner {
     private signerAPI: SignerAPI;
     private adaptersApi: AdaptersAPI;
     private orderAPI: OrderAPI;
+    private tokenAPI: TokenAPI;
 
     // Adapters
     private simpleInterestLoan: SimpleInterestLoanAdapter;
@@ -74,9 +75,10 @@ export class ErrorScenarioRunner {
 
         // Construct all necessary dependencies.
         this.contractsAPI = new ContractsAPI(this.web3);
+        this.tokenAPI = new TokenAPI(this.web3, this.contractsAPI);
         this.blockchainAPI = new BlockchainAPI(this.web3, this.contractsAPI);
         this.signerAPI = new SignerAPI(this.web3, this.contractsAPI);
-        this.adaptersApi = new AdaptersAPI(this.web3, this.contractsAPI);
+        this.adaptersApi = new AdaptersAPI(this.web3, this.contractsAPI, this.tokenAPI);
         this.orderAPI = new OrderAPI(this.web3, this.contractsAPI, this.adaptersApi);
 
         const {
@@ -96,7 +98,11 @@ export class ErrorScenarioRunner {
         this.tokenTransferProxy = tokenTransferProxy;
         this.tokenRegistry = tokenRegistry;
 
-        this.simpleInterestLoan = new SimpleInterestLoanAdapter(this.web3, this.contractsAPI);
+        this.simpleInterestLoan = new SimpleInterestLoanAdapter(
+            this.web3,
+            this.contractsAPI,
+            this.tokenAPI,
+        );
 
         // Mark instance as configured.
         this.isConfigured = true;
@@ -297,7 +303,7 @@ export class ErrorScenarioRunner {
         const debtOrder = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
-            principalAmount: PRINCIPAL_AMOUNT,
+            principalAmount: Units.scaleDown(PRINCIPAL_AMOUNT, new BigNumber(18)),
             principalTokenSymbol: token,
             interestRate: new BigNumber(0.1),
             amortizationUnit: "months",

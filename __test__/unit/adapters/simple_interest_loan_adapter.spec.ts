@@ -28,13 +28,15 @@ import {
 } from "src/adapters/simple_interest_loan_adapter";
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
+import { TokenAPI } from "src/apis";
 import { SimpleInterestLoanTerms } from "../../../src/adapters/simple_interest_loan_terms";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 const contracts = new ContractsAPI(web3);
-const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(web3, contracts);
+const tokenApi = new TokenAPI(web3, contracts);
+const simpleInterestLoanAdapter = new SimpleInterestLoanAdapter(web3, contracts, tokenApi);
 const simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contracts);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
@@ -451,7 +453,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
             });
 
             describe("Scenario #1", () => {
-                const principalAmount = Units.ether(1);
+                const principalAmount = new BigNumber(1);
                 const interestRate = new BigNumber(0.14);
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.WEEKLY;
                 const termLength = new BigNumber(2);
@@ -477,7 +479,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         ...DebtOrder.DEFAULTS,
                         kernelVersion: debtKernelAddress,
                         issuanceVersion: repaymentRouterAddress,
-                        principalAmount,
+                        principalAmount: Units.scaleUp(principalAmount, new BigNumber(18)),
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
                         termsContractParameters,
@@ -486,7 +488,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
             });
 
             describe("Scenario #2", () => {
-                const principalAmount = Units.ether(0.3);
+                const principalAmount = new BigNumber(0.3);
                 const interestRate = new BigNumber(1.678);
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.YEARLY;
                 const termLength = new BigNumber(1);
@@ -512,7 +514,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         ...DebtOrder.DEFAULTS,
                         kernelVersion: debtKernelAddress,
                         issuanceVersion: repaymentRouterAddress,
-                        principalAmount,
+                        principalAmount: Units.scaleUp(principalAmount, new BigNumber(18)),
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
                         termsContractParameters,
@@ -521,7 +523,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
             });
 
             describe("Scenario #3", () => {
-                const principalAmount = Units.ether(200000);
+                const principalAmount = new BigNumber(200000);
                 const interestRate = new BigNumber(0.0001);
                 const amortizationUnit = SimpleInterestLoanAdapter.Installments.MONTHLY;
                 const termLength = new BigNumber(12);
@@ -547,7 +549,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                         ...DebtOrder.DEFAULTS,
                         kernelVersion: debtKernelAddress,
                         issuanceVersion: repaymentRouterAddress,
-                        principalAmount,
+                        principalAmount: Units.scaleUp(principalAmount, new BigNumber(18)),
                         principalToken: principalToken.address,
                         termsContract: simpleInterestTermsContract.address,
                         termsContractParameters,
@@ -738,7 +740,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termsContractParameters,
                         }),
                     ).resolves.toEqual({
-                        principalAmount,
+                        principalAmount: Units.scaleDown(principalAmount, new BigNumber(18)),
                         principalToken,
                         principalTokenSymbol,
                         termsContract,
@@ -778,7 +780,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termsContractParameters,
                         }),
                     ).resolves.toEqual({
-                        principalAmount,
+                        principalAmount: Units.scaleDown(principalAmount, new BigNumber(18)),
                         principalToken,
                         principalTokenSymbol,
                         termsContract,
@@ -818,7 +820,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termsContractParameters,
                         }),
                     ).resolves.toEqual({
-                        principalAmount,
+                        principalAmount: Units.scaleDown(principalAmount, new BigNumber(18)),
                         principalToken,
                         principalTokenSymbol,
                         termsContract,

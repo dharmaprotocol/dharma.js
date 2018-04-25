@@ -47,9 +47,9 @@ export class DebtTokenScenarioRunner {
         this.web3Utils = new Web3Utils(web3);
 
         const contractsAPI = new ContractsAPI(web3);
-        const adaptersAPI = new AdaptersAPI(web3, contractsAPI);
-        const debtTokenAPI = new DebtTokenAPI(web3, contractsAPI);
         const tokenAPI = new TokenAPI(web3, contractsAPI);
+        const adaptersAPI = new AdaptersAPI(web3, contractsAPI, tokenAPI);
+        const debtTokenAPI = new DebtTokenAPI(web3, contractsAPI);
         const orderAPI = new OrderAPI(web3, contractsAPI, adaptersAPI);
         const signerAPI = new SignerAPI(web3, contractsAPI);
 
@@ -63,7 +63,7 @@ export class DebtTokenScenarioRunner {
         };
 
         const testAdapters = {
-            simpleInterestLoanAdapter: new SimpleInterestLoanAdapter(web3, contractsAPI),
+            simpleInterestLoanAdapter: new SimpleInterestLoanAdapter(web3, contractsAPI, tokenAPI),
         };
 
         this.balanceOfScenarioRunner = new BalanceOfScenarioRunner(web3, testAPIs, testAdapters);

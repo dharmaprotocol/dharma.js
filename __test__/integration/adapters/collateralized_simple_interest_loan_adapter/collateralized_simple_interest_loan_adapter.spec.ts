@@ -45,17 +45,17 @@ jest.unmock("@dharmaprotocol/contracts");
 describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () => {
     const contractsApi = new ContractsAPI(web3);
 
-    const adaptersApi = new AdaptersAPI(web3, contractsApi);
+    const tokenApi = new TokenAPI(web3, contractsApi);
+
+    const adaptersApi = new AdaptersAPI(web3, contractsApi, tokenApi);
 
     const servicingApi = new ServicingAPI(web3, contractsApi);
 
-    const adapter = new CollateralizedSimpleInterestLoanAdapter(web3, contractsApi);
+    const adapter = new CollateralizedSimpleInterestLoanAdapter(web3, contractsApi, tokenApi);
 
     const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 
     const signerApi = new SignerAPI(web3, contractsApi);
-
-    const tokenApi = new TokenAPI(web3, contractsApi);
 
     const returnCollateralRunner = new ReturnCollateralRunner(web3, adapter, {
         orderApi,

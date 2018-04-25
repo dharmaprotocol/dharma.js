@@ -16,7 +16,7 @@ import {
 } from "src/wrappers";
 
 // APIs
-import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
 
 // Scenarios
 import {
@@ -48,6 +48,7 @@ export class OrderScenarioRunner {
     public orderSigner: SignerAPI;
     public adaptersApi: AdaptersAPI;
     public abiDecoder: any;
+    public tokenApi: TokenAPI;
 
     private currentSnapshotId: number;
 

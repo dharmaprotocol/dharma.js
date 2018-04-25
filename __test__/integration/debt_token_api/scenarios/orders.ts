@@ -24,7 +24,7 @@ export namespace Orders {
     };
 
     export const ORDER_ONE: SimpleInterestLoanOrder = {
-        principalAmount: new BigNumber(10 * 10 ** 18),
+        principalAmount: new BigNumber(10),
         principalTokenSymbol: ERC20TokenSymbol.ZRX,
         interestRate: new BigNumber(4.135),
         amortizationUnit: "months",
@@ -33,7 +33,7 @@ export namespace Orders {
     };
 
     export const ORDER_TWO: SimpleInterestLoanOrder = {
-        principalAmount: new BigNumber(11 * 10 ** 18),
+        principalAmount: new BigNumber(11),
         principalTokenSymbol: ERC20TokenSymbol.MKR,
         interestRate: new BigNumber(8.937),
         amortizationUnit: "years",
@@ -42,7 +42,7 @@ export namespace Orders {
     };
 
     export const ORDER_THREE: SimpleInterestLoanOrder = {
-        principalAmount: new BigNumber(12 * 10 ** 18),
+        principalAmount: new BigNumber(12),
         principalTokenSymbol: ERC20TokenSymbol.REP,
         interestRate: new BigNumber(1.987),
         amortizationUnit: "weeks",

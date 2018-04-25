@@ -2,7 +2,7 @@
 import * as Web3 from "web3";
 
 // APIs
-import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI, TokenAPI } from "src/apis";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
@@ -57,8 +57,13 @@ describe("Order API (Integration Tests)", () => {
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
         scenarioRunner.contractsApi = new ContractsAPI(web3);
+        scenarioRunner.tokenApi = new TokenAPI(web3, scenarioRunner.contractsApi);
         scenarioRunner.orderSigner = new SignerAPI(web3, scenarioRunner.contractsApi);
-        scenarioRunner.adaptersApi = new AdaptersAPI(web3, scenarioRunner.contractsApi);
+        scenarioRunner.adaptersApi = new AdaptersAPI(
+            web3,
+            scenarioRunner.contractsApi,
+            scenarioRunner.tokenApi,
+        );
         scenarioRunner.orderApi = new OrderAPI(
             web3,
             scenarioRunner.contractsApi,

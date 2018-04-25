@@ -34,7 +34,7 @@ let defaultCollateralTerms: CollateralizedTermsContractParameters;
 
 defaultSimpleTerms = {
     amortizationUnit: "hours",
-    principalAmount: Units.ether(1),
+    principalAmount: new BigNumber(1),
     interestRate: new BigNumber(32),
     termLength: new BigNumber(1),
     principalTokenIndex: new BigNumber(0),
@@ -42,7 +42,7 @@ defaultSimpleTerms = {
 
 defaultCollateralTerms = {
     collateralTokenIndex: new BigNumber(2),
-    collateralAmount: Units.ether(0.1),
+    collateralAmount: new BigNumber(0.1),
     gracePeriodInDays: new BigNumber(30),
 };
 
