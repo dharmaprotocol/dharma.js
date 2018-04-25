@@ -157,11 +157,6 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             principalTokenIndex,
         );
 
-        await this.assertPrincipalTokenCorrespondsToSymbol(
-            debtOrder.principalToken,
-            principalTokenSymbol,
-        );
-
         return {
             ...debtOrder,
             principalAmount,
@@ -220,22 +215,6 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
 
     public unpackParameters(packedParams: string): SimpleInterestTermsContractParameters {
         return this.termsContractInterface.unpackParameters(packedParams);
-    }
-
-    private async assertPrincipalTokenCorrespondsToSymbol(
-        principalToken: string,
-        symbol: string,
-    ): Promise<void> {
-        const doesTokenCorrespondToSymbol = await this.contracts.doesTokenCorrespondToSymbol(
-            principalToken,
-            symbol,
-        );
-
-        if (!doesTokenCorrespondToSymbol) {
-            throw new Error(
-                SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(principalToken, symbol),
-            );
-        }
     }
 
     private async assertIsSimpleInterestTermsContract(termsContractAddress: string): Promise<void> {
