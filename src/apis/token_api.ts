@@ -222,7 +222,9 @@ export class TokenAPI {
                     symbol,
                     name,
                     numDecimals,
-                ] = await tokenRegistry.getTokenAttributesByIndex.callAsync(new BigNumber(tokenIndex));
+                ] = await tokenRegistry.getTokenAttributesByIndex.callAsync(
+                    new BigNumber(tokenIndex),
+                );
 
                 return {
                     address,
