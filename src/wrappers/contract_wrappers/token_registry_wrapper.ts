@@ -141,7 +141,7 @@ export class TokenRegistryContract extends BaseContract {
         },
     };
     public getTokenAttributesByIndex = {
-        async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
+        async callAsync(index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<any[]> {
             const self = this as TokenRegistryContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.getTokenAttributesByIndex.call,
@@ -151,7 +151,7 @@ export class TokenRegistryContract extends BaseContract {
         },
     };
     public getTokenAttributesBySymbol = {
-        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<string> {
+        async callAsync(symbol: string, defaultBlock?: Web3.BlockParam): Promise<any[]> {
             const self = this as TokenRegistryContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.getTokenAttributesBySymbol.call,
