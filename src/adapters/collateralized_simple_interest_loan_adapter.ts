@@ -4,6 +4,7 @@ import * as Web3 from "web3";
 
 import { BigNumber } from "../../utils/bignumber";
 import { Web3Utils } from "../../utils/web3_utils";
+import { scaleDown, scaleUp } from "../../utils/units";
 
 import { ContractsAPI, TokenAPI } from "../apis";
 import { Assertions } from "../invariants";
@@ -123,6 +124,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
+        const collateralDecimals = await this.tokenAPI.getNumDecimals(collateralTokenSymbol);
+        const principalDecimals = await this.tokenAPI.getNumDecimals(principalTokenSymbol);
+
+        const scaledUpCollateralAmount = scaleUp(collateralAmount, collateralDecimals);
+        const scaledUpPrincipalAmount = scaleUp(principalAmount, principalDecimals);
+
         let debtOrder: DebtOrder.Instance = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed
             // into the `termsContractParameters`.
@@ -135,21 +142,24 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
             "collateralTokenSymbol",
             "collateralAmount",
             "gracePeriodInDays",
+            // omit principalAmount, since it must be scaled up
+            "principalAmount",
         ]);
+        debtOrder.principalAmount = scaledUpPrincipalAmount;
 
         // Our final output is the perfect union of the packed simple interest params and the packed
         // collateralized params.
         const packedParams = this.packParameters(
             {
                 principalTokenIndex,
-                principalAmount,
+                principalAmount: scaledUpPrincipalAmount,
                 interestRate,
                 amortizationUnit,
                 termLength,
             },
             {
                 collateralTokenIndex,
-                collateralAmount,
+                collateralAmount: scaledUpCollateralAmount,
                 gracePeriodInDays,
             },
         );
@@ -184,6 +194,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         // Assert that the principal token corresponds to the symbol we've unpacked.
         await this.assertTokenCorrespondsToSymbol(debtOrder.principalToken, principalTokenSymbol);
 
+        const collateralDecimals = await this.tokenAPI.getNumDecimals(collateralTokenSymbol);
+        const principalDecimals = await this.tokenAPI.getNumDecimals(principalTokenSymbol);
+
+        const scaledDownCollateralAmount = scaleDown(params.collateralAmount, collateralDecimals);
+        const scaledDownPrincipalAmount = scaleDown(params.principalAmount, principalDecimals);
+
+        debtOrder.principalAmount = scaledDownPrincipalAmount;
+        params.collateralAmount = scaledDownCollateralAmount;
+        params.principalAmount = scaledDownPrincipalAmount;
+
         return {
             ...debtOrder,
             principalTokenSymbol,
@@ -214,6 +234,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
             collateralTokenSymbol,
             ...params,
         };
+
+        const collateralDecimals = await this.tokenAPI.getNumDecimals(collateralTokenSymbol);
+        const principalDecimals = await this.tokenAPI.getNumDecimals(principalTokenSymbol);
+
+        loanOrder.collateralAmount = scaleDown(loanOrder.collateralAmount, collateralDecimals);
+        loanOrder.principalAmount = scaleDown(loanOrder.principalAmount, principalDecimals);
 
         return loanOrder;
     }

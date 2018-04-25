@@ -4,6 +4,7 @@ import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 // Utils
 import { BigNumber } from "../../utils/bignumber";
+import { scaleDown, scaleUp } from "../../utils/units";
 // Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
@@ -74,11 +75,13 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
 
     private assert: Assertions;
     private readonly contracts: ContractsAPI;
+    private readonly tokenApi: TokenAPI;
     private termsContractInterface: SimpleInterestLoanTerms;
 
-    public constructor(web3: Web3, contracts: ContractsAPI, tokenAPI: TokenAPI) {
+    public constructor(web3: Web3, contracts: ContractsAPI, tokenApi: TokenAPI) {
         this.assert = new Assertions(web3, contracts);
         this.contracts = contracts;
+        this.tokenApi = tokenApi;
         this.termsContractInterface = new SimpleInterestLoanTerms(web3, contracts);
     }
 
@@ -112,20 +115,27 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
 
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
+        const principalDecimals = await this.tokenApi.getNumDecimals(principalTokenSymbol);
+
+        const scaledUpPrincipalAmount = scaleUp(principalAmount, principalDecimals);
+
         let debtOrder: DebtOrder.Instance = omit(simpleInterestLoanOrder, [
             "principalTokenSymbol",
             "interestRate",
             "amortizationUnit",
             "termLength",
+            // omit principalAmount, since it must be scaled up
+            "principalAmount",
         ]);
 
         debtOrder = {
             ...debtOrder,
+            principalAmount: scaledUpPrincipalAmount,
             principalToken: principalToken.address,
             termsContract: simpleInterestTermsContract.address,
             termsContractParameters: this.termsContractInterface.packParameters({
                 principalTokenIndex,
-                principalAmount,
+                principalAmount: scaledUpPrincipalAmount,
                 interestRate,
                 amortizationUnit,
                 termLength,
@@ -157,9 +167,15 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             principalTokenIndex,
         );
 
+        const principalDecimals = await this.tokenApi.getNumDecimals(principalTokenSymbol);
+
+        const scaledDownPrincipalAmount = scaleDown(principalAmount, principalDecimals);
+
+        debtOrder.principalAmount = scaledDownPrincipalAmount;
+
         return {
             ...debtOrder,
-            principalAmount,
+            principalAmount: scaledDownPrincipalAmount,
             principalTokenSymbol,
             interestRate,
             termLength,
@@ -189,9 +205,11 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             principalTokenIndex,
         );
 
+        const principalDecimals = await this.tokenApi.getNumDecimals(principalTokenSymbol);
+
         const loanOrder: SimpleInterestLoanOrder = {
             principalTokenSymbol,
-            principalAmount,
+            principalAmount: scaleDown(principalAmount, principalDecimals),
             interestRate,
             termLength,
             amortizationUnit,
