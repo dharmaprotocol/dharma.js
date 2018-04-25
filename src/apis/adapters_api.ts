@@ -3,7 +3,7 @@ import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 // APIs
-import { ContractsAPI } from "./";
+import { ContractsAPI, TokenAPI } from "./";
 
 // Adapters
 import {
@@ -49,14 +49,21 @@ export class AdaptersAPI {
     public collateralizedSimpleInterestLoan: CollateralizedSimpleInterestLoanAdapter;
 
     private contracts: ContractsAPI;
+    private tokenApi: TokenAPI;
 
-    constructor(web3: Web3, contractsApi: ContractsAPI) {
+    constructor(web3: Web3, contractsApi: ContractsAPI, tokenApi: TokenAPI) {
         this.contracts = contractsApi;
+        this.tokenApi = tokenApi;
 
-        this.simpleInterestLoan = new SimpleInterestLoanAdapter(web3, this.contracts);
+        this.simpleInterestLoan = new SimpleInterestLoanAdapter(
+            web3,
+            this.contracts,
+            this.tokenApi,
+        );
         this.collateralizedSimpleInterestLoan = new CollateralizedSimpleInterestLoanAdapter(
             web3,
             this.contracts,
+            this.tokenApi,
         );
     }
 

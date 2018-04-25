@@ -7,7 +7,7 @@ import { BigNumber } from "../../utils/bignumber";
 // Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
-import { ContractsAPI } from "../apis";
+import { ContractsAPI, TokenAPI } from "../apis";
 import { Assertions } from "../invariants";
 import { Adapter } from "./adapter";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
@@ -76,7 +76,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
     private readonly contracts: ContractsAPI;
     private termsContractInterface: SimpleInterestLoanTerms;
 
-    public constructor(web3: Web3, contracts: ContractsAPI) {
+    public constructor(web3: Web3, contracts: ContractsAPI, tokenAPI: TokenAPI) {
         this.assert = new Assertions(web3, contracts);
         this.contracts = contracts;
         this.termsContractInterface = new SimpleInterestLoanTerms(web3, contracts);

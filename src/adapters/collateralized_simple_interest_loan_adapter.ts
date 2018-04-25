@@ -5,7 +5,7 @@ import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 import { Web3Utils } from "../../utils/web3_utils";
 
-import { ContractsAPI } from "../apis";
+import { ContractsAPI, TokenAPI } from "../apis";
 import { Assertions } from "../invariants";
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
@@ -74,15 +74,17 @@ export const CollateralizerAdapterErrors = {
 export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interface {
     private assert: Assertions;
     private readonly contractsAPI: ContractsAPI;
+    private readonly tokenAPI: TokenAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
     private web3Utils: Web3Utils;
 
-    public constructor(web3: Web3, contractsAPI: ContractsAPI) {
+    public constructor(web3: Web3, contractsAPI: ContractsAPI, tokenAPI: TokenAPI) {
         this.assert = new Assertions(web3, contractsAPI);
         this.web3Utils = new Web3Utils(web3);
 
         this.contractsAPI = contractsAPI;
+        this.tokenAPI = tokenAPI;
 
         this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
