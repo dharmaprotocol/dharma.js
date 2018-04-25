@@ -687,32 +687,6 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
             });
         });
 
-        describe("terms contract does not match principal token's associated SimpleInterestTermsContract", () => {
-            it("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
-                const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
-                    new BigNumber(1),
-                );
-
-                await expect(
-                    simpleInterestLoanAdapter.fromDebtOrder({
-                        principalToken: principalTokenAddress,
-                        principalAmount: Units.ether(1),
-                        termsContract: ACCOUNTS[0].address,
-                        // We specify a token index of 1 in this parameter string,
-                        // which is not the index of the specified principal token
-                        // in the debt order (i.e. 0);.
-                        termsContractParameters:
-                            "0x0100000000002a5b1b1e089f00d000000300000000000000000000000000000c",
-                    }),
-                ).rejects.toThrow(
-                    SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
-                        principalTokenAddress,
-                        principalTokenSymbol,
-                    ),
-                );
-            });
-        });
-
         describe("amortization specified in termsContractParameters is of invalid type", () => {
             it("should throw INVALID_AMORTIZATION_UNIT_TYPE", async () => {
                 await expect(
