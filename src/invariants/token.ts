@@ -1,6 +1,6 @@
 import { BigNumber } from "../../utils/bignumber";
-import { ERC20Contract, TokenRegistryContract } from "../wrappers";
 import { NULL_ADDRESS } from "../../utils/constants";
+import { ERC20Contract, TokenRegistryContract } from "../wrappers";
 
 import * as singleLineString from "single-line-string";
 
