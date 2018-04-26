@@ -1,5 +1,5 @@
 // contracts
-import { ContractsAPI } from "./";
+import { ContractsAPI, TokenAPI } from "./";
 
 // constants
 import { TERMS_CONTRACT_TYPES } from "../../utils/constants";
@@ -38,6 +38,7 @@ export class ServicingAPI {
     private web3: Web3;
     private contracts: ContractsAPI;
     private assert: Assertions;
+    private tokenApi: TokenAPI;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3 = web3;
