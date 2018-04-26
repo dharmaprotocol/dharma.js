@@ -42,7 +42,7 @@ defaultSimpleTerms = {
 
 defaultCollateralTerms = {
     collateralTokenIndex: new BigNumber(2),
-    collateralAmount: new BigNumber(0.1),
+    collateralAmount: new BigNumber(1),
     gracePeriodInDays: new BigNumber(30),
 };
 
