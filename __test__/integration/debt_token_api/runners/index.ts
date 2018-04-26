@@ -17,6 +17,7 @@ import { DummyTokenContract } from "../../../../src/wrappers";
 
 // Utils
 import { ACCOUNTS } from "../../../accounts";
+import * as Units from "../../../../utils/units";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -53,16 +54,19 @@ export abstract class ScenarioRunner {
         const principalToken = await this.getDummyTokenBySymbol(
             simpleInterestLoanOrder.principalTokenSymbol,
         );
+        const principalTokenDecmials = await tokenAPI.getNumDecimals(
+            await principalToken.symbol.callAsync(),
+        );
 
         await this.configureTokenBalance(
             principalToken,
             simpleInterestLoanOrder.creditor,
-            simpleInterestLoanOrder.principalAmount,
+            Units.scaleUp(simpleInterestLoanOrder.principalAmount, principalTokenDecmials),
         );
 
         await tokenAPI.setProxyAllowanceAsync(
             principalToken.address,
-            simpleInterestLoanOrder.principalAmount,
+            Units.scaleUp(simpleInterestLoanOrder.principalAmount, principalTokenDecmials),
             {
                 from: simpleInterestLoanOrder.creditor,
             },
