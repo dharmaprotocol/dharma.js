@@ -7,7 +7,7 @@ import * as ABIDecoder from "abi-decoder";
 import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
+import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI, TokenAPI } from "src/apis";
 import { DebtOrder } from "src/types";
 import {
     DummyTokenContract,
@@ -22,7 +22,8 @@ const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3Utils = new Web3Utils(web3);
 
 const contractsApi = new ContractsAPI(web3);
-const adaptersApi = new AdaptersAPI(web3, contractsApi);
+const tokenApi = new TokenAPI(web3, contractsApi);
+const adaptersApi = new AdaptersAPI(web3, contractsApi, tokenApi);
 const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
@@ -101,7 +102,7 @@ export class MakeRepaymentRunner {
                 debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
                     debtor: DEBTOR,
                     creditor: CREDITOR,
-                    principalAmount: Units.ether(1),
+                    principalAmount: new BigNumber(1),
                     principalTokenSymbol: "REP",
                     interestRate: new BigNumber(0.1),
                     amortizationUnit: "months",

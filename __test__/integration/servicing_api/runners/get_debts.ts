@@ -16,11 +16,11 @@ import { DummyTokenContract } from "src/wrappers";
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
 const contractsApi = new ContractsAPI(web3);
-const adaptersApi = new AdaptersAPI(web3, contractsApi);
+const tokenApi = new TokenAPI(web3, contractsApi);
+const adaptersApi = new AdaptersAPI(web3, contractsApi, tokenApi);
 const orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
 const signerApi = new SignerAPI(web3, contractsApi);
 const servicingApi = new ServicingAPI(web3, contractsApi);
-const tokenApi = new TokenAPI(web3, contractsApi);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
@@ -60,7 +60,7 @@ export class GetDebtsRunner {
                     const debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
                         debtor: scenario.debtor,
                         creditor: CREDITOR,
-                        principalAmount: Units.ether(1),
+                        principalAmount: new BigNumber(1),
                         principalTokenSymbol: "REP",
                         interestRate: new BigNumber(0.1),
                         amortizationUnit: "months",

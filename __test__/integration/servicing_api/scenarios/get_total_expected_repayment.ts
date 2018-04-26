@@ -10,7 +10,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 0 days at 10% interest amortized monthly from 1 Ether principal",
         termLength: 0,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(10),
         amortizationUnit: "months",
         expected: Units.ether(0),
@@ -19,7 +19,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 31 days at 10% interest amortized daily from 1 Ether principal",
         termLength: 31,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(10),
         amortizationUnit: "days",
         expected: Units.ether(1.1),
@@ -28,7 +28,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 61 days at 10% interest amortized daily from 1 Ether principal",
         termLength: 61,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(10),
         amortizationUnit: "days",
         expected: Units.ether(1.1),
@@ -37,7 +37,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 0 months at 20% interest amortized monthly from 1 Ether principal",
         termLength: 0,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(20),
         amortizationUnit: "months",
         expected: Units.ether(0),
@@ -46,7 +46,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 1 month at 20% interest amortized monthly from 1 Ether principal",
         termLength: 1,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(20),
         amortizationUnit: "months",
         expected: Units.ether(1.2),
@@ -55,7 +55,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 2 months at 20% interest amortized monthly from 1 Ether principal",
         termLength: 2,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(20),
         amortizationUnit: "months",
         expected: Units.ether(1.2),
@@ -64,7 +64,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "over 73 days at 5% interest amortized daily from 2.5 Ether principal",
         termLength: 73,
-        principalAmount: Units.ether(2.5),
+        principalAmount: new BigNumber(2.5),
         interestRate: new BigNumber(5),
         amortizationUnit: "days",
         expected: Units.ether(2.625),
@@ -73,7 +73,7 @@ export const GET_TOTAL_EXPECTED_REPAYMENT: GetTotalExpectedRepaymentScenario[] =
     {
         description: "when the agreement does not exist",
         termLength: 73,
-        principalAmount: Units.ether(2.5),
+        principalAmount: new BigNumber(2.5),
         interestRate: new BigNumber(5),
         amortizationUnit: "days",
         expected: Units.ether(2.625),

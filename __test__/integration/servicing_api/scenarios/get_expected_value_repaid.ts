@@ -10,7 +10,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {
         description: "in 0 days at 10% interest amortized monthly from 1 Ether principal",
         days: 0,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(10),
         amortizationUnit: "months",
         expected: Units.ether(0),
@@ -18,7 +18,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {
         description: "in 31 days at 10% interest amortized monthly from 1 Ether principal",
         days: 31,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(10),
         amortizationUnit: "months",
         expected: Units.ether(0.55),
@@ -26,7 +26,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {
         description: "in 61 days at 10% interest amortized monthly from 1 Ether principal",
         days: 61,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(10),
         amortizationUnit: "months",
         expected: Units.ether(1.1),
@@ -34,7 +34,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {
         description: "in 0 days at 20% interest amortized monthly from 1 Ether principal",
         days: 0,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(20),
         amortizationUnit: "months",
         expected: Units.ether(0),
@@ -42,7 +42,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {
         description: "in 31 days at 20% interest amortized monthly from 1 Ether principal",
         days: 31,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(20),
         amortizationUnit: "months",
         expected: Units.ether(0.6),
@@ -50,7 +50,7 @@ export const GET_EXPECTED_VALUE_REPAID: GetExpectedValueRepaidScenario[] = [
     {
         description: "in 61 days at 20% interest amortized monthly from 1 Ether principal",
         days: 61,
-        principalAmount: Units.ether(1),
+        principalAmount: new BigNumber(1),
         interestRate: new BigNumber(20),
         amortizationUnit: "months",
         expected: Units.ether(1.2),
