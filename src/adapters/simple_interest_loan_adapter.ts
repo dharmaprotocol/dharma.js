@@ -4,6 +4,7 @@ import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 // Utils
 import { BigNumber } from "../../utils/bignumber";
+import { TokenAmount } from "../types/token";
 // Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
@@ -14,8 +15,7 @@ import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
     // Required Debt Order Parameters
-    principalAmount: BigNumber;
-    principalTokenSymbol: string;
+    principalTokenAmount: TokenAmount;
 
     // Parameters for Terms Contract
     interestRate: BigNumber;
@@ -98,16 +98,14 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
         );
 
         const {
-            principalTokenSymbol,
-            principalAmount,
+            principalTokenAmount,
             interestRate,
             amortizationUnit,
             termLength,
         } = simpleInterestLoanOrder;
 
-        const principalToken = await this.contracts.loadTokenBySymbolAsync(principalTokenSymbol);
         const principalTokenIndex = await this.contracts.getTokenIndexBySymbolAsync(
-            principalTokenSymbol,
+            principalTokenAmount.symbol,
         );
 
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
@@ -121,11 +119,11 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
 
         debtOrder = {
             ...debtOrder,
-            principalToken: principalToken.address,
+            principalToken: principalTokenAmount.address,
             termsContract: simpleInterestTermsContract.address,
             termsContractParameters: this.termsContractInterface.packParameters({
                 principalTokenIndex,
-                principalAmount,
+                principalAmount: principalTokenAmount.getRawAmount(),
                 interestRate,
                 amortizationUnit,
                 termLength,
@@ -156,11 +154,12 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
         const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
             principalTokenIndex,
         );
+        const principalTokenAmount = new TokenAmount(principalAmount, principalTokenSymbol, true);
 
         return {
             ...debtOrder,
             principalAmount,
-            principalTokenSymbol,
+            principalTokenAmount,
             interestRate,
             termLength,
             amortizationUnit,
@@ -188,9 +187,10 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
         const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
             principalTokenIndex,
         );
+        const principalTokenAmount = new TokenAmount(principalAmount, principalTokenSymbol, true);
 
         const loanOrder: SimpleInterestLoanOrder = {
-            principalTokenSymbol,
+            principalTokenAmount,
             principalAmount,
             interestRate,
             termLength,
