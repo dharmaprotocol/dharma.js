@@ -1,10 +1,11 @@
 // External libraries
 import * as Web3 from "web3";
-import { BigNumber } from "bignumber.js";
 import * as moment from "moment";
+import * as _ from "lodash";
 
 // Utils
 import { Web3Utils } from "utils/web3_utils";
+import { BigNumber } from "utils/bignumber";
 import * as Units from "utils/units";
 
 // Scenarios
@@ -53,21 +54,23 @@ export interface APIs {
 
 export abstract class BaseCollateralRunner {
     protected adapter: CollateralizedSimpleInterestLoanAdapter;
-    protected debtKernel: DebtKernelContract;
-    protected repaymentRouter: RepaymentRouterContract;
-    protected principalToken: DummyTokenContract;
     protected collateralToken: DummyTokenContract;
-    protected termsContract: CollateralizedSimpleInterestTermsContractContract;
+    protected collateralTokenDecimals: BigNumber;
+    protected contractsApi: ContractsAPI;
+    protected debtKernel: DebtKernelContract;
+    protected debtOrder: DebtOrder.Instance;
     protected orderApi: OrderAPI;
+    protected principalToken: DummyTokenContract;
+    protected principalTokenDecimals: BigNumber;
+    protected repaymentRouter: RepaymentRouterContract;
+    protected servicingApi: ServicingAPI;
     protected signerApi: SignerAPI;
+    protected snapshotId: number;
+    protected termsContract: CollateralizedSimpleInterestTermsContractContract;
+    protected tokenApi: TokenAPI;
     protected tokenTransferProxy: TokenTransferProxyContract;
     protected web3: Web3;
     protected web3Utils: Web3Utils;
-    protected servicingApi: ServicingAPI;
-    protected contractsApi: ContractsAPI;
-    protected tokenApi: TokenAPI;
-    protected snapshotId: number;
-    protected debtOrder: DebtOrder.Instance;
 
     constructor(web3: Web3, adapter: CollateralizedSimpleInterestLoanAdapter, apis: APIs) {
         this.web3 = web3;
@@ -112,7 +115,7 @@ export abstract class BaseCollateralRunner {
         // they are going to set up as collateral.
         await this.collateralToken.setBalance.sendTransactionAsync(
             DEBTOR.address,
-            scenario.collateralTerms.collateralAmount,
+            Units.scaleUp(scenario.collateralTerms.collateralAmount, this.collateralTokenDecimals),
             {
                 from: CONTRACT_OWNER.address,
             },
@@ -121,7 +124,7 @@ export abstract class BaseCollateralRunner {
         // The debtor has more than enough of the principal token to repay debts.
         await this.principalToken.setBalance.sendTransactionAsync(
             DEBTOR.address,
-            scenario.simpleTerms.principalAmount.mul(2),
+            Units.scaleUp(scenario.simpleTerms.principalAmount.mul(2), this.principalTokenDecimals),
             {
                 from: CONTRACT_OWNER.address,
             },
@@ -133,7 +136,9 @@ export abstract class BaseCollateralRunner {
         // as well as to pay for the creditor fee.
         await this.principalToken.setBalance.sendTransactionAsync(
             CREDITOR.address,
-            scenario.simpleTerms.principalAmount.add(this.debtOrder.creditorFee),
+            Units.scaleUp(scenario.simpleTerms.principalAmount, this.principalTokenDecimals).add(
+                this.debtOrder.creditorFee,
+            ),
             {
                 from: CONTRACT_OWNER.address,
             },
@@ -159,14 +164,15 @@ export abstract class BaseCollateralRunner {
         // The debtor grants the transfer proxy an allowance for moving the collateral.
         await this.tokenApi.setProxyAllowanceAsync(
             this.collateralToken.address,
-            scenario.collateralTerms.collateralAmount,
+            // scenario.collateralTerms.collateralAmount,
+            Units.scaleUp(scenario.collateralTerms.collateralAmount, this.collateralTokenDecimals),
             { from: debtor },
         );
 
         // The debtor grants the transfer proxy some sufficient allowance for making repayments.
         await this.tokenApi.setProxyAllowanceAsync(
             this.principalToken.address,
-            principalAmount.mul(2),
+            Units.scaleUp(principalAmount.mul(2), this.principalTokenDecimals),
             { from: debtor },
         );
 
@@ -174,7 +180,10 @@ export abstract class BaseCollateralRunner {
         // as well as the creditor fee.
         await this.tokenApi.setProxyAllowanceAsync(
             this.principalToken.address,
-            principalAmount.add(this.debtOrder.creditorFee),
+            Units.scaleUp(
+                principalAmount.add(this.debtOrder.creditorFee),
+                this.principalTokenDecimals,
+            ),
             { from: creditor },
         );
     }
@@ -202,15 +211,27 @@ export abstract class BaseCollateralRunner {
     protected generateDebtOrder(
         scenario: ReturnCollateralScenario | SeizeCollateralScenario,
     ): DebtOrder.Instance {
-        const termsParams = this.adapter.packParameters(
-            scenario.simpleTerms,
-            scenario.collateralTerms,
+        const scaledUpPricipalAmount = Units.scaleUp(
+            scenario.simpleTerms.principalAmount,
+            this.principalTokenDecimals,
         );
+        const scaledUpCollateralAmount = Units.scaleUp(
+            scenario.collateralTerms.collateralAmount,
+            this.collateralTokenDecimals,
+        );
+
+        const simpleTerms = _.cloneDeep(scenario.simpleTerms);
+        const collateralTerms = _.cloneDeep(scenario.collateralTerms);
+
+        simpleTerms.principalAmount = scaledUpPricipalAmount;
+        collateralTerms.collateralAmount = scaledUpCollateralAmount;
+
+        const termsParams = this.adapter.packParameters(simpleTerms, collateralTerms);
 
         return {
             kernelVersion: this.debtKernel.address,
             issuanceVersion: this.repaymentRouter.address,
-            principalAmount: scenario.simpleTerms.principalAmount,
+            principalAmount: scaledUpPricipalAmount,
             principalToken: this.principalToken.address,
             debtor: DEBTOR.address,
             debtorFee: Units.ether(0.001),
@@ -275,10 +296,18 @@ export abstract class BaseCollateralRunner {
             TX_DEFAULTS,
         );
 
+        this.principalTokenDecimals = await this.tokenApi.getNumDecimals(
+            await this.principalToken.symbol.callAsync(),
+        );
+
         this.collateralToken = await DummyTokenContract.at(
             (await this.contractsApi.loadTokenBySymbolAsync(collateralTokenSymbol)).address,
             this.web3,
             TX_DEFAULTS,
+        );
+
+        this.collateralTokenDecimals = await this.tokenApi.getNumDecimals(
+            await this.collateralToken.symbol.callAsync(),
         );
 
         this.tokenTransferProxy = await this.contractsApi.loadTokenTransferProxyAsync();

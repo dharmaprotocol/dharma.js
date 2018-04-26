@@ -1,3 +1,7 @@
+// Utils
+import { BigNumber } from "../../../../../utils/bignumber";
+import * as Units from "../../../../../utils/units";
+
 // Scenarios
 import { ReturnCollateralScenario } from "../scenarios";
 
@@ -56,7 +60,9 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                         this.debtOrder.debtor,
                     );
 
-                    expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
+                    expect(collateralAmount).toEqual(
+                        Units.scaleUp(scenario.collateralTerms.collateralAmount, new BigNumber(18)),
+                    );
                 });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
