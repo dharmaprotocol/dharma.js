@@ -911,7 +911,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     );
 
                     expectedLoanOrder = {
-                        principalAmount: Units.ether(1),
+                        principalAmount: new BigNumber(1),
                         principalTokenSymbol,
                         interestRate: new BigNumber(0.14),
                         amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
@@ -938,7 +938,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     );
 
                     expectedLoanOrder = {
-                        principalAmount: Units.ether(0.3),
+                        principalAmount: new BigNumber(0.3),
                         principalTokenSymbol,
                         interestRate: new BigNumber(1.678),
                         amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
@@ -968,7 +968,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     );
 
                     expectedLoanOrder = {
-                        principalAmount: Units.ether(200000),
+                        principalAmount: new BigNumber(200000),
                         principalTokenSymbol,
                         interestRate: new BigNumber(0.0001),
                         amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
