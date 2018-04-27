@@ -261,7 +261,7 @@ export class OrderAssertions {
         collateralAmount: BigNumber,
         tokenTransferProxy: TokenTransferProxyContract,
         errorMessage: string,
-    )  {
+    ) {
         const collateralizerAllowance = await collateralToken.allowance.callAsync(
             debtOrder.debtor,
             tokenTransferProxy.address,
@@ -277,10 +277,8 @@ export class OrderAssertions {
         collateralToken: ERC20Contract,
         collateralAmount: BigNumber,
         errorMessage: string,
-    )  {
-        const collateralizerBalance = await collateralToken.balanceOf.callAsync(
-            debtOrder.debtor,
-        );
+    ) {
+        const collateralizerBalance = await collateralToken.balanceOf.callAsync(debtOrder.debtor);
 
         if (collateralizerBalance.lt(collateralAmount)) {
             throw new Error(errorMessage);

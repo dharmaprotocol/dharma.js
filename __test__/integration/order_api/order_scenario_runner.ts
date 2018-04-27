@@ -357,11 +357,14 @@ export class OrderScenarioRunner {
             const dummyTokenRegistry = await TokenRegistryContract.deployed(this.web3, TX_DEFAULTS);
 
             const collateralTokenAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(
-                new BigNumber(2),
+                scenario.collateralTokenIndex,
             );
 
-            const collateralToken = await DummyTokenContract.at(collateralTokenAddress, this.web3, TX_DEFAULTS);
-            console.log(await collateralToken.symbol.callAsync());
+            const collateralToken = await DummyTokenContract.at(
+                collateralTokenAddress,
+                this.web3,
+                TX_DEFAULTS,
+            );
 
             await collateralToken.setBalance.sendTransactionAsync(
                 debtOrder.debtor,

@@ -6,7 +6,8 @@ import {
     DebtKernelContract,
     RepaymentRouterContract,
     DummyTokenContract,
-    SimpleInterestTermsContractContract, CollateralizedSimpleInterestTermsContractContract,
+    SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 
 // Scenarios
@@ -34,7 +35,9 @@ export interface FillScenario {
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
-        termsContract: SimpleInterestTermsContractContract | CollateralizedSimpleInterestTermsContractContract,
+        termsContract:
+            | SimpleInterestTermsContractContract
+            | CollateralizedSimpleInterestTermsContractContract,
     ) => DebtOrder.Instance;
     filler: string;
     signatories: {

@@ -2,7 +2,8 @@ import {
     DebtKernelContract,
     RepaymentRouterContract,
     DummyTokenContract,
-    SimpleInterestTermsContractContract, CollateralizedSimpleInterestTermsContractContract,
+    SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 import * as Units from "utils/units";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
@@ -70,7 +71,8 @@ export const VALID_ORDERS: FillScenario[] = [
                 relayer: ACCOUNTS[3].address,
                 relayerFee: Units.ether(0.002),
                 termsContract: termsContract.address,
-                termsContractParameters: "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                termsContractParameters:
+                    "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                 expirationTimestampInSec: new BigNumber(
                     moment()
                         .add(7, "days")

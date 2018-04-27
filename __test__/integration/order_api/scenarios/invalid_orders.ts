@@ -2,7 +2,8 @@ import {
     DebtKernelContract,
     RepaymentRouterContract,
     DummyTokenContract,
-    SimpleInterestTermsContractContract, CollateralizedSimpleInterestTermsContractContract,
+    SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 import * as Units from "utils/units";
 import * as moment from "moment";
@@ -364,7 +365,8 @@ export const INVALID_ORDERS: FillScenario[] = [
                  * Collateral token index is 2
                  * Grace period is 90 days
                  */
-                termsContractParameters: "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                termsContractParameters:
+                    "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                 expirationTimestampInSec: new BigNumber(
                     moment()
                         .add(7, "days")
@@ -418,7 +420,8 @@ export const INVALID_ORDERS: FillScenario[] = [
                  * Collateral token index is 2
                  * Grace period is 90 days
                  */
-                termsContractParameters: "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                termsContractParameters:
+                    "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
                 expirationTimestampInSec: new BigNumber(
                     moment()
                         .add(7, "days")
