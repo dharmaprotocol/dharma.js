@@ -22,6 +22,8 @@ export const TokenAPIErrors = {
     INSUFFICIENT_SENDER_ALLOWANCE: (address) =>
         singleLineString`SENDER with address ${address} does not have sufficient allowance in the specified token
                          to execute this transfer.`,
+    TOKEN_DOES_NOT_EXIST: (tokenSymbol) =>
+        singleLineString`TOKEN with symbol ${tokenSymbol} does not exist in the token registry.`,
 };
 
 export class TokenAPI {
@@ -251,5 +253,23 @@ export class TokenAPI {
         ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
 
         return Promise.all(tokenSymbolList);
+    }
+
+    /**
+     * Asynchronously retrieve the number of decimal points used by the given token.
+     *
+     * @param  tokenSymbol symbol of the ERC20 token.
+     * @return             the number of decimal points used by the given token.
+     */
+    public async getNumDecimals(tokenSymbol: string): Promise<BigNumber> {
+        const registry = await this.contracts.loadTokenRegistry();
+
+        await this.assert.token.exists(
+            tokenSymbol,
+            registry,
+            TokenAPIErrors.TOKEN_DOES_NOT_EXIST(tokenSymbol),
+        );
+
+        return registry.getNumDecimalsFromSymbol.callAsync(tokenSymbol);
     }
 }
