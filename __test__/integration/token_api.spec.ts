@@ -543,4 +543,20 @@ describe("Token API (Integration Tests)", () => {
             });
         });
     });
+
+    describe("#getNumDecimals", () => {
+        test("should return the number of decimal places that the token uses", async () => {
+            const numDecimals = await tokenApi.getNumDecimals("REP");
+
+            expect(numDecimals).toEqual(new BigNumber(18));
+        });
+
+        test("should throw an error if the token does not exist on the registry", async () => {
+            const tokenSymbol = "MIN";
+
+            await expect(tokenApi.getNumDecimals(tokenSymbol)).rejects.toThrow(
+                TokenAPIErrors.TOKEN_DOES_NOT_EXIST(tokenSymbol),
+            );
+        });
+    });
 });
