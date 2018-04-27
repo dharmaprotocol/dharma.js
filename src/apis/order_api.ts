@@ -21,7 +21,7 @@ import {
 import { DebtOrder, IssuanceCommitment, TransactionOptions, TxData } from "../types";
 
 // Utils
-import { NULL_ADDRESS } from "../../utils/constants";
+import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
 import { Assertions } from "../invariants";
 
 const ORDER_FILL_GAS_MAXIMUM = 600000;
@@ -80,6 +80,12 @@ export const OrderAPIErrors = {
     ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE: () =>
         singleLineString`Supplied adapter does not conform to the
                          base adapter interface.`,
+
+    INSUFFICIENT_COLLATERALIZER_ALLOWANCE: () =>
+        singleLineString`Debtor has not granted sufficient allowance for collateral transfer.`,
+
+    INSUFFICIENT_COLLATERALIZER_BALANCE: () =>
+        singleLineString`Debtor does not have sufficient allowance required for collateral transfer.`,
 };
 
 export class OrderAPI {
@@ -383,5 +389,35 @@ export class OrderAPI {
             tokenTransferProxy,
             OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
         );
+
+        const termsContractType = await this.contracts.getTermsContractType(
+            debtOrder.termsContract,
+        );
+
+        if (termsContractType === TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN) {
+            const terms = await this.unpackTerms(debtOrder);
+
+            const collateralAmount = terms.collateralAmount;
+            const collateralTokenIndex = terms.collateralTokenIndex;
+
+            const collateralToken = await this.contracts.loadTokenByIndexAsync(
+                collateralTokenIndex,
+            );
+
+            await this.assert.order.sufficientCollateralizerAllowanceAsync(
+                debtOrder,
+                collateralToken,
+                collateralAmount,
+                tokenTransferProxy,
+                OrderAPIErrors.INSUFFICIENT_COLLATERALIZER_ALLOWANCE(),
+            );
+
+            await this.assert.order.sufficientCollateralizerBalanceAsync(
+                debtOrder,
+                collateralToken,
+                collateralAmount,
+                OrderAPIErrors.INSUFFICIENT_COLLATERALIZER_BALANCE(),
+            );
+        }
     }
 }

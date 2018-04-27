@@ -12,6 +12,7 @@ import {
     ERC20Contract,
     TokenTransferProxyContract,
 } from "../wrappers";
+import { OrderAPIErrors } from "../apis/order_api";
 
 const BLOCK_TIME_ESTIMATE_SECONDS = 14;
 
@@ -250,6 +251,38 @@ export class OrderAssertions {
         );
 
         if (creditorAllowance.lt(debtOrder.principalAmount.plus(debtOrder.creditorFee))) {
+            throw new Error(errorMessage);
+        }
+    }
+
+    public async sufficientCollateralizerAllowanceAsync(
+        debtOrder: DebtOrder.Instance,
+        collateralToken: ERC20Contract,
+        collateralAmount: BigNumber,
+        tokenTransferProxy: TokenTransferProxyContract,
+        errorMessage: string,
+    )  {
+        const collateralizerAllowance = await collateralToken.allowance.callAsync(
+            debtOrder.debtor,
+            tokenTransferProxy.address,
+        );
+
+        if (collateralizerAllowance.lt(collateralAmount)) {
+            throw new Error(errorMessage);
+        }
+    }
+
+    public async sufficientCollateralizerBalanceAsync(
+        debtOrder: DebtOrder.Instance,
+        collateralToken: ERC20Contract,
+        collateralAmount: BigNumber,
+        errorMessage: string,
+    )  {
+        const collateralizerBalance = await collateralToken.balanceOf.callAsync(
+            debtOrder.debtor,
+        );
+
+        if (collateralizerBalance.lt(collateralAmount)) {
             throw new Error(errorMessage);
         }
     }

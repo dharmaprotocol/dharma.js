@@ -2,7 +2,7 @@ import {
     DebtKernelContract,
     RepaymentRouterContract,
     DummyTokenContract,
-    SimpleInterestTermsContractContract,
+    SimpleInterestTermsContractContract, CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 import * as Units from "utils/units";
 import * as moment from "moment";
@@ -333,5 +333,113 @@ export const INVALID_ORDERS: FillScenario[] = [
                 { from: debtOrder.creditor },
             );
         },
+    },
+    {
+        description: "collateral allowance is insufficient",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+            termsContract: CollateralizedSimpleInterestTermsContractContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                relayer: ACCOUNTS[3].address,
+                relayerFee: Units.ether(0.002),
+                termsContract: termsContract.address,
+                /**
+                 * Principal token index is 0
+                 * Principal Amount: 1e18
+                 * Interest Rate: 0.1%
+                 * Monthly installments
+                 * 7 day term length
+                 * 10 units of collateral
+                 * Collateral token index is 2
+                 * Grace period is 90 days
+                 */
+                termsContractParameters: "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .add(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
+        },
+        filler: ACCOUNTS[2].address,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: false,
+        },
+        successfullyFills: false,
+        errorType: "INSUFFICIENT_COLLATERALIZER_ALLOWANCE",
+        errorMessage: OrderAPIErrors.INSUFFICIENT_COLLATERALIZER_ALLOWANCE(),
+        isCollateralized: true,
+        collateralBalance: Units.ether(10),
+        // Collateral allowance is insufficient by 1 unit.
+        collateralAllowance: Units.ether(9),
+        collateralTokenIndex: new BigNumber(2),
+    },
+    {
+        description: "collateral balance is insufficient",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+            termsContract: CollateralizedSimpleInterestTermsContractContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                relayer: ACCOUNTS[3].address,
+                relayerFee: Units.ether(0.002),
+                termsContract: termsContract.address,
+                /**
+                 * Principal token index is 0
+                 * Principal Amount: 1e18
+                 * Interest Rate: 0.1%
+                 * Monthly installments
+                 * 7 day term length
+                 * 10 units of collateral
+                 * Collateral token index is 2
+                 * Grace period is 90 days
+                 */
+                termsContractParameters: "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .add(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
+        },
+        filler: ACCOUNTS[2].address,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: false,
+        },
+        successfullyFills: false,
+        errorType: "INSUFFICIENT_COLLATERALIZER_BALANCE",
+        errorMessage: OrderAPIErrors.INSUFFICIENT_COLLATERALIZER_BALANCE(),
+        isCollateralized: true,
+        // Collateral balance is insufficient by 1 unit.
+        collateralBalance: Units.ether(9),
+        collateralAllowance: Units.ether(10),
+        collateralTokenIndex: new BigNumber(2),
     },
 ];
