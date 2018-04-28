@@ -454,6 +454,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     ).resolves.toEqual(scenario1.debtOrder);
                 });
             });
+
             describe("Scenario #2", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(
@@ -463,6 +464,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     ).resolves.toEqual(scenario2.debtOrder);
                 });
             });
+
             describe("Scenario #3", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(

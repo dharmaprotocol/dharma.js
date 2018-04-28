@@ -6,7 +6,8 @@ import { BigNumber } from "../../utils/bignumber";
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
 import {
-    AmortizationUnit, SimpleInterestAdapterErrors,
+    AmortizationUnit,
+    SimpleInterestAdapterErrors,
     SimpleInterestTermsContractParameters,
 } from "./simple_interest_loan_adapter";
 
@@ -57,7 +58,7 @@ export class SimpleInterestLoanTerms {
         const interestRateFixedPointHex = interestRateFixedPoint.toString(16);
         const amortizationUnitTypeHex = AmortizationUnitCode[
             amortizationUnit.toUpperCase()
-            ].toString(16);
+        ].toString(16);
         const termLengthHex = termLength.toString(16);
 
         return (
@@ -111,6 +112,16 @@ export class SimpleInterestLoanTerms {
             termLength,
             amortizationUnit,
         };
+    }
+
+    /**
+     * Asserts that invariants are met for a given packed parameters string.
+     *
+     * @param {string} packedParameters
+     */
+    public validate(packedParameters: string) {
+        const unpackedParameters = this.unpackParameters(packedParameters);
+        this.packParameters(unpackedParameters);
     }
 
     public assertPrincipalTokenIndexWithinBounds(principalTokenIndex: BigNumber) {

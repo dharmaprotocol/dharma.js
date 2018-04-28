@@ -7,6 +7,7 @@ import { BigNumber } from "../../utils/bignumber";
 // Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
 
+import { NULL_ADDRESS } from "../../utils/constants";
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
 import { Adapter } from "./adapter";
@@ -53,10 +54,13 @@ export const SimpleInterestAdapterErrors = {
     INVALID_TERM_LENGTH: () =>
         singleLineString`Term length value cannot be negative or greater
                          than ${parseInt(MAX_TERM_LENGTH_VALUE_HEX, 16)}`,
-    MISMATCHED_TOKEN_SYMBOL: (principalTokenAddress: string, symbol: string) =>
+
+    MISMATCHED_TOKEN_SYMBOL: (principalTokenIndex: BigNumber, symbol: string) =>
         singleLineString`Terms contract parameters are invalid for the given debt order.
-                         Principal token at address ${principalTokenAddress} does not
-                         correspond to specified token with symbol ${symbol}`,
+                         Principal token at index ${principalTokenIndex.toString()}, specified
+                         in the terms contract, does not correspond to specified token
+                         with symbol ${symbol}`,
+
     MISMATCHED_TERMS_CONTRACT: (termsContract: string) =>
         singleLineString`Terms contract at address ${termsContract} is not
                          a SimpleInterestTermsContract.  As such, this adapter will not
@@ -87,7 +91,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
      * simple interest loan order.
      *
      * @param  simpleInterestLoanOrder a simple interest loan order instance.
-     * @return                         the generated Dharma debt order.
+     * @return the generated Dharma debt order.
      */
     public async toDebtOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
@@ -189,15 +193,13 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             principalTokenIndex,
         );
 
-        const loanOrder: SimpleInterestLoanOrder = {
+        return {
             principalTokenSymbol,
             principalAmount,
             interestRate,
             termLength,
             amortizationUnit,
         };
-
-        return loanOrder;
     }
 
     public getRepaymentSchedule(debtEntry: DebtRegistryEntry): number[] {
@@ -217,12 +219,59 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
         return this.termsContractInterface.unpackParameters(packedParams);
     }
 
+    /**
+     * Validates that the basic invariants have been met for a given SimpleInterestLoanOrder.
+     *
+     * @param {SimpleInterestLoanOrder} simpleInterestLoanOrder
+     * @returns {Promise<void>}
+     */
+    public async validateAsync(simpleInterestLoanOrder: SimpleInterestLoanOrder) {
+        this.termsContractInterface.validate(simpleInterestLoanOrder.termsContractParameters);
+
+        await this.assertIsSimpleInterestTermsContract(simpleInterestLoanOrder.termsContract);
+
+        await this.assertPrincipalTokenValidAsync(simpleInterestLoanOrder);
+    }
+
     private async assertIsSimpleInterestTermsContract(termsContractAddress: string): Promise<void> {
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
         if (termsContractAddress !== simpleInterestTermsContract.address) {
             throw new Error(
                 SimpleInterestAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
+            );
+        }
+    }
+
+    /**
+     * Asserts that the address of the principal token specified in the loan order
+     * matches the address of the principal token specified in the terms contract parameters.
+     *
+     * @param {SimpleInterestLoanOrder} loanOrder
+     * @returns {Promise<void>}
+     */
+    private async assertPrincipalTokenValidAsync(loanOrder: SimpleInterestLoanOrder) {
+        const principalTokenSymbol = loanOrder.principalTokenSymbol;
+
+        const unpackedTerms = this.unpackParameters(loanOrder.termsContractParameters);
+
+        const tokenIndex = unpackedTerms.principalTokenIndex;
+
+        // Find the token in the registry.
+        const tokenRegistry = await this.contracts.loadTokenRegistry();
+        const tokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
+            principalTokenSymbol,
+        );
+        const expectedTokenAddress = await tokenRegistry.getTokenAddressByIndex.callAsync(
+            tokenIndex,
+        );
+
+        if (tokenAddress === NULL_ADDRESS || tokenAddress !== expectedTokenAddress) {
+            throw new Error(
+                SimpleInterestAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
+                    tokenIndex,
+                    principalTokenSymbol,
+                ),
             );
         }
     }

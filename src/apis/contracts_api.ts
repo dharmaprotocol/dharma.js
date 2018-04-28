@@ -420,13 +420,13 @@ export class ContractsAPI {
      * @param {number} index
      * @returns {Promise<string>}
      */
-    public async getTokenAddressByIndexAsync(index: number): Promise<string> {
+    public async getTokenAddressByIndexAsync(index: BigNumber): Promise<string> {
         const tokenRegistryContract = await this.loadTokenRegistry({});
 
         const tokenAddress = await tokenRegistryContract.getTokenAddressByIndex.callAsync(index);
 
         if (tokenAddress === NULL_ADDRESS) {
-            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index));
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index.toNumber()));
         }
 
         return tokenAddress;
@@ -472,7 +472,7 @@ export class ContractsAPI {
      * @returns {Promise<ERC20Contract>}
      */
     public async loadTokenByIndexAsync(
-        index: number,
+        index: BigNumber,
         transactionOptions: object = {},
     ): Promise<ERC20Contract> {
         const tokenAddress = await this.getTokenAddressByIndexAsync(index);

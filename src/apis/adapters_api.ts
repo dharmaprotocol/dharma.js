@@ -15,12 +15,6 @@ import {
 // Constants
 import { TERMS_CONTRACT_TYPES } from "../../utils/constants";
 
-// Wrappers
-import {
-    CollateralizedSimpleInterestTermsContractContract,
-    SimpleInterestTermsContractContract,
-} from "../wrappers";
-
 export const AdaptersErrors = {
     NO_ADAPTER_FOR_TERMS_CONTRACT: (termsContractAddress: string) =>
         singleLineString`Could not find adapter suitable for terms contract at
@@ -48,7 +42,7 @@ export class AdaptersAPI {
     public simpleInterestLoan: SimpleInterestLoanAdapter;
     public collateralizedSimpleInterestLoan: CollateralizedSimpleInterestLoanAdapter;
 
-    private contracts: ContractsAPI;
+    private readonly contracts: ContractsAPI;
 
     constructor(web3: Web3, contractsApi: ContractsAPI) {
         this.contracts = contractsApi;

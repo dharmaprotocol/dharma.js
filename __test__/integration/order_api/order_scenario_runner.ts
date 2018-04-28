@@ -1,41 +1,47 @@
 // External
-import * as Web3 from "web3";
-import * as compact from "lodash.compact";
 import * as ABIDecoder from "abi-decoder";
-import { BigNumber } from "utils/bignumber";
+import * as compact from "lodash.compact";
 import * as moment from "moment";
+import * as Web3 from "web3";
+import { BigNumber } from "../../../utils/bignumber";
 
 // Wrappers
 import {
     DebtKernelContract,
     DebtOrderWrapper,
-    RepaymentRouterContract,
-    TokenTransferProxyContract,
     DummyTokenContract,
+    RepaymentRouterContract,
     SimpleInterestTermsContractContract,
-} from "src/wrappers";
+    TokenRegistryContract,
+    TokenTransferProxyContract,
+} from "../../../src/wrappers";
 
 // APIs
-import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "../../../src/apis";
 
 // Scenarios
 import {
     FillScenario,
+    IssuanceCancellationScenario,
     OrderCancellationScenario,
     OrderGenerationScenario,
-    IssuanceCancellationScenario,
     UnpackTermsScenario,
 } from "./scenarios/";
 
 // Types
-import { DebtOrder } from "src/types";
-import { Adapter } from "src/adapters";
+import {
+    Adapter,
+    CollateralizedSimpleInterestLoanAdapter,
+    SimpleInterestLoanAdapter,
+} from "../../../src/adapters";
+import { DebtOrder } from "../../../src/types";
 
 // Utils
-import { Web3Utils } from "utils/web3_utils";
+import * as Units from "../../../utils/units";
+import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
-import * as Units from "utils/units";
-import { TokenRegistryContract } from "../../../src/wrappers";
+import { SimpleInterestLoanOrder } from "../../../src/adapters/simple_interest_loan_adapter";
+import { CollateralizedSimpleInterestLoanOrder } from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -50,11 +56,10 @@ export class OrderScenarioRunner {
     public contractsApi: ContractsAPI;
     public orderSigner: SignerAPI;
     public adaptersApi: AdaptersAPI;
-    public abiDecoder: any;
 
     private currentSnapshotId: number;
 
-    private web3: Web3;
+    private readonly web3: Web3;
 
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
@@ -92,11 +97,54 @@ export class OrderScenarioRunner {
             });
 
             test("returns true if order has been filled", async () => {
-                const txHash = await this.orderApi.fillAsync(debtOrder, {
+                await this.orderApi.fillAsync(debtOrder, {
                     from: scenario.filler,
                 });
 
                 expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(true);
+            });
+
+            describe("when validating the loan order", () => {
+                const validateMock = jest.fn();
+                let originalValidate: (
+                    loanOrder: SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder,
+                ) => void;
+                let adapter: Adapter.Interface;
+
+                beforeAll(async () => {
+                    adapter = await this.adaptersApi.getAdapterByTermsContractAddress(
+                        debtOrder.termsContract,
+                    );
+
+                    originalValidate = adapter.validateAsync;
+                    // Mock the validate function, to count the number of times it was called,
+                    // and to spy on the given arguments.
+                    adapter.validateAsync = validateMock;
+                });
+
+                afterAll(() => {
+                    // Replace the adapter's validate function.
+                    adapter.validateAsync = validateMock;
+                });
+
+                test("it calls validate on the appropriate adapter once", async () => {
+                    await this.orderApi.fillAsync(debtOrder, {
+                        from: scenario.filler,
+                    });
+
+                    expect(validateMock).toHaveBeenCalledTimes(1);
+                });
+
+                test("it calls validate with a loan order adapted from the debt order", async () => {
+                    const loanOrder = await adapter.fromDebtOrder(debtOrder);
+
+                    await this.orderApi.fillAsync(debtOrder, {
+                        from: scenario.filler,
+                    });
+
+                    // Assert the expected input, which is a loan order.
+                    expect(validateMock).toHaveBeenCalledWith(loanOrder);
+                });
             });
         });
     }

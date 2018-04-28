@@ -134,11 +134,13 @@ export class OrderAPI {
 
         await this.assertValidityInvariantsAsync(debtOrder, debtKernel, debtToken);
         await this.assertConsensualityInvariants(debtOrder, txOptions);
-        await this.assertExternalBalanceAndAllowanceInvariantsAsync(
+        await this.assertCreditorBalanceAndAllowanceInvariantsAsync(
             debtOrder,
             tokenTransferProxy,
             txOptions,
         );
+
+        await this.assertValidLoanOrder(debtOrder);
 
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
@@ -314,6 +316,20 @@ export class OrderAPI {
         );
     }
 
+    /**
+     * Validates a given debtOrder against the appropriate loan order adapter.
+     *
+     * @param {DebtOrder.Instance} debtOrder
+     * @returns {Promise<void>}
+     */
+    private async assertValidLoanOrder(debtOrder: DebtOrder.Instance) {
+        const adapter = await this.adapters.getAdapterByTermsContractAddress(
+            debtOrder.termsContract,
+        );
+
+        await adapter.validateAsync(await adapter.fromDebtOrder(debtOrder));
+    }
+
     private async assertValidityInvariantsAsync(
         debtOrder: DebtOrder.Instance,
         debtKernel: DebtKernelContract,
@@ -367,7 +383,7 @@ export class OrderAPI {
         }
     }
 
-    private async assertExternalBalanceAndAllowanceInvariantsAsync(
+    private async assertCreditorBalanceAndAllowanceInvariantsAsync(
         debtOrder: DebtOrder.Instance,
         tokenTransferProxy: TokenTransferProxyContract,
         txOptions: object,
@@ -389,35 +405,5 @@ export class OrderAPI {
             tokenTransferProxy,
             OrderAPIErrors.CREDITOR_ALLOWANCE_INSUFFICIENT(),
         );
-
-        const termsContractType = await this.contracts.getTermsContractType(
-            debtOrder.termsContract,
-        );
-
-        if (termsContractType === TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN) {
-            const terms = await this.unpackTerms(debtOrder);
-
-            const collateralAmount = terms.collateralAmount;
-            const collateralTokenIndex = terms.collateralTokenIndex;
-
-            const collateralToken = await this.contracts.loadTokenByIndexAsync(
-                collateralTokenIndex,
-            );
-
-            await this.assert.order.sufficientCollateralizerAllowanceAsync(
-                debtOrder,
-                collateralToken,
-                collateralAmount,
-                tokenTransferProxy,
-                OrderAPIErrors.INSUFFICIENT_COLLATERALIZER_ALLOWANCE(),
-            );
-
-            await this.assert.order.sufficientCollateralizerBalanceAsync(
-                debtOrder,
-                collateralToken,
-                collateralAmount,
-                OrderAPIErrors.INSUFFICIENT_COLLATERALIZER_BALANCE(),
-            );
-        }
     }
 }
