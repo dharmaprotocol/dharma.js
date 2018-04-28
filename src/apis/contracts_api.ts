@@ -413,6 +413,25 @@ export class ContractsAPI {
         return tokenAddress;
     }
 
+    /**
+     * Given the index of a token in the Token Registry, returns the address of that
+     * token's contract.
+     *
+     * @param {number} index
+     * @returns {Promise<string>}
+     */
+    public async getTokenAddressByIndexAsync(index: number): Promise<string> {
+        const tokenRegistryContract = await this.loadTokenRegistry({});
+
+        const tokenAddress = await tokenRegistryContract.getTokenAddressByIndex.callAsync(index);
+
+        if (tokenAddress === NULL_ADDRESS) {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index));
+        }
+
+        return tokenAddress;
+    }
+
     public async getTokenIndexBySymbolAsync(symbol: string): Promise<BigNumber> {
         const tokenRegistryContract = await this.loadTokenRegistry();
 
@@ -440,6 +459,23 @@ export class ContractsAPI {
         transactionOptions: object = {},
     ): Promise<ERC20Contract> {
         const tokenAddress = await this.getTokenAddressBySymbolAsync(symbol);
+
+        return this.loadERC20TokenAsync(tokenAddress, transactionOptions);
+    }
+
+    /**
+     * Given the index of a token in the token registry, loads an instance of that
+     * token and returns it.
+     *
+     * @param {number} index
+     * @param {object} transactionOptions
+     * @returns {Promise<ERC20Contract>}
+     */
+    public async loadTokenByIndexAsync(
+        index: number,
+        transactionOptions: object = {},
+    ): Promise<ERC20Contract> {
+        const tokenAddress = await this.getTokenAddressByIndexAsync(index);
 
         return this.loadERC20TokenAsync(tokenAddress, transactionOptions);
     }

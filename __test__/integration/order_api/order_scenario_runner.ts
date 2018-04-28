@@ -35,6 +35,9 @@ import { Adapter } from "src/adapters";
 import { Web3Utils } from "utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
 import * as Units from "utils/units";
+import { TokenRegistryContract } from "../../../src/wrappers";
+
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 export class OrderScenarioRunner {
     public web3Utils: Web3Utils;
@@ -51,8 +54,11 @@ export class OrderScenarioRunner {
 
     private currentSnapshotId: number;
 
+    private web3: Web3;
+
     constructor(web3: Web3) {
         this.web3Utils = new Web3Utils(web3);
+        this.web3 = web3;
 
         this.testCheckOrderFilledScenario = this.testCheckOrderFilledScenario.bind(this);
         this.testFillScenario = this.testFillScenario.bind(this);
@@ -333,12 +339,51 @@ export class OrderScenarioRunner {
     }
 
     private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrder.Instance> {
-        let debtOrder = scenario.generateDebtOrder(
-            this.debtKernel,
-            this.repaymentRouter,
-            this.principalToken,
-            this.termsContract,
-        );
+        let debtOrder;
+
+        if (scenario.isCollateralized) {
+            const collateralizedTC = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
+
+            debtOrder = scenario.generateDebtOrder(
+                this.debtKernel,
+                this.repaymentRouter,
+                this.principalToken,
+                collateralizedTC,
+            );
+
+            /*
+                Set up balances and allowances for collateral.
+             */
+            const dummyTokenRegistry = await TokenRegistryContract.deployed(this.web3, TX_DEFAULTS);
+
+            const collateralTokenAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(
+                scenario.collateralTokenIndex,
+            );
+
+            const collateralToken = await DummyTokenContract.at(
+                collateralTokenAddress,
+                this.web3,
+                TX_DEFAULTS,
+            );
+
+            await collateralToken.setBalance.sendTransactionAsync(
+                debtOrder.debtor,
+                new BigNumber(scenario.collateralBalance),
+            );
+
+            await collateralToken.approve.sendTransactionAsync(
+                this.tokenTransferProxy.address,
+                new BigNumber(scenario.collateralAllowance),
+                { from: debtOrder.debtor },
+            );
+        } else {
+            debtOrder = scenario.generateDebtOrder(
+                this.debtKernel,
+                this.repaymentRouter,
+                this.principalToken,
+                this.termsContract,
+            );
+        }
 
         // We dynamically set the creditor's balance and
         // allowance of a given principal token to either

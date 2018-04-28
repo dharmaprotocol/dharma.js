@@ -3,6 +3,7 @@ import {
     RepaymentRouterContract,
     DummyTokenContract,
     SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 import * as Units from "utils/units";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
@@ -49,6 +50,48 @@ export const VALID_ORDERS: FillScenario[] = [
             underwriter: false,
         },
         successfullyFills: true,
+    },
+    {
+        description: "valid order using collateralized terms contract",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+            termsContract: CollateralizedSimpleInterestTermsContractContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                relayer: ACCOUNTS[3].address,
+                relayerFee: Units.ether(0.002),
+                termsContract: termsContract.address,
+                termsContractParameters:
+                    "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .add(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
+        },
+        filler: ACCOUNTS[2].address,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: false,
+        },
+        successfullyFills: true,
+        isCollateralized: true,
+        collateralBalance: Units.ether(10),
+        collateralAllowance: Units.ether(10),
+        collateralTokenIndex: new BigNumber(2),
     },
     {
         description: "valid order with relayer unspecified",

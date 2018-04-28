@@ -7,6 +7,7 @@ import {
     RepaymentRouterContract,
     DummyTokenContract,
     SimpleInterestTermsContractContract,
+    CollateralizedSimpleInterestTermsContractContract,
 } from "src/wrappers";
 
 // Scenarios
@@ -34,7 +35,9 @@ export interface FillScenario {
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
-        termsContract: SimpleInterestTermsContractContract,
+        termsContract:
+            | SimpleInterestTermsContractContract
+            | CollateralizedSimpleInterestTermsContractContract,
     ) => DebtOrder.Instance;
     filler: string;
     signatories: {
@@ -47,6 +50,10 @@ export interface FillScenario {
     creditorAllowance?: BigNumber;
     errorType?: string;
     errorMessage?: string;
+    isCollateralized?: boolean;
+    collateralBalance?: BigNumber;
+    collateralAllowance?: BigNumber;
+    collateralTokenIndex?: BigNumber;
     beforeBlock?: (debtOrder: DebtOrder.Instance, debtKernel: DebtKernelContract) => Promise<any>;
 }
 

@@ -1,5 +1,6 @@
 // External
 import * as Web3 from "web3";
+import { BigNumber } from "../../../utils/bignumber";
 
 // APIs
 import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
@@ -10,17 +11,17 @@ import { ACCOUNTS } from "../../accounts";
 
 // Scenarios
 import {
-    VALID_ORDERS,
-    INVALID_ORDERS,
-    VALID_ORDER_CANCELLATIONS,
-    VALID_ISSUANCE_CANCELLATIONS,
-    INVALID_ORDER_CANCELLATIONS,
     INVALID_ISSUANCE_CANCELLATIONS,
+    INVALID_ORDER_CANCELLATIONS,
+    INVALID_ORDERS,
     NONCONSENUAL_ORDERS,
     SUCCESSFUL_ORDER_GENERATION,
-    UNSUCCESSFUL_ORDER_GENERATION,
     SUCCESSFUL_UNPACK_TERMS,
+    UNSUCCESSFUL_ORDER_GENERATION,
     UNSUCCESSFUL_UNPACK_TERMS,
+    VALID_ISSUANCE_CANCELLATIONS,
+    VALID_ORDER_CANCELLATIONS,
+    VALID_ORDERS,
 } from "./scenarios";
 
 // Runners
@@ -28,11 +29,11 @@ import { OrderScenarioRunner } from "./order_scenario_runner";
 
 // Wrappers
 import {
-    DummyTokenContract,
-    TokenRegistryContract,
     DebtKernelContract,
+    DummyTokenContract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
+    TokenRegistryContract,
     TokenTransferProxyContract,
 } from "src/wrappers";
 
@@ -44,15 +45,15 @@ jest.unmock("@dharmaprotocol/contracts");
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 
-let scenarioRunner = new OrderScenarioRunner(web3);
+const scenarioRunner = new OrderScenarioRunner(web3);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 describe("Order API (Integration Tests)", () => {
     beforeAll(async () => {
         const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
-        const principalTokenAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync(
-            "REP",
+        const principalTokenAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(
+            new BigNumber(0),
         );
 
         scenarioRunner.web3Utils = new Web3Utils(web3);
