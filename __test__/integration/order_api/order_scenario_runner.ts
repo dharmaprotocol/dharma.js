@@ -342,14 +342,13 @@ export class OrderScenarioRunner {
         let debtOrder;
 
         if (scenario.isCollateralized) {
-            const collateralizedSimpleInterestTermsContract =
-                await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
+            const collateralizedTC = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
 
             debtOrder = scenario.generateDebtOrder(
                 this.debtKernel,
                 this.repaymentRouter,
                 this.principalToken,
-                collateralizedSimpleInterestTermsContract,
+                collateralizedTC,
             );
 
             /*
