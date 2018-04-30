@@ -10,6 +10,7 @@ import { ErrorParser } from "./error_parser";
 import { DebtKernelError } from "./debt_kernel_error";
 import { RepaymentSchedule } from "./repayment_schedule";
 import { RepaymentRouterError } from "./repayment_router_error";
+import { Token, TokenAmount } from "./token";
 
 export {
     DebtOrder,
@@ -26,4 +27,6 @@ export {
     DebtKernelError,
     RepaymentSchedule,
     RepaymentRouterError,
+    Token,
+    TokenAmount,
 };
