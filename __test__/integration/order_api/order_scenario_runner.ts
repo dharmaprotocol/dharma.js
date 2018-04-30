@@ -38,6 +38,7 @@ import { SimpleInterestLoanOrder } from "../../../src/adapters/simple_interest_l
 import * as Units from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
+import { isNonNullAddress } from "../../utils/utils";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -63,6 +64,7 @@ export class OrderScenarioRunner {
 
         this.testCheckOrderFilledScenario = this.testCheckOrderFilledScenario.bind(this);
         this.testFillScenario = this.testFillScenario.bind(this);
+        this.testAssertFillable = this.testAssertFillable.bind(this);
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
         this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
@@ -142,6 +144,42 @@ export class OrderScenarioRunner {
                     expect(validateMock).toHaveBeenCalledWith(loanOrder);
                 });
             });
+        });
+    }
+
+    public testAssertFillable(scenario: FillScenario) {
+        describe(scenario.description, () => {
+            let debtOrder: DebtOrder.Instance;
+
+            beforeAll(() => {
+                ABIDecoder.addABI(this.debtKernel.abi);
+            });
+
+            afterAll(() => {
+                ABIDecoder.removeABI(this.debtKernel.abi);
+            });
+
+            beforeEach(async () => {
+                debtOrder = await this.setUpFillScenario(scenario);
+            });
+
+            if (scenario.successfullyFills) {
+                test("does not throw", async () => {
+                    await expect (
+                        this.orderApi.assertFillableAsync(debtOrder, {
+                            from: scenario.filler,
+                        }),
+                    ).resolves.not.toThrow();
+                });
+            } else {
+                test(`throws ${scenario.errorType} error`, async () => {
+                    await expect(
+                        this.orderApi.assertFillableAsync(
+                            debtOrder, { from: scenario.filler },
+                        ),
+                    ).rejects.toThrow(scenario.errorMessage);
+                });
+            }
         });
     }
 

@@ -126,6 +126,32 @@ export class OrderAPI {
 
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
 
+        await this.assertFillableAsync(debtOrder, options);
+
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
+
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
+        return debtKernel.fillDebtOrder.sendTransactionAsync(
+            debtOrderWrapped.getCreditor(),
+            debtOrderWrapped.getOrderAddresses(),
+            debtOrderWrapped.getOrderValues(),
+            debtOrderWrapped.getOrderBytes32(),
+            debtOrderWrapped.getSignaturesV(),
+            debtOrderWrapped.getSignaturesR(),
+            debtOrderWrapped.getSignaturesS(),
+            txOptions,
+        );
+    }
+
+    /**
+     * Throws with error message if a given order is not able to be filled.
+     *
+     * @param {DebtOrder.Instance} debtOrder
+     * @param {TxData} txOptions
+     * @returns {Promise<void>}
+     */
+    public async assertFillableAsync(debtOrder: DebtOrder.Instance, txOptions?: TxData): Promise<void> {
         const {
             debtKernel,
             debtToken,
@@ -141,19 +167,6 @@ export class OrderAPI {
         );
 
         await this.assertValidLoanOrder(debtOrder);
-
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
-
-        return debtKernel.fillDebtOrder.sendTransactionAsync(
-            debtOrderWrapped.getCreditor(),
-            debtOrderWrapped.getOrderAddresses(),
-            debtOrderWrapped.getOrderValues(),
-            debtOrderWrapped.getOrderBytes32(),
-            debtOrderWrapped.getSignaturesV(),
-            debtOrderWrapped.getSignaturesR(),
-            debtOrderWrapped.getSignaturesS(),
-            txOptions,
-        );
     }
 
     /**
