@@ -29,19 +29,15 @@ import {
 } from "./scenarios/";
 
 // Types
-import {
-    Adapter,
-    CollateralizedSimpleInterestLoanAdapter,
-    SimpleInterestLoanAdapter,
-} from "../../../src/adapters";
+import { Adapter } from "../../../src/adapters";
 import { DebtOrder } from "../../../src/types";
 
 // Utils
+import { CollateralizedSimpleInterestLoanOrder } from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
+import { SimpleInterestLoanOrder } from "../../../src/adapters/simple_interest_loan_adapter";
 import * as Units from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
-import { SimpleInterestLoanOrder } from "../../../src/adapters/simple_interest_loan_adapter";
-import { CollateralizedSimpleInterestLoanOrder } from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
