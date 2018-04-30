@@ -101,6 +101,20 @@ describe("Order API (Integration Tests)", () => {
         });
     });
 
+    describe("#assertFillableAsync", () => {
+        describe("Valid, consensual orders", () => {
+            VALID_ORDERS.forEach(scenarioRunner.testAssertFillable);
+        });
+
+        describe("Invalid, consensual order fills", () => {
+            INVALID_ORDERS.forEach(scenarioRunner.testAssertFillable);
+        });
+
+        describe("Valid, non-consensual order fills", () => {
+            NONCONSENUAL_ORDERS.forEach(scenarioRunner.testAssertFillable);
+        });
+    });
+
     describe("#cancelOrderAsync", () => {
         describe("Invalid order cancellations", () => {
             INVALID_ORDER_CANCELLATIONS.forEach(scenarioRunner.testOrderCancelScenario);

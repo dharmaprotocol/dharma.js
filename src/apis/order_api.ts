@@ -126,6 +126,35 @@ export class OrderAPI {
 
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
 
+        await this.assertFillableAsync(debtOrder, options);
+
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
+
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
+        return debtKernel.fillDebtOrder.sendTransactionAsync(
+            debtOrderWrapped.getCreditor(),
+            debtOrderWrapped.getOrderAddresses(),
+            debtOrderWrapped.getOrderValues(),
+            debtOrderWrapped.getOrderBytes32(),
+            debtOrderWrapped.getSignaturesV(),
+            debtOrderWrapped.getSignaturesR(),
+            debtOrderWrapped.getSignaturesS(),
+            txOptions,
+        );
+    }
+
+    /**
+     * Throws with error message if a given order is not able to be filled.
+     *
+     * @param {DebtOrder.Instance} debtOrder
+     * @param {TxData} txOptions
+     * @returns {Promise<void>}
+     */
+    public async assertFillableAsync(
+        debtOrder: DebtOrder.Instance,
+        txOptions?: TxData,
+    ): Promise<void> {
         const {
             debtKernel,
             debtToken,
@@ -140,20 +169,7 @@ export class OrderAPI {
             txOptions,
         );
 
-        await this.assertValidLoanOrder(debtOrder);
-
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
-
-        return debtKernel.fillDebtOrder.sendTransactionAsync(
-            debtOrderWrapped.getCreditor(),
-            debtOrderWrapped.getOrderAddresses(),
-            debtOrderWrapped.getOrderValues(),
-            debtOrderWrapped.getOrderBytes32(),
-            debtOrderWrapped.getSignaturesV(),
-            debtOrderWrapped.getSignaturesR(),
-            debtOrderWrapped.getSignaturesS(),
-            txOptions,
-        );
+        await this.assertValidLoanTerms(debtOrder);
     }
 
     /**
@@ -317,17 +333,19 @@ export class OrderAPI {
     }
 
     /**
-     * Validates a given debtOrder against the appropriate loan order adapter.
+     * Validates a given debt order's terms against the appropriate loan order adapter.
      *
      * @param {DebtOrder.Instance} debtOrder
      * @returns {Promise<void>}
      */
-    private async assertValidLoanOrder(debtOrder: DebtOrder.Instance) {
+    private async assertValidLoanTerms(debtOrder: DebtOrder.Instance) {
         const adapter = await this.adapters.getAdapterByTermsContractAddress(
             debtOrder.termsContract,
         );
 
-        await adapter.validateAsync(await adapter.fromDebtOrder(debtOrder));
+        const loanOrder = await adapter.fromDebtOrder(debtOrder);
+
+        await adapter.validateAsync(loanOrder);
     }
 
     private async assertValidityInvariantsAsync(
