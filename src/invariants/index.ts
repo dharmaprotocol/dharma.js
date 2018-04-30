@@ -4,11 +4,11 @@ import * as Web3 from "web3";
 // Assertions
 import { AccountAssertions } from "./account";
 import { AdapterAssertions } from "./adapter";
-import { TokenAssertions } from "./token";
-import { OrderAssertions } from "./order";
-import { SchemaAssertions } from "./schema";
 import { DebtAgreementAssertions } from "./debt_agreement";
 import { DebtTokenAssertions } from "./debt_token";
+import { OrderAssertions } from "./order";
+import { SchemaAssertions } from "./schema";
+import { TokenAssertions } from "./token";
 
 // APIs
 import { ContractsAPI } from "../apis/";

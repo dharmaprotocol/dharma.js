@@ -19,6 +19,7 @@ import {
 
 import { NULL_ADDRESS } from "../../utils/constants";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
+import { ERC20Contract } from "../wrappers";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -45,27 +46,43 @@ export const CollateralizerAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
         singleLineString`Token Registry does not track a token at index
                          ${tokenIndex.toString()}.`,
+
     COLLATERAL_AMOUNT_IS_NEGATIVE: () => singleLineString`Collateral amount cannot be negative.`,
+
     COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM: () =>
         singleLineString`Collateral amount exceeds maximum value of 2^92 - 1.`,
+
+    INSUFFICIENT_COLLATERAL_TOKEN_ALLOWANCE: () =>
+        `Debtor has not granted sufficient allowance for collateral transfer.`,
+
+    INSUFFICIENT_COLLATERAL_TOKEN_BALANCE: () =>
+        `Debtor does not have sufficient allowance required for collateral transfer.`,
+
     GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
+
     GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
         singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
+
     INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
+
     MISMATCHED_TOKEN_SYMBOL: (tokenAddress: string, symbol: string) =>
         singleLineString`Terms contract parameters are invalid for the given debt order.
                          Token at address ${tokenAddress} does not
                          correspond to specified token with symbol ${symbol}`,
+
     MISMATCHED_TERMS_CONTRACT: (termsContractAddress: string) =>
         singleLineString`Terms contract at address ${termsContractAddress} is not
                          a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
                          not interface with the terms contract as expected`,
+
     COLLATERAL_NOT_FOUND: (agreementId: string) =>
         singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure
                          that the agreement ID is correct, and that the collateral has not already
                          been withdrawn.`,
+
     DEBT_NOT_YET_REPAID: (agreementId: string) =>
         singleLineString`Debt has not been fully repaid for loan with agreement ID ${agreementId}`,
+
     LOAN_NOT_IN_DEFAULT_FOR_GRACE_PERIOD: (agreementId: string) =>
         singleLineString`Loan with agreement ID ${agreementId} is not currently in a state of
                         default when adjusted for grace period`,
@@ -119,7 +136,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
             collateralTokenSymbol,
         );
 
-        const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const collateralizedContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
         let debtOrder: DebtOrder.Instance = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed
@@ -155,11 +172,26 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         debtOrder = {
             ...debtOrder,
             principalToken: principalToken.address,
-            termsContract: collateralizedSimpleInterestTermsContract.address,
+            termsContract: collateralizedContract.address,
             termsContractParameters: packedParams,
         };
 
         return DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
+    }
+
+    /**
+     * Validates that the basic invariants have been met for a given
+     * CollateralizedSimpleInterestLoanOrder.
+     *
+     * @param {CollateralizedSimpleInterestLoanOrder} loanOrder
+     * @returns {Promise<void>}
+     */
+    public async validateAsync(loanOrder: CollateralizedSimpleInterestLoanOrder) {
+        const unpackedParams = this.unpackParameters(loanOrder.termsContractParameters);
+
+        this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+
+        await this.assertCollateralBalanceAndAllowanceInvariantsAsync(loanOrder);
     }
 
     public async fromDebtOrder(
@@ -465,6 +497,33 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         if (collateralWithdrawn) {
             throw new Error(CollateralizerAdapterErrors.COLLATERAL_NOT_FOUND(agreementId));
         }
+    }
+
+    private async assertCollateralBalanceAndAllowanceInvariantsAsync(
+        order: CollateralizedSimpleInterestLoanOrder,
+    ) {
+        const { collateralAmount, collateralTokenSymbol } = order;
+
+        const collateralToken: ERC20Contract = await this.contractsAPI.loadTokenBySymbolAsync(
+            collateralTokenSymbol,
+        );
+
+        const tokenTransferProxy = await this.contractsAPI.loadTokenTransferProxyAsync();
+
+        await this.assert.order.sufficientCollateralizerAllowanceAsync(
+            order,
+            collateralToken,
+            collateralAmount,
+            tokenTransferProxy,
+            CollateralizerAdapterErrors.INSUFFICIENT_COLLATERAL_TOKEN_ALLOWANCE(),
+        );
+
+        await this.assert.order.sufficientCollateralizerBalanceAsync(
+            order,
+            collateralToken,
+            collateralAmount,
+            CollateralizerAdapterErrors.INSUFFICIENT_COLLATERAL_TOKEN_BALANCE(),
+        );
     }
 
     private async debtRepaid(agreementId: string): Promise<boolean> {

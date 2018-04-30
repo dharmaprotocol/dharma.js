@@ -12,7 +12,6 @@ import {
     ERC20Contract,
     TokenTransferProxyContract,
 } from "../wrappers";
-import { OrderAPIErrors } from "../apis/order_api";
 
 const BLOCK_TIME_ESTIMATE_SECONDS = 14;
 
@@ -254,6 +253,10 @@ export class OrderAssertions {
             throw new Error(errorMessage);
         }
     }
+
+    /*
+        For collateralized debt orders.
+     */
 
     public async sufficientCollateralizerAllowanceAsync(
         debtOrder: DebtOrder.Instance,
