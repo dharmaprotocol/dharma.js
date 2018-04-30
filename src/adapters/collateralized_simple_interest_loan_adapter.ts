@@ -19,6 +19,7 @@ import {
 
 import { NULL_ADDRESS } from "../../utils/constants";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
+import { ERC20Contract } from "../wrappers";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -501,11 +502,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     private async assertCollateralBalanceAndAllowanceInvariantsAsync(
         order: CollateralizedSimpleInterestLoanOrder,
     ) {
-        const collateralAmount = order.collateralAmount;
+        const { collateralAmount, collateralTokenSymbol } = order;
 
-        const collateralTokenSymbol = order.collateralTokenSymbol;
-
-        const collateralToken = await this.contractsAPI.loadTokenBySymbolAsync(
+        const collateralToken: ERC20Contract = await this.contractsAPI.loadTokenBySymbolAsync(
             collateralTokenSymbol,
         );
 
