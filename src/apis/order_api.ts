@@ -151,7 +151,10 @@ export class OrderAPI {
      * @param {TxData} txOptions
      * @returns {Promise<void>}
      */
-    public async assertFillableAsync(debtOrder: DebtOrder.Instance, txOptions?: TxData): Promise<void> {
+    public async assertFillableAsync(
+        debtOrder: DebtOrder.Instance,
+        txOptions?: TxData,
+    ): Promise<void> {
         const {
             debtKernel,
             debtToken,
@@ -166,7 +169,7 @@ export class OrderAPI {
             txOptions,
         );
 
-        await this.assertValidLoanOrder(debtOrder);
+        await this.assertValidLoanTerms(debtOrder);
     }
 
     /**
@@ -330,17 +333,19 @@ export class OrderAPI {
     }
 
     /**
-     * Validates a given debtOrder against the appropriate loan order adapter.
+     * Validates a given debt order's terms against the appropriate loan order adapter.
      *
      * @param {DebtOrder.Instance} debtOrder
      * @returns {Promise<void>}
      */
-    private async assertValidLoanOrder(debtOrder: DebtOrder.Instance) {
+    private async assertValidLoanTerms(debtOrder: DebtOrder.Instance) {
         const adapter = await this.adapters.getAdapterByTermsContractAddress(
             debtOrder.termsContract,
         );
 
-        await adapter.validateAsync(await adapter.fromDebtOrder(debtOrder));
+        const loanOrder = await adapter.fromDebtOrder(debtOrder);
+
+        await adapter.validateAsync(loanOrder);
     }
 
     private async assertValidityInvariantsAsync(

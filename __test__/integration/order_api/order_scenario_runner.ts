@@ -38,7 +38,6 @@ import { SimpleInterestLoanOrder } from "../../../src/adapters/simple_interest_l
 import * as Units from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
-import { isNonNullAddress } from "../../utils/utils";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -165,7 +164,7 @@ export class OrderScenarioRunner {
 
             if (scenario.successfullyFills) {
                 test("does not throw", async () => {
-                    await expect (
+                    await expect(
                         this.orderApi.assertFillableAsync(debtOrder, {
                             from: scenario.filler,
                         }),
@@ -174,9 +173,7 @@ export class OrderScenarioRunner {
             } else {
                 test(`throws ${scenario.errorType} error`, async () => {
                     await expect(
-                        this.orderApi.assertFillableAsync(
-                            debtOrder, { from: scenario.filler },
-                        ),
+                        this.orderApi.assertFillableAsync(debtOrder, { from: scenario.filler }),
                     ).rejects.toThrow(scenario.errorMessage);
                 });
             }
