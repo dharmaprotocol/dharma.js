@@ -11,7 +11,7 @@ export class TokenAmount {
 
     public static fromDecimalAmount(decimalAmount: BigNumber, symbol: string) {
         const token = new Token(symbol);
-        const rawAmount = TokenAmount.convertToRaw(decimalAmount, token.decimals);
+        const rawAmount = TokenAmount.convertToRaw(decimalAmount, token.numDecimals);
 
         return new TokenAmount(rawAmount, token);
     }
@@ -36,8 +36,8 @@ export class TokenAmount {
         return this.token.address;
     }
 
-    get decimals(): BigNumber {
-        return this.token.decimals;
+    get numDecimals(): BigNumber {
+        return this.token.numDecimals;
     }
 
     get name(): string {
@@ -49,7 +49,7 @@ export class TokenAmount {
     }
 
     get decimalAmount(): BigNumber {
-        return TokenAmount.convertToDecimal(this.rawAmount, this.token.decimals);
+        return TokenAmount.convertToDecimal(this.rawAmount, this.token.numDecimals);
     }
 
     public toString(): string {
