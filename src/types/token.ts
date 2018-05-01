@@ -13,16 +13,16 @@ export class Token {
     constructor(symbol: string) {
         this.symbol = symbol;
 
-        const token = _.find(
+        const registryData = _.find(
             TOKEN_REGISTRY_TRACKED_TOKENS,
             (tokenObject) => tokenObject.symbol === symbol,
         );
 
-        if (!token) {
+        if (!registryData) {
             throw new Error("Cannot find token with given symbol in token registry");
         }
 
-        this.numDecimals = new BigNumber(token.decimals);
-        this.name = token.name;
+        this.numDecimals = new BigNumber(registryData.decimals);
+        this.name = registryData.name;
     }
 }
