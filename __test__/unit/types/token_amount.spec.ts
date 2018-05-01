@@ -69,5 +69,39 @@ describe("TokenAmount", () => {
                 expect(tokenAmount.tokenName).toEqual(registryDataForREP.name);
             });
         });
+
+        describe("with invalid token amount type", () => {
+            test("should throw", () => {
+                let error: Error;
+                try {
+                    const amount = new TokenAmount({
+                        symbol,
+                        amount: rawAmount,
+                        type: 3, // only {0,1} are valid token amount types.
+                    });
+                } catch (e) {
+                    error = e;
+                }
+                expect(error.message).toEqual("invalid token amount type");
+            });
+        });
+
+        describe("with invalid token symbol", () => {
+            test("should throw", () => {
+                let error: Error;
+                try {
+                    const amount = new TokenAmount({
+                        symbol: "GOOGLE",
+                        amount: rawAmount,
+                        type: TokenAmountType.Raw,
+                    });
+                } catch (e) {
+                    error = e;
+                }
+                expect(error.message).toEqual(
+                    "Cannot find token with given symbol in token registry",
+                );
+            });
+        });
     });
 });
