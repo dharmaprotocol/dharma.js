@@ -36,11 +36,11 @@ export class TokenAmount {
         return this.token.numDecimals;
     }
 
-    get name(): string {
+    get tokenName(): string {
         return this.token.name;
     }
 
-    get symbol(): string {
+    get tokenSymbol(): string {
         return this.token.symbol;
     }
 
