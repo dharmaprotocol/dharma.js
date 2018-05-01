@@ -1,8 +1,6 @@
-// External Libraries
-import * as _ from "lodash";
-
 // Utils
 import { BigNumber } from "../../utils/bignumber";
+
 import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
 
 export class Token {
@@ -13,8 +11,7 @@ export class Token {
     constructor(symbol: string) {
         this.symbol = symbol;
 
-        const registryData = _.find(
-            TOKEN_REGISTRY_TRACKED_TOKENS,
+        const registryData = TOKEN_REGISTRY_TRACKED_TOKENS.find(
             (tokenObject) => tokenObject.symbol === symbol,
         );
 
