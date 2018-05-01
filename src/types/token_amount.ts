@@ -4,18 +4,23 @@ import { BigNumber } from "../../utils/bignumber";
 // Types
 import { Token } from "../types";
 
+export interface BaseTokenAmountParams {
+    symbol: string;
+}
+
+export interface DecimalTokenAmount extends BaseTokenAmountParams {
+    kind: "decimalTokenAmount";
+    decimalAmount: BigNumber;
+}
+
+export interface RawTokenAmount extends BaseTokenAmountParams {
+    kind: "rawTokenAmount";
+    rawAmount: BigNumber;
+}
+
+type TokenParams = DecimalTokenAmount | RawTokenAmount;
+
 export class TokenAmount {
-    public static fromRawAmount(rawAmount: BigNumber, symbol: string): TokenAmount {
-        return new TokenAmount(rawAmount, new Token(symbol));
-    }
-
-    public static fromDecimalAmount(decimalAmount: BigNumber, symbol: string) {
-        const token = new Token(symbol);
-        const rawAmount = TokenAmount.convertToRaw(decimalAmount, token.numDecimals);
-
-        return new TokenAmount(rawAmount, token);
-    }
-
     private static convertToRaw(decimalAmount: BigNumber, numDecimals: BigNumber): BigNumber {
         return decimalAmount.mul(new BigNumber(10).pow(numDecimals.toNumber()));
     }
@@ -27,9 +32,24 @@ export class TokenAmount {
     public readonly rawAmount: BigNumber;
     private token: Token;
 
-    private constructor(rawAmount: BigNumber, token: Token) {
-        this.rawAmount = rawAmount;
-        this.token = token;
+    private constructor(params: TokenParams) {
+        switch (params.kind) {
+            case "decimalTokenAmount":
+                this.token = new Token(params.symbol);
+                this.rawAmount = TokenAmount.convertToRaw(
+                    params.decimalAmount,
+                    this.token.numDecimals,
+                );
+                break;
+
+            case "rawTokenAmount":
+                this.token = new Token(params.symbol);
+                this.rawAmount = params.rawAmount;
+                break;
+
+            default:
+                throw new Error("invalid params");
+        }
     }
 
     get tokenNumDecimals(): BigNumber {
