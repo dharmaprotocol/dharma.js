@@ -32,7 +32,7 @@ export class TokenAmount {
         this.token = token;
     }
 
-    get numDecimals(): BigNumber {
+    get tokenNumDecimals(): BigNumber {
         return this.token.numDecimals;
     }
 
