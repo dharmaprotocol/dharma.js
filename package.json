@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.0.50",
+    "version": "0.0.51",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
