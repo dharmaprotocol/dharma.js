@@ -1,29 +1,35 @@
 // Utils
 import { BigNumber } from "../../utils/bignumber";
 
+// Types
 import { Token } from "../types";
 
 export class TokenAmount {
-    public static fromAmount(symbol: string, amount: BigNumber): TokenAmount {
-        const tokenAmount = new TokenAmount(symbol);
-        tokenAmount.amount = amount;
-
-        return tokenAmount;
+    public static fromRawAmount(rawAmount: BigNumber, symbol: string): TokenAmount {
+        return new TokenAmount(rawAmount, new Token(symbol));
     }
 
-    public static fromScaledAmount(symbol: string, scaledAmount: BigNumber) {
-        const tokenAmount = new TokenAmount(symbol);
-        const decimals = tokenAmount.decimals;
-        tokenAmount.amount = scaledAmount.div(new BigNumber(10).pow(decimals.toNumber()));
+    public static fromDecimalAmount(decimalAmount: BigNumber, symbol: string) {
+        const token = new Token(symbol);
+        const rawAmount = TokenAmount.convertToRaw(decimalAmount, token.decimals);
 
-        return tokenAmount;
+        return new TokenAmount(rawAmount, token);
     }
 
-    public amount: BigNumber;
-    public readonly token: Token;
+    private static convertToRaw(decimalAmount: BigNumber, numDecimals: BigNumber): BigNumber {
+        return decimalAmount.mul(new BigNumber(10).pow(numDecimals.toNumber()));
+    }
 
-    constructor(symbol: string) {
-        this.token = new Token(symbol);
+    private static convertToDecimal(rawAmount: BigNumber, numDecimals: BigNumber): BigNumber {
+        return rawAmount.div(new BigNumber(10).pow(numDecimals.toNumber()));
+    }
+
+    public readonly rawAmount: BigNumber;
+    private token: Token;
+
+    private constructor(rawAmount: BigNumber, token: Token) {
+        this.rawAmount = rawAmount;
+        this.token = token;
     }
 
     get address(): string {
@@ -38,21 +44,15 @@ export class TokenAmount {
         return this.token.name;
     }
 
-    get scaledAmount(): BigNumber {
-        const decimals = this.token.decimals;
-        return this.amount.times(new BigNumber(10).pow(decimals.toNumber()));
-    }
-
-    set scaledAmount(scaledAmount: BigNumber) {
-        const decimals = this.token.decimals;
-        this.amount = scaledAmount.div(new BigNumber(10).pow(decimals.toNumber()));
-    }
-
     get symbol(): string {
         return this.token.symbol;
     }
 
+    get decimalAmount(): BigNumber {
+        return TokenAmount.convertToDecimal(this.rawAmount, this.token.decimals);
+    }
+
     public toString(): string {
-        return `${this.amount} ${this.token.symbol}`;
+        return `${this.decimalAmount} ${this.token.symbol}`;
     }
 }
