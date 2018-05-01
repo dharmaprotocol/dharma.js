@@ -18,7 +18,7 @@ export interface RawTokenAmount extends BaseTokenAmountParams {
     rawAmount: BigNumber;
 }
 
-type TokenParams = DecimalTokenAmount | RawTokenAmount;
+export type TokenParams = DecimalTokenAmount | RawTokenAmount;
 
 export class TokenAmount {
     private static convertToRaw(decimalAmount: BigNumber, numDecimals: BigNumber): BigNumber {
@@ -32,7 +32,7 @@ export class TokenAmount {
     public readonly rawAmount: BigNumber;
     private token: Token;
 
-    private constructor(params: TokenParams) {
+    constructor(params: TokenParams) {
         switch (params.kind) {
             case "decimalTokenAmount":
                 this.token = new Token(params.symbol);
