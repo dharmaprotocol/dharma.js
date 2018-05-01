@@ -32,10 +32,6 @@ export class TokenAmount {
         this.token = token;
     }
 
-    get address(): string {
-        return this.token.address;
-    }
-
     get numDecimals(): BigNumber {
         return this.token.numDecimals;
     }
