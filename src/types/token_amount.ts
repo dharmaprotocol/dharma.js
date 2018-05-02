@@ -4,21 +4,16 @@ import { BigNumber } from "../../utils/bignumber";
 // Types
 import { Token } from "../types";
 
-export interface BaseTokenAmountParams {
+export enum TokenAmountType {
+    Raw,
+    Decimal,
+}
+
+export interface TokenAmountParams {
     symbol: string;
+    amount: BigNumber;
+    type: TokenAmountType;
 }
-
-export interface DecimalTokenAmount extends BaseTokenAmountParams {
-    kind: "decimalTokenAmount";
-    decimalAmount: BigNumber;
-}
-
-export interface RawTokenAmount extends BaseTokenAmountParams {
-    kind: "rawTokenAmount";
-    rawAmount: BigNumber;
-}
-
-export type TokenParams = DecimalTokenAmount | RawTokenAmount;
 
 export class TokenAmount {
     private static convertToRaw(decimalAmount: BigNumber, numDecimals: BigNumber): BigNumber {
@@ -32,23 +27,20 @@ export class TokenAmount {
     public readonly rawAmount: BigNumber;
     private token: Token;
 
-    constructor(params: TokenParams) {
-        switch (params.kind) {
-            case "decimalTokenAmount":
-                this.token = new Token(params.symbol);
-                this.rawAmount = TokenAmount.convertToRaw(
-                    params.decimalAmount,
-                    this.token.numDecimals,
-                );
+    constructor(params: TokenAmountParams) {
+        this.token = new Token(params.symbol);
+
+        switch (params.type) {
+            case TokenAmountType.Decimal:
+                this.rawAmount = TokenAmount.convertToRaw(params.amount, this.token.numDecimals);
                 break;
 
-            case "rawTokenAmount":
-                this.token = new Token(params.symbol);
-                this.rawAmount = params.rawAmount;
+            case TokenAmountType.Raw:
+                this.rawAmount = params.amount;
                 break;
 
             default:
-                throw new Error("invalid params");
+                throw new Error("invalid token amount type");
         }
     }
 
