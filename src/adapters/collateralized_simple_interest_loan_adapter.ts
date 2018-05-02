@@ -266,7 +266,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * @param {string} agreementId
      * @returns {Promise<string>} The transaction's hash.
      */
-    public async seizeCollateral(agreementId: string): Promise<string> {
+    public async seizeCollateralAsync(agreementId: string): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
         const transactionOptions = await this.getTxDefaultOptions();
@@ -289,7 +289,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * @param {string} agreementId
      * @returns {Promise<string>} The transaction's hash.
      */
-    public async returnCollateral(agreementId: string): Promise<string> {
+    public async returnCollateralAsync(agreementId: string): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
         await this.assertCollateralReturnable(agreementId);
