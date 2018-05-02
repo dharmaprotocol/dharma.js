@@ -264,6 +264,18 @@ export class OrderAPI {
     }
 
     /**
+     * Given an issuanceHash, returns a DebtOrder instance.
+     *
+     * @param {string} issuanceHash
+     * @returns {Promise<DebtOrder.Instance>}
+     */
+    public async getDebtOrder(issuanceHash: string): Promise<DebtOrder.Instance> {
+        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
+
+        return debtRegistry.get.callAsync(issuanceHash);
+    }
+
+    /**
      * Generate a Dharma debt order, given the specified adapter and its associated
      * parameters object.
      *
