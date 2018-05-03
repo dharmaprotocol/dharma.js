@@ -102,7 +102,7 @@ export class CollateralizedSimpleInterestTermsContractContract extends BaseContr
                 self.returnCollateral.estimateGasAsync.bind(self, agreementId),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.returnCollateralAsync,
+                self.web3ContractInstance.returnCollateral,
                 self.web3ContractInstance,
             )(agreementId, txDataWithDefaults);
             return txHash;
@@ -349,7 +349,7 @@ export class CollateralizedSimpleInterestTermsContractContract extends BaseContr
                 self.seizeCollateral.estimateGasAsync.bind(self, agreementId),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.seizeCollateralAsync,
+                self.web3ContractInstance.seizeCollateral,
                 self.web3ContractInstance,
             )(agreementId, txDataWithDefaults);
             return txHash;

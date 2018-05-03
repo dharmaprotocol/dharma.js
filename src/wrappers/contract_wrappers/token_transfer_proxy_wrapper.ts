@@ -56,7 +56,7 @@ export class TokenTransferProxyContract extends BaseContract {
                 self.transferFrom.estimateGasAsync.bind(self, _token, _from, _to, _amount),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.transferFromAsync,
+                self.web3ContractInstance.transferFrom,
                 self.web3ContractInstance,
             )(_token, _from, _to, _amount, txDataWithDefaults);
             return txHash;

@@ -67,7 +67,7 @@ export class DebtTokenContract extends BaseContract {
                 self.approve.estimateGasAsync.bind(self, _to, _tokenId),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.approveAsync,
+                self.web3ContractInstance.approve,
                 self.web3ContractInstance,
             )(_to, _tokenId, txDataWithDefaults);
             return txHash;
@@ -80,7 +80,7 @@ export class DebtTokenContract extends BaseContract {
             const self = this as DebtTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.approveAsync.estimateGas,
+                self.web3ContractInstance.approve.estimateGas,
                 self.web3ContractInstance,
             )(_to, _tokenId, txDataWithDefaults);
             return gas;
@@ -91,7 +91,7 @@ export class DebtTokenContract extends BaseContract {
             txData: TxData = {},
         ): string {
             const self = this as DebtTokenContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.approveAsync.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.approve.getData();
             return abiEncodedTransactionData;
         },
     };
@@ -118,7 +118,7 @@ export class DebtTokenContract extends BaseContract {
                 self.transferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.transferFromAsync,
+                self.web3ContractInstance.transferFrom,
                 self.web3ContractInstance,
             )(_from, _to, _tokenId, txDataWithDefaults);
             return txHash;
@@ -454,7 +454,7 @@ export class DebtTokenContract extends BaseContract {
                 self.setApprovalForAll.estimateGasAsync.bind(self, _to, _approved),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.setApprovalForAllAsync,
+                self.web3ContractInstance.setApprovalForAll,
                 self.web3ContractInstance,
             )(_to, _approved, txDataWithDefaults);
             return txHash;
@@ -490,7 +490,7 @@ export class DebtTokenContract extends BaseContract {
                 self.transfer.estimateGasAsync.bind(self, _to, _tokenId),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.transferAsync,
+                self.web3ContractInstance.transfer,
                 self.web3ContractInstance,
             )(_to, _tokenId, txDataWithDefaults);
             return txHash;
