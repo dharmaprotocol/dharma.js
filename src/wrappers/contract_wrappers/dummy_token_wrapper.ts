@@ -283,7 +283,7 @@ export class DummyTokenContract extends BaseContract {
                 self.transfer.estimateGasAsync.bind(self, _to, _value),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.transfer,
+                self.web3ContractInstance.transferAsync,
                 self.web3ContractInstance,
             )(_to, _value, txDataWithDefaults);
             return txHash;
@@ -296,14 +296,14 @@ export class DummyTokenContract extends BaseContract {
             const self = this as DummyTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.transfer.estimateGas,
+                self.web3ContractInstance.transferAsync.estimateGas,
                 self.web3ContractInstance,
             )(_to, _value, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(_to: string, _value: BigNumber, txData: TxData = {}): string {
             const self = this as DummyTokenContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.transfer.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.transferAsync.getData();
             return abiEncodedTransactionData;
         },
     };

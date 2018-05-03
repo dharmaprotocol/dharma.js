@@ -129,7 +129,7 @@ export class ERC20Contract extends BaseContract {
                 self.transfer.estimateGasAsync.bind(self, to, value),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.transfer,
+                self.web3ContractInstance.transferAsync,
                 self.web3ContractInstance,
             )(to, value, txDataWithDefaults);
             return txHash;
@@ -138,14 +138,14 @@ export class ERC20Contract extends BaseContract {
             const self = this as ERC20Contract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.transfer.estimateGas,
+                self.web3ContractInstance.transferAsync.estimateGas,
                 self.web3ContractInstance,
             )(to, value, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(to: string, value: BigNumber, txData: TxData = {}): string {
             const self = this as ERC20Contract;
-            const abiEncodedTransactionData = self.web3ContractInstance.transfer.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.transferAsync.getData();
             return abiEncodedTransactionData;
         },
     };

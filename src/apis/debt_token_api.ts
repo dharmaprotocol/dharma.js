@@ -26,7 +26,7 @@ export interface ERC721 {
     setApprovalForAllAsync(operator: string, approved: boolean, options?: TxData): Promise<string>;
     isApprovedForAll(owner: string, operator: string): Promise<boolean>;
 
-    transfer(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
+    transferAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
     transferFrom(
         from: string,
         to: string,
@@ -191,7 +191,7 @@ export class DebtTokenAPI implements ERC721 {
         return debtTokenContract.isApprovedForAll.callAsync(owner, operator);
     }
 
-    public async transfer(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+    public async transferAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         this.validateTransferArguments(to, tokenID);
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
