@@ -10,7 +10,7 @@ export class IsApprovedForAllScenarioRunner extends ScenarioRunner {
         describe(scenario.description, () => {
             beforeEach(async () => {
                 if (scenario.isOperatorApproved) {
-                    await debtTokenAPI.setApprovalForAll(scenario.operator, true, {
+                    await debtTokenAPI.setApprovalForAllAsync(scenario.operator, true, {
                         from: scenario.owner,
                     });
                 }

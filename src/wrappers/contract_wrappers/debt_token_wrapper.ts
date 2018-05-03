@@ -454,7 +454,7 @@ export class DebtTokenContract extends BaseContract {
                 self.setApprovalForAll.estimateGasAsync.bind(self, _to, _approved),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.setApprovalForAll,
+                self.web3ContractInstance.setApprovalForAllAsync,
                 self.web3ContractInstance,
             )(_to, _approved, txDataWithDefaults);
             return txHash;
@@ -467,14 +467,14 @@ export class DebtTokenContract extends BaseContract {
             const self = this as DebtTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.setApprovalForAll.estimateGas,
+                self.web3ContractInstance.setApprovalForAllAsync.estimateGas,
                 self.web3ContractInstance,
             )(_to, _approved, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(_to: string, _approved: boolean, txData: TxData = {}): string {
             const self = this as DebtTokenContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.setApprovalForAll.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.setApprovalForAllAsync.getData();
             return abiEncodedTransactionData;
         },
     };
