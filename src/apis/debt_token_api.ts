@@ -20,7 +20,7 @@ export interface ERC721 {
     ownerOf(tokenID: BigNumber): Promise<string>;
     exists(tokenID: BigNumber): Promise<boolean>;
 
-    approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
+    approveAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
     getApproved(tokenID: BigNumber): Promise<string>;
 
     setApprovalForAll(operator: string, approved: boolean, options?: TxData): Promise<string>;
@@ -98,7 +98,7 @@ export class DebtTokenAPI implements ERC721 {
         return debtTokenContract.exists.callAsync(tokenID);
     }
 
-    public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+    public async approveAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         // Assert `to` is a valid address.
         this.assert.schema.address("to", to);
 

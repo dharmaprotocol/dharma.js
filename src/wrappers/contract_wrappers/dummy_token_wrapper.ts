@@ -46,7 +46,7 @@ export class DummyTokenContract extends BaseContract {
                 self.approve.estimateGasAsync.bind(self, _spender, _value),
             );
             const txHash = await promisify<string>(
-                self.web3ContractInstance.approve,
+                self.web3ContractInstance.approveAsync,
                 self.web3ContractInstance,
             )(_spender, _value, txDataWithDefaults);
             return txHash;
@@ -59,7 +59,7 @@ export class DummyTokenContract extends BaseContract {
             const self = this as DummyTokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.approve.estimateGas,
+                self.web3ContractInstance.approveAsync.estimateGas,
                 self.web3ContractInstance,
             )(_spender, _value, txDataWithDefaults);
             return gas;
@@ -70,7 +70,7 @@ export class DummyTokenContract extends BaseContract {
             txData: TxData = {},
         ): string {
             const self = this as DummyTokenContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.approve.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.approveAsync.getData();
             return abiEncodedTransactionData;
         },
     };
