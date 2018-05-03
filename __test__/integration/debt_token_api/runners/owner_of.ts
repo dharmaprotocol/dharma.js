@@ -27,11 +27,11 @@ export class OwnerOfScenarioRunner extends ScenarioRunner {
                 );
 
                 if (scenario.transferee) {
-                    await debtTokenAPI.transfer(scenario.transferee, orderOneTokenID, {
+                    await debtTokenAPI.transferAsync(scenario.transferee, orderOneTokenID, {
                         from: scenario.orderFilledByCreditorOne.creditor,
                     });
 
-                    await debtTokenAPI.transfer(scenario.transferee, orderTwoTokenID, {
+                    await debtTokenAPI.transferAsync(scenario.transferee, orderTwoTokenID, {
                         from: scenario.orderFilledByCreditorTwo.creditor,
                     });
                 }

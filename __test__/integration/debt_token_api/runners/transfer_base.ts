@@ -75,12 +75,12 @@ export abstract class TransferBaseScenarioRunner extends ScenarioRunner {
                 );
 
                 // Set token approvals
-                await debtTokenAPI.approve(scenario.tokensApprovedOperator, orderOneTokenID, {
+                await debtTokenAPI.approveAsync(scenario.tokensApprovedOperator, orderOneTokenID, {
                     from: scenario.orderFilledByCreditorOne.creditor,
                 });
 
                 // Set owner's approvals
-                await debtTokenAPI.setApprovalForAll(scenario.ownersApprovedOperator, true, {
+                await debtTokenAPI.setApprovalForAllAsync(scenario.ownersApprovedOperator, true, {
                     from: scenario.orderFilledByCreditorOne.creditor,
                 });
 

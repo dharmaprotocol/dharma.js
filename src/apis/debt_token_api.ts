@@ -20,14 +20,14 @@ export interface ERC721 {
     ownerOf(tokenID: BigNumber): Promise<string>;
     exists(tokenID: BigNumber): Promise<boolean>;
 
-    approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
+    approveAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
     getApproved(tokenID: BigNumber): Promise<string>;
 
-    setApprovalForAll(operator: string, approved: boolean, options?: TxData): Promise<string>;
+    setApprovalForAllAsync(operator: string, approved: boolean, options?: TxData): Promise<string>;
     isApprovedForAll(owner: string, operator: string): Promise<boolean>;
 
-    transfer(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
-    transferFrom(
+    transferAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
+    transferFromAsync(
         from: string,
         to: string,
         tokenID: BigNumber,
@@ -98,7 +98,7 @@ export class DebtTokenAPI implements ERC721 {
         return debtTokenContract.exists.callAsync(tokenID);
     }
 
-    public async approve(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+    public async approveAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         // Assert `to` is a valid address.
         this.assert.schema.address("to", to);
 
@@ -157,7 +157,7 @@ export class DebtTokenAPI implements ERC721 {
         return debtTokenContract.getApproved.callAsync(tokenID);
     }
 
-    public async setApprovalForAll(
+    public async setApprovalForAllAsync(
         operator: string,
         approved: boolean,
         options?: TxData,
@@ -191,7 +191,7 @@ export class DebtTokenAPI implements ERC721 {
         return debtTokenContract.isApprovedForAll.callAsync(owner, operator);
     }
 
-    public async transfer(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
+    public async transferAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string> {
         this.validateTransferArguments(to, tokenID);
 
         const debtTokenContract = await this.contracts.loadDebtTokenAsync();
@@ -214,7 +214,7 @@ export class DebtTokenAPI implements ERC721 {
         );
     }
 
-    public async transferFrom(
+    public async transferFromAsync(
         from: string,
         to: string,
         tokenID: BigNumber,

@@ -33,7 +33,7 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 }
 
                 if (scenario.collateralWithdrawn) {
-                    await this.adapter.returnCollateral(agreementId);
+                    await this.adapter.returnCollateralAsync(agreementId);
                 }
             });
 
@@ -44,7 +44,7 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
 
             if (scenario.succeeds) {
                 it("returns a valid transaction hash", async () => {
-                    const txHash = await this.adapter.returnCollateral(
+                    const txHash = await this.adapter.returnCollateralAsync(
                         scenario.givenAgreementId(agreementId),
                     );
 
@@ -61,7 +61,7 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
-                        this.adapter.returnCollateral(scenario.givenAgreementId(agreementId)),
+                        this.adapter.returnCollateralAsync(scenario.givenAgreementId(agreementId)),
                     ).rejects.toThrow(scenario.error);
                 });
 

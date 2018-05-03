@@ -5,6 +5,6 @@ export class TransferScenarioRunner extends TransferBaseScenarioRunner {
     protected getAPICallPromise(params: TransferAPICallParameters): Promise<string> {
         const { api, to, tokenID, txOptions } = params;
 
-        return api.transfer(to, tokenID, txOptions);
+        return api.transferAsync(to, tokenID, txOptions);
     }
 }

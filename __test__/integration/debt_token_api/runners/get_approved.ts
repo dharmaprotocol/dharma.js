@@ -27,11 +27,11 @@ export class GetApprovedScenarioRunner extends ScenarioRunner {
                 );
 
                 if (scenario.isApproved) {
-                    await debtTokenAPI.approve(scenario.approvee, orderOneTokenID, {
+                    await debtTokenAPI.approveAsync(scenario.approvee, orderOneTokenID, {
                         from: scenario.orderFilledByCreditorOne.creditor,
                     });
 
-                    await debtTokenAPI.approve(scenario.approvee, orderTwoTokenID, {
+                    await debtTokenAPI.approveAsync(scenario.approvee, orderTwoTokenID, {
                         from: scenario.orderFilledByCreditorTwo.creditor,
                     });
                 }

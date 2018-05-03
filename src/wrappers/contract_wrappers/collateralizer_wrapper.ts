@@ -89,14 +89,14 @@ export class CollateralizerContract extends BaseContract {
             const self = this as CollateralizerContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.returnCollateral.estimateGas,
+                self.web3ContractInstance.returnCollateralAsync.estimateGas,
                 self.web3ContractInstance,
             )(agreementId, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(agreementId: string, txData: TxData = {}): string {
             const self = this as CollateralizerContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.returnCollateral.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.returnCollateralAsync.getData();
             return abiEncodedTransactionData;
         },
     };
@@ -317,14 +317,14 @@ export class CollateralizerContract extends BaseContract {
             const self = this as CollateralizerContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
-                self.web3ContractInstance.seizeCollateral.estimateGas,
+                self.web3ContractInstance.seizeCollateralAsync.estimateGas,
                 self.web3ContractInstance,
             )(agreementId, txDataWithDefaults);
             return gas;
         },
         getABIEncodedTransactionData(agreementId: string, txData: TxData = {}): string {
             const self = this as CollateralizerContract;
-            const abiEncodedTransactionData = self.web3ContractInstance.seizeCollateral.getData();
+            const abiEncodedTransactionData = self.web3ContractInstance.seizeCollateralAsync.getData();
             return abiEncodedTransactionData;
         },
     };

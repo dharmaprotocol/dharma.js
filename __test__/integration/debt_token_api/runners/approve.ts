@@ -30,7 +30,7 @@ export class ApproveScenarioRunner extends ScenarioRunner {
                     Orders.MALFORMED_TOKEN_ID,
                 );
 
-                apiCallPromise = debtTokenAPI.approve(scenario.approvee, scenarioTokenID, {
+                apiCallPromise = debtTokenAPI.approveAsync(scenario.approvee, scenarioTokenID, {
                     from: scenario.approver,
                 });
             });
