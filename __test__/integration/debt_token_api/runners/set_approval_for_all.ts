@@ -15,9 +15,13 @@ export class SetApprovalForAllScenarioRunner extends ScenarioRunner {
                     });
                 }
 
-                apiCall = debtTokenAPI.setApprovalForAllAsync(scenario.operator, scenario.approved, {
-                    from: scenario.from,
-                });
+                apiCall = debtTokenAPI.setApprovalForAllAsync(
+                    scenario.operator,
+                    scenario.approved,
+                    {
+                        from: scenario.from,
+                    },
+                );
             });
 
             if (scenario.shouldSucceed) {
