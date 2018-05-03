@@ -27,7 +27,7 @@ export interface ERC721 {
     isApprovedForAll(owner: string, operator: string): Promise<boolean>;
 
     transferAsync(to: string, tokenID: BigNumber, options?: TxData): Promise<string>;
-    transferFrom(
+    transferFromAsync(
         from: string,
         to: string,
         tokenID: BigNumber,
@@ -214,7 +214,7 @@ export class DebtTokenAPI implements ERC721 {
         );
     }
 
-    public async transferFrom(
+    public async transferFromAsync(
         from: string,
         to: string,
         tokenID: BigNumber,
