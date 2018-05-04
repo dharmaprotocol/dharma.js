@@ -1,3 +1,4 @@
+import * as _ from "lodash";
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
@@ -7,7 +8,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 
 import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
+import { DebtOrder, DebtRegistryEntry, RepaymentSchedule, TxData } from "../types";
 
 import { Adapter } from "./adapter";
 
@@ -18,8 +19,8 @@ import {
 } from "./simple_interest_loan_adapter";
 
 import { NULL_ADDRESS } from "../../utils/constants";
-import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 import { ERC20Contract } from "../wrappers";
+import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -264,12 +265,15 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * transfers it to the debt agreement's beneficiary.
      *
      * @param {string} agreementId
+     * @param {TxData} options
      * @returns {Promise<string>} The transaction's hash.
      */
-    public async seizeCollateralAsync(agreementId: string): Promise<string> {
+    public async seizeCollateralAsync(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
-        const transactionOptions = await this.getTxDefaultOptions();
+        const defaultOptions = await this.getTxDefaultOptions();
+
+        const transactionOptions = _.assign(defaultOptions, options);
 
         await this.assertCollateralSeizeable(agreementId);
 
@@ -287,14 +291,17 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
      * the total expected repayment value has been repaid.
      *
      * @param {string} agreementId
+     * @param {TxData} options
      * @returns {Promise<string>} The transaction's hash.
      */
-    public async returnCollateralAsync(agreementId: string): Promise<string> {
+    public async returnCollateralAsync(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
         await this.assertCollateralReturnable(agreementId);
 
-        const transactionOptions = await this.getTxDefaultOptions();
+        const defaultOptions = await this.getTxDefaultOptions();
+
+        const transactionOptions = _.assign(defaultOptions, options);
 
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
 
