@@ -19,3 +19,6 @@ compiled
 
 # editor-generated files
 *.iml
+
+# compiled scripts
+scripts/documentation/typedoc_parser.js
