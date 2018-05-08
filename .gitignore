@@ -3,6 +3,7 @@
 
 # generated documentation
 generated_docs/
+scripts/documentation/output/*
 
 dist
 node_modules
