@@ -1,5 +1,5 @@
 /**
- * Usage:
+ * Script usage:
  *
  * node scripts/documentation/parse_typedoc.js
  */
@@ -29,7 +29,9 @@ const parser = new Parser(inputFile);
 
 console.log(`Parsing "${inputFile}"`);
 parser.parse();
+
 console.log(`Writing to "${outputFile}"`);
 parser.writeToFile(outputFile);
+
 console.log("Complete, exiting.");
 
