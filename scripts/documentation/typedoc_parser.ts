@@ -37,7 +37,7 @@ interface MethodDocumentation {
     // e.g. "adapters/collateralized_simple_interest_loan_adapter.ts#L348"
     source: string;
     // The method's signature, in Typescript format,
-    // e.g. "canReturnCollateral( agreementId: string): Promise<boolean>"
+    // e.g. "canReturnCollateral(agreementId: string): Promise<boolean>"
     signature: string;
 }
 
@@ -55,7 +55,7 @@ interface ParameterType {
     name: string;
 }
 
-interface ReflectionCategory {
+interface TypedocInput {
     title: string;
     children: Reflection[];
 }
@@ -144,7 +144,7 @@ class TypedocParser {
     // The path to the Typedoc input JSON file.
     private readonly filePath;
     // The typedoc JSON input, as read from the JSON file at `filePath`.
-    private input: ReflectionCategory;
+    private input: TypedocInput;
     // The documentation output, based on the Typedoc data.
     private output: Documentation;
 
