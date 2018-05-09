@@ -111,7 +111,7 @@ class TypedocParser {
     private static paramsString(params: SignatureParameter[]) {
         return _.map(params, (param) => {
             return `${param.name}: ${param.type.name}`;
-        }).join(",<br/>");
+        }).join(",<br/>  ");
     }
 
     private static sectionName(classObj): string {
