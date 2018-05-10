@@ -31,6 +31,8 @@ interface MethodDocumentation {
     name: string;
     // The description of the method, as provided in comments (doc block.)
     description: string;
+    // An example of how to use the method.
+    example: string;
     // The typescript-formatted parameters list, e.g. "agreementId: string".
     params: string;
     // The location of the method definition,
@@ -93,9 +95,13 @@ class TypedocParser {
     private static methodSignature(methodName: string, signature: any, params: string) {
         const returnType = TypedocParser.returnType(signature);
 
+        if (params === "") {
+            return `${methodName}(): ${returnType}`;
+        }
+
         return `${methodName}(
   ${params},
-): ${returnType}`;
+): ${returnType || "void"}`;
     }
 
     /**
@@ -109,6 +115,10 @@ class TypedocParser {
      * @returns {string}
      */
     private static paramsString(params: SignatureParameter[]) {
+        if (!params || !params.length) {
+            return "";
+        }
+
         return _.map(params, (param) => {
             return `${param.name}: ${param.type.name}`;
         }).join(",<br/>  ");
@@ -139,6 +149,21 @@ class TypedocParser {
         const promiseTarget = isPromise ? ("<" + signature.type.typeArguments[0].name + ">") : "";
 
         return type + promiseTarget;
+    }
+
+    private static getExample(signature): string {
+        if (!(signature.comment && signature.comment.tags)) {
+            return "";
+        }
+
+        const example = _.find(signature.comment.tags, (tag) => tag.tag === "example");
+        const text = example.text;
+
+        if (text.startsWith("\n ")) {
+            return text.substr(2);
+        }
+
+        return text;
     }
 
     // The path to the Typedoc input JSON file.
@@ -221,6 +246,7 @@ class TypedocParser {
             return {
                 name: method.name,
                 description: signature.comment ? signature.comment.shortText : "",
+                example: TypedocParser.getExample(signature),
                 params,
                 source: `${method.sources[0].fileName}#L${method.sources[0].line}`,
                 signature: TypedocParser.methodSignature(method.name, signature, params),

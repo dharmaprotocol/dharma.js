@@ -15,8 +15,7 @@ const AMORTIZATION_UNIT_TO_SECONDS = {
  * Given an amortization unit, term length, and issuance date
  * an instance of RepaymentSchedule can compute return a list of the dates for repayment.
  *
- * Examples:
- *  // Setup
+ * @example
  *  const currentTime = new BigNumber(Math.round(Date.now()/1000))
  *  const termLength = new BigNumber(1)
  *  const schedule = new RepaymentSchedule("months", termLength, currentTime)
