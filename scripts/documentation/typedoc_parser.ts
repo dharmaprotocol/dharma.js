@@ -136,7 +136,7 @@ class TypedocParser {
     }
 
     private static isPromise(signature): boolean {
-        return signature.type === "Promise" &&
+        return signature.type.name === "Promise" &&
             signature.type.typeArguments &&
             signature.type.typeArguments.length;
     }
@@ -146,7 +146,9 @@ class TypedocParser {
 
         const isPromise = TypedocParser.isPromise(signature);
 
-        const promiseTarget = isPromise ? ("<" + signature.type.typeArguments[0].name + ">") : "";
+        const promiseTarget = _.escape(
+            isPromise ? ("<" + signature.type.typeArguments[0].name + ">") : ""
+        );
 
         return type + promiseTarget;
     }
