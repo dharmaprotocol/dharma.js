@@ -55,6 +55,8 @@ interface SignatureParameter {
 
 interface ParameterType {
     name: string;
+    type: any;
+    elementType: any;
 }
 
 interface TypedocInput {
@@ -120,7 +122,18 @@ class TypedocParser {
         }
 
         return _.map(params, (param) => {
-            return `${param.name}: ${param.type.name}`;
+            // Handle case of array.
+            const isArray = param.type && param.type.type === "array";
+
+            if (isArray) {
+                return `${param.name}: ${param.type.elementType.name}`;
+            }
+
+            // Handle case of function param..
+            const isReflection = param.type && param.type.type === "reflection";
+            const paramType = isReflection ? "Function" : param.type.name;
+
+            return `${param.name}: ${paramType}`;
         }).join(",<br/>  ");
     }
 
@@ -142,15 +155,27 @@ class TypedocParser {
     }
 
     private static returnType(signature) {
-        const type = signature.type.name;
+        const isArray = signature.type.type && signature.type.type === "array";
+
+        // Deal with special case for arrays.
+        if (isArray) {
+            return `${signature.type.elementType.name}[]`;
+        }
 
         const isPromise = TypedocParser.isPromise(signature);
 
-        const promiseTarget = _.escape(
-            isPromise ? ("<" + signature.type.typeArguments[0].name + ">") : ""
-        );
+        let promiseTargetType: string;
 
-        return type + promiseTarget;
+        if (isPromise) {
+            const typeArgs = signature.type.typeArguments;
+            const isArrayTarget = typeArgs && typeArgs[0].type === "array";
+
+            promiseTargetType = isArrayTarget ? `${typeArgs[0].elementType.name}[]` : typeArgs[0].name;
+        }
+
+        const promiseTarget = _.escape(isPromise ? `<${promiseTargetType}>` : "");
+
+        return signature.type.name + promiseTarget;
     }
 
     private static getExample(signature): string {
