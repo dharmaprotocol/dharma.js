@@ -27,7 +27,7 @@ import {
 } from "../../../src/wrappers";
 
 // types
-import { DebtOrder, DebtRegistryEntry } from "../../../src/types";
+import { DEBT_ORDER_DEFAULTS, DebtOrder, DebtRegistryEntry } from "../../../src/types";
 
 // adapters
 import {
@@ -260,7 +260,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
 
 describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
     interface AdapterScenario {
-        debtOrder: DebtOrder.Instance;
+        debtOrder: DebtOrder;
         fullLoanOrder: CollateralizedSimpleInterestLoanOrder;
         minimalLoanOrder: CollateralizedSimpleInterestLoanOrder;
         entry: DebtRegistryEntry;
@@ -290,7 +290,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         const principalAmountForScenario3 = new BigNumber(50 * 10 ** 18);
 
         const debtOrderBase = {
-            ...DebtOrder.DEFAULTS,
+            ...DEBT_ORDER_DEFAULTS,
             kernelVersion: debtKernel.address,
             issuanceVersion: repaymentRouter.address,
             termsContract: termsContract.address,

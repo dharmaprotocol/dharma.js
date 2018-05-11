@@ -1,16 +1,29 @@
+// External libraries
 import * as singleLineString from "single-line-string";
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
+
+// Utils
 import {
     WEB3_ERROR_ACCOUNT_NOT_FOUND,
     WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_NO_PRIVATE_KEY,
 } from "../../utils/constants";
 import { SignatureUtils } from "../../utils/signature_utils";
+import { TransactionUtils } from "../../utils/transaction_utils";
+
+// Invariants
 import { Assertions } from "../invariants";
+
+// Types
 import { DebtOrder, ECDSASignature } from "../types";
+
+// Wrappers
 import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
+
 import { ContractsAPI } from "./";
+
+import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 export const SignerAPIErrors = {
     INVALID_SIGNING_KEY: (unavailableKey: string) =>
@@ -46,12 +59,12 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asDebtor(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
@@ -78,12 +91,12 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asCreditor(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
@@ -110,12 +123,12 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asUnderwriter(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 

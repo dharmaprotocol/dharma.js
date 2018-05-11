@@ -15,7 +15,7 @@ export interface DebtKernelErrorScenario {
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
         termsContract: SimpleInterestTermsContractContract,
-    ) => DebtOrder.Instance;
+    ) => DebtOrder;
     error?: DebtKernelError;
     signatories: {
         debtor: boolean;
@@ -24,7 +24,7 @@ export interface DebtKernelErrorScenario {
     };
     creditorBalance?: BigNumber;
     creditorAllowance?: BigNumber;
-    beforeBlock?: (debtOrder: DebtOrder.Instance, debtKernel: DebtKernelContract) => Promise<any>;
+    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
 }
 
 export interface RepaymentRouterErrorScenario {

@@ -1,4 +1,4 @@
-export { DebtOrder } from "./debt_order";
+export { DebtOrder, DEBT_ORDER_DEFAULTS } from "./debt_order";
 export { ECDSASignature } from "./ecdsa_signature";
 export { IssuanceCommitment } from "./issuance_commitment";
 export { TxData, TxDataPayable, TransactionOptions } from "./transaction_options";
@@ -10,4 +10,4 @@ export { DebtKernelError } from "./debt_kernel_error";
 export { RepaymentSchedule } from "./repayment_schedule";
 export { RepaymentRouterError } from "./repayment_router_error";
 export { Token } from "./token";
-export { TokenAmount } from "./token_amount";
+export { TokenAmount, TokenAmountType } from "./token_amount";

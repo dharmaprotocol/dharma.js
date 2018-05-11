@@ -1,26 +1,33 @@
+// External libraries
 import * as _ from "lodash";
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
+// Utils
 import { BigNumber } from "../../utils/bignumber";
+import { NULL_ADDRESS } from "../../utils/constants";
+import { TransactionUtils } from "../../utils/transaction_utils";
 import { Web3Utils } from "../../utils/web3_utils";
 
+// Apis
 import { ContractsAPI } from "../apis";
+
+// Invariants
 import { Assertions } from "../invariants";
+
+// Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule, TxData } from "../types";
-
-import { Adapter } from "./adapter";
-
 import { CollateralizedLoanTerms } from "./collateralized_simple_interest_loan_terms";
 import {
     SimpleInterestLoanOrder,
     SimpleInterestTermsContractParameters,
 } from "./simple_interest_loan_adapter";
-
-import { NULL_ADDRESS } from "../../utils/constants";
-import { ERC20Contract } from "../wrappers";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
+
+import { Adapter } from "./adapter";
+
+import { ERC20Contract } from "../wrappers";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -89,7 +96,7 @@ export const CollateralizerAdapterErrors = {
                         default when adjusted for grace period`,
 };
 
-export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interface {
+export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
     private assert: Assertions;
     private readonly contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
@@ -108,7 +115,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
     public async toDebtOrder(
         collateralizedSimpleInterestLoanOrder: CollateralizedSimpleInterestLoanOrder,
-    ): Promise<DebtOrder.Instance> {
+    ): Promise<DebtOrder> {
         this.assert.schema.collateralizedSimpleInterestLoanOrder(
             "collateralizedSimpleInterestLoanOrder",
             collateralizedSimpleInterestLoanOrder,
@@ -139,7 +146,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         const collateralizedContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
-        let debtOrder: DebtOrder.Instance = omit(collateralizedSimpleInterestLoanOrder, [
+        let debtOrder: DebtOrder = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed
             // into the `termsContractParameters`.
             "principalTokenSymbol",
@@ -177,7 +184,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
             termsContractParameters: packedParams,
         };
 
-        return DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
+        return TransactionUtils.applyNetworkDefaults(debtOrder, this.contractsAPI);
     }
 
     /**
@@ -196,7 +203,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     }
 
     public async fromDebtOrder(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
 

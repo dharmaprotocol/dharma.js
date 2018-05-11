@@ -67,7 +67,7 @@ export abstract class BaseCollateralRunner {
     protected contractsApi: ContractsAPI;
     protected tokenApi: TokenAPI;
     protected snapshotId: number;
-    protected debtOrder: DebtOrder.Instance;
+    protected debtOrder: DebtOrder;
 
     constructor(web3: Web3, adapter: CollateralizedSimpleInterestLoanAdapter, apis: APIs) {
         this.web3 = web3;
@@ -201,7 +201,7 @@ export abstract class BaseCollateralRunner {
 
     protected generateDebtOrder(
         scenario: ReturnCollateralScenario | SeizeCollateralScenario,
-    ): DebtOrder.Instance {
+    ): DebtOrder {
         const termsParams = this.adapter.packParameters(
             scenario.simpleTerms,
             scenario.collateralTerms,
