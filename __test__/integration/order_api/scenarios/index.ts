@@ -78,7 +78,7 @@ export interface IssuanceCancellationScenario extends OrderCancellationScenario 
 
 export interface OrderGenerationScenario {
     description: string;
-    adapter: (adaptersApi: AdaptersAPI) => Adapter.Interface;
+    adapter: (adaptersApi: AdaptersAPI) => Adapter;
     inputParameters: object;
     throws: boolean;
     errorType?: string;

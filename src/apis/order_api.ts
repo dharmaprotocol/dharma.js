@@ -278,7 +278,7 @@ export class OrderAPI {
      *                to generate the debt order.
      * @return Newly generated debt order.
      */
-    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder> {
+    public async generate(adapter: Adapter, params: object): Promise<DebtOrder> {
         this.assert.adapter.conformsToInterface(
             adapter,
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
