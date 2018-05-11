@@ -10,4 +10,4 @@ export { DebtKernelError } from "./debt_kernel_error";
 export { RepaymentSchedule } from "./repayment_schedule";
 export { RepaymentRouterError } from "./repayment_router_error";
 export { Token } from "./token";
-export { TokenAmount } from "./token_amount";
+export { TokenAmount, TokenAmountType } from "./token_amount";
