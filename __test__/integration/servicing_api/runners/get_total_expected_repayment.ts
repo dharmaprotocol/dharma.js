@@ -34,7 +34,7 @@ import { GetTotalExpectedRepaymentScenario } from "../scenarios";
 export class GetTotalExpectedRepaymentRunner {
     public static testScenario(scenario: GetTotalExpectedRepaymentScenario) {
         let principalToken: DummyTokenContract;
-        let debtOrder: DebtOrder.DebtOrderInterface;
+        let debtOrder: DebtOrder;
         let issuanceHash: string;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;

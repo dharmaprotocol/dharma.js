@@ -18,7 +18,7 @@ import { Assertions } from "../invariants";
 
 import { Adapter } from "./adapter";
 
-export interface SimpleInterestLoanOrder extends DebtOrder.DebtOrderInterface {
+export interface SimpleInterestLoanOrder extends DebtOrder {
     // Required Debt Order Parameters
     principalAmount: BigNumber;
     principalTokenSymbol: string;
@@ -100,7 +100,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
      */
     public async toDebtOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<DebtOrder.DebtOrderInterface> {
+    ): Promise<DebtOrder> {
         this.assert.schema.simpleInterestLoanOrder(
             "simpleInterestLoanOrder",
             simpleInterestLoanOrder,
@@ -121,7 +121,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
 
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
-        let debtOrder: DebtOrder.DebtOrderInterface = omit(simpleInterestLoanOrder, [
+        let debtOrder: DebtOrder = omit(simpleInterestLoanOrder, [
             "principalTokenSymbol",
             "interestRate",
             "amortizationUnit",
@@ -152,7 +152,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
      * @return           the generated simple interest loan order.
      */
     public async fromDebtOrder(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
     ): Promise<SimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
 

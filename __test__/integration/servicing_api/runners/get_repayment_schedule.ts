@@ -33,7 +33,7 @@ export class GetRepaymentScheduleRunner {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder.DebtOrderInterface;
+        let debtOrder: DebtOrder;
         let issuanceHash: string;
         let issuanceBlockTimestamp: BigNumber;
 

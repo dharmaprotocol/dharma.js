@@ -31,14 +31,14 @@ export class OrderAssertions {
     */
 
     // principal >= debtor fee
-    public validDebtorFee(debtOrder: DebtOrder.DebtOrderInterface, errorMessage: string) {
+    public validDebtorFee(debtOrder: DebtOrder, errorMessage: string) {
         if (debtOrder.principalAmount.lt(debtOrder.debtorFee)) {
             throw new Error(errorMessage);
         }
     }
 
     // If no underwriter is specified, underwriter fees must be 0
-    public validUnderwriterFee(debtOrder: DebtOrder.DebtOrderInterface, errorMessage: string) {
+    public validUnderwriterFee(debtOrder: DebtOrder, errorMessage: string) {
         if (
             (!debtOrder.underwriter || debtOrder.underwriter === NULL_ADDRESS) &&
             debtOrder.underwriterFee.gt(0)
@@ -48,7 +48,7 @@ export class OrderAssertions {
     }
 
     // If no relayer is specified, relayer fees must be 0
-    public validRelayerFee(debtOrder: DebtOrder.DebtOrderInterface, errorMessage: string) {
+    public validRelayerFee(debtOrder: DebtOrder, errorMessage: string) {
         if (
             (!debtOrder.relayer || debtOrder.relayer === NULL_ADDRESS) &&
             debtOrder.relayerFee.gt(0)
@@ -58,7 +58,7 @@ export class OrderAssertions {
     }
 
     // creditorFee + debtorFee == relayerFee + underwriterFee
-    public validFees(debtOrder: DebtOrder.DebtOrderInterface, errorMessage: string) {
+    public validFees(debtOrder: DebtOrder, errorMessage: string) {
         const feesContributed = debtOrder.creditorFee.plus(debtOrder.debtorFee);
         const feesDistributed = debtOrder.relayerFee.plus(debtOrder.underwriterFee);
         if (!feesContributed.eq(feesDistributed)) {
@@ -67,7 +67,7 @@ export class OrderAssertions {
     }
 
     // Debt order must not be expired
-    public async notExpired(debtOrder: DebtOrder.DebtOrderInterface, errorMessage: string) {
+    public async notExpired(debtOrder: DebtOrder, errorMessage: string) {
         const latestBlockTime = await this.web3Utils.getCurrentBlockTime();
         const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
 
@@ -78,7 +78,7 @@ export class OrderAssertions {
 
     // Debt cannot already have been issued
     public async notAlreadyIssuedAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         debtToken: DebtTokenContract,
         errorMessage: string,
     ) {
@@ -96,7 +96,7 @@ export class OrderAssertions {
 
     // Debt order cannot have been cancelled
     public async debtOrderNotCancelledAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
@@ -114,7 +114,7 @@ export class OrderAssertions {
 
     // Issuance cannot have been cancelled
     public async issuanceNotCancelledAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
@@ -131,7 +131,7 @@ export class OrderAssertions {
     }
 
     public senderAuthorizedToCancelOrder(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -141,7 +141,7 @@ export class OrderAssertions {
     }
 
     public senderAuthorizedToCancelIssuance(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -159,7 +159,7 @@ export class OrderAssertions {
 
     // If message sender not debtor, debtor signature must be valid
     public async validDebtorSignature(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -181,7 +181,7 @@ export class OrderAssertions {
 
     // If message sender not creditor, creditor signature must be valid
     public async validCreditorSignature(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -203,7 +203,7 @@ export class OrderAssertions {
 
     // If message sender not underwriter AND underwriter exists, underwriter signature must be valid
     public async validUnderwriterSignature(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
@@ -229,7 +229,7 @@ export class OrderAssertions {
 
     // Creditor balance > principal + fee
     public async sufficientCreditorBalanceAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         principalToken: ERC20Contract,
         errorMessage: string,
     ) {
@@ -241,7 +241,7 @@ export class OrderAssertions {
 
     // Creditor Allowance to TokenTransferProxy >= principal + creditorFee
     public async sufficientCreditorAllowanceAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         principalToken: ERC20Contract,
         tokenTransferProxy: TokenTransferProxyContract,
         errorMessage: string,
@@ -261,7 +261,7 @@ export class OrderAssertions {
      */
 
     public async sufficientCollateralizerAllowanceAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         collateralToken: ERC20Contract,
         collateralAmount: BigNumber,
         tokenTransferProxy: TokenTransferProxyContract,
@@ -278,7 +278,7 @@ export class OrderAssertions {
     }
 
     public async sufficientCollateralizerBalanceAsync(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         collateralToken: ERC20Contract,
         collateralAmount: BigNumber,
         errorMessage: string,

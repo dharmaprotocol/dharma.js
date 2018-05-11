@@ -34,7 +34,7 @@ export class GetExpectedValueRepaidRunner {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder.DebtOrderInterface;
+        let debtOrder: DebtOrder;
         let issuanceHash: string;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;

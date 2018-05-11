@@ -109,7 +109,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
     public async toDebtOrder(
         collateralizedSimpleInterestLoanOrder: CollateralizedSimpleInterestLoanOrder,
-    ): Promise<DebtOrder.DebtOrderInterface> {
+    ): Promise<DebtOrder> {
         this.assert.schema.collateralizedSimpleInterestLoanOrder(
             "collateralizedSimpleInterestLoanOrder",
             collateralizedSimpleInterestLoanOrder,
@@ -140,7 +140,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
 
         const collateralizedContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
-        let debtOrder: DebtOrder.DebtOrderInterface = omit(collateralizedSimpleInterestLoanOrder, [
+        let debtOrder: DebtOrder = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed
             // into the `termsContractParameters`.
             "principalTokenSymbol",
@@ -197,7 +197,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
     }
 
     public async fromDebtOrder(
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
 

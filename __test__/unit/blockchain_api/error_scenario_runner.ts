@@ -218,7 +218,10 @@ export class ErrorScenarioRunner {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
                 }
 
-                debtOrder = await TransactionUtils.applyNetworkDefaults(debtOrder, this.contractsAPI);
+                debtOrder = await TransactionUtils.applyNetworkDefaults(
+                    debtOrder,
+                    this.contractsAPI,
+                );
                 const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(

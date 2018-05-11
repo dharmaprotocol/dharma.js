@@ -38,7 +38,7 @@ export interface FillScenario {
         termsContract:
             | SimpleInterestTermsContractContract
             | CollateralizedSimpleInterestTermsContractContract,
-    ) => DebtOrder.DebtOrderInterface;
+    ) => DebtOrder;
     filler: string;
     signatories: {
         debtor: boolean;
@@ -55,7 +55,7 @@ export interface FillScenario {
     collateralAllowance?: BigNumber;
     collateralTokenIndex?: BigNumber;
     beforeBlock?: (
-        debtOrder: DebtOrder.DebtOrderInterface,
+        debtOrder: DebtOrder,
         debtKernel: DebtKernelContract,
     ) => Promise<any>;
 }
@@ -66,7 +66,7 @@ export interface OrderCancellationScenario {
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
-    ) => DebtOrder.DebtOrderInterface;
+    ) => DebtOrder;
     canceller: string;
     successfullyCancels: boolean;
     orderAlreadyCancelled: boolean;

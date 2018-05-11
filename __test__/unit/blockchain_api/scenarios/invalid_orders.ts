@@ -329,7 +329,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             underwriter: true,
         },
         beforeBlock: async (
-            debtOrder: DebtOrder.DebtOrderInterface,
+            debtOrder: DebtOrder,
             debtKernel: DebtKernelContract,
         ) => {
             const debtOrderWrapper = new DebtOrderWrapper(debtOrder);
@@ -381,7 +381,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             underwriter: true,
         },
         beforeBlock: async (
-            debtOrder: DebtOrder.DebtOrderInterface,
+            debtOrder: DebtOrder,
             debtKernel: DebtKernelContract,
         ) => {
             const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
@@ -437,7 +437,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             underwriter: true,
         },
         beforeBlock: async (
-            debtOrder: DebtOrder.DebtOrderInterface,
+            debtOrder: DebtOrder,
             debtKernel: DebtKernelContract,
         ) => {
             return await debtKernel.cancelIssuance.sendTransactionAsync(
