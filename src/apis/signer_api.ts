@@ -11,6 +11,8 @@ import { Assertions } from "../invariants";
 import { DebtOrder, ECDSASignature } from "../types";
 import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
 import { ContractsAPI } from "./";
+import { TransactionUtils } from "../../utils/transaction_utils";
+import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 export const SignerAPIErrors = {
     INVALID_SIGNING_KEY: (unavailableKey: string) =>
@@ -51,7 +53,7 @@ export class SignerAPI {
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
@@ -83,7 +85,7 @@ export class SignerAPI {
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 
@@ -115,7 +117,7 @@ export class SignerAPI {
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
 

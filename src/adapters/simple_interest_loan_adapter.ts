@@ -2,16 +2,21 @@
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
+
 // Utils
 import { BigNumber } from "../../utils/bignumber";
+import { NULL_ADDRESS } from "../../utils/constants";
+import { TransactionUtils } from "../../utils/transaction_utils";
+
 // Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
-
-import { NULL_ADDRESS } from "../../utils/constants";
-import { ContractsAPI } from "../apis";
-import { Assertions } from "../invariants";
-import { Adapter } from "./adapter";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
+
+import { ContractsAPI } from "../apis";
+
+import { Assertions } from "../invariants";
+
+import { Adapter } from "./adapter";
 
 export interface SimpleInterestLoanOrder extends DebtOrder.DebtOrderInterface {
     // Required Debt Order Parameters
@@ -136,7 +141,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             }),
         };
 
-        return DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        return TransactionUtils.applyNetworkDefaults(debtOrder, this.contracts);
     }
 
     /**

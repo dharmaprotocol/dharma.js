@@ -12,6 +12,8 @@ import {
     ERC20Contract,
     TokenTransferProxyContract,
 } from "../wrappers";
+import { TransactionUtils } from "../../utils/transaction_utils";
+import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 const BLOCK_TIME_ESTIMATE_SECONDS = 14;
 
@@ -80,7 +82,7 @@ export class OrderAssertions {
         debtToken: DebtTokenContract,
         errorMessage: string,
     ) {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         const orderIssued = await debtToken.exists.callAsync(
@@ -98,7 +100,7 @@ export class OrderAssertions {
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         if (
@@ -116,7 +118,7 @@ export class OrderAssertions {
         debtKernel: DebtKernelContract,
         errorMessage: string,
     ) {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         if (
@@ -161,7 +163,7 @@ export class OrderAssertions {
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         if (transactionOptions.from !== debtOrder.debtor) {
@@ -183,7 +185,7 @@ export class OrderAssertions {
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         if (transactionOptions.from !== debtOrder.creditor) {
@@ -205,7 +207,7 @@ export class OrderAssertions {
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         if (transactionOptions.from !== debtOrder.underwriter) {

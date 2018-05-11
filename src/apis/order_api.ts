@@ -23,6 +23,8 @@ import { DebtOrder, IssuanceCommitment, TransactionOptions, TxData } from "../ty
 // Utils
 import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
 import { Assertions } from "../invariants";
+import { TransactionUtils } from "../../utils/transaction_utils";
+import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 const ORDER_FILL_GAS_MAXIMUM = 600000;
 
@@ -127,7 +129,7 @@ export class OrderAPI {
             options,
         );
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         await this.assertFillableAsync(debtOrder, options);
 
@@ -194,7 +196,7 @@ export class OrderAPI {
 
         const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
@@ -259,7 +261,7 @@ export class OrderAPI {
      * @return The debt order's issuanceHash (alias of debtAgreementId).
      */
     public async getIssuanceHash(debtOrder: DebtOrder.DebtOrderInterface): Promise<string> {
-        debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
 
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 

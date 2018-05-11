@@ -20,6 +20,8 @@ import {
 
 import { ACCOUNTS } from "../../accounts";
 
+import { TransactionUtils } from "../../../utils/transaction_utils";
+
 const CONTRACT_OWNER = ACCOUNTS[0].address;
 const CREDITOR = ACCOUNTS[1].address;
 const DEBTOR = ACCOUNTS[2].address;
@@ -216,7 +218,7 @@ export class ErrorScenarioRunner {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
                 }
 
-                debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
+                debtOrder = await TransactionUtils.applyNetworkDefaults(debtOrder, this.contractsAPI);
                 const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(

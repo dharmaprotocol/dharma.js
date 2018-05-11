@@ -2,9 +2,12 @@
 import * as Web3 from "web3";
 import * as ethjsABI from "ethjs-abi";
 import * as promisify from "tiny-promisify";
+import * as assignDefaults from "lodash.defaults";
 
 // Types
 import { TxData } from "src/types";
+import { DEBT_ORDER_DEFAULTS, DebtOrderInterface } from "../src/types/debt_order";
+import { ContractsAPI } from "../src/apis";
 
 export namespace TransactionUtils {
     function filterMethodABI(abi: any[]): Web3.MethodAbi[] {
@@ -48,5 +51,21 @@ export namespace TransactionUtils {
             ...txData,
             to: web3ContractInstance.address,
         });
+    }
+
+    export async function applyNetworkDefaults(
+        debtOrder: DebtOrderInterface,
+        contracts: ContractsAPI,
+    ): Promise<DebtOrderInterface> {
+        const debtKernel = await contracts.loadDebtKernelAsync();
+        const repaymentRouter = await contracts.loadRepaymentRouterAsync();
+
+        const networkDefaults = {
+            ...DEBT_ORDER_DEFAULTS,
+            kernelVersion: debtKernel.address,
+            issuanceVersion: repaymentRouter.address,
+        };
+
+        return assignDefaults(debtOrder, networkDefaults);
     }
 }
