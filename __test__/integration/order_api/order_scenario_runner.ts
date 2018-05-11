@@ -106,7 +106,7 @@ export class OrderScenarioRunner {
                 let originalValidate: (
                     loanOrder: SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder,
                 ) => void;
-                let adapter: Adapter.Interface;
+                let adapter: Adapter.AdapterInterface;
 
                 beforeAll(async () => {
                     adapter = await this.adaptersApi.getAdapterByTermsContractAddress(
@@ -334,7 +334,7 @@ export class OrderScenarioRunner {
 
     public testOrderGenerationScenario(scenario: OrderGenerationScenario) {
         describe(scenario.description, () => {
-            let adapter: Adapter.Interface;
+            let adapter: Adapter.AdapterInterface;
 
             beforeEach(() => {
                 adapter = scenario.adapter(this.adaptersApi);

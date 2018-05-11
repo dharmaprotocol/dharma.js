@@ -3,7 +3,7 @@ import { CollateralizedSimpleInterestLoanOrder } from "./collateralized_simple_i
 import { SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
 
 export namespace Adapter {
-    export interface Interface {
+    export interface AdapterInterface {
         fromDebtOrder: (
             debtOrder: DebtOrder,
         ) => Promise<SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder>;
@@ -16,7 +16,7 @@ export namespace Adapter {
         ) => Promise<void>;
     }
 
-    export function conformsToAdapterInterface(object: any): object is Interface {
+    export function conformsToAdapterInterface(object: any): object is AdapterInterface {
         return (
             "fromDebtOrder" in object &&
             "toDebtOrder" in object &&
