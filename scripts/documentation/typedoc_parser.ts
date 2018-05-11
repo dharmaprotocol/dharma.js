@@ -12,6 +12,7 @@ import { Reflection } from "typedoc";
  */
 interface Documentation {
     sections: SectionDocumentation[];
+    interfaces: Interface[];
 }
 
 interface SectionDocumentation {
@@ -62,6 +63,18 @@ interface ParameterType {
 interface TypedocInput {
     title: string;
     children: Reflection[];
+}
+
+interface Interface {
+    id: number;
+    name: string;
+    kind: number;
+    kindString: string;
+    flags: any;
+    children: any[];
+    groups: any[];
+    sources: any[];
+    extendedTypes: any[];
 }
 
 /**
@@ -193,6 +206,32 @@ class TypedocParser {
         return text;
     }
 
+    private static deepFilter(obj: any, predicate: (obj) => boolean) {
+        // Base case:
+        if (predicate(obj)) {
+            return [obj];
+        }
+
+        // Recursively:
+        return _.flatten(_.map(obj, (v) => {
+            return typeof v === "object" ? this.deepFilter(v, predicate) : [];
+        }), true);
+    }
+
+    private static interfacesInSignature(signature): string[] {
+        const params: SignatureParameter[] = signature.parameters;
+
+        const paramInterfaces = _.compact(
+            _.map(params, (param) => {
+                if (param.type.name === "Interface") {
+                    return param.name;
+                }
+            }),
+        );
+
+        return paramInterfaces || [];
+    }
+
     // The path to the Typedoc input JSON file.
     private readonly filePath;
     // The typedoc JSON input, as read from the JSON file at `filePath`.
@@ -225,13 +264,20 @@ class TypedocParser {
     }
 
     private parseData(): void {
-        this.output = { sections: this.getSections() };
+        this.output = { sections: this.getSections(), interfaces: this.getInterfaces() };
     }
 
     private getSections(): SectionDocumentation[] {
         const groupedClasses = this.classesPerSection();
 
         return _.map(groupedClasses, this.getSectionData.bind(this));
+    }
+
+    private getInterfaces(): Interface[] {
+        return TypedocParser.deepFilter(
+            this.input,
+            (obj) => obj.kindString === "Interface" && obj.name !== "Interface",
+        );
     }
 
     private getSectionData(classes: object[], groupName: string): SectionDocumentation {
@@ -270,11 +316,21 @@ class TypedocParser {
             const signature = method.signatures[0];
             const params = TypedocParser.paramsString(signature.parameters);
 
+            let description = "";
+            if (signature.comment) {
+                description = signature.comment.shortText;
+
+                if (signature.comment.text) {
+                    description += `\n\n${signature.comment.text}`;
+                }
+            }
+
             return {
                 name: method.name,
-                description: signature.comment ? signature.comment.shortText : "",
+                description,
                 example: TypedocParser.getExample(signature),
                 params,
+                interfaces: TypedocParser.interfacesInSignature(signature),
                 source: `${method.sources[0].fileName}#L${method.sources[0].line}`,
                 signature: TypedocParser.methodSignature(method.name, signature, params),
             };
