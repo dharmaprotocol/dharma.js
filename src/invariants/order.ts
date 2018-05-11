@@ -168,7 +168,6 @@ export class OrderAssertions {
     */
 
     // If message sender not debtor, debtor signature must be valid
-    public debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
     public async validDebtorSignature(
         debtOrder: DebtOrder,
         transactionOptions: TxData,

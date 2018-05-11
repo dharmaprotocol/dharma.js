@@ -308,9 +308,7 @@ export class ErrorScenarioRunner {
         return token;
     }
 
-    private async generateSignedDebtOrderWithToken(
-        token: string,
-    ): Promise<DebtOrder> {
+    private async generateSignedDebtOrderWithToken(token: string): Promise<DebtOrder> {
         const debtOrder = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
