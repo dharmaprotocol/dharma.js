@@ -72,7 +72,7 @@ export const SimpleInterestAdapterErrors = {
                          interface with the terms contract as expected`,
 };
 
-export class SimpleInterestLoanAdapter implements Adapter.AdapterInterface {
+export class SimpleInterestLoanAdapter implements Adapter {
     public static Installments: { [type: string]: AmortizationUnit } = {
         HOURLY: "hours",
         DAILY: "days",

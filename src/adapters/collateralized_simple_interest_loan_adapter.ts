@@ -96,7 +96,7 @@ export const CollateralizerAdapterErrors = {
                         default when adjusted for grace period`,
 };
 
-export class CollateralizedSimpleInterestLoanAdapter implements Adapter.AdapterInterface {
+export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
     private assert: Assertions;
     private readonly contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
