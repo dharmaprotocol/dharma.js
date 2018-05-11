@@ -1,22 +1,34 @@
+// External libraries
 import * as Web3 from "web3";
-import * as Units from "utils/units";
-import { BigNumber } from "utils/bignumber";
 
+// Utils
+import { BigNumber } from "../../../utils/bignumber";
+import { TransactionUtils } from "../../../utils/transaction_utils";
+import * as Units from "../../../utils/units";
+import { Web3Utils } from "../../../utils/web3_utils";
+
+// Adapters
+import { SimpleInterestLoanAdapter } from "../../../src/adapters";
+
+// Apis
+import { AdaptersAPI, BlockchainAPI, ContractsAPI, OrderAPI, SignerAPI } from "../../../src/apis/";
+
+// Types
+import { DebtKernelError, DebtOrder, RepaymentRouterError } from "../../../src/types";
+
+// Scenarios
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
-import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
-import { Web3Utils } from "utils/web3_utils";
-import { AdaptersAPI, ContractsAPI, BlockchainAPI, SignerAPI, OrderAPI } from "src/apis/";
-import { SimpleInterestLoanAdapter } from "src/adapters";
 
+// Wrappers
 import {
     DebtKernelContract,
     DebtOrderWrapper,
-    RepaymentRouterContract,
     DummyTokenContract,
+    RepaymentRouterContract,
     SimpleInterestTermsContractContract,
     TokenRegistryContract,
     TokenTransferProxyContract,
-} from "src/wrappers";
+} from "../../../src/wrappers";
 
 import { ACCOUNTS } from "../../accounts";
 
@@ -216,7 +228,10 @@ export class ErrorScenarioRunner {
                     await scenario.beforeBlock(debtOrder, this.debtKernel);
                 }
 
-                debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contractsAPI);
+                debtOrder = await TransactionUtils.applyNetworkDefaults(
+                    debtOrder,
+                    this.contractsAPI,
+                );
                 const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(
@@ -293,7 +308,7 @@ export class ErrorScenarioRunner {
         return token;
     }
 
-    private async generateSignedDebtOrderWithToken(token: string): Promise<DebtOrder.Instance> {
+    private async generateSignedDebtOrderWithToken(token: string): Promise<DebtOrder> {
         const debtOrder = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,

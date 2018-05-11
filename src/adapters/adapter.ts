@@ -5,9 +5,9 @@ import { SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
 export namespace Adapter {
     export interface Interface {
         fromDebtOrder: (
-            debtOrder: DebtOrder.Instance,
+            debtOrder: DebtOrder,
         ) => Promise<SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder>;
-        toDebtOrder: (params: object) => Promise<DebtOrder.Instance>;
+        toDebtOrder: (params: object) => Promise<DebtOrder>;
         fromDebtRegistryEntry: (entry: DebtRegistryEntry) => Promise<object>;
         getRepaymentSchedule: (entry: DebtRegistryEntry) => number[];
         unpackParameters: (packedParams: string) => object;

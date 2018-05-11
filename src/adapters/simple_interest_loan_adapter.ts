@@ -2,18 +2,23 @@
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
+
 // Utils
 import { BigNumber } from "../../utils/bignumber";
+import { NULL_ADDRESS } from "../../utils/constants";
+import { TransactionUtils } from "../../utils/transaction_utils";
+
 // Types
 import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
-
-import { NULL_ADDRESS } from "../../utils/constants";
-import { ContractsAPI } from "../apis";
-import { Assertions } from "../invariants";
-import { Adapter } from "./adapter";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
-export interface SimpleInterestLoanOrder extends DebtOrder.Instance {
+import { ContractsAPI } from "../apis";
+
+import { Assertions } from "../invariants";
+
+import { Adapter } from "./adapter";
+
+export interface SimpleInterestLoanOrder extends DebtOrder {
     // Required Debt Order Parameters
     principalAmount: BigNumber;
     principalTokenSymbol: string;
@@ -93,9 +98,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
      * @param  simpleInterestLoanOrder a simple interest loan order instance.
      * @return the generated Dharma debt order.
      */
-    public async toDebtOrder(
-        simpleInterestLoanOrder: SimpleInterestLoanOrder,
-    ): Promise<DebtOrder.Instance> {
+    public async toDebtOrder(simpleInterestLoanOrder: SimpleInterestLoanOrder): Promise<DebtOrder> {
         this.assert.schema.simpleInterestLoanOrder(
             "simpleInterestLoanOrder",
             simpleInterestLoanOrder,
@@ -116,7 +119,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
 
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
-        let debtOrder: DebtOrder.Instance = omit(simpleInterestLoanOrder, [
+        let debtOrder: DebtOrder = omit(simpleInterestLoanOrder, [
             "principalTokenSymbol",
             "interestRate",
             "amortizationUnit",
@@ -136,7 +139,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
             }),
         };
 
-        return DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
+        return TransactionUtils.applyNetworkDefaults(debtOrder, this.contracts);
     }
 
     /**
@@ -146,7 +149,7 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
      * @param  debtOrder a Dharma debt order instance.
      * @return           the generated simple interest loan order.
      */
-    public async fromDebtOrder(debtOrder: DebtOrder.Instance): Promise<SimpleInterestLoanOrder> {
+    public async fromDebtOrder(debtOrder: DebtOrder): Promise<SimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
 
         const {
