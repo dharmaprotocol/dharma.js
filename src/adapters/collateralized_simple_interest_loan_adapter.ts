@@ -345,6 +345,15 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter.Interfac
         return packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
     }
 
+    /**
+     *
+     * @example
+     *   await canReturnCollateral("123");
+     *   => true
+     *
+     * @param {string} agreementId
+     * @returns {Promise<boolean>}
+     */
     public async canReturnCollateral(agreementId: string): Promise<boolean> {
         try {
             await this.assertCollateralReturnable(agreementId);
