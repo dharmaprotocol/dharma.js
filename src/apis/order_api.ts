@@ -117,7 +117,10 @@ export class OrderAPI {
      * @param  options   any params needed to modify the Ethereum transaction.
      * @return           the hash of the ethereum transaction that fulfilled the debt order.
      */
-    public async fillAsync(debtOrder: DebtOrder.DebtOrderInterface, options?: TxData): Promise<string> {
+    public async fillAsync(
+        debtOrder: DebtOrder.DebtOrderInterface,
+        options?: TxData,
+    ): Promise<string> {
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ORDER_FILL_GAS_MAXIMUM,
@@ -285,7 +288,10 @@ export class OrderAPI {
      *                to generate the debt order.
      * @return Newly generated debt order.
      */
-    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder.DebtOrderInterface> {
+    public async generate(
+        adapter: Adapter.Interface,
+        params: object,
+    ): Promise<DebtOrder.DebtOrderInterface> {
         this.assert.adapter.conformsToInterface(
             adapter,
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
@@ -391,7 +397,10 @@ export class OrderAPI {
         );
     }
 
-    private async assertConsensualityInvariants(debtOrder: DebtOrder.DebtOrderInterface, txOptions: object) {
+    private async assertConsensualityInvariants(
+        debtOrder: DebtOrder.DebtOrderInterface,
+        txOptions: object,
+    ) {
         await this.assert.order.validDebtorSignature(
             debtOrder,
             txOptions,

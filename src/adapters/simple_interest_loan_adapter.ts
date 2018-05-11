@@ -146,7 +146,9 @@ export class SimpleInterestLoanAdapter implements Adapter.Interface {
      * @param  debtOrder a Dharma debt order instance.
      * @return           the generated simple interest loan order.
      */
-    public async fromDebtOrder(debtOrder: DebtOrder.DebtOrderInterface): Promise<SimpleInterestLoanOrder> {
+    public async fromDebtOrder(
+        debtOrder: DebtOrder.DebtOrderInterface,
+    ): Promise<SimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
 
         const {
