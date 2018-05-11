@@ -119,10 +119,7 @@ export class OrderAPI {
      * @param  options   any params needed to modify the Ethereum transaction.
      * @return           the hash of the ethereum transaction that fulfilled the debt order.
      */
-    public async fillAsync(
-        debtOrder: DebtOrder,
-        options?: TxData,
-    ): Promise<string> {
+    public async fillAsync(debtOrder: DebtOrder, options?: TxData): Promise<string> {
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ORDER_FILL_GAS_MAXIMUM,
@@ -156,10 +153,7 @@ export class OrderAPI {
      * @param {TxData} txOptions
      * @returns {Promise<void>}
      */
-    public async assertFillableAsync(
-        debtOrder: DebtOrder,
-        txOptions?: TxData,
-    ): Promise<void> {
+    public async assertFillableAsync(debtOrder: DebtOrder, txOptions?: TxData): Promise<void> {
         const {
             debtKernel,
             debtToken,
@@ -184,10 +178,7 @@ export class OrderAPI {
      * @param  options   any params needed to modify the Ethereum transaction.
      * @return           the hash of the resulting Ethereum transaction.
      */
-    public async cancelOrderAsync(
-        debtOrder: DebtOrder,
-        options?: TxData,
-    ): Promise<string> {
+    public async cancelOrderAsync(debtOrder: DebtOrder, options?: TxData): Promise<string> {
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ORDER_FILL_GAS_MAXIMUM,
@@ -233,10 +224,7 @@ export class OrderAPI {
      * @param  options   any params needed to modify the Ethereum transaction.
      * @return           boolean representing whether the debt order is filled or not.
      */
-    public async checkOrderFilledAsync(
-        debtOrder: DebtOrder,
-        options?: TxData,
-    ): Promise<boolean> {
+    public async checkOrderFilledAsync(debtOrder: DebtOrder, options?: TxData): Promise<boolean> {
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ORDER_FILL_GAS_MAXIMUM,
@@ -290,10 +278,7 @@ export class OrderAPI {
      *                to generate the debt order.
      * @return Newly generated debt order.
      */
-    public async generate(
-        adapter: Adapter.Interface,
-        params: object,
-    ): Promise<DebtOrder> {
+    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder> {
         this.assert.adapter.conformsToInterface(
             adapter,
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
@@ -399,10 +384,7 @@ export class OrderAPI {
         );
     }
 
-    private async assertConsensualityInvariants(
-        debtOrder: DebtOrder,
-        txOptions: object,
-    ) {
+    private async assertConsensualityInvariants(debtOrder: DebtOrder, txOptions: object) {
         await this.assert.order.validDebtorSignature(
             debtOrder,
             txOptions,

@@ -1,13 +1,13 @@
 // External
-import * as Web3 from "web3";
 import * as ethjsABI from "ethjs-abi";
-import * as promisify from "tiny-promisify";
 import * as assignDefaults from "lodash.defaults";
+import * as promisify from "tiny-promisify";
+import * as Web3 from "web3";
 
 // Types
 import { TxData } from "src/types";
-import { DEBT_ORDER_DEFAULTS, DebtOrderInterface } from "../src/types/debt_order";
 import { ContractsAPI } from "../src/apis";
+import { DEBT_ORDER_DEFAULTS, DebtOrderInterface } from "../src/types/debt_order";
 
 export namespace TransactionUtils {
     function filterMethodABI(abi: any[]): Web3.MethodAbi[] {

@@ -54,10 +54,7 @@ export interface FillScenario {
     collateralBalance?: BigNumber;
     collateralAllowance?: BigNumber;
     collateralTokenIndex?: BigNumber;
-    beforeBlock?: (
-        debtOrder: DebtOrder,
-        debtKernel: DebtKernelContract,
-    ) => Promise<any>;
+    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
 }
 
 export interface OrderCancellationScenario {

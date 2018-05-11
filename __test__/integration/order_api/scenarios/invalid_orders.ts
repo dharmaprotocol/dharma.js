@@ -268,10 +268,7 @@ export const INVALID_ORDERS: FillScenario[] = [
         successfullyFills: false,
         errorType: "DEBT_ORDER_CANCELLED",
         errorMessage: OrderAPIErrors.ORDER_CANCELLED(),
-        beforeBlock: async (
-            debtOrder: DebtOrder,
-            debtKernel: DebtKernelContract,
-        ) => {
+        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
             const debtOrderWrapper = new DebtOrderWrapper(debtOrder);
 
             await debtKernel.cancelDebtOrder.sendTransactionAsync(
@@ -323,10 +320,7 @@ export const INVALID_ORDERS: FillScenario[] = [
         successfullyFills: false,
         errorType: "DEBT_ORDER_ALREADY_FILLED",
         errorMessage: OrderAPIErrors.DEBT_ORDER_ALREADY_FILLED(),
-        beforeBlock: async (
-            debtOrder: DebtOrder,
-            debtKernel: DebtKernelContract,
-        ) => {
+        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
             const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
             await debtKernel.fillDebtOrder.sendTransactionAsync(

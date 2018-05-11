@@ -1,10 +1,20 @@
+// External libraries
 import * as Web3 from "web3";
+
+// Utils
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
 import { SignatureUtils } from "../../utils/signature_utils";
+import { TransactionUtils } from "../../utils/transaction_utils";
 import { Web3Utils } from "../../utils/web3_utils";
+
+// APIs
 import { ContractsAPI } from "../apis";
+
+// Types
 import { DebtOrder, TxData } from "../types";
+
+// Wrappers
 import {
     DebtKernelContract,
     DebtOrderWrapper,
@@ -12,7 +22,7 @@ import {
     ERC20Contract,
     TokenTransferProxyContract,
 } from "../wrappers";
-import { TransactionUtils } from "../../utils/transaction_utils";
+
 import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 const BLOCK_TIME_ESTIMATE_SECONDS = 14;
@@ -158,12 +168,12 @@ export class OrderAssertions {
     */
 
     // If message sender not debtor, debtor signature must be valid
+    public debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
     public async validDebtorSignature(
         debtOrder: DebtOrder,
         transactionOptions: TxData,
         errorMessage: string,
     ) {
-        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
 
         if (transactionOptions.from !== debtOrder.debtor) {

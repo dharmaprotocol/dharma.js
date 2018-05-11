@@ -1,17 +1,28 @@
+// External libraries
 import * as singleLineString from "single-line-string";
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
+
+// Utils
 import {
     WEB3_ERROR_ACCOUNT_NOT_FOUND,
     WEB3_ERROR_INVALID_ADDRESS,
     WEB3_ERROR_NO_PRIVATE_KEY,
 } from "../../utils/constants";
 import { SignatureUtils } from "../../utils/signature_utils";
-import { Assertions } from "../invariants";
-import { DebtOrder, ECDSASignature } from "../types";
-import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
-import { ContractsAPI } from "./";
 import { TransactionUtils } from "../../utils/transaction_utils";
+
+// Invariants
+import { Assertions } from "../invariants";
+
+// Types
+import { DebtOrder, ECDSASignature } from "../types";
+
+// Wrappers
+import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
+
+import { ContractsAPI } from "./";
+
 import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 export const SignerAPIErrors = {
