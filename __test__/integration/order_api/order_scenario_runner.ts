@@ -75,7 +75,7 @@ export class OrderScenarioRunner {
 
     public testCheckOrderFilledScenario(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder.Instance;
+            let debtOrder: DebtOrder.DebtOrderInterface;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -148,7 +148,7 @@ export class OrderScenarioRunner {
 
     public testAssertFillable(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder.Instance;
+            let debtOrder: DebtOrder.DebtOrderInterface;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -182,7 +182,7 @@ export class OrderScenarioRunner {
 
     public testFillScenario(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder.Instance;
+            let debtOrder: DebtOrder.DebtOrderInterface;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -220,7 +220,7 @@ export class OrderScenarioRunner {
 
     public async testOrderCancelScenario(scenario: OrderCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder.Instance;
+            let debtOrder: DebtOrder.DebtOrderInterface;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -273,7 +273,7 @@ export class OrderScenarioRunner {
 
     public async testIssuanceCancelScenario(scenario: IssuanceCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder.Instance;
+            let debtOrder: DebtOrder.DebtOrderInterface;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -360,7 +360,7 @@ export class OrderScenarioRunner {
 
     public testUnpackTermsScenario(scenario: UnpackTermsScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder.Instance;
+            let debtOrder: DebtOrder.DebtOrderInterface;
 
             beforeEach(async () => {
                 const simpleInterestTermsContract = this.termsContract;
@@ -417,7 +417,7 @@ export class OrderScenarioRunner {
         await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
     }
 
-    private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrder.Instance> {
+    private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrder.DebtOrderInterface> {
         let debtOrder;
 
         if (scenario.isCollateralized) {

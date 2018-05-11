@@ -38,7 +38,7 @@ export namespace DebtOrder {
         underwriterSignature: NULL_ECDSA_SIGNATURE,
     };
 
-    export interface Instance {
+    export interface DebtOrderInterface {
         kernelVersion?: string;
         issuanceVersion?: string;
         principalAmount?: BigNumber;
@@ -64,9 +64,9 @@ export namespace DebtOrder {
     }
 
     export async function applyNetworkDefaults(
-        debtOrder: Instance,
+        debtOrder: DebtOrderInterface,
         contracts: ContractsAPI,
-    ): Promise<Instance> {
+    ): Promise<DebtOrderInterface> {
         const debtKernel = await contracts.loadDebtKernelAsync();
         const repaymentRouter = await contracts.loadRepaymentRouterAsync();
 

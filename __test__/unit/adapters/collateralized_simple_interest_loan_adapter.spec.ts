@@ -260,7 +260,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
 
 describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
     interface AdapterScenario {
-        debtOrder: DebtOrder.Instance;
+        debtOrder: DebtOrder.DebtOrderInterface;
         fullLoanOrder: CollateralizedSimpleInterestLoanOrder;
         minimalLoanOrder: CollateralizedSimpleInterestLoanOrder;
         entry: DebtRegistryEntry;

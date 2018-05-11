@@ -33,7 +33,7 @@ export class GetValueRepaidRunner {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder.Instance;
+        let debtOrder: DebtOrder.DebtOrderInterface;
         let issuanceHash: string;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;

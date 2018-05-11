@@ -46,7 +46,7 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asDebtor(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
@@ -78,7 +78,7 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asCreditor(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
@@ -110,7 +110,7 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asUnderwriter(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
         this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);

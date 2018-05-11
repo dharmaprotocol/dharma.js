@@ -117,7 +117,7 @@ export class OrderAPI {
      * @param  options   any params needed to modify the Ethereum transaction.
      * @return           the hash of the ethereum transaction that fulfilled the debt order.
      */
-    public async fillAsync(debtOrder: DebtOrder.Instance, options?: TxData): Promise<string> {
+    public async fillAsync(debtOrder: DebtOrder.DebtOrderInterface, options?: TxData): Promise<string> {
         const txOptions = await TransactionOptions.generateTxOptions(
             this.web3,
             ORDER_FILL_GAS_MAXIMUM,
@@ -147,12 +147,12 @@ export class OrderAPI {
     /**
      * Throws with error message if a given order is not able to be filled.
      *
-     * @param {DebtOrder.Instance} debtOrder
+     * @param {DebtOrder.DebtOrderInterface} debtOrder
      * @param {TxData} txOptions
      * @returns {Promise<void>}
      */
     public async assertFillableAsync(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         txOptions?: TxData,
     ): Promise<void> {
         const {
@@ -180,7 +180,7 @@ export class OrderAPI {
      * @return           the hash of the resulting Ethereum transaction.
      */
     public async cancelOrderAsync(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         options?: TxData,
     ): Promise<string> {
         const txOptions = await TransactionOptions.generateTxOptions(
@@ -229,7 +229,7 @@ export class OrderAPI {
      * @return           boolean representing whether the debt order is filled or not.
      */
     public async checkOrderFilledAsync(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         options?: TxData,
     ): Promise<boolean> {
         const txOptions = await TransactionOptions.generateTxOptions(
@@ -255,7 +255,7 @@ export class OrderAPI {
      * @param debtOrder Debt order for which we'd like to compute the issuance hash
      * @return The debt order's issuanceHash (alias of debtAgreementId).
      */
-    public async getIssuanceHash(debtOrder: DebtOrder.Instance): Promise<string> {
+    public async getIssuanceHash(debtOrder: DebtOrder.DebtOrderInterface): Promise<string> {
         debtOrder = await DebtOrder.applyNetworkDefaults(debtOrder, this.contracts);
 
         const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
@@ -267,9 +267,9 @@ export class OrderAPI {
      * Given an issuanceHash, returns a DebtOrder instance.
      *
      * @param {string} issuanceHash
-     * @returns {Promise<DebtOrder.Instance>}
+     * @returns {Promise<DebtOrder.DebtOrderInterface>}
      */
-    public async getDebtOrder(issuanceHash: string): Promise<DebtOrder.Instance> {
+    public async getDebtOrder(issuanceHash: string): Promise<DebtOrder.DebtOrderInterface> {
         const debtRegistry = await this.contracts.loadDebtRegistryAsync();
 
         return debtRegistry.get.callAsync(issuanceHash);
@@ -285,7 +285,7 @@ export class OrderAPI {
      *                to generate the debt order.
      * @return Newly generated debt order.
      */
-    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder.Instance> {
+    public async generate(adapter: Adapter.Interface, params: object): Promise<DebtOrder.DebtOrderInterface> {
         this.assert.adapter.conformsToInterface(
             adapter,
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
@@ -305,7 +305,7 @@ export class OrderAPI {
      * @param debtOrder A Dharma debt order
      * @return An object containing human-interpretable terms for the loan
      */
-    public async unpackTerms(debtOrder: DebtOrder.Instance): Promise<object> {
+    public async unpackTerms(debtOrder: DebtOrder.DebtOrderInterface): Promise<object> {
         const { termsContract, termsContractParameters } = debtOrder;
 
         // Will throw if adapter cannot be found for given terms contract
@@ -347,10 +347,10 @@ export class OrderAPI {
     /**
      * Validates a given debt order's terms against the appropriate loan order adapter.
      *
-     * @param {DebtOrder.Instance} debtOrder
+     * @param {DebtOrder.DebtOrderInterface} debtOrder
      * @returns {Promise<void>}
      */
-    private async assertValidLoanTerms(debtOrder: DebtOrder.Instance) {
+    private async assertValidLoanTerms(debtOrder: DebtOrder.DebtOrderInterface) {
         const adapter = await this.adapters.getAdapterByTermsContractAddress(
             debtOrder.termsContract,
         );
@@ -361,7 +361,7 @@ export class OrderAPI {
     }
 
     private async assertValidityInvariantsAsync(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         debtKernel: DebtKernelContract,
         debtToken: DebtTokenContract,
     ): Promise<void> {
@@ -391,7 +391,7 @@ export class OrderAPI {
         );
     }
 
-    private async assertConsensualityInvariants(debtOrder: DebtOrder.Instance, txOptions: object) {
+    private async assertConsensualityInvariants(debtOrder: DebtOrder.DebtOrderInterface, txOptions: object) {
         await this.assert.order.validDebtorSignature(
             debtOrder,
             txOptions,
@@ -414,7 +414,7 @@ export class OrderAPI {
     }
 
     private async assertCreditorBalanceAndAllowanceInvariantsAsync(
-        debtOrder: DebtOrder.Instance,
+        debtOrder: DebtOrder.DebtOrderInterface,
         tokenTransferProxy: TokenTransferProxyContract,
         txOptions: object,
     ): Promise<void> {

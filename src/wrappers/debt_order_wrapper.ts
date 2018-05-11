@@ -9,7 +9,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 
 export class DebtOrderWrapper {
-    constructor(private debtOrder: DebtOrder.Instance) {}
+    constructor(private debtOrder: DebtOrder.DebtOrderInterface) {}
 
     public getCreditor(): string {
         return this.debtOrder.creditor;
@@ -177,7 +177,7 @@ export class DebtOrderWrapper {
      * Getters
      */
 
-    public getDebtOrder(): DebtOrder.Instance {
+    public getDebtOrder(): DebtOrder.DebtOrderInterface {
         return this.debtOrder;
     }
 
