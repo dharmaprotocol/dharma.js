@@ -49,7 +49,7 @@ jest.unmock("@dharmaprotocol/contracts");
 // test chain.
 jest.unmock("fs-extra");
 
-describe("Simple Interest Terms Contract AdapterInterface (Unit Tests)", () => {
+describe("Simple Interest Terms Contract Interface (Unit Tests)", () => {
     let snapshotId: number;
 
     beforeEach(async () => {

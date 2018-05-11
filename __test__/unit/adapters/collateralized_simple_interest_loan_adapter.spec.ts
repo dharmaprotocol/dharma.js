@@ -66,7 +66,7 @@ interface Scenario {
     packedParams: string;
 }
 
-describe("Collateralized Terms Contract AdapterInterface (Unit Tests)", () => {
+describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
     let snapshotId: number;
 
     beforeEach(async () => {
