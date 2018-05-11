@@ -54,9 +54,7 @@ export class AdaptersAPI {
         );
     }
 
-    public async getAdapterByTermsContractAddress(
-        termsContractAddress: string,
-    ): Promise<Adapter> {
+    public async getAdapterByTermsContractAddress(termsContractAddress: string): Promise<Adapter> {
         const termsContractType = await this.contracts.getTermsContractType(termsContractAddress);
 
         switch (termsContractType) {
