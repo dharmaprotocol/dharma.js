@@ -288,7 +288,7 @@ export class ContractsAPI {
     /**
      * Given a terms contract address, returns the name of that contract.
      *
-     * Examples:
+     * @example
      *  getTermsContractType("0x069cb8891d9dbf02d89079a77169e0dc8bacda65")
      *  => "SimpleInterestLoan"
      *

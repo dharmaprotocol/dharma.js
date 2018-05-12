@@ -3,6 +3,7 @@
 
 # generated documentation
 generated_docs/
+scripts/documentation/output/*
 
 dist
 node_modules
@@ -19,3 +20,6 @@ compiled
 
 # editor-generated files
 *.iml
+
+# compiled scripts
+scripts/documentation/typedoc_parser.js
