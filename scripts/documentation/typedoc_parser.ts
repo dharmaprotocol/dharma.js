@@ -223,7 +223,7 @@ class TypedocParser {
 
         const paramInterfaces = _.compact(
             _.map(params, (param) => {
-                if (param.type.name === "Interface") {
+                if (param.type.name === "reference") {
                     return param.name;
                 }
             }),
