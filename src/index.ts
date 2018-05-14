@@ -23,7 +23,7 @@ export default class Dharma {
 
     private web3: Web3;
 
-    constructor(web3Provider: Web3.Provider, config: Types.DharmaConfig = {}) {
+    constructor(web3Provider: Web3.Provider, config: DharmaTypes.DharmaConfig = {}) {
         this.web3 = new Web3(web3Provider);
 
         this.contracts = new ContractsAPI(this.web3, config);
