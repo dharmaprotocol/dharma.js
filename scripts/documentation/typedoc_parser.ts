@@ -42,6 +42,7 @@ interface MethodDocumentation {
     // The method's signature, in Typescript format,
     // e.g. "canReturnCollateral(agreementId: string): Promise<boolean>"
     signature: string;
+    interfaces: string[];
 }
 
 interface SectionToTypedocClasses {
@@ -223,8 +224,8 @@ class TypedocParser {
 
         const paramInterfaces = _.compact(
             _.map(params, (param) => {
-                if (param.type.name === "Interface") {
-                    return param.name;
+                if (param.type.type === "reference") {
+                    return param.type.name;
                 }
             }),
         );
