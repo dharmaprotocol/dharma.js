@@ -238,6 +238,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         };
     }
 
+    /**
+     * Given a valid DebtRegistryEntry, returns a CollateralizedSimpleInterestLoanOrder.
+     *
+     * @param {DebtRegistryEntry} entry
+     * @returns {Promise<CollateralizedSimpleInterestLoanOrder>}
+     */
     public async fromDebtRegistryEntry(
         entry: DebtRegistryEntry,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
@@ -264,6 +270,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         return loanOrder;
     }
 
+    /**
+     * Given a valid DebtRegistryEntry, returns an array of repayment dates (as unix timestamps.)
+     *
+     * @example
+     *   adapter.getRepaymentSchedule(debtEntry);
+     *   => [1521506879]
+     *
+     * @param {DebtRegistryEntry} debtEntry
+     * @returns {number[]}
+     */
     public getRepaymentSchedule(debtEntry: DebtRegistryEntry): number[] {
         const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
         const { termLength, amortizationUnit } = this.unpackParameters(termsContractParameters);
@@ -366,7 +382,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * has been repaid, and the collateral has not already been withdrawn.
      *
      * @example
-     *  await canReturnCollateral(
+     *  await adapter.canReturnCollateral(
      *     "0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f"
      *  );
      *  => true
@@ -391,7 +407,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * of default for a duration of time greater than the grace period.
      *
      * @example
-     *  await canSeizeCollateral(
+     *  await adapter.canSeizeCollateral(
      *     "0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f"
      *  );
      *  => true
@@ -414,7 +430,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * has already been seized or returned.
      *
      * @example
-     *  await isCollateralWithdrawn(
+     *  await adapter.isCollateralWithdrawn(
      *    "0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f"
      *  );
      *  => true
