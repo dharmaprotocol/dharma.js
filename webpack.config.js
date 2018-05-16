@@ -14,7 +14,6 @@ module.exports = {
         path: path.resolve(__dirname, "dist"),
         filename: "dharma.umd.js",
         libraryTarget: "umd",
-        libraryExport: "default",
         library: "Dharma",
         umdNamedDefine: true,
     },

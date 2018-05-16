@@ -1,4 +1,5 @@
 import * as Web3 from "web3";
+
 import {
     AdaptersAPI,
     BlockchainAPI,
@@ -8,11 +9,10 @@ import {
     SignerAPI,
     TokenAPI,
 } from "./apis";
-import * as DharmaTypes from "./types";
 
-export { DharmaTypes };
+import * as Types from "./types";
 
-export default class Dharma {
+class Dharma {
     public sign: SignerAPI;
     public order: OrderAPI;
     public contracts: ContractsAPI;
@@ -23,7 +23,7 @@ export default class Dharma {
 
     private web3: Web3;
 
-    constructor(web3Provider: Web3.Provider, config: DharmaTypes.DharmaConfig = {}) {
+    constructor(web3Provider: Web3.Provider, config: Types.DharmaConfig = {}) {
         this.web3 = new Web3(web3Provider);
 
         this.contracts = new ContractsAPI(this.web3, config);
@@ -36,3 +36,5 @@ export default class Dharma {
         this.blockchain = new BlockchainAPI(this.web3, this.contracts);
     }
 }
+
+export { Dharma, Types };
