@@ -1,4 +1,4 @@
-npm run docs:generate
+npm run docs:build
 
 S3_BASE_URL=s3://json-docs/dharma.js
 
