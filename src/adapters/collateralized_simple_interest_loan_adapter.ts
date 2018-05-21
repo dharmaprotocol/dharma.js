@@ -282,6 +282,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
         const transactionOptions = _.assign(defaultOptions, options);
 
+        await this.assertDebtAgreementExists(agreementId);
         await this.assertCollateralSeizeable(agreementId);
 
         const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
@@ -304,6 +305,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async returnCollateralAsync(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
+        await this.assertDebtAgreementExists(agreementId);
         await this.assertCollateralReturnable(agreementId);
 
         const defaultOptions = await this.getTxDefaultOptions();
@@ -424,6 +426,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
                 CollateralizerAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
         }
+    }
+
+    private async assertDebtAgreementExists(agreementId: string): Promise<void> {
+        const debtTokenContract = await this.contractsAPI.loadDebtTokenAsync();
+
+        return this.assert.debtAgreement.exists(
+            agreementId,
+            debtTokenContract,
+            CollateralizerAdapterErrors.COLLATERAL_NOT_FOUND(agreementId),
+        );
     }
 
     /**
