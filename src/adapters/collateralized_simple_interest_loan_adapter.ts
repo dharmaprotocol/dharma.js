@@ -55,7 +55,8 @@ export const CollateralizerAdapterErrors = {
         singleLineString`Token Registry does not track a token at index
                          ${tokenIndex.toString()}.`,
 
-    COLLATERAL_AMOUNT_IS_NEGATIVE: () => singleLineString`Collateral amount cannot be negative.`,
+    COLLATERAL_AMOUNT_MUST_BE_POSITIVE: () =>
+        singleLineString`Collateral amount must be greater than zero.`,
 
     COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM: () =>
         singleLineString`Collateral amount exceeds maximum value of 2^92 - 1.`,
