@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.0.54",
+    "version": "0.0.56",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -25,7 +25,7 @@
         "start": "rollup -c rollup.config.ts -w",
         "chain": "bash scripts/init_chain.sh",
         "test": "jest --runInBand",
-        "docs:generate": "typedoc --excludePrivate --excludeExternals --target ES5 --json docs/index.json src",
+        "docs:build": "./scripts/documentation/generate_typedoc.sh && tsc ./scripts/documentation/typedoc_parser.ts && node ./scripts/documentation/parse_typedoc",
         "docs:upload": "aws s3 cp scripts/documentation/output/documentation.json $S3_URL --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --content-type application/json",
         "test:watch": "jest --watch --runInBand",
         "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
@@ -37,8 +37,7 @@
         "prepublishOnly": "npm run build",
         "postpublish": "bash scripts/post_publish.sh",
         "commitmsg": "commitlint -e $GIT_PARAMS",
-        "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts",
-        "docs:build": "./scripts/documentation/generate_typedoc.sh && tsc ./scripts/documentation/typedoc_parser.ts && node ./scripts/documentation/parse_typedoc"
+        "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts"
     },
     "lint-staged": {
         "{src,__test__,__mocks__}/**/*.ts": [
