@@ -28,7 +28,7 @@ export const GET_EXPECTED_AMOUNT_PER_REPAYMENT: GetExpectedAmountPerRepaymentSce
         expected: Units.ether(5.75),
     },
     {
-        description: "when the given issuance hash does not match an agreement does not exist",
+        description: "when the given issuance hash does not match an existing debt agreement",
         termLength: new BigNumber(2),
         principalAmount: Units.ether(10),
         interestRate: new BigNumber(15),
