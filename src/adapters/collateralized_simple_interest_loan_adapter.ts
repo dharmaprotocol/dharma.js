@@ -202,6 +202,14 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         await this.assertCollateralBalanceAndAllowanceInvariantsAsync(loanOrder);
     }
 
+    /**
+     * Given a valid debt order, returns a promise for a CollateralizedSimpleInterestLoanOrder,
+     * which includes the DebtOrder information as well as as the contract terms (see documentation
+     * on the `CollateralizedSimpleInterestLoanOrder` interface for more information.)
+     *
+     * @param {DebtOrder} debtOrder
+     * @returns {Promise<CollateralizedSimpleInterestLoanOrder>}
+     */
     public async fromDebtOrder(
         debtOrder: DebtOrder,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
@@ -230,6 +238,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         };
     }
 
+    /**
+     * Given a valid DebtRegistryEntry, returns a CollateralizedSimpleInterestLoanOrder.
+     *
+     * @param {DebtRegistryEntry} entry
+     * @returns {Promise<CollateralizedSimpleInterestLoanOrder>}
+     */
     public async fromDebtRegistryEntry(
         entry: DebtRegistryEntry,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
@@ -256,6 +270,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         return loanOrder;
     }
 
+    /**
+     * Given a valid DebtRegistryEntry, returns an array of repayment dates (as unix timestamps.)
+     *
+     * @example
+     *   adapter.getRepaymentSchedule(debtEntry);
+     *   => [1521506879]
+     *
+     * @param {DebtRegistryEntry} debtEntry
+     * @returns {number[]}
+     */
     public getRepaymentSchedule(debtEntry: DebtRegistryEntry): number[] {
         const { termsContractParameters, issuanceBlockTimestamp } = debtEntry;
         const { termLength, amortizationUnit } = this.unpackParameters(termsContractParameters);
@@ -355,10 +379,15 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
     }
 
     /**
+     * Given an agreement ID for a valid collateralized debt agreement, returns true if the
+     * collateral is returnable according to the terms of the agreement - I.E. the debt
+     * has been repaid, and the collateral has not already been withdrawn.
      *
      * @example
-     *   await canReturnCollateral("123");
-     *   => true
+     *  await adapter.canReturnCollateral(
+     *     "0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f"
+     *  );
+     *  => true
      *
      * @param {string} agreementId
      * @returns {Promise<boolean>}
@@ -373,6 +402,21 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         }
     }
 
+    /**
+     * Given an agreement ID for a valid collateralized debt agreement, returns true if the
+     * collateral can be seized by the creditor, according to the terms of the agreement. Collateral
+     * is seizable if the collateral has not been withdrawn yet, and the loan has been in a state
+     * of default for a duration of time greater than the grace period.
+     *
+     * @example
+     *  await adapter.canSeizeCollateral(
+     *     "0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f"
+     *  );
+     *  => true
+     *
+     * @param {string} agreementId
+     * @returns {Promise<boolean>}
+     */
     public async canSeizeCollateral(agreementId: string): Promise<boolean> {
         try {
             await this.assertCollateralSeizeable(agreementId);
@@ -385,7 +429,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
     /**
      * Returns true if the collateral associated with the given agreement ID
-     * has already been seized.
+     * has already been seized or returned.
+     *
+     * @example
+     *  await adapter.isCollateralWithdrawn(
+     *    "0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f"
+     *  );
+     *  => true
      *
      * @param {string} agreementId
      * @returns {Promise<boolean>}
