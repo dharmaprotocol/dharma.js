@@ -28,6 +28,16 @@ export const GET_EXPECTED_AMOUNT_PER_REPAYMENT: GetExpectedAmountPerRepaymentSce
         expected: Units.ether(5.75),
     },
     {
+        description: "33% interest amortized monthly from 3 Ether principal over 3 months",
+        termLength: new BigNumber(3),
+        principalAmount: Units.ether(3),
+        interestRate: new BigNumber(33),
+        amortizationUnit: "months",
+        agreementExists: true,
+        // 3 repayments of 1.33 ETH.
+        expected: Units.ether(1.33),
+    },
+    {
         description: "when the given issuance hash does not match an existing debt agreement",
         termLength: new BigNumber(2),
         principalAmount: Units.ether(10),
