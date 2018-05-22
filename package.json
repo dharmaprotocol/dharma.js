@@ -124,7 +124,7 @@
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.0.41",
+        "@dharmaprotocol/contracts": "0.1.0",
         "@types/lodash": "^4.14.104",
         "abi-decoder": "https://github.com/dharmaprotocol/abi-decoder",
         "bignumber.js": "^5.0.0",
