@@ -175,9 +175,7 @@ export class ServicingAPI {
      * @param {string} issuanceHash
      * @returns {Promise<BigNumber>}
      */
-    public async getExpectedAmountPerRepayment(
-        issuanceHash: string,
-    ): Promise<BigNumber> {
+    public async getExpectedAmountPerRepayment(issuanceHash: string): Promise<BigNumber> {
         this.assert.schema.bytes32("issuanceHash", issuanceHash);
 
         const totalRepayment = await this.getTotalExpectedRepayment(issuanceHash);
