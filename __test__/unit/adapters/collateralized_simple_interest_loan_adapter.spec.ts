@@ -14,9 +14,9 @@ import * as Web3 from "web3";
 
 // utils
 import { BigNumber } from "../../../utils/bignumber";
+import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 import * as Units from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
-import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 import { ACCOUNTS } from "../../accounts";
 
 // wrappers
@@ -147,7 +147,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
         describe("...with collateral amount < 0", () => {
-            test("should throw COLLATERAL_AMOUNT_IS_NEGATIVE error", () => {
+            test("should throw COLLATERAL_AMOUNT_MUST_BE_POSITIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
@@ -157,7 +157,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
         describe("...with collateral amount = 0", () => {
-            test("should throw COLLATERAL_AMOUNT_IS_NEGATIVE error", () => {
+            test("should throw COLLATERAL_AMOUNT_MUST_BE_POSITIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
