@@ -13,6 +13,7 @@ import { BigNumber } from "utils/bignumber";
 import { ACCOUNTS } from "__test__/accounts";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
 import { OrderAPIErrors } from "src/apis/order_api";
+import { CollateralizerAdapterErrors } from "src/adapters/collateralized_simple_interest_loan_adapter";
 
 import { FillScenario } from "./";
 
@@ -442,6 +443,60 @@ export const INVALID_ORDERS: FillScenario[] = [
         isCollateralized: true,
         // Collateral balance is insufficient by 1 unit.
         collateralBalance: Units.ether(9),
+        collateralAllowance: Units.ether(10),
+        collateralTokenIndex: new BigNumber(2),
+    },
+    {
+        description: "collateralized but collateral amount is 0",
+        generateDebtOrder: (
+            debtKernel: DebtKernelContract,
+            repaymentRouter: RepaymentRouterContract,
+            principalToken: DummyTokenContract,
+            termsContract: CollateralizedSimpleInterestTermsContractContract,
+        ) => {
+            return {
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
+                principalAmount: Units.ether(1),
+                principalToken: principalToken.address,
+                debtor: ACCOUNTS[1].address,
+                debtorFee: Units.ether(0.001),
+                creditor: ACCOUNTS[2].address,
+                creditorFee: Units.ether(0.001),
+                relayer: ACCOUNTS[3].address,
+                relayerFee: Units.ether(0.002),
+                termsContract: termsContract.address,
+                /**
+                 * Principal token index is 0
+                 * Principal Amount: 1e18
+                 * Interest Rate: 0.1%
+                 * Monthly installments
+                 * 7 day term length
+                 * 0 units of collateral
+                 * Collateral token index is 2
+                 * Grace period is 90 days
+                 */
+                termsContractParameters:
+                    "0x000000003635c9adc5dea000000003e83000202000000000000000000000005a",
+                expirationTimestampInSec: new BigNumber(
+                    moment()
+                        .add(7, "days")
+                        .unix(),
+                ),
+                salt: new BigNumber(0),
+            };
+        },
+        filler: ACCOUNTS[2].address,
+        signatories: {
+            debtor: true,
+            creditor: false,
+            underwriter: false,
+        },
+        successfullyFills: false,
+        errorType: "COLLATERAL_AMOUNT_MUST_BE_POSITIVE",
+        errorMessage: CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE(),
+        isCollateralized: true,
+        collateralBalance: Units.ether(1),
         collateralAllowance: Units.ether(10),
         collateralTokenIndex: new BigNumber(2),
     },
