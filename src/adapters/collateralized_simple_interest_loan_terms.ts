@@ -1,18 +1,22 @@
+// External
 import * as Web3 from "web3";
-
 import { BigNumber } from "../../utils/bignumber";
 
+// APIs
 import { ContractsAPI } from "../apis";
-import { Assertions } from "../invariants";
 
+// Utils
+import { Assertions } from "../invariants";
 import { TermsContractParameters } from "./terms_contract_parameters";
 
+// Constants
+import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
 import {
     CollateralizedTermsContractParameters,
     CollateralizerAdapterErrors,
 } from "./collateralized_simple_interest_loan_adapter";
 
-const MAX_COLLATERAL_TOKEN_INDEX_HEX = TermsContractParameters.generateHexValueOfLength(2);
+const MAX_COLLATERAL_TOKEN_INDEX_HEX = (TOKEN_REGISTRY_TRACKED_TOKENS.length - 1).toString(16);
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
 const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
 
@@ -81,8 +85,8 @@ export class CollateralizedLoanTerms {
             throw new Error(CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
-        if (collateralAmount.isNegative()) {
-            throw new Error(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
+        if (collateralAmount.isNegative() || collateralAmount.isZero()) {
+            throw new Error(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE());
         }
 
         if (collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {

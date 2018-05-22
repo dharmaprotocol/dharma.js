@@ -14,6 +14,7 @@ import * as Web3 from "web3";
 
 // utils
 import { BigNumber } from "../../../utils/bignumber";
+import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 import * as Units from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
@@ -119,6 +120,22 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                 );
             });
         });
+        describe("...with collateral token index that is not tracked", () => {
+            test("should throw INVALID_TOKEN_INDEX error", () => {
+                const invalidCollateralTokenIndex = new BigNumber(
+                    TOKEN_REGISTRY_TRACKED_TOKENS.length,
+                );
+
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...scenario1.unpackedParams,
+                        collateralTokenIndex: invalidCollateralTokenIndex,
+                    });
+                }).toThrow(
+                    CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(invalidCollateralTokenIndex),
+                );
+            });
+        });
         describe("...with collateral amount > 2^92 - 1", () => {
             test("should throw COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM error", () => {
                 expect(() => {
@@ -130,13 +147,23 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
         describe("...with collateral amount < 0", () => {
-            test("should throw COLLATERAL_AMOUNT_IS_NEGATIVE error", () => {
+            test("should throw COLLATERAL_AMOUNT_MUST_BE_POSITIVE error", () => {
+                expect(() => {
+                    collateralizedLoanTerms.packParameters({
+                        ...scenario1.unpackedParams,
+                        collateralAmount: new BigNumber(0),
+                    });
+                }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE());
+            });
+        });
+        describe("...with collateral amount = 0", () => {
+            test("should throw COLLATERAL_AMOUNT_MUST_BE_POSITIVE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
                         collateralAmount: new BigNumber(-1),
                     });
-                }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_IS_NEGATIVE());
+                }).toThrow(CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE());
             });
         });
         describe("...with collateral amount containing decimals", () => {
