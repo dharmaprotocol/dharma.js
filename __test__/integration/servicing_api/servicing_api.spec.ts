@@ -10,6 +10,7 @@ import * as Web3 from "web3";
 // scenarios
 import {
     GET_DEBTS,
+    GET_EXPECTED_AMOUNT_PER_REPAYMENT,
     GET_EXPECTED_VALUE_REPAID,
     GET_INVESTMENTS,
     GET_TOTAL_EXPECTED_REPAYMENT,
@@ -46,6 +47,10 @@ describe("Debt Servicing API (Integration Tests)", () => {
 
     describe("#getExpectedValueRepaid()", () => {
         GET_EXPECTED_VALUE_REPAID.forEach(scenarioRunner.testGetExpectedValueRepaidScenario);
+    });
+
+    describe("#getExpectedAmountPerRepayment()", () => {
+        GET_EXPECTED_AMOUNT_PER_REPAYMENT.forEach(scenarioRunner.testGetExpectedAmountPerRepayment);
     });
 
     describe("#getTotalExpectedRepayment()", () => {

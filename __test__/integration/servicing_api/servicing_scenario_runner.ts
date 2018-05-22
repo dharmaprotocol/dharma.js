@@ -2,10 +2,11 @@
 import * as Web3 from "web3";
 
 // utils
-import { Web3Utils } from "utils/web3_utils";
+import { Web3Utils } from "../../../utils/web3_utils";
 
 // scenario runners
 import { GetDebtsRunner } from "./runners/get_debts";
+import { GetExpectedAmountPerRepayment } from "./runners/get_expected_amount_per_repayment";
 import { GetExpectedValueRepaidRunner } from "./runners/get_expected_value_repaid";
 import { GetInvestmentsRunner } from "./runners/get_investments";
 import { GetRepaymentScheduleRunner } from "./runners/get_repayment_schedule";
@@ -19,6 +20,7 @@ export class ServicingScenarioRunner {
     public testMakeRepaymentScenario;
     public testGetValueRepaidScenario;
     public testGetExpectedValueRepaidScenario;
+    public testGetExpectedAmountPerRepayment;
     public testGetRepaymentScheduleScenario;
     public testGetDebtsScenario;
     public testGetInvestmentsScenario;
@@ -37,6 +39,9 @@ export class ServicingScenarioRunner {
             this,
         );
         this.testGetExpectedValueRepaidScenario = GetExpectedValueRepaidRunner.testGetExpectedValueRepaidScenario.bind(
+            this,
+        );
+        this.testGetExpectedAmountPerRepayment = GetExpectedAmountPerRepayment.testGetExpectedAmountPerRepayment.bind(
             this,
         );
         this.testGetRepaymentScheduleScenario = GetRepaymentScheduleRunner.testGetRepaymentScheduleScenario.bind(
