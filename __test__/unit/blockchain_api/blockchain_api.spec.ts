@@ -6,20 +6,23 @@ jest.unmock("@dharmaprotocol/contracts");
 import * as Web3 from "web3";
 
 // utils
-import * as Units from "utils/units";
-import { Web3Utils } from "utils/web3_utils";
+import * as Units from "../../../utils/units";
+import { Web3Utils } from "../../../utils/web3_utils";
 import { MockIntervalManager } from "./utils/mock_interval_manager";
 
-import { BlockchainAPIErrors } from "src/apis/blockchain_api";
-import { DummyTokenContract } from "src/wrappers/contract_wrappers/dummy_token_wrapper";
-import { BlockchainAPI, ContractsAPI, TokenAPI } from "src/apis/";
+import { BlockchainAPI, ContractsAPI, TokenAPI } from "../../../src/apis/";
+import {
+    BlockchainAPIErrors,
+    DEFAULT_TIMEOUT_FOR_TX_MINED,
+} from "../../../src/apis/blockchain_api";
+import { DummyTokenContract } from "../../../src/wrappers/contract_wrappers/dummy_token_wrapper";
 import { ACCOUNTS } from "../../accounts";
 import { ErrorScenarioRunner } from "./error_scenario_runner";
 import {
     INVALID_ORDERS,
+    INVALID_REPAYMENT_SCENARIOS,
     VALID_ORDERS,
     VALID_REPAYMENTS,
-    INVALID_REPAYMENT_SCENARIOS,
 } from "./scenarios";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
@@ -85,6 +88,23 @@ describe("Blockchain API (Unit Tests)", () => {
                 await expect(
                     blockchainApi.awaitTransactionMinedAsync(txHash, pollingInterval, timeout),
                 ).rejects.toThrowError(BlockchainAPIErrors.AWAIT_MINE_TX_TIMED_OUT(txHash));
+            });
+        });
+
+        describe("when no timeout is provided", () => {
+            beforeAll(async () => {
+                txHash = "0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad";
+                blockchainApi.intervalManager = new MockIntervalManager(true);
+            });
+
+            test("uses a default timeout", async () => {
+                const expected = DEFAULT_TIMEOUT_FOR_TX_MINED;
+
+                blockchainApi.awaitTransactionMinedAsync(txHash, pollingInterval);
+
+                const timeoutUsed = blockchainApi.intervalManager.intervals[txHash].timeoutMs;
+
+                expect(timeoutUsed).toEqual(expected);
             });
         });
 
