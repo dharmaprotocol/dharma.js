@@ -10,7 +10,7 @@ import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
 import { MockIntervalManager } from "./utils/mock_interval_manager";
 
-import { BlockchainAPIErrors } from "src/apis/blockchain_api";
+import { BlockchainAPIErrors, DEFAULT_TIMEOUT_FOR_TX_MINED } from "src/apis/blockchain_api";
 import { DummyTokenContract } from "src/wrappers/contract_wrappers/dummy_token_wrapper";
 import { BlockchainAPI, ContractsAPI, TokenAPI } from "src/apis/";
 import { ACCOUNTS } from "../../accounts";
@@ -85,6 +85,23 @@ describe("Blockchain API (Unit Tests)", () => {
                 await expect(
                     blockchainApi.awaitTransactionMinedAsync(txHash, pollingInterval, timeout),
                 ).rejects.toThrowError(BlockchainAPIErrors.AWAIT_MINE_TX_TIMED_OUT(txHash));
+            });
+        });
+
+        describe("when no timeout is provided", () => {
+            beforeAll(async () => {
+                txHash = "0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad";
+                blockchainApi.intervalManager = new MockIntervalManager(true);
+            });
+
+            test("uses a default timeout", async () => {
+                const expected = DEFAULT_TIMEOUT_FOR_TX_MINED;
+
+                blockchainApi.awaitTransactionMinedAsync(txHash, pollingInterval);
+
+                const timeoutUsed = blockchainApi.intervalManager.intervals[txHash].timeoutMs;
+
+                expect(timeoutUsed).toEqual(expected);
             });
         });
 

@@ -25,7 +25,7 @@ export const BlockchainAPIErrors = {
  *
  * @type {number}
  */
-const DEFAULT_TIMEOUT_FOR_TX_MINED = 60000;
+export const DEFAULT_TIMEOUT_FOR_TX_MINED = 60000;
 
 export class BlockchainAPI {
     public intervalManager: IntervalManager;
