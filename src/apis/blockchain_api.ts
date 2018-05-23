@@ -1,14 +1,16 @@
+import * as ABIDecoder from "abi-decoder";
+import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
-import * as ABIDecoder from "abi-decoder";
-import { ContractsAPI } from ".";
+
 import { IntervalManager } from "../../utils/interval_utils";
 import { Web3Utils } from "../../utils/web3_utils";
 import { ErrorParser } from "../types";
+import { ContractsAPI } from "./";
 
-import { Assertions } from "../invariants/index";
+import { Assertions } from "../invariants";
 
 export const BlockchainAPIErrors = {
     AWAIT_MINE_TX_TIMED_OUT: (txHash: string) =>
@@ -16,6 +18,14 @@ export const BlockchainAPIErrors = {
                          awaiting mining of transaction
                          with hash ${txHash}.`,
 };
+
+/**
+ * The following default timeout is provided to the IntervalManager when awaiting mined
+ * transactions. The value is represented in milliseconds.
+ *
+ * @type {number}
+ */
+const DEFAULT_TIMEOUT_FOR_TX_MINED = 60000;
 
 export class BlockchainAPI {
     public intervalManager: IntervalManager;
@@ -60,7 +70,8 @@ export class BlockchainAPI {
      *
      * @param  txHash                 the hash of the transaction.
      * @param  pollingIntervalMs=1000 the interval at which the blockchain should be polled.
-     * @param  timeoutMs              the number of milliseconds until this process times out.
+     * @param  timeoutMs              the number of milliseconds until this process times out. If
+     *                                no value is provided, a default value is used.
      * @return                        the transaction receipt resulting from the mining process.
      */
     public async awaitTransactionMinedAsync(
@@ -70,6 +81,10 @@ export class BlockchainAPI {
     ): Promise<Web3.TransactionReceipt> {
         const intervalManager = this.intervalManager;
         const web3Utils = this.web3Utils;
+
+        if (!_.isNumber(timeoutMs)) {
+            timeoutMs = DEFAULT_TIMEOUT_FOR_TX_MINED;
+        }
 
         this.assert.schema.bytes32("txHash", txHash);
 
