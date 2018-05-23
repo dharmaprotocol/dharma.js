@@ -268,6 +268,31 @@ export class OrderAPI {
         return debtRegistry.get.callAsync(issuanceHash);
     }
 
+    public deserialize(debtOrderAsString: string): DebtOrder {
+        const debtOrder = JSON.parse(debtOrderAsString);
+
+        const bigNumberKeys = [
+            "creditorFee",
+            "debtorFee",
+            "expirationTimestampInSec",
+            "principalAmount",
+            "relayerFee",
+            "underwriterFee",
+            "underwriterRiskRating",
+            "salt",
+        ];
+
+        bigNumberKeys.forEach((key) => {
+            debtOrder[key] = new BigNumber(debtOrder[key]);
+        });
+
+        return debtOrder;
+    }
+
+    public serialize(debtOrder: DebtOrder): string {
+        return JSON.stringify(debtOrder);
+    }
+
     /**
      * Generate a Dharma debt order, given the specified adapter and its associated
      * parameters object.

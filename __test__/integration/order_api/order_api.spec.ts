@@ -6,15 +6,18 @@ import { BigNumber } from "../../../utils/bignumber";
 import { AdaptersAPI, ContractsAPI, OrderAPI, SignerAPI } from "src/apis";
 
 // Utils
-import { Web3Utils } from "utils/web3_utils";
+import { Web3Utils } from "../../../utils/web3_utils";
+
 import { ACCOUNTS } from "../../accounts";
 
 // Scenarios
 import {
+    DESERIALIZE_ORDER_SCENARIOS,
     INVALID_ISSUANCE_CANCELLATIONS,
     INVALID_ORDER_CANCELLATIONS,
     INVALID_ORDERS,
     NONCONSENUAL_ORDERS,
+    SERIALIZE_ORDER_SCENARIOS,
     SUCCESSFUL_ORDER_GENERATION,
     SUCCESSFUL_UNPACK_TERMS,
     UNSUCCESSFUL_ORDER_GENERATION,
@@ -35,7 +38,8 @@ import {
     SimpleInterestTermsContractContract,
     TokenRegistryContract,
     TokenTransferProxyContract,
-} from "src/wrappers";
+} from "../../../src/wrappers";
+import { SerializationScenarioRunner } from "./runners/serialization";
 
 // Given that this is an integration test, we unmock the Dharma
 // smart contracts artifacts package to pull the most recently
@@ -46,6 +50,7 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 
 const scenarioRunner = new OrderScenarioRunner(web3);
+const serializationRunner = new SerializationScenarioRunner();
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
@@ -65,6 +70,12 @@ describe("Order API (Integration Tests)", () => {
             scenarioRunner.contractsApi,
             scenarioRunner.adaptersApi,
         );
+        serializationRunner.orderApi = new OrderAPI(
+            web3,
+            scenarioRunner.contractsApi,
+            scenarioRunner.adaptersApi,
+        );
+
         scenarioRunner.principalToken = await DummyTokenContract.at(
             principalTokenAddress,
             web3,
@@ -122,6 +133,16 @@ describe("Order API (Integration Tests)", () => {
 
         describe("Valid order cancellations", () => {
             VALID_ORDER_CANCELLATIONS.forEach(scenarioRunner.testOrderCancelScenario);
+        });
+    });
+
+    describe("serialization", () => {
+        describe("#serialize", () => {
+            SERIALIZE_ORDER_SCENARIOS.forEach(serializationRunner.testSerializeScenario);
+        });
+
+        describe("#deserialize", () => {
+            DESERIALIZE_ORDER_SCENARIOS.forEach(serializationRunner.testDeserializeScenario);
         });
     });
 
