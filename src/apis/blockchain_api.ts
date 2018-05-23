@@ -77,14 +77,10 @@ export class BlockchainAPI {
     public async awaitTransactionMinedAsync(
         txHash: string,
         pollingIntervalMs = 1000,
-        timeoutMs?: number,
+        timeoutMs = DEFAULT_TIMEOUT_FOR_TX_MINED,
     ): Promise<Web3.TransactionReceipt> {
         const intervalManager = this.intervalManager;
         const web3Utils = this.web3Utils;
-
-        if (!_.isNumber(timeoutMs)) {
-            timeoutMs = DEFAULT_TIMEOUT_FOR_TX_MINED;
-        }
 
         this.assert.schema.bytes32("txHash", txHash);
 
