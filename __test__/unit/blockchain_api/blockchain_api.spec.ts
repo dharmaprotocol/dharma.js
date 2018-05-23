@@ -11,7 +11,10 @@ import { Web3Utils } from "../../../utils/web3_utils";
 import { MockIntervalManager } from "./utils/mock_interval_manager";
 
 import { BlockchainAPI, ContractsAPI, TokenAPI } from "../../../src/apis/";
-import { BlockchainAPIErrors, DEFAULT_TIMEOUT_FOR_TX_MINED } from "../../../src/apis/blockchain_api";
+import {
+    BlockchainAPIErrors,
+    DEFAULT_TIMEOUT_FOR_TX_MINED,
+} from "../../../src/apis/blockchain_api";
 import { DummyTokenContract } from "../../../src/wrappers/contract_wrappers/dummy_token_wrapper";
 import { ACCOUNTS } from "../../accounts";
 import { ErrorScenarioRunner } from "./error_scenario_runner";
