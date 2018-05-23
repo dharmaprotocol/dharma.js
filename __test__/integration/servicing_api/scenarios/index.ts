@@ -8,6 +8,7 @@ export { GET_REPAYMENT_SCHEDULE } from "./get_repayment_schedule";
 export { GET_DEBTS } from "./get_debts";
 export { GET_INVESTMENTS } from "./get_investments";
 export { GET_TOTAL_EXPECTED_REPAYMENT } from "./get_total_expected_repayment";
+export { GET_EXPECTED_AMOUNT_PER_REPAYMENT } from "./get_expected_amount_per_repayment";
 
 export interface MakeRepaymentScenario {
     // The test's description, e.g. "payer's balance is insufficient"
@@ -41,6 +42,17 @@ export interface GetValueRepaidScenario {
     repaymentAttempts: number;
     // The return value expected from the method.
     expected: BigNumber;
+}
+
+export interface GetExpectedAmountPerRepaymentScenario {
+    amortizationUnit: "hours" | "days" | "weeks" | "months" | "years";
+    description: string;
+    expected: BigNumber;
+    interestRate: BigNumber;
+    principalAmount: BigNumber;
+    termLength: BigNumber;
+    agreementExists: boolean;
+    error?: RegExp | string;
 }
 
 export interface GetExpectedValueRepaidScenario {

@@ -162,6 +162,36 @@ export class ServicingAPI {
     }
 
     /**
+     * Given an issuance hash, returns the amount that is expected to be repaid
+     * per repayment period.
+     *
+     * @example
+     * const amount = await dharma.servicing.getExpectedAmountPerRepayment(
+     *   "0x069cb8891d9dbf02d89079a77169e0dc8bacda65"
+     * );
+     * amount.toNumber();
+     * => 5500000000
+     *
+     * @param {string} issuanceHash
+     * @returns {Promise<BigNumber>}
+     */
+    public async getExpectedAmountPerRepayment(issuanceHash: string): Promise<BigNumber> {
+        this.assert.schema.bytes32("issuanceHash", issuanceHash);
+
+        const totalRepayment = await this.getTotalExpectedRepayment(issuanceHash);
+
+        const debtRegistryEntry = await this.getDebtRegistryEntry(issuanceHash);
+
+        const { termsContract, termsContractParameters } = debtRegistryEntry;
+
+        const adapter = await this.adapterForTermsContract(termsContract);
+
+        const { termLength } = adapter.unpackParameters(termsContractParameters);
+
+        return new BigNumber(totalRepayment.div(termLength));
+    }
+
+    /**
      * Given an issuanceHash, returns the total amount that the borrower is expected to
      * pay by the end of the associated terms agreement.
      *
