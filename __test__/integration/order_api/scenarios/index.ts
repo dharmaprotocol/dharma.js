@@ -1,33 +1,45 @@
 // External
-import { BigNumber } from "utils/bignumber";
+import { BigNumber } from "../../../../utils/bignumber";
 
 // Wrappers
 import {
-    DebtKernelContract,
-    RepaymentRouterContract,
-    DummyTokenContract,
-    SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
-} from "src/wrappers";
+    DebtKernelContract,
+    DummyTokenContract,
+    RepaymentRouterContract,
+    SimpleInterestTermsContractContract,
+} from "../../../../src/wrappers";
 
 // Scenarios
-import { VALID_ORDERS } from "./valid_orders";
-import { INVALID_ORDERS } from "./invalid_orders";
-import { NONCONSENUAL_ORDERS } from "./nonconsensual_orders";
-import { VALID_ORDER_CANCELLATIONS } from "./valid_order_cancellations";
-import { VALID_ISSUANCE_CANCELLATIONS } from "./valid_issuance_cancellations";
-import { INVALID_ORDER_CANCELLATIONS } from "./invalid_order_cancellations";
-import { INVALID_ISSUANCE_CANCELLATIONS } from "./invalid_issuance_cancellations";
-import { SUCCESSFUL_ORDER_GENERATION } from "./successful_order_generation";
-import { UNSUCCESSFUL_ORDER_GENERATION } from "./unsuccessful_order_generation";
-import { SUCCESSFUL_UNPACK_TERMS } from "./successful_unpack_terms";
-import { UNSUCCESSFUL_UNPACK_TERMS } from "./unsuccessful_unpack_terms";
+export { DESERIALIZE_ORDER_SCENARIOS } from "./deserialize_order";
+export { INVALID_ISSUANCE_CANCELLATIONS } from "./invalid_issuance_cancellations";
+export { INVALID_ORDER_CANCELLATIONS } from "./invalid_order_cancellations";
+export { INVALID_ORDERS } from "./invalid_orders";
+export { NONCONSENUAL_ORDERS } from "./nonconsensual_orders";
+export { SERIALIZE_ORDER_SCENARIOS } from "./serialize_order";
+export { SUCCESSFUL_ORDER_GENERATION } from "./successful_order_generation";
+export { SUCCESSFUL_UNPACK_TERMS } from "./successful_unpack_terms";
+export { UNSUCCESSFUL_ORDER_GENERATION } from "./unsuccessful_order_generation";
+export { UNSUCCESSFUL_UNPACK_TERMS } from "./unsuccessful_unpack_terms";
+export { VALID_ISSUANCE_CANCELLATIONS } from "./valid_issuance_cancellations";
+export { VALID_ORDER_CANCELLATIONS } from "./valid_order_cancellations";
+export { VALID_ORDERS } from "./valid_orders";
 
 // Types
-import { DebtOrder } from "src/types";
-import { Adapter } from "src/adapters";
+import { Adapter } from "../../../../src/adapters";
+import { DebtOrder } from "../../../../src/types";
 
-import { AdaptersAPI } from "src/apis";
+import { AdaptersAPI } from "../../../../src/apis";
+
+export interface SerializeOrderScenario {
+    input: DebtOrder;
+    output: string;
+}
+
+export interface DeserializeOrderScenario {
+    input: string;
+    output: DebtOrder;
+}
 
 export interface FillScenario {
     description: string;
@@ -98,17 +110,3 @@ export interface UnpackTermsScenario {
     errorType?: string;
     errorMessage?: string;
 }
-
-export {
-    VALID_ORDERS,
-    INVALID_ORDERS,
-    VALID_ORDER_CANCELLATIONS,
-    VALID_ISSUANCE_CANCELLATIONS,
-    INVALID_ORDER_CANCELLATIONS,
-    INVALID_ISSUANCE_CANCELLATIONS,
-    NONCONSENUAL_ORDERS,
-    SUCCESSFUL_ORDER_GENERATION,
-    UNSUCCESSFUL_ORDER_GENERATION,
-    SUCCESSFUL_UNPACK_TERMS,
-    UNSUCCESSFUL_UNPACK_TERMS,
-};
