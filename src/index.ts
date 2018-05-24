@@ -23,10 +23,10 @@ class Dharma {
 
     private web3: Web3;
 
-    constructor(web3Provider: Web3.Provider, config: Types.DharmaConfig = {}) {
+    constructor(web3Provider: Web3.Provider, addressBook: Types.AddressBook = {}) {
         this.web3 = new Web3(web3Provider);
 
-        this.contracts = new ContractsAPI(this.web3, config);
+        this.contracts = new ContractsAPI(this.web3, addressBook);
 
         this.servicing = new ServicingAPI(this.web3, this.contracts);
         this.sign = new SignerAPI(this.web3, this.contracts);

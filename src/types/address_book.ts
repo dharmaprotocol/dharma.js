@@ -1,4 +1,4 @@
-export interface DharmaConfig {
+export interface AddressBook {
     kernelAddress?: string;
     repaymentRouterAddress?: string;
     tokenTransferProxyAddress?: string;

@@ -36,7 +36,7 @@ import {
 } from "../../utils/constants";
 
 // types
-import { DharmaConfig } from "../types";
+import { AddressBook } from "../types";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -58,13 +58,13 @@ export const ContractsError = {
 
 export class ContractsAPI {
     private web3: Web3;
-    private config: DharmaConfig;
+    private addressBook: AddressBook;
 
     private cache: { [contractName: string]: ContractWrapper };
 
-    public constructor(web3: Web3, config: DharmaConfig = {}) {
+    public constructor(web3: Web3, addressBook: AddressBook = {}) {
         this.web3 = web3;
-        this.config = config;
+        this.addressBook = addressBook;
 
         this.cache = {};
     }
@@ -88,9 +88,9 @@ export class ContractsAPI {
 
         let debtKernel: DebtKernelContract;
 
-        if (this.config.kernelAddress) {
+        if (this.addressBook.kernelAddress) {
             debtKernel = await DebtKernelContract.at(
-                this.config.kernelAddress,
+                this.addressBook.kernelAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -112,9 +112,9 @@ export class ContractsAPI {
 
         let collateralizer: CollateralizerContract;
 
-        if (this.config.collateralizerAddress) {
+        if (this.addressBook.collateralizerAddress) {
             collateralizer = await CollateralizerContract.at(
-                this.config.collateralizerAddress,
+                this.addressBook.collateralizerAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -136,9 +136,9 @@ export class ContractsAPI {
 
         let debtRegistry: DebtRegistryContract;
 
-        if (this.config.debtRegistryAddress) {
+        if (this.addressBook.debtRegistryAddress) {
             debtRegistry = await DebtRegistryContract.at(
-                this.config.debtRegistryAddress,
+                this.addressBook.debtRegistryAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -158,9 +158,9 @@ export class ContractsAPI {
 
         let debtToken: DebtTokenContract;
 
-        if (this.config.kernelAddress) {
+        if (this.addressBook.kernelAddress) {
             debtToken = await DebtTokenContract.at(
-                this.config.debtTokenAddress,
+                this.addressBook.debtTokenAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -182,9 +182,9 @@ export class ContractsAPI {
 
         let repaymentRouter: RepaymentRouterContract;
 
-        if (this.config.repaymentRouterAddress) {
+        if (this.addressBook.repaymentRouterAddress) {
             repaymentRouter = await RepaymentRouterContract.at(
-                this.config.repaymentRouterAddress,
+                this.addressBook.repaymentRouterAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -229,9 +229,9 @@ export class ContractsAPI {
 
         let tokenTransferProxy: TokenTransferProxyContract;
 
-        if (this.config.tokenTransferProxyAddress) {
+        if (this.addressBook.tokenTransferProxyAddress) {
             tokenTransferProxy = await TokenTransferProxyContract.at(
-                this.config.tokenTransferProxyAddress,
+                this.addressBook.tokenTransferProxyAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -325,9 +325,9 @@ export class ContractsAPI {
 
         let simpleInterestTermsContract: SimpleInterestTermsContractContract;
 
-        if (this.config.simpleInterestTermsContractAddress) {
+        if (this.addressBook.simpleInterestTermsContractAddress) {
             simpleInterestTermsContract = await SimpleInterestTermsContractContract.at(
-                this.config.simpleInterestTermsContractAddress,
+                this.addressBook.simpleInterestTermsContractAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -354,9 +354,9 @@ export class ContractsAPI {
 
         let collateralizedSimpleInterestTermsContract: CollateralizedSimpleInterestTermsContractContract;
 
-        if (this.config.collateralizedSimpleInterestTermsContractAddress) {
+        if (this.addressBook.collateralizedSimpleInterestTermsContractAddress) {
             collateralizedSimpleInterestTermsContract = await CollateralizedSimpleInterestTermsContractContract.at(
-                this.config.collateralizedSimpleInterestTermsContractAddress,
+                this.addressBook.collateralizedSimpleInterestTermsContractAddress,
                 this.web3,
                 transactionOptions,
             );
@@ -383,9 +383,9 @@ export class ContractsAPI {
 
         let tokenRegistryContract: TokenRegistryContract;
 
-        if (this.config.tokenRegistryAddress) {
+        if (this.addressBook.tokenRegistryAddress) {
             tokenRegistryContract = await TokenRegistryContract.at(
-                this.config.tokenRegistryAddress,
+                this.addressBook.tokenRegistryAddress,
                 this.web3,
                 transactionOptions,
             );
