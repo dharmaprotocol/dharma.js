@@ -11,13 +11,7 @@ import { Web3Utils } from "../../../utils/web3_utils";
 import { SimpleInterestLoanAdapter } from "../../../src/adapters";
 
 // Apis
-import {
-    AdaptersAPI,
-    ContractsAPI,
-    LogsAPI,
-    OrderAPI,
-    SignerAPI,
-} from "../../../src/apis/";
+import { AdaptersAPI, ContractsAPI, LogsAPI, OrderAPI, SignerAPI } from "../../../src/apis/";
 
 // Types
 import { DebtKernelError, DebtOrder, RepaymentRouterError } from "../../../src/types";
