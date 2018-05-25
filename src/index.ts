@@ -4,6 +4,7 @@ import {
     AdaptersAPI,
     BlockchainAPI,
     ContractsAPI,
+    LogsAPI,
     OrderAPI,
     ServicingAPI,
     SignerAPI,
@@ -20,8 +21,9 @@ class Dharma {
     public servicing: ServicingAPI;
     public token: TokenAPI;
     public blockchain: BlockchainAPI;
+    public logs: LogsAPI;
 
-    private web3: Web3;
+    private readonly web3: Web3;
 
     constructor(web3Provider: Web3.Provider, addressBook: Types.AddressBook = {}) {
         this.web3 = new Web3(web3Provider);
@@ -34,6 +36,7 @@ class Dharma {
         this.order = new OrderAPI(this.web3, this.contracts, this.adapters);
         this.token = new TokenAPI(this.web3, this.contracts);
         this.blockchain = new BlockchainAPI(this.web3, this.contracts);
+        this.logs = new LogsAPI(this.web3, this.contracts);
     }
 }
 
