@@ -1,14 +1,11 @@
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
-import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
-import * as ABIDecoder from "abi-decoder";
 import { ContractsAPI } from ".";
 import { IntervalManager } from "../../utils/interval_utils";
 import { Web3Utils } from "../../utils/web3_utils";
-import { ErrorParser } from "../types";
 
-import { Assertions } from "../invariants/index";
+import { Assertions } from "../invariants";
 
 export const BlockchainAPIErrors = {
     AWAIT_MINE_TX_TIMED_OUT: (txHash: string) =>
@@ -20,7 +17,8 @@ export const BlockchainAPIErrors = {
 export class BlockchainAPI {
     public intervalManager: IntervalManager;
 
-    private web3Utils: Web3Utils;
+    private readonly web3Utils: Web3Utils;
+
     private assert;
     private contracts: ContractsAPI;
 
@@ -29,28 +27,6 @@ export class BlockchainAPI {
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3, contracts);
         this.contracts = contracts;
-
-        // We need to configure the ABI Decoder in order to pull out relevant logs.
-        ABIDecoder.addABI(DebtKernel.abi);
-        ABIDecoder.addABI(RepaymentRouter.abi);
-    }
-
-    /**
-     * Asynchronously retrieve any error logs that might have occurred during a
-     * given transaction. These errors are returned as human-readable strings.
-     *
-     * @param  txHash the hash of the transaction for which error logs are being queried.
-     * @return        the errors encountered (as human-readable strings).
-     */
-    public async getErrorLogs(txHash: string): Promise<string[]> {
-        const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
-        const { debtKernel, repaymentRouter } = await this.contracts.loadDharmaContractsAsync();
-        const decodedLogs = ABIDecoder.decodeLogs(receipt.logs);
-        const parser = new ErrorParser({
-            debtKernel: debtKernel.address,
-            repaymentRouter: repaymentRouter.address,
-        });
-        return parser.parseDecodedLogs(decodedLogs);
     }
 
     /**
