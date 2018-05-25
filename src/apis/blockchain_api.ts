@@ -14,6 +14,14 @@ export const BlockchainAPIErrors = {
                          with hash ${txHash}.`,
 };
 
+/**
+ * The following default timeout is provided to the IntervalManager when awaiting mined
+ * transactions. The value is represented in milliseconds.
+ *
+ * @type {number}
+ */
+export const DEFAULT_TIMEOUT_FOR_TX_MINED = 60000;
+
 export class BlockchainAPI {
     public intervalManager: IntervalManager;
 
@@ -36,13 +44,14 @@ export class BlockchainAPI {
      *
      * @param  txHash                 the hash of the transaction.
      * @param  pollingIntervalMs=1000 the interval at which the blockchain should be polled.
-     * @param  timeoutMs              the number of milliseconds until this process times out.
+     * @param  timeoutMs              the number of milliseconds until this process times out. If
+     *                                no value is provided, a default value is used.
      * @return                        the transaction receipt resulting from the mining process.
      */
     public async awaitTransactionMinedAsync(
         txHash: string,
         pollingIntervalMs = 1000,
-        timeoutMs?: number,
+        timeoutMs = DEFAULT_TIMEOUT_FOR_TX_MINED,
     ): Promise<Web3.TransactionReceipt> {
         const intervalManager = this.intervalManager;
         const web3Utils = this.web3Utils;
