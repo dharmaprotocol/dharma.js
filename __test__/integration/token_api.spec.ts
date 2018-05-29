@@ -504,18 +504,18 @@ describe("Token API (Integration Tests)", () => {
                 const tokenSymbolList = await tokenApi.getSupportedTokens();
 
                 // Get a reference from an unsorted array of data we know is correct.
-                const expectedTokenSymbolList = _.filter(
-                    TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => {
+                const expectedTokenSymbolList = _.chain(TOKEN_REGISTRY_TRACKED_TOKENS)
+                    .map((token) => {
                         return {
                             symbol: token.symbol,
                             name: token.name,
                             numDecimals: token.decimals,
                         };
-                    }),
-                    (token) => {
+                    })
+                    .filter((token) => {
                         return !DISABLED_TOKEN_SYMBOLS.includes(token.symbol);
-                    },
-                );
+                    })
+                    .value();
 
                 // Sort both arrays for comparison.
                 const sortedResult = _.sortBy(tokenSymbolList, "symbol");
@@ -538,12 +538,12 @@ describe("Token API (Integration Tests)", () => {
         describe("token registry has tokens", () => {
             test("should return the list of token symbols", async () => {
                 const tokenSymbolList = await tokenApi.getTokenSymbolList();
-                const expectedTokenSymbolList = _.filter(
-                    TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => token.symbol),
-                    (tokenSymbol) => {
+                const expectedTokenSymbolList = _.chain(TOKEN_REGISTRY_TRACKED_TOKENS)
+                    .map((token) => token.symbol)
+                    .filter((tokenSymbol) => {
                         return !DISABLED_TOKEN_SYMBOLS.includes(tokenSymbol);
-                    },
-                );
+                    })
+                    .value();
 
                 expect(tokenSymbolList.sort()).toEqual(expectedTokenSymbolList.sort());
             });
