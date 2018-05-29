@@ -6,7 +6,7 @@ import * as Web3 from "web3";
 
 // Utils
 import { BigNumber } from "../../utils/bignumber";
-import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
+import { DISABLED_TOKEN_SYMBOLS, TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
 import * as Units from "../../utils/units";
 import { Web3Utils } from "../../utils/web3_utils";
 
@@ -504,13 +504,18 @@ describe("Token API (Integration Tests)", () => {
                 const tokenSymbolList = await tokenApi.getSupportedTokens();
 
                 // Get a reference from an unsorted array of data we know is correct.
-                const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => {
-                    return {
-                        symbol: token.symbol,
-                        name: token.name,
-                        numDecimals: token.decimals,
-                    };
-                });
+                const expectedTokenSymbolList = _.filter(
+                    TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => {
+                        return {
+                            symbol: token.symbol,
+                            name: token.name,
+                            numDecimals: token.decimals,
+                        };
+                    }),
+                    (token) => {
+                        return !DISABLED_TOKEN_SYMBOLS.includes(token.symbol);
+                    },
+                );
 
                 // Sort both arrays for comparison.
                 const sortedResult = _.sortBy(tokenSymbolList, "symbol");
@@ -523,9 +528,7 @@ describe("Token API (Integration Tests)", () => {
                     expect(isNonNullAddress(tokenAttributes.address)).toEqual(true);
                     expect(tokenAttributes.name).toEqual(reference.name);
                     expect(tokenAttributes.symbol).toEqual(reference.symbol);
-                    expect(
-                        tokenAttributes.numDecimals.toNumber(),
-                    ).toEqual(reference.numDecimals);
+                    expect(tokenAttributes.numDecimals.toNumber()).toEqual(reference.numDecimals);
                 });
             });
         });
@@ -535,8 +538,11 @@ describe("Token API (Integration Tests)", () => {
         describe("token registry has tokens", () => {
             test("should return the list of token symbols", async () => {
                 const tokenSymbolList = await tokenApi.getTokenSymbolList();
-                const expectedTokenSymbolList = TOKEN_REGISTRY_TRACKED_TOKENS.map(
-                    (token) => token.symbol,
+                const expectedTokenSymbolList = _.filter(
+                    TOKEN_REGISTRY_TRACKED_TOKENS.map((token) => token.symbol),
+                    (tokenSymbol) => {
+                        return !DISABLED_TOKEN_SYMBOLS.includes(tokenSymbol);
+                    },
                 );
 
                 expect(tokenSymbolList.sort()).toEqual(expectedTokenSymbolList.sort());
