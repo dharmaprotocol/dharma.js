@@ -5,7 +5,7 @@ const webpack = require("webpack");
 const path = require("path");
 
 let entry = {
-    index: "./src/index.ts",
+    index: "./dist/lib/src/index.js",
 };
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
         umdNamedDefine: true,
     },
     resolve: {
-        extensions: [".ts", ".js"],
+        extensions: [".js"],
     },
     devtool: "source-map",
     plugins: [
@@ -28,20 +28,4 @@ module.exports = {
             include: /\.min\.js$/,
         }),
     ],
-    module: {
-        rules: [
-            {
-                test: /\.ts$/,
-                use: [
-                    {
-                        loader: "awesome-typescript-loader",
-                        options: {
-                            configFileName: "tsconfig.prod.json",
-                        },
-                    },
-                ],
-                exclude: [/node_modules/, /__test__/, /__mocks__/],
-            },
-        ],
-    },
 };
