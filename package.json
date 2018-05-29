@@ -7,7 +7,8 @@
     "module": "dist/lib/src/index.js",
     "typings": "dist/types/src/index.d.ts",
     "files": [
-        "dist"
+        "dist",
+        "webpack.config.js"
     ],
     "author": "Nadav Hollander <nadav@dharma.io>",
     "repository": {
@@ -19,24 +20,25 @@
         "node": ">=6.0.0"
     },
     "scripts": {
-        "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
         "build": "tsc -p tsconfig.prod.json && webpack",
-        "start": "rollup -c rollup.config.ts -w",
         "chain": "bash scripts/init_chain.sh",
-        "test": "jest --runInBand",
+        "commit": "git-cz",
+        "commitmsg": "commitlint -e $GIT_PARAMS",
         "docs:build": "./scripts/documentation/generate_typedoc.sh && tsc ./scripts/documentation/typedoc_parser.ts && node ./scripts/documentation/parse_typedoc",
         "docs:upload": "aws s3 cp scripts/documentation/output/documentation.json $S3_URL --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers --content-type application/json",
-        "test:watch": "jest --watch --runInBand",
-        "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
-        "report-coverage": "cat ./coverage/lcov.info | coveralls",
-        "commit": "git-cz",
-        "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-        "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+        "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+        "postpublish": "bash scripts/post_publish.sh",
         "precommit": "lint-staged",
         "prepublishOnly": "npm run build",
-        "postpublish": "bash scripts/post_publish.sh",
-        "commitmsg": "commitlint -e $GIT_PARAMS",
-        "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts"
+        "prettify": "prettier --write {src,__test__,__mocks__}/**/*.ts",
+        "report-coverage": "cat ./coverage/lcov.info | coveralls",
+        "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
+        "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+        "start": "rollup -c rollup.config.ts -w",
+        "test:prod": "npm run lint && npm run test -- --coverage --no-cache --runInBand",
+        "test:watch": "jest --watch --runInBand",
+        "test": "jest --runInBand",
+        "webpack": "webpack"
     },
     "lint-staged": {
         "{src,__test__,__mocks__}/**/*.ts": [
