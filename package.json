@@ -20,7 +20,6 @@
     },
     "scripts": {
         "lint": "tslint -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
-        "prebuild": "rimraf dist",
         "build": "tsc -p tsconfig.prod.json && webpack",
         "start": "rollup -c rollup.config.ts -w",
         "chain": "bash scripts/init_chain.sh",
