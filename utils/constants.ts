@@ -342,3 +342,10 @@ export const TOKEN_REGISTRY_TRACKED_TOKENS = [
         decimals: 18,
     },
 ];
+
+/**
+ * Tokens that are in the process of being disabled for various reasons.
+ *
+ * EOS (5/29/2018) - (Disabled in dharma.js / Plex) Disabled because EOS ERC20 is being frozen
+ */
+export const DISABLED_TOKEN_SYMBOLS = ["EOS"];

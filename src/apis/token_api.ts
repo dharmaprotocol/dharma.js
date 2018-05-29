@@ -1,10 +1,16 @@
+// External
+import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 
+// Apis
+import { ContractsAPI } from "./";
+
+// Utils
+import { DISABLED_TOKEN_SYMBOLS } from "../../utils/constants";
 import { Assertions } from "../invariants";
 import { TransactionOptions, TxData } from "../types";
-import { ContractsAPI } from "./";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
@@ -217,7 +223,7 @@ export class TokenAPI {
 
         const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
 
-        return Promise.all(
+        const allTokens = await Promise.all(
             Array.from(Array(tokenSymbolListLength.toNumber()).keys()).map(async (tokenIndex) => {
                 const [
                     address,
@@ -236,6 +242,11 @@ export class TokenAPI {
                 };
             }),
         );
+
+        // Filter out tokens that have been disabled in dharma.js
+        return _.filter(allTokens, (token) => {
+            return !DISABLED_TOKEN_SYMBOLS.includes(token.symbol);
+        });
     }
 
     /**
@@ -248,11 +259,16 @@ export class TokenAPI {
 
         const tokenSymbolListLength = await tokenRegistry.tokenSymbolListLength.callAsync();
 
-        const tokenSymbolList: Array<Promise<string>> = Array.from(
-            Array(tokenSymbolListLength.toNumber()).keys(),
-        ).map((i) => tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)));
+        const tokenSymbolList = await Promise.all(
+            Array.from(Array(tokenSymbolListLength.toNumber()).keys()).map((i) =>
+                tokenRegistry.tokenSymbolList.callAsync(new BigNumber(i)),
+            ),
+        );
 
-        return Promise.all(tokenSymbolList);
+        // Filter out tokens that have been disabled in dharma.js
+        return _.filter(tokenSymbolList, (tokenSymbol) => {
+            return !DISABLED_TOKEN_SYMBOLS.includes(tokenSymbol);
+        });
     }
 
     /**
