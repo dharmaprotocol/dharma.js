@@ -1,7 +1,7 @@
 // External
+import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
-import * as _ from "lodash";
 import { BigNumber } from "../../utils/bignumber";
 
 // Apis
