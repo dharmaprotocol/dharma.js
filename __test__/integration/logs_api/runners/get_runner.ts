@@ -157,13 +157,19 @@ export class GetScenarioRunner {
 
                 describe("and the arguments specify events between blocks 0 and 2", async () => {
                     it("returns 0 events", async () => {
-                        await this.testEventCount("LogRepayment", txHash, 0, { fromBlock: 0, toBlock: 2 });
+                        await this.testEventCount("LogRepayment", txHash, 0, {
+                            fromBlock: 0,
+                            toBlock: 2,
+                        });
                     });
                 });
 
                 describe("and the arguments specify events between blocks 2 and 'latest'", async () => {
                     it("returns 1 event", async () => {
-                        await this.testEventCount("LogRepayment", txHash, 1, { fromBlock: 2, toBlock: "latest" });
+                        await this.testEventCount("LogRepayment", txHash, 1, {
+                            fromBlock: 2,
+                            toBlock: "latest",
+                        });
                     });
                 });
             });
@@ -185,13 +191,19 @@ export class GetScenarioRunner {
 
                 describe("and the arguments specify events between blocks 0 and 2", async () => {
                     it("returns 0 events", async () => {
-                        await this.testEventCount(["LogRepayment"], txHash, 0, { fromBlock: 0, toBlock: 2 });
+                        await this.testEventCount(["LogRepayment"], txHash, 0, {
+                            fromBlock: 0,
+                            toBlock: 2,
+                        });
                     });
                 });
 
                 describe("and the arguments specify events between blocks 2 and 'latest'", async () => {
                     it("returns 1 event", async () => {
-                        await this.testEventCount(["LogRepayment"], txHash, 1, { fromBlock: 2, toBlock: "latest" });
+                        await this.testEventCount(["LogRepayment"], txHash, 1, {
+                            fromBlock: 2,
+                            toBlock: "latest",
+                        });
                     });
                 });
             });

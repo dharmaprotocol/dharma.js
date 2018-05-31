@@ -7,6 +7,7 @@ import { ErrorParser } from "../types";
 import { ContractsAPI } from ".";
 
 import { Web3Utils } from "../../utils/web3_utils";
+import { BaseContract } from "../wrappers";
 
 export interface GetEventOptions {
     fromBlock?: number;
@@ -149,7 +150,7 @@ export class LogsAPI {
      */
 
     private async getEventToContractsMap() {
-        const contractWrappers = await this.getContractWrapper();
+        const contractWrappers = await this.getContractWrappers();
 
         contractWrappers.map((wrapper) => ABIDecoder.addABI(wrapper.abi));
 
@@ -167,7 +168,7 @@ export class LogsAPI {
         return eventToContract;
     }
 
-    private async getContractWrapper() {
+    private async getContractWrappers(): Promise<BaseContract[]> {
         const {
             debtKernel,
             debtRegistry,
