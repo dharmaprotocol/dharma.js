@@ -61,15 +61,15 @@ export class LogsAPI {
         await Promise.all(
             eventNames.map(async (eventName) => {
                 const contractWrapper = eventToContract[eventName];
-                const contract = this.web3.eth.contract(contractWrapper.abi).at(contractWrapper.address);
+                const contract = this.web3.eth
+                    .contract(contractWrapper.abi)
+                    .at(contractWrapper.address);
 
                 return new Promise((resolve) => {
-                    const eventsWatcher = contract.allEvents(
-                        {
-                            fromBlock: fromBlock || 0,
-                            toBlock: toBlock || "latest",
-                        },
-                    );
+                    const eventsWatcher = contract.allEvents({
+                        fromBlock: fromBlock || 0,
+                        toBlock: toBlock || "latest",
+                    });
 
                     eventsWatcher.get((error, logs) => {
                         const filteredEvents = _.filter(logs, (log) => log.event === eventName);

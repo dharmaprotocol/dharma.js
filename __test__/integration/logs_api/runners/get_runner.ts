@@ -135,7 +135,7 @@ export class GetScenarioRunner {
                 );
             });
 
-            describe("and the arguments include \"LogRepayment\" as a string", async () => {
+            describe('and the arguments include "LogRepayment" as a string', async () => {
                 it("includes a single log matching the repayment", async () => {
                     await this.testEventCount("LogRepayment", txHash, 1);
                 });
@@ -145,7 +145,7 @@ export class GetScenarioRunner {
                 });
             });
 
-            describe("and the arguments include \"LogRepayment\" as an array", async () => {
+            describe('and the arguments include "LogRepayment" as an array', async () => {
                 it("includes a single log matching the repayment", async () => {
                     await this.testEventCount(["LogRepayment"], txHash, 1);
                 });
@@ -172,7 +172,9 @@ export class GetScenarioRunner {
 
                 describe("and the arguments include limit of 0", async () => {
                     it("returns 0 events", async () => {
-                        await this.testEventCount(["LogRepayment", "Transfer"], txHash, 0, { limit: 0 });
+                        await this.testEventCount(["LogRepayment", "Transfer"], txHash, 0, {
+                            limit: 0,
+                        });
                     });
                 });
             });
@@ -192,28 +194,35 @@ export class GetScenarioRunner {
 
         const logKeys = Object.keys(matchingLogs[0]);
 
-        expect(logKeys).toEqual(
-            [
-                "logIndex",
-                "transactionIndex",
-                "transactionHash",
-                "blockHash",
-                "blockNumber",
-                "address",
-                "type",
-                "event",
-                "args",
-            ],
-        );
+        expect(logKeys).toEqual([
+            "logIndex",
+            "transactionIndex",
+            "transactionHash",
+            "blockHash",
+            "blockNumber",
+            "address",
+            "type",
+            "event",
+            "args",
+        ]);
     }
 
-    private async testEventCount(eventName: string | string[], txHash: string, count: number, args?: object) {
+    private async testEventCount(
+        eventName: string | string[],
+        txHash: string,
+        count: number,
+        args?: object,
+    ) {
         const matchingLogs = await this.filterLogs(eventName, txHash, args);
 
         expect(matchingLogs.length).toEqual(count);
     }
 
-    private async filterLogs(eventName, txHash, args?: object): Promise<ABIDecoder.DecodedLogEntry[]> {
+    private async filterLogs(
+        eventName,
+        txHash,
+        args?: object,
+    ): Promise<ABIDecoder.DecodedLogEntry[]> {
         const logs: ABIDecoder.DecodedLogEntry[] = await this.logsAPI.get(eventName, args);
 
         return _.filter(logs, (log) => log.transactionHash === txHash);

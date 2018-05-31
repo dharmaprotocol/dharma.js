@@ -80,7 +80,14 @@ export class ContractsAPI {
         const tokenTransferProxy = await this.loadTokenTransferProxyAsync(transactionOptions);
         const collateralizer = await this.loadCollateralizerAsync(transactionOptions);
 
-        return { debtKernel, debtRegistry, debtToken, repaymentRouter, tokenTransferProxy, collateralizer };
+        return {
+            debtKernel,
+            debtRegistry,
+            debtToken,
+            repaymentRouter,
+            tokenTransferProxy,
+            collateralizer,
+        };
     }
 
     public async loadDebtKernelAsync(transactionOptions: object = {}): Promise<DebtKernelContract> {

@@ -86,7 +86,9 @@ describe("Logs API (Integration Tests)", () => {
         });
 
         describe("invalid repayments should result in queryable error logs", () => {
-            INVALID_REPAYMENT_SCENARIOS.forEach(errorScenarioRunner.testRepaymentRouterErrorScenario);
+            INVALID_REPAYMENT_SCENARIOS.forEach(
+                errorScenarioRunner.testRepaymentRouterErrorScenario,
+            );
         });
 
         describe("valid repayments should result in no error logs", () => {
