@@ -53,6 +53,10 @@ export class LogsAPI {
     public async get(eventNames: string | string[], options: GetEventOptions = {}): Promise<any> {
         const { fromBlock, limit, toBlock } = options;
 
+        if (limit === 0) {
+            return [];
+        }
+
         eventNames = _.castArray(eventNames);
 
         const eventToContract = await this.getEventToContractsMap();
@@ -85,7 +89,7 @@ export class LogsAPI {
             }),
         );
 
-        if (_.isNumber(limit)) {
+        if (limit) {
             return _.take(events, limit);
         } else {
             return events;
