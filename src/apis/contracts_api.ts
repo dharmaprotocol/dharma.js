@@ -44,6 +44,7 @@ export interface DharmaContracts {
     debtToken: DebtTokenContract;
     repaymentRouter: RepaymentRouterContract;
     tokenTransferProxy: TokenTransferProxyContract;
+    collateralizer: CollateralizerContract;
 }
 
 export const ContractsError = {
@@ -77,8 +78,9 @@ export class ContractsAPI {
         const debtToken = await this.loadDebtTokenAsync(transactionOptions);
         const repaymentRouter = await this.loadRepaymentRouterAsync(transactionOptions);
         const tokenTransferProxy = await this.loadTokenTransferProxyAsync(transactionOptions);
+        const collateralizer = await this.loadCollateralizerAsync(transactionOptions);
 
-        return { debtKernel, debtRegistry, debtToken, repaymentRouter, tokenTransferProxy };
+        return { debtKernel, debtRegistry, debtToken, repaymentRouter, tokenTransferProxy, collateralizer };
     }
 
     public async loadDebtKernelAsync(transactionOptions: object = {}): Promise<DebtKernelContract> {

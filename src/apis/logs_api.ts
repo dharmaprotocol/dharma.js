@@ -1,25 +1,116 @@
 import * as ABIDecoder from "abi-decoder";
+import * as _ from "lodash";
 import * as Web3 from "web3";
 
 import { ErrorParser } from "../types";
-
-import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
 
 import { ContractsAPI } from ".";
 
 import { Web3Utils } from "../../utils/web3_utils";
 
+export interface GetEventOptions {
+    fromBlock?: number;
+    toBlock?: number;
+    limit?: number;
+}
+
 export class LogsAPI {
+    private readonly web3: Web3;
     private web3Utils: Web3Utils;
     private contracts: ContractsAPI;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3Utils = new Web3Utils(web3);
+        this.web3 = web3;
         this.contracts = contracts;
+    }
 
-        // We need to configure the ABI Decoder in order to pull out relevant logs.
-        ABIDecoder.addABI(DebtKernel.abi);
-        ABIDecoder.addABI(RepaymentRouter.abi);
+    /**
+     * @example
+     * // Get all "LogLoanOrderFilled" events between blocks 0 and 300.
+     * await dharma.logs.get(["LogLoanOrderFilled"], { from: 0, to: 300 });
+     *
+     * // Get the last 10 "LogLoanOrderFilled" events between blocks 0 and 300.
+     * await dharma.logs.get(["LogLoanOrderFilled"], { from: 0, to: 300, limit: 10 });
+     *
+     * // Get the last 10 "LogLoanOrderFilled" events.
+     * await dharma.logs.get(["LogLoanOrderFilled"], { limit: 10 });
+     *
+     * // Get the last 10 "LogLoanOrderFilled" or "LogLoanOrderCancelled" events that occurred.
+     * await dharma.logs.get(["LogLoanOrderFilled", "LogLoanOrderCancelled"], { limit: 10 });
+     *
+     * // Get all of the "LogLoanOrderFilled" events.
+     * await dharma.logs.get(["LogLoanOrderFilled"]);
+     *
+     * // Get all of the "LogLoanOrderFilled" events.
+     * await dharma.logs.get("LogLoanOrderFilled");
+     *
+     * @param {string | string[]} eventNames
+     * @param {GetEventOptions} options
+     * @returns {Promise<any>}
+     */
+    public async get(eventNames: string | string[], options: GetEventOptions = {}): Promise<any> {
+        const { fromBlock, limit, toBlock } = options;
+
+        eventNames = _.castArray(eventNames);
+
+        const eventToContract = await this.getEventToContractsMap();
+
+        let events = [];
+
+        await Promise.all(
+            eventNames.map(async (eventName) => {
+                const contractWrapper = eventToContract[eventName];
+                const contract = this.web3.eth.contract(contractWrapper.abi).at(contractWrapper.address);
+
+                return new Promise((resolve) => {
+                    const eventsWatcher = contract.allEvents(
+                        {
+                            fromBlock: fromBlock || 0,
+                            toBlock: toBlock || "latest",
+                        },
+                    );
+
+                    eventsWatcher.get((error, logs) => {
+                        const filteredEvents = _.filter(logs, (log) => log.event === eventName);
+
+                        events = events.concat(filteredEvents);
+
+                        resolve();
+                    });
+
+                    eventsWatcher.stopWatching();
+                });
+            }),
+        );
+
+        if (_.isNumber(limit)) {
+            return _.take(events, limit);
+        } else {
+            return events;
+        }
+    }
+
+    /**
+     * Returns a list of events that are obtainable from Dharma Protocol contracts.
+     *
+     * @example
+     * dharma.logs.list()
+     * => [
+     *  "LogDebtOrderFilled",
+     *  "LogIssuanceCancelled",
+     *  "LogDebtOrderCancelled",
+     *  "LogError",
+     *  "Pause",
+     *  ...
+     * ]
+     *
+     * @returns {string[]}
+     */
+    public async list(): Promise<string[]> {
+        const eventToContract = await this.getEventToContractsMap();
+
+        return Object.keys(eventToContract);
     }
 
     /**
@@ -42,5 +133,57 @@ export class LogsAPI {
         });
 
         return parser.parseDecodedLogs(decodedLogs);
+    }
+
+    /**
+     * TODO: Add watch function.
+     *
+     * @example
+     * // Get a listener for "LogLoanOrderFilled" events
+     * dharma.logs.watch("LogLoanOrderFilled");
+     *
+     * @param {string | string[]} eventNames
+     * @returns {Promise<any>}
+     *
+     * public watch(eventNames: string | string[]): Promise<any>;
+     */
+
+    private async getEventToContractsMap() {
+        const contractWrappers = await this.getContractWrapper();
+
+        contractWrappers.map((wrapper) => ABIDecoder.addABI(wrapper.abi));
+
+        // Create a mapping of event names to the contract where they originate.
+        // E.g. "LogDebtOrderFilled" => DebtKernel
+        const eventToContract = {};
+        contractWrappers.forEach((wrapper) => {
+            const filteredEvents = _.filter(wrapper.abi, (element) => element.type === "event");
+
+            filteredEvents.forEach((event) => {
+                eventToContract[event.name] = wrapper;
+            });
+        });
+
+        return eventToContract;
+    }
+
+    private async getContractWrapper() {
+        const {
+            debtKernel,
+            debtRegistry,
+            debtToken,
+            repaymentRouter,
+            tokenTransferProxy,
+            collateralizer,
+        } = await this.contracts.loadDharmaContractsAsync();
+
+        return [
+            debtKernel,
+            debtRegistry,
+            debtToken,
+            repaymentRouter,
+            tokenTransferProxy,
+            collateralizer,
+        ];
     }
 }
