@@ -75,6 +75,7 @@ export class GetScenarioRunner {
         this.revertToSavedSnapshot = this.revertToSavedSnapshot.bind(this);
         this.testEventCount = this.testEventCount.bind(this);
         this.testIncludesExpectedFields = this.testIncludesExpectedFields.bind(this);
+        this.testIsArray = this.testIsArray.bind(this);
     }
 
     public async configure() {
@@ -136,12 +137,34 @@ export class GetScenarioRunner {
             });
 
             describe('and the arguments include "LogRepayment" as a string', async () => {
+                it("returns an array", async () => {
+                    await this.testIsArray("LogRepayment", txHash);
+                });
+
                 it("includes a single log matching the repayment", async () => {
                     await this.testEventCount("LogRepayment", txHash, 1);
                 });
 
                 it("the log includes all of the expected log fields", async () => {
                     await this.testIncludesExpectedFields("LogRepayment", txHash);
+                });
+
+                describe("and the arguments include limit of 0", async () => {
+                    it("returns 0 events", async () => {
+                        await this.testEventCount("LogRepayment", txHash, 0, { limit: 0 });
+                    });
+                });
+
+                describe("and the arguments specify events between blocks 0 and 2", async () => {
+                    it("returns 0 events", async () => {
+                        await this.testEventCount("LogRepayment", txHash, 0, { fromBlock: 0, toBlock: 2 });
+                    });
+                });
+
+                describe("and the arguments specify events between blocks 2 and 'latest'", async () => {
+                    it("returns 1 event", async () => {
+                        await this.testEventCount("LogRepayment", txHash, 1, { fromBlock: 2, toBlock: "latest" });
+                    });
                 });
             });
 
@@ -157,6 +180,18 @@ export class GetScenarioRunner {
                 describe("and the arguments include limit of 0", async () => {
                     it("returns 0 events", async () => {
                         await this.testEventCount(["LogRepayment"], txHash, 0, { limit: 0 });
+                    });
+                });
+
+                describe("and the arguments specify events between blocks 0 and 2", async () => {
+                    it("returns 0 events", async () => {
+                        await this.testEventCount(["LogRepayment"], txHash, 0, { fromBlock: 0, toBlock: 2 });
+                    });
+                });
+
+                describe("and the arguments specify events between blocks 2 and 'latest'", async () => {
+                    it("returns 1 event", async () => {
+                        await this.testEventCount(["LogRepayment"], txHash, 1, { fromBlock: 2, toBlock: "latest" });
                     });
                 });
             });
@@ -187,6 +222,12 @@ export class GetScenarioRunner {
 
     public async revertToSavedSnapshot() {
         await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
+    }
+
+    private async testIsArray(eventName: string, txHash: string) {
+        const matchingLogs = await this.filterLogs(eventName, txHash);
+
+        expect(Array.isArray(matchingLogs)).toBe(true);
     }
 
     private async testIncludesExpectedFields(eventName: string | string[], txHash: string) {
