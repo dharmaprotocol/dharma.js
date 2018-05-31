@@ -120,7 +120,7 @@ export class GetScenarioRunner {
         describe(scenario.description, () => {
             beforeEach(async () => {
                 // Set up a valid repayment scenario.
-                const principalToken = await this.generateTokenForSymbol("REP");
+                const principalToken = await this.generateTransferOfToken("REP");
 
                 const debtOrder = await this.generateSignedDebtOrderWithToken("REP");
 
@@ -281,7 +281,7 @@ export class GetScenarioRunner {
         return _.filter(logs, (log) => log.transactionHash === txHash);
     }
 
-    private async generateTokenForSymbol(symbol: string): Promise<DummyTokenContract> {
+    private async generateTransferOfToken(symbol: string): Promise<DummyTokenContract> {
         const tokenAddress = await this.tokenRegistry.getTokenAddressBySymbol.callAsync(symbol);
 
         const token = await DummyTokenContract.at(tokenAddress, this.web3, TX_DEFAULTS);
@@ -317,12 +317,12 @@ export class GetScenarioRunner {
         return token;
     }
 
-    private async generateSignedDebtOrderWithToken(token: string): Promise<DebtOrder> {
+    private async generateSignedDebtOrderWithToken(tokenSymbol: string): Promise<DebtOrder> {
         const debtOrder = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
             principalAmount: PRINCIPAL_AMOUNT,
-            principalTokenSymbol: token,
+            principalTokenSymbol: tokenSymbol,
             interestRate: new BigNumber(0.1),
             amortizationUnit: "months",
             termLength: new BigNumber(2),
