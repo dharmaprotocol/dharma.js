@@ -50,7 +50,10 @@ export class LogsAPI {
      * @param {GetEventOptions} options
      * @returns {Promise<any>}
      */
-    public async get(eventNames: string | string[], options: GetEventOptions = {}): Promise<any> {
+    public async get(
+        eventNames: string | string[],
+        options: GetEventOptions = {},
+    ): Promise<ABIDecoder.DecodedLogEntry[]> {
         const { fromBlock, limit, toBlock } = options;
 
         if (limit === 0) {
@@ -66,6 +69,9 @@ export class LogsAPI {
         await Promise.all(
             eventNames.map(async (eventName) => {
                 const contractWrapper = eventToContract[eventName];
+
+                ABIDecoder.addABI(contractWrapper.abi);
+
                 const contract = this.web3.eth
                     .contract(contractWrapper.abi)
                     .at(contractWrapper.address);
@@ -80,6 +86,8 @@ export class LogsAPI {
                         const filteredEvents = _.filter(logs, (log) => log.event === eventName);
 
                         events = events.concat(filteredEvents);
+
+                        ABIDecoder.removeABI(contractWrapper.abi);
 
                         resolve();
                     });
@@ -153,10 +161,17 @@ export class LogsAPI {
      * public watch(eventNames: string | string[]): Promise<any>;
      */
 
+    /**
+     * Creates a mapping of event names to the contract where they originate.
+     *
+     * @example
+     * getEventToContractsMap();
+     * => { "LogDebtOrderFilled" => DebtKernel, ... }
+     *
+     * @returns {Promise<object>}
+     */
     private async getEventToContractsMap() {
         const contractWrappers = await this.getContractWrappers();
-
-        contractWrappers.map((wrapper) => ABIDecoder.addABI(wrapper.abi));
 
         // Create a mapping of event names to the contract where they originate.
         // E.g. "LogDebtOrderFilled" => DebtKernel

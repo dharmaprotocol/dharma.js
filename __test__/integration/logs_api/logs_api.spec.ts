@@ -3,13 +3,17 @@
 jest.unmock("@dharmaprotocol/contracts");
 
 // External Libraries
+import * as ABIDecoder from "abi-decoder";
 import * as Web3 from "web3";
 
 // APIs
-import { ContractsAPI, LogsAPI, TokenAPI } from "../../../src/apis";
+import { ContractsAPI, LogsAPI } from "../../../src/apis";
 
 import { ErrorScenarioRunner } from "./runners/error_scenario_runner";
 import { GetScenarioRunner } from "./runners/get_runner";
+
+// For adding ABIs to the decoder.
+import { DebtKernel, RepaymentRouter } from "@dharmaprotocol/contracts";
 
 import {
     INVALID_ORDERS,
@@ -28,13 +32,13 @@ const logsAPI = new LogsAPI(web3, contractsAPI);
 
 describe("Logs API (Integration Tests)", () => {
     describe("get", async () => {
-        beforeAll(async () => {
-            await getScenarioRunner.configure();
-        });
-
         beforeEach(getScenarioRunner.saveSnapshotAsync);
 
         afterEach(getScenarioRunner.revertToSavedSnapshot);
+
+        beforeAll(async () => {
+            await getScenarioRunner.configure();
+        });
 
         describe("when called after valid repayments have been made", () => {
             VALID_REPAYMENTS.forEach(getScenarioRunner.testGetLogsAfterRepaymentScenario);
@@ -74,7 +78,15 @@ describe("Logs API (Integration Tests)", () => {
         afterEach(errorScenarioRunner.revertToSavedSnapshot);
 
         beforeAll(async () => {
+            ABIDecoder.addABI(DebtKernel.abi);
+            ABIDecoder.addABI(RepaymentRouter.abi);
+
             await errorScenarioRunner.configure();
+        });
+
+        afterAll(() => {
+            ABIDecoder.removeABI(DebtKernel.abi);
+            ABIDecoder.removeABI(RepaymentRouter.abi);
         });
 
         describe("invalid orders should result in retrievable error logs", () => {
