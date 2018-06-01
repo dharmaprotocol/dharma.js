@@ -2,22 +2,22 @@
 import * as Web3 from "web3";
 
 // Utils
-import { BigNumber } from "../../../utils/bignumber";
-import { TransactionUtils } from "../../../utils/transaction_utils";
-import * as Units from "../../../utils/units";
-import { Web3Utils } from "../../../utils/web3_utils";
+import { BigNumber } from "../../../../utils/bignumber";
+import { TransactionUtils } from "../../../../utils/transaction_utils";
+import * as Units from "../../../../utils/units";
+import { Web3Utils } from "../../../../utils/web3_utils";
 
 // Adapters
-import { SimpleInterestLoanAdapter } from "../../../src/adapters";
+import { SimpleInterestLoanAdapter } from "../../../../src/adapters";
 
 // Apis
-import { AdaptersAPI, ContractsAPI, LogsAPI, OrderAPI, SignerAPI } from "../../../src/apis/";
+import { AdaptersAPI, ContractsAPI, LogsAPI, OrderAPI, SignerAPI } from "../../../../src/apis/";
 
 // Types
-import { DebtKernelError, DebtOrder, RepaymentRouterError } from "../../../src/types";
+import { DebtKernelError, DebtOrder, RepaymentRouterError } from "../../../../src/types";
 
 // Scenarios
-import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
+import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "../scenarios";
 
 // Wrappers
 import {
@@ -28,9 +28,9 @@ import {
     SimpleInterestTermsContractContract,
     TokenRegistryContract,
     TokenTransferProxyContract,
-} from "../../../src/wrappers";
+} from "../../../../src/wrappers";
 
-import { ACCOUNTS } from "../../accounts";
+import { ACCOUNTS } from "../../../accounts";
 
 const CONTRACT_OWNER = ACCOUNTS[0].address;
 const CREDITOR = ACCOUNTS[1].address;

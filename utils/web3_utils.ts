@@ -8,14 +8,14 @@ import * as Web3 from "web3";
 import * as Web3BetaUtils from "web3-utils";
 
 export class Web3Utils {
+    public static soliditySHA3(...payload: any[]): string {
+        return Web3BetaUtils.soliditySha3(...payload);
+    }
+
     private web3: Web3;
 
     constructor(web3: Web3) {
         this.web3 = web3;
-    }
-
-    public static soliditySHA3(...payload: any[]): string {
-        return Web3BetaUtils.soliditySha3(...payload);
     }
 
     public async getNetworkIdAsync(): Promise<number> {
@@ -54,11 +54,15 @@ export class Web3Utils {
      * @returns {Promise<number>}
      */
     public async getCurrentBlockTime(): Promise<number> {
-        const latestBlock = await promisify(
-            this.web3.eth.getBlock
-        )("latest");
+        const currentBlock = await this.getCurrentBlock();
 
-        return latestBlock.timestamp;
+        return currentBlock.timestamp;
+    }
+
+    public async getCurrentBlock(): Promise<Web3.BlockWithoutTransactionData> {
+        return promisify(
+            this.web3.eth.getBlock,
+        )("latest");
     }
 
     /**
