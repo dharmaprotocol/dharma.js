@@ -4,15 +4,15 @@ import { BigNumber } from "../../utils/bignumber";
 import * as Units from "../../utils/units";
 import { Web3Utils } from "../../utils/web3_utils";
 
-import { DebtOrderWrapper } from "../../src/wrappers";
+import { DebtOrderDataWrapper } from "../../src/wrappers";
 
 import { ACCOUNTS } from "../accounts";
 
-let debtOrderWrapper: DebtOrderWrapper;
+let debtOrderDataWrapper: DebtOrderDataWrapper;
 
 // For the unit test's purposes, we use arbitrary
 // addresses for all debt order fields that expect addresses.
-let debtOrder = {
+const debtOrderData = {
     kernelVersion: ACCOUNTS[0].address,
     issuanceVersion: ACCOUNTS[1].address,
     principalAmount: Units.ether(1),
@@ -34,34 +34,34 @@ let debtOrder = {
 
 describe("Debt Order Wrapper (Unit Tests)", () => {
     beforeAll(() => {
-        debtOrderWrapper = new DebtOrderWrapper(debtOrder);
+        debtOrderDataWrapper = new DebtOrderDataWrapper(debtOrderData);
     });
 
     describe("#getIssuanceCommitment", () => {
         test("returns correct subset of debt order as defined in whitepaper", () => {
-            expect(debtOrderWrapper.getIssuanceCommitment()).toEqual({
-                issuanceVersion: debtOrder.issuanceVersion,
-                debtor: debtOrder.debtor,
-                underwriter: debtOrder.underwriter,
-                underwriterRiskRating: debtOrder.underwriterRiskRating,
-                termsContract: debtOrder.termsContract,
-                termsContractParameters: debtOrder.termsContractParameters,
-                salt: debtOrder.salt,
+            expect(debtOrderDataWrapper.getIssuanceCommitment()).toEqual({
+                issuanceVersion: debtOrderData.issuanceVersion,
+                debtor: debtOrderData.debtor,
+                underwriter: debtOrderData.underwriter,
+                underwriterRiskRating: debtOrderData.underwriterRiskRating,
+                termsContract: debtOrderData.termsContract,
+                termsContractParameters: debtOrderData.termsContractParameters,
+                salt: debtOrderData.salt,
             });
         });
     });
 
     describe("#getIssuanceCommitmentHash", () => {
         test("returns correctly hashed issuance commitment as defined in whitepaper", () => {
-            expect(debtOrderWrapper.getIssuanceCommitmentHash()).toBe(
+            expect(debtOrderDataWrapper.getIssuanceCommitmentHash()).toBe(
                 Web3Utils.soliditySHA3(
-                    debtOrder.issuanceVersion,
-                    debtOrder.debtor,
-                    debtOrder.underwriter,
-                    debtOrder.underwriterRiskRating,
-                    debtOrder.termsContract,
-                    debtOrder.termsContractParameters,
-                    debtOrder.salt,
+                    debtOrderData.issuanceVersion,
+                    debtOrderData.debtor,
+                    debtOrderData.underwriter,
+                    debtOrderData.underwriterRiskRating,
+                    debtOrderData.termsContract,
+                    debtOrderData.termsContractParameters,
+                    debtOrderData.salt,
                 ),
             );
         });
@@ -69,26 +69,26 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
 
     describe("#getHash", () => {
         test("returns correctly hashed debt order as defined in whitepaper", () => {
-            expect(debtOrderWrapper.getHash()).toBe(
+            expect(debtOrderDataWrapper.getHash()).toBe(
                 Web3Utils.soliditySHA3(
-                    debtOrder.kernelVersion,
+                    debtOrderData.kernelVersion,
                     Web3Utils.soliditySHA3(
-                        debtOrder.issuanceVersion,
-                        debtOrder.debtor,
-                        debtOrder.underwriter,
-                        debtOrder.underwriterRiskRating,
-                        debtOrder.termsContract,
-                        debtOrder.termsContractParameters,
-                        debtOrder.salt,
+                        debtOrderData.issuanceVersion,
+                        debtOrderData.debtor,
+                        debtOrderData.underwriter,
+                        debtOrderData.underwriterRiskRating,
+                        debtOrderData.termsContract,
+                        debtOrderData.termsContractParameters,
+                        debtOrderData.salt,
                     ),
-                    debtOrder.underwriterFee,
-                    debtOrder.principalAmount,
-                    debtOrder.principalToken,
-                    debtOrder.debtorFee,
-                    debtOrder.creditorFee,
-                    debtOrder.relayer,
-                    debtOrder.relayerFee,
-                    debtOrder.expirationTimestampInSec,
+                    debtOrderData.underwriterFee,
+                    debtOrderData.principalAmount,
+                    debtOrderData.principalToken,
+                    debtOrderData.debtorFee,
+                    debtOrderData.creditorFee,
+                    debtOrderData.relayer,
+                    debtOrderData.relayerFee,
+                    debtOrderData.expirationTimestampInSec,
                 ),
             );
         });
@@ -96,42 +96,46 @@ describe("Debt Order Wrapper (Unit Tests)", () => {
 
     describe("#getDebtAgreementId", () => {
         test("returns issuance commitment hash cast to BigNumber", () => {
-            expect(debtOrderWrapper.getDebtAgreementId()).toEqual(
-                new BigNumber(debtOrderWrapper.getHash()),
+            expect(debtOrderDataWrapper.getDebtAgreementId()).toEqual(
+                new BigNumber(debtOrderDataWrapper.getHash()),
             );
         });
     });
 
     describe("#getDebtorCommitmentHash", () => {
         test("returns #getHash alias", () => {
-            expect(debtOrderWrapper.getDebtorCommitmentHash()).toBe(debtOrderWrapper.getHash());
+            expect(debtOrderDataWrapper.getDebtorCommitmentHash()).toBe(
+                debtOrderDataWrapper.getHash(),
+            );
         });
     });
 
     describe("#getCreditorCommitmentHash", () => {
         test("returns #getHash alias", () => {
-            expect(debtOrderWrapper.getCreditorCommitmentHash()).toBe(debtOrderWrapper.getHash());
+            expect(debtOrderDataWrapper.getCreditorCommitmentHash()).toBe(
+                debtOrderDataWrapper.getHash(),
+            );
         });
     });
 
     describe("#getUnderwriterCommitmentHash", () => {
         test("returns correctly hashed underwriter commitment as defined in whitepaper", () => {
-            expect(debtOrderWrapper.getUnderwriterCommitmentHash()).toEqual(
+            expect(debtOrderDataWrapper.getUnderwriterCommitmentHash()).toEqual(
                 Web3Utils.soliditySHA3(
-                    debtOrder.kernelVersion,
+                    debtOrderData.kernelVersion,
                     Web3Utils.soliditySHA3(
-                        debtOrder.issuanceVersion,
-                        debtOrder.debtor,
-                        debtOrder.underwriter,
-                        debtOrder.underwriterRiskRating,
-                        debtOrder.termsContract,
-                        debtOrder.termsContractParameters,
-                        debtOrder.salt,
+                        debtOrderData.issuanceVersion,
+                        debtOrderData.debtor,
+                        debtOrderData.underwriter,
+                        debtOrderData.underwriterRiskRating,
+                        debtOrderData.termsContract,
+                        debtOrderData.termsContractParameters,
+                        debtOrderData.salt,
                     ),
-                    debtOrder.underwriterFee,
-                    debtOrder.principalAmount,
-                    debtOrder.principalToken,
-                    debtOrder.expirationTimestampInSec,
+                    debtOrderData.underwriterFee,
+                    debtOrderData.principalAmount,
+                    debtOrderData.principalToken,
+                    debtOrderData.expirationTimestampInSec,
                 ),
             );
         });

@@ -1,22 +1,22 @@
+import { ACCOUNTS } from "__test__/accounts";
+import * as moment from "moment";
+import { OrderAPIErrors } from "src/apis/order_api";
+import { DebtOrderData } from "src/types";
 import {
     DebtKernelContract,
-    RepaymentRouterContract,
     DummyTokenContract,
+    RepaymentRouterContract,
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
-import * as Units from "utils/units";
-import * as moment from "moment";
 import { BigNumber } from "utils/bignumber";
-import { DebtOrder } from "src/types";
 import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
-import { ACCOUNTS } from "__test__/accounts";
+import * as Units from "utils/units";
 import { FillScenario } from "./";
-import { OrderAPIErrors } from "src/apis/order_api";
 
 export const NONCONSENUAL_ORDERS: FillScenario[] = [
     {
         description: "if message sender not debtor, debtor signature must be valid",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -58,7 +58,7 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
     },
     {
         description: "if message sender not creditor, creditor signature must be valid",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -100,7 +100,7 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
     },
     {
         description: "if message sender not underwriter, underwriter signature must be valid",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -146,7 +146,7 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
      */
     {
         description: "creditor has insufficient balance",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -189,7 +189,7 @@ export const NONCONSENUAL_ORDERS: FillScenario[] = [
     },
     {
         description: "creditor has insufficient allowance",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,

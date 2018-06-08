@@ -12,7 +12,7 @@ import { Adapter } from "../adapters";
 // Wrappers
 import {
     DebtKernelContract,
-    DebtOrderWrapper,
+    DebtOrderDataWrapper,
     DebtTokenContract,
     TokenTransferProxyContract,
 } from "../wrappers";
@@ -132,7 +132,7 @@ export class OrderAPI {
 
         const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
-        const debtOrderDataWrapped = new DebtOrderWrapper(debtOrderData);
+        const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
         return debtKernel.fillDebtOrder.sendTransactionAsync(
             debtOrderDataWrapped.getCreditor(),
@@ -192,7 +192,7 @@ export class OrderAPI {
 
         debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
 
-        const debtOrderDataWrapped = new DebtOrderWrapper(debtOrderData);
+        const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
         await this.assert.order.debtOrderNotCancelledAsync(
             debtOrderData,
@@ -257,7 +257,7 @@ export class OrderAPI {
     public async getIssuanceHash(debtOrderData: DebtOrderData): Promise<string> {
         debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
 
-        const debtOrderDataWrapped = new DebtOrderWrapper(debtOrderData);
+        const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
         return debtOrderDataWrapped.getIssuanceCommitmentHash();
     }
@@ -315,7 +315,7 @@ export class OrderAPI {
             OrderAPIErrors.ADAPTER_DOES_NOT_CONFORM_TO_INTERFACE(),
         );
 
-        return adapter.toDebtOrderData(params);
+        return adapter.toDebtOrder(params);
     }
 
     /**
@@ -379,7 +379,7 @@ export class OrderAPI {
             debtOrderData.termsContract,
         );
 
-        const loanOrder = await adapter.fromDebtOrderData(debtOrderData);
+        const loanOrder = await adapter.fromDebtOrder(debtOrderData);
 
         await adapter.validateAsync(loanOrder);
     }

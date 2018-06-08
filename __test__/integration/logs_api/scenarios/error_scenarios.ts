@@ -1,21 +1,21 @@
-import { DebtOrder, DebtKernelError, RepaymentRouterError } from "src/types";
+import { DebtKernelError, DebtOrderData, RepaymentRouterError } from "src/types";
 import { BigNumber } from "utils/bignumber";
 
 import {
     DebtKernelContract,
-    RepaymentRouterContract,
     DummyTokenContract,
+    RepaymentRouterContract,
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
 
 export interface DebtKernelErrorScenario {
     description: string;
-    generateDebtOrder: (
+    generateDebtOrderData: (
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
         termsContract: SimpleInterestTermsContractContract,
-    ) => DebtOrder;
+    ) => DebtOrderData;
     error?: DebtKernelError;
     signatories: {
         debtor: boolean;
@@ -24,7 +24,7 @@ export interface DebtKernelErrorScenario {
     };
     creditorBalance?: BigNumber;
     creditorAllowance?: BigNumber;
-    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
+    beforeBlock?: (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => Promise<any>;
 }
 
 export interface RepaymentRouterErrorScenario {

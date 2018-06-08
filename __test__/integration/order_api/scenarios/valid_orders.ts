@@ -1,22 +1,22 @@
-import {
-    DebtKernelContract,
-    RepaymentRouterContract,
-    DummyTokenContract,
-    SimpleInterestTermsContractContract,
-    CollateralizedSimpleInterestTermsContractContract,
-} from "src/wrappers";
-import * as Units from "utils/units";
-import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
-import * as moment from "moment";
-import { BigNumber } from "utils/bignumber";
-import { DebtOrder } from "src/types";
 import { ACCOUNTS } from "__test__/accounts";
+import * as moment from "moment";
+import { DebtOrderData } from "src/types";
+import {
+    CollateralizedSimpleInterestTermsContractContract,
+    DebtKernelContract,
+    DummyTokenContract,
+    RepaymentRouterContract,
+    SimpleInterestTermsContractContract,
+} from "src/wrappers";
+import { BigNumber } from "utils/bignumber";
+import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
+import * as Units from "utils/units";
 import { FillScenario } from "./";
 
 export const VALID_ORDERS: FillScenario[] = [
     {
         description: "valid order with underwriter unspecified",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -53,7 +53,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "valid order using collateralized terms contract",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -95,7 +95,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "valid order with relayer unspecified",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -133,7 +133,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "valid order with neither underwriter nor relayer specified",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -166,7 +166,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "valid order with neither kernelVersion nor issuanceVersion specified",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -197,7 +197,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "valid order with no expiration specified",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -223,7 +223,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "valid order with no salt specified",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -248,7 +248,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "missing debtor signature but submitted by debtor",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -288,7 +288,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "missing creditor signature but submitted by creditor",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -328,7 +328,7 @@ export const VALID_ORDERS: FillScenario[] = [
     },
     {
         description: "missing underwriter signature but submitted by underwriter",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -369,7 +369,7 @@ export const VALID_ORDERS: FillScenario[] = [
     {
         description:
             "all signatures present, submitted by neither creditor, debtor, nor underwriter",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,

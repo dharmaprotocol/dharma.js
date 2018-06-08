@@ -2,11 +2,11 @@ import { ACCOUNTS } from "__test__/accounts";
 import * as moment from "moment";
 import { CollateralizerAdapterErrors } from "src/adapters/collateralized_simple_interest_loan_adapter";
 import { OrderAPIErrors } from "src/apis/order_api";
-import { DebtOrder } from "src/types";
+import { DebtOrderData } from "src/types";
 import {
     CollateralizedSimpleInterestTermsContractContract,
     DebtKernelContract,
-    DebtOrderWrapper,
+    DebtOrderDataWrapper,
     DummyTokenContract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
@@ -20,7 +20,7 @@ import { FillScenario } from "./";
 export const INVALID_ORDERS: FillScenario[] = [
     {
         description: "with principal < debtor fee",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -62,7 +62,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "with no underwriter but with underwriter fee",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -104,7 +104,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "with a relayer fee but no assigned relayer",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -146,7 +146,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "creditor + debtor fee does not equal underwriter + relayer fee",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -188,7 +188,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "order has already expired",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -230,7 +230,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "order has been cancelled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -269,20 +269,20 @@ export const INVALID_ORDERS: FillScenario[] = [
         successfullyFills: false,
         errorType: "DEBT_ORDER_CANCELLED",
         errorMessage: OrderAPIErrors.ORDER_CANCELLED(),
-        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
-            const debtOrderWrapper = new DebtOrderWrapper(debtOrder);
+        beforeBlock: async (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => {
+            const debtOrderDataWrapper = new DebtOrderDataWrapper(debtOrderData);
 
             await debtKernel.cancelDebtOrder.sendTransactionAsync(
-                debtOrderWrapper.getOrderAddresses(),
-                debtOrderWrapper.getOrderValues(),
-                debtOrderWrapper.getOrderBytes32(),
-                { from: debtOrder.debtor },
+                debtOrderDataWrapper.getOrderAddresses(),
+                debtOrderDataWrapper.getOrderValues(),
+                debtOrderDataWrapper.getOrderBytes32(),
+                { from: debtOrderData.debtor },
             );
         },
     },
     {
         description: "order has already been filled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -321,24 +321,24 @@ export const INVALID_ORDERS: FillScenario[] = [
         successfullyFills: false,
         errorType: "DEBT_ORDER_ALREADY_FILLED",
         errorMessage: OrderAPIErrors.DEBT_ORDER_ALREADY_FILLED(),
-        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
-            const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        beforeBlock: async (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => {
+            const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
             await debtKernel.fillDebtOrder.sendTransactionAsync(
-                debtOrderWrapped.getCreditor(),
-                debtOrderWrapped.getOrderAddresses(),
-                debtOrderWrapped.getOrderValues(),
-                debtOrderWrapped.getOrderBytes32(),
-                debtOrderWrapped.getSignaturesV(),
-                debtOrderWrapped.getSignaturesR(),
-                debtOrderWrapped.getSignaturesS(),
-                { from: debtOrder.creditor },
+                debtOrderDataWrapped.getCreditor(),
+                debtOrderDataWrapped.getOrderAddresses(),
+                debtOrderDataWrapped.getOrderValues(),
+                debtOrderDataWrapped.getOrderBytes32(),
+                debtOrderDataWrapped.getSignaturesV(),
+                debtOrderDataWrapped.getSignaturesR(),
+                debtOrderDataWrapped.getSignaturesS(),
+                { from: debtOrderData.creditor },
             );
         },
     },
     {
         description: "collateral allowance is insufficient",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -393,7 +393,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "collateral balance is insufficient",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -448,7 +448,7 @@ export const INVALID_ORDERS: FillScenario[] = [
     },
     {
         description: "collateralized but collateral amount is 0",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,

@@ -1,14 +1,14 @@
 // libraries
-import * as Web3 from "web3";
 import * as ABIDecoder from "abi-decoder";
 import * as moment from "moment";
 import { BigNumber } from "utils/bignumber";
+import * as Web3 from "web3";
 
 // utils
 import * as Units from "utils/units";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
-import { DebtOrder } from "src/types";
+import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "src/apis";
+import { DebtOrderData } from "src/types";
 import {
     DummyTokenContract,
     RepaymentRouterContract,
@@ -30,11 +30,11 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 import { GetExpectedValueRepaidScenario } from "../scenarios/index";
 
 export class GetExpectedValueRepaidRunner {
-    static testGetExpectedValueRepaidScenario(scenario: GetExpectedValueRepaidScenario) {
+    public static testGetExpectedValueRepaidScenario(scenario: GetExpectedValueRepaidScenario) {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder;
+        let debtOrderData: DebtOrderData;
         let issuanceHash: string;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;
@@ -72,7 +72,7 @@ export class GetExpectedValueRepaidRunner {
                 { from: CREDITOR },
             );
 
-            debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
+            debtOrderData = await adaptersApi.simpleInterestLoan.toDebtOrder({
                 debtor: DEBTOR,
                 creditor: CREDITOR,
                 principalAmount: scenario.principalAmount,
@@ -82,9 +82,9 @@ export class GetExpectedValueRepaidRunner {
                 termLength: new BigNumber(2),
             });
 
-            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
+            debtOrderData.debtorSignature = await signerApi.asDebtor(debtOrderData, false);
 
-            issuanceHash = await orderApi.getIssuanceHash(debtOrder);
+            issuanceHash = await orderApi.getIssuanceHash(debtOrderData);
 
             ABIDecoder.addABI(repaymentRouter.abi);
         });
@@ -100,7 +100,7 @@ export class GetExpectedValueRepaidRunner {
                 // in the parent scope's `beforeEach` block.  For more information,
                 // read about Jest's order of execution in scoped tests:
                 // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
-                await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+                await orderApi.fillAsync(debtOrderData, { from: CREDITOR });
             });
 
             test(`returns a value of ${scenario.expected}`, async () => {

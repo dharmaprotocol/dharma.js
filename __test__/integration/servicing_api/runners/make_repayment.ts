@@ -1,14 +1,14 @@
 // libraries
-import * as Web3 from "web3";
-import { BigNumber } from "utils/bignumber";
-import * as compact from "lodash.compact";
 import * as ABIDecoder from "abi-decoder";
+import * as compact from "lodash.compact";
+import { BigNumber } from "utils/bignumber";
+import * as Web3 from "web3";
 
 import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
-import { DebtOrder } from "src/types";
+import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "src/apis";
+import { DebtOrderData } from "src/types";
 import {
     DummyTokenContract,
     RepaymentRouterContract,
@@ -30,12 +30,12 @@ const servicingApi = new ServicingAPI(web3, contractsApi);
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
 export class MakeRepaymentRunner {
-    static testMakeRepaymentScenario(scenario: MakeRepaymentScenario) {
+    public static testMakeRepaymentScenario(scenario: MakeRepaymentScenario) {
         describe(scenario.description, () => {
             let principalToken: DummyTokenContract;
             let nonPrincipalToken: DummyTokenContract;
             let tokenTransferProxy: TokenTransferProxyContract;
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
             let issuanceHash: string;
 
             const CONTRACT_OWNER = ACCOUNTS[0].address;
@@ -48,11 +48,11 @@ export class MakeRepaymentRunner {
 
             let txHash: string;
             // From token address to amount.
-            let debtorBalanceBefore = {};
-            let beneficiaryBalanceBefore = {};
+            const debtorBalanceBefore = {};
+            const beneficiaryBalanceBefore = {};
 
             // From address to token.
-            let repaymentTokenMap = {};
+            const repaymentTokenMap = {};
             let repaymentToken: any;
             let repaymentTokenAddress: string;
 
@@ -98,7 +98,7 @@ export class MakeRepaymentRunner {
                     { from: CREDITOR },
                 );
 
-                debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
+                debtOrderData = await adaptersApi.simpleInterestLoan.toDebtOrder({
                     debtor: DEBTOR,
                     creditor: CREDITOR,
                     principalAmount: Units.ether(1),
@@ -108,16 +108,16 @@ export class MakeRepaymentRunner {
                     termLength: new BigNumber(2),
                 });
 
-                debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
+                debtOrderData.debtorSignature = await signerApi.asDebtor(debtOrderData, false);
 
-                issuanceHash = await orderApi.getIssuanceHash(debtOrder);
+                issuanceHash = await orderApi.getIssuanceHash(debtOrderData);
 
                 // NOTE: We fill debt orders in the `beforeEach` block to ensure
                 // that the blockchain is snapshotted *before* order filling
                 // in the parent scope's `beforeEach` block.  For more information,
                 // read about Jest's order of execution in scoped tests:
                 // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
-                await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+                await orderApi.fillAsync(debtOrderData, { from: CREDITOR });
 
                 ABIDecoder.addABI(repaymentRouter.abi);
 

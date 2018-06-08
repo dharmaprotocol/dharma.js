@@ -1,16 +1,16 @@
-import { OrderCancellationScenario } from "./";
-import { DebtKernelContract, RepaymentRouterContract, DummyTokenContract } from "src/wrappers";
-import * as Units from "utils/units";
 import { ACCOUNTS } from "__test__/accounts";
-import { NULL_BYTES32 } from "utils/constants";
 import * as moment from "moment";
-import { BigNumber } from "utils/bignumber";
 import { OrderAPIErrors } from "src/apis/order_api";
+import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "src/wrappers";
+import { BigNumber } from "utils/bignumber";
+import { NULL_BYTES32 } from "utils/constants";
+import * as Units from "utils/units";
+import { OrderCancellationScenario } from "./";
 
 export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     {
         description: "Canceller is debtor and order has not already been cancelled (Order #1)",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -43,7 +43,7 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Canceller is debtor and order has not already been cancelled (Order #2)",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -74,7 +74,7 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Canceller is debtor and order has not already been cancelled (Order #3)",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
