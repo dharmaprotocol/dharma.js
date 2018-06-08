@@ -64,4 +64,16 @@ export class DebtOrder {
         // TODO(kayvon): fix
         return this.dharma.order.fillAsync(this);
     }
+
+    public async isDelinquent(): Promise<boolean> {
+        // stub
+    }
+
+    public async isFullyRepaid(): Promise<boolean> {
+        // stub
+    }
+
+    public async hasCollateralBeenSeized(): Promise<boolean> {
+        // stub
+    }
 }
