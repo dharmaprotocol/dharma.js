@@ -16,10 +16,10 @@ import { TransactionUtils } from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
 
 // Types
-import { DebtOrder, ECDSASignature } from "../types";
+import { DebtOrderData, ECDSASignature } from "../types";
 
 // Wrappers
-import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
+import { DebtOrderDataWrapper } from "../wrappers/debt_order_wrapper";
 
 import { ContractsAPI } from "./";
 
@@ -49,7 +49,7 @@ export class SignerAPI {
      * the debtor's private key (for instance, if the account is not unlocked in Geth / Parity), it
      * throws.
      *
-     * @param debtOrder The debt order for which we desire a signature
+     * @param debtOrderData The debt order for which we desire a signature
      * @param shouldAddPersonalMessagePrefix Certain clients (i.e. Metamask) expect
      *              the `eth_sign` payload they ingest to have already prepended a given
      *              message with the "Ethereum Signed Message:" prefix.
@@ -59,18 +59,18 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asDebtor(
-        debtOrder: DebtOrder,
+        debtOrderData: DebtOrderData,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
-        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
+        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrderData);
 
-        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
 
-        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
+        const wrappedDebtOrderData = new DebtOrderDataWrapper(debtOrderData);
 
         return this.signPayloadWithAddress(
-            wrappedDebtOrder.getDebtorCommitmentHash(),
-            debtOrder.debtor,
+            wrappedDebtOrderData.getDebtorCommitmentHash(),
+            debtOrderData.debtor,
             shouldAddPersonalMessagePrefix,
         );
     }
@@ -81,7 +81,7 @@ export class SignerAPI {
      * the creditor's private key (for instance, if the account is not unlocked in Geth / Parity), it
      * throws.
      *
-     * @param debtOrder The debt order for which we desire a signature
+     * @param debtOrderData The debt order for which we desire a signature
      * @param shouldAddPersonalMessagePrefix Certain clients (i.e. Metamask) expect
      *              the `eth_sign` payload they ingest to have already prepended a given
      *              message with the "Ethereum Signed Message:" prefix.
@@ -91,18 +91,18 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asCreditor(
-        debtOrder: DebtOrder,
+        debtOrderData: DebtOrderData,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
-        this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrder);
+        this.assert.schema.debtOrderWithTermsDebtorAndCreditorSpecified("debtOrder", debtOrderData);
 
-        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
 
-        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
+        const wrappedDebtOrderData = new DebtOrderDataWrapper(debtOrderData);
 
         return this.signPayloadWithAddress(
-            wrappedDebtOrder.getCreditorCommitmentHash(),
-            debtOrder.creditor,
+            wrappedDebtOrderData.getCreditorCommitmentHash(),
+            debtOrderData.creditor,
             shouldAddPersonalMessagePrefix,
         );
     }
@@ -113,7 +113,7 @@ export class SignerAPI {
      * the underwriter's private key (for instance, if the account is not unlocked in Geth / Parity), it
      * throws.
      *
-     * @param debtOrder The debt order for which we desire a signature
+     * @param debtOrderData The debt order for which we desire a signature
      * @param shouldAddPersonalMessagePrefix Certain clients (i.e. Metamask) expect
      *              the `eth_sign` payload they ingest to have already prepended a given
      *              message with the "Ethereum Signed Message:" prefix.
@@ -123,18 +123,18 @@ export class SignerAPI {
      * @return The ECDSA signature of the debt order's debtor commitment hash
      */
     public async asUnderwriter(
-        debtOrder: DebtOrder,
+        debtOrderData: DebtOrderData,
         shouldAddPersonalMessagePrefix: boolean,
     ): Promise<ECDSASignature> {
-        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrder);
+        this.assert.schema.debtOrderWithTermsAndDebtorSpecified("debtOrder", debtOrderData);
 
-        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
+        debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
 
-        const wrappedDebtOrder = new DebtOrderWrapper(debtOrder);
+        const wrappedDebtOrderData = new DebtOrderDataWrapper(debtOrderData);
 
         return this.signPayloadWithAddress(
-            wrappedDebtOrder.getUnderwriterCommitmentHash(),
-            debtOrder.underwriter,
+            wrappedDebtOrderData.getUnderwriterCommitmentHash(),
+            debtOrderData.underwriter,
             shouldAddPersonalMessagePrefix,
         );
     }

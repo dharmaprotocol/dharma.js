@@ -9,7 +9,7 @@ import { NULL_ADDRESS } from "../../utils/constants";
 import { TransactionUtils } from "../../utils/transaction_utils";
 
 // Types
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule } from "../types";
+import { DebtOrderData, DebtRegistryEntry, RepaymentSchedule } from "../types";
 import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 import { ContractsAPI } from "../apis";
@@ -18,7 +18,7 @@ import { Assertions } from "../invariants";
 
 import { Adapter } from "./adapter";
 
-export interface SimpleInterestLoanOrder extends DebtOrder {
+export interface SimpleInterestLoanOrder extends DebtOrderData {
     // Required Debt Order Parameters
     principalAmount: BigNumber;
     principalTokenSymbol: string;
@@ -98,7 +98,9 @@ export class SimpleInterestLoanAdapter implements Adapter {
      * @param  simpleInterestLoanOrder a simple interest loan order instance.
      * @return the generated Dharma debt order.
      */
-    public async toDebtOrder(simpleInterestLoanOrder: SimpleInterestLoanOrder): Promise<DebtOrder> {
+    public async toDebtOrderData(
+        simpleInterestLoanOrder: SimpleInterestLoanOrder,
+    ): Promise<DebtOrderData> {
         this.assert.schema.simpleInterestLoanOrder(
             "simpleInterestLoanOrder",
             simpleInterestLoanOrder,
@@ -119,15 +121,15 @@ export class SimpleInterestLoanAdapter implements Adapter {
 
         const simpleInterestTermsContract = await this.contracts.loadSimpleInterestTermsContract();
 
-        let debtOrder: DebtOrder = omit(simpleInterestLoanOrder, [
+        let debtOrderData: DebtOrderData = omit(simpleInterestLoanOrder, [
             "principalTokenSymbol",
             "interestRate",
             "amortizationUnit",
             "termLength",
         ]);
 
-        debtOrder = {
-            ...debtOrder,
+        debtOrderData = {
+            ...debtOrderData,
             principalToken: principalToken.address,
             termsContract: simpleInterestTermsContract.address,
             termsContractParameters: this.termsContractInterface.packParameters({
@@ -139,18 +141,18 @@ export class SimpleInterestLoanAdapter implements Adapter {
             }),
         };
 
-        return TransactionUtils.applyNetworkDefaults(debtOrder, this.contracts);
+        return TransactionUtils.applyNetworkDefaults(debtOrderData, this.contracts);
     }
 
     /**
      * Asynchronously generates a simple interest loan order given a Dharma
      * debt order instance.
      *
-     * @param  debtOrder a Dharma debt order instance.
+     * @param  debtOrderData a Dharma debt order instance.
      * @return           the generated simple interest loan order.
      */
-    public async fromDebtOrder(debtOrder: DebtOrder): Promise<SimpleInterestLoanOrder> {
-        this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
+    public async fromDebtOrderData(debtOrderData: DebtOrderData): Promise<SimpleInterestLoanOrder> {
+        this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrderData);
 
         const {
             principalTokenIndex,
@@ -158,14 +160,14 @@ export class SimpleInterestLoanAdapter implements Adapter {
             interestRate,
             termLength,
             amortizationUnit,
-        } = this.unpackParameters(debtOrder.termsContractParameters);
+        } = this.unpackParameters(debtOrderData.termsContractParameters);
 
         const principalTokenSymbol = await this.contracts.getTokenSymbolByIndexAsync(
             principalTokenIndex,
         );
 
         return {
-            ...debtOrder,
+            ...debtOrderData,
             principalAmount,
             principalTokenSymbol,
             interestRate,

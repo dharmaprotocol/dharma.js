@@ -2,17 +2,17 @@
 import { BigNumber } from "../../utils/bignumber";
 
 // types
-import { ECDSASignature, DebtOrder, IssuanceCommitment } from "../types";
+import { DebtOrderData, ECDSASignature, IssuanceCommitment } from "../types";
 
 // utils
-import { Web3Utils } from "../../utils/web3_utils";
 import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+import { Web3Utils } from "../../utils/web3_utils";
 
-export class DebtOrderWrapper {
-    constructor(private debtOrder: DebtOrder) {}
+export class DebtOrderDataWrapper {
+    constructor(private debtOrderData: DebtOrderData) {}
 
     public getCreditor(): string {
-        return this.debtOrder.creditor;
+        return this.debtOrderData.creditor;
     }
 
     /**
@@ -23,13 +23,13 @@ export class DebtOrderWrapper {
      */
     public getIssuanceCommitment(): IssuanceCommitment {
         return {
-            issuanceVersion: this.debtOrder.issuanceVersion,
-            debtor: this.debtOrder.debtor,
-            underwriter: this.debtOrder.underwriter,
-            underwriterRiskRating: this.debtOrder.underwriterRiskRating,
-            termsContract: this.debtOrder.termsContract,
-            termsContractParameters: this.debtOrder.termsContractParameters,
-            salt: this.debtOrder.salt,
+            issuanceVersion: this.debtOrderData.issuanceVersion,
+            debtor: this.debtOrderData.debtor,
+            underwriter: this.debtOrderData.underwriter,
+            underwriterRiskRating: this.debtOrderData.underwriterRiskRating,
+            termsContract: this.debtOrderData.termsContract,
+            termsContractParameters: this.debtOrderData.termsContractParameters,
+            salt: this.debtOrderData.salt,
         };
     }
 
@@ -61,16 +61,16 @@ export class DebtOrderWrapper {
      */
     public getHash(): string {
         return Web3Utils.soliditySHA3(
-            this.debtOrder.kernelVersion,
+            this.debtOrderData.kernelVersion,
             this.getIssuanceCommitmentHash(),
-            this.debtOrder.underwriterFee,
-            this.debtOrder.principalAmount,
-            this.debtOrder.principalToken,
-            this.debtOrder.debtorFee,
-            this.debtOrder.creditorFee,
-            this.debtOrder.relayer,
-            this.debtOrder.relayerFee,
-            this.debtOrder.expirationTimestampInSec,
+            this.debtOrderData.underwriterFee,
+            this.debtOrderData.principalAmount,
+            this.debtOrderData.principalToken,
+            this.debtOrderData.debtorFee,
+            this.debtOrderData.creditorFee,
+            this.debtOrderData.relayer,
+            this.debtOrderData.relayerFee,
+            this.debtOrderData.expirationTimestampInSec,
         );
     }
 
@@ -118,41 +118,41 @@ export class DebtOrderWrapper {
      */
     public getUnderwriterCommitmentHash(): string {
         return Web3Utils.soliditySHA3(
-            this.debtOrder.kernelVersion,
+            this.debtOrderData.kernelVersion,
             this.getIssuanceCommitmentHash(),
-            this.debtOrder.underwriterFee,
-            this.debtOrder.principalAmount,
-            this.debtOrder.principalToken,
-            this.debtOrder.expirationTimestampInSec,
+            this.debtOrderData.underwriterFee,
+            this.debtOrderData.principalAmount,
+            this.debtOrderData.principalToken,
+            this.debtOrderData.expirationTimestampInSec,
         );
     }
 
     public getOrderAddresses(): string[] {
         return [
-            this.debtOrder.issuanceVersion,
-            this.debtOrder.debtor,
-            this.debtOrder.underwriter,
-            this.debtOrder.termsContract,
-            this.debtOrder.principalToken,
-            this.debtOrder.relayer,
+            this.debtOrderData.issuanceVersion,
+            this.debtOrderData.debtor,
+            this.debtOrderData.underwriter,
+            this.debtOrderData.termsContract,
+            this.debtOrderData.principalToken,
+            this.debtOrderData.relayer,
         ];
     }
 
     public getOrderValues(): BigNumber[] {
         return [
-            this.debtOrder.underwriterRiskRating,
-            this.debtOrder.salt,
-            this.debtOrder.principalAmount,
-            this.debtOrder.underwriterFee,
-            this.debtOrder.relayerFee,
-            this.debtOrder.creditorFee,
-            this.debtOrder.debtorFee,
-            this.debtOrder.expirationTimestampInSec,
+            this.debtOrderData.underwriterRiskRating,
+            this.debtOrderData.salt,
+            this.debtOrderData.principalAmount,
+            this.debtOrderData.underwriterFee,
+            this.debtOrderData.relayerFee,
+            this.debtOrderData.creditorFee,
+            this.debtOrderData.debtorFee,
+            this.debtOrderData.expirationTimestampInSec,
         ];
     }
 
     public getOrderBytes32(): string[] {
-        return [this.debtOrder.termsContractParameters];
+        return [this.debtOrderData.termsContractParameters];
     }
 
     public getSignaturesR(): string[] {
@@ -177,12 +177,12 @@ export class DebtOrderWrapper {
      * Getters
      */
 
-    public getDebtOrder(): DebtOrder {
-        return this.debtOrder;
+    public getDebtOrderData(): DebtOrderData {
+        return this.debtOrderData;
     }
 
     private getSignatures(): ECDSASignature[] {
-        let { debtorSignature, creditorSignature, underwriterSignature } = this.debtOrder;
+        let { debtorSignature, creditorSignature, underwriterSignature } = this.debtOrderData;
 
         debtorSignature = debtorSignature || NULL_ECDSA_SIGNATURE;
         creditorSignature = creditorSignature || NULL_ECDSA_SIGNATURE;

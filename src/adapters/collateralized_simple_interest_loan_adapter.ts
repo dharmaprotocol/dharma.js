@@ -17,7 +17,7 @@ import { ContractsAPI } from "../apis";
 import { Assertions } from "../invariants";
 
 // Types
-import { DebtOrder, DebtRegistryEntry, RepaymentSchedule, TxData } from "../types";
+import { DebtOrderData, DebtRegistryEntry, RepaymentSchedule, TxData } from "../types";
 import { CollateralizedLoanTerms } from "./collateralized_simple_interest_loan_terms";
 import {
     SimpleInterestLoanOrder,
@@ -114,9 +114,9 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
     }
 
-    public async toDebtOrder(
+    public async toDebtOrderData(
         collateralizedSimpleInterestLoanOrder: CollateralizedSimpleInterestLoanOrder,
-    ): Promise<DebtOrder> {
+    ): Promise<DebtOrderData> {
         this.assert.schema.collateralizedSimpleInterestLoanOrder(
             "collateralizedSimpleInterestLoanOrder",
             collateralizedSimpleInterestLoanOrder,
@@ -147,7 +147,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
         const collateralizedContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
 
-        let debtOrder: DebtOrder = omit(collateralizedSimpleInterestLoanOrder, [
+        let debtOrderData: DebtOrderData = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed
             // into the `termsContractParameters`.
             "principalTokenSymbol",
@@ -178,14 +178,14 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
             },
         );
 
-        debtOrder = {
-            ...debtOrder,
+        debtOrderData = {
+            ...debtOrderData,
             principalToken: principalToken.address,
             termsContract: collateralizedContract.address,
             termsContractParameters: packedParams,
         };
 
-        return TransactionUtils.applyNetworkDefaults(debtOrder, this.contractsAPI);
+        return TransactionUtils.applyNetworkDefaults(debtOrderData, this.contractsAPI);
     }
 
     /**
@@ -208,16 +208,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * which includes the DebtOrder information as well as as the contract terms (see documentation
      * on the `CollateralizedSimpleInterestLoanOrder` interface for more information.)
      *
-     * @param {DebtOrder} debtOrder
+     * @param {DebtOrderData} debtOrderData
      * @returns {Promise<CollateralizedSimpleInterestLoanOrder>}
      */
-    public async fromDebtOrder(
-        debtOrder: DebtOrder,
+    public async fromDebtOrderData(
+        debtOrderData: DebtOrderData,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
-        this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrder);
+        this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrderData);
 
         const { principalTokenIndex, collateralTokenIndex, ...params } = this.unpackParameters(
-            debtOrder.termsContractParameters,
+            debtOrderData.termsContractParameters,
         );
 
         const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
@@ -229,10 +229,13 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         );
 
         // Assert that the principal token corresponds to the symbol we've unpacked.
-        await this.assertTokenCorrespondsToSymbol(debtOrder.principalToken, principalTokenSymbol);
+        await this.assertTokenCorrespondsToSymbol(
+            debtOrderData.principalToken,
+            principalTokenSymbol,
+        );
 
         return {
-            ...debtOrder,
+            ...debtOrderData,
             principalTokenSymbol,
             collateralTokenSymbol,
             ...params,
