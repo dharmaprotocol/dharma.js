@@ -8,7 +8,11 @@ export class DebtOrder {
     private creditorSignature?: ECDSASignature;
     private underwriterSignature?: ECDSASignature;
 
-    constructor(private dharma: Dharma) {}
+    constructor(
+        private dharma: Dharma,
+        private principal: TokenAmount,
+        private collateral: TokenAmount,
+    ) {}
 
     public isSignedByUnderwriter(): boolean {
         return !_.isEmpty(this.underwriterSignature);
