@@ -233,13 +233,10 @@ export class OrderAPI {
      * @param {TxData} txOptions
      * @returns {Promise<boolean>}
      */
-    public async isCancelled(
-        debtOrder: DebtOrder,
-        txOptions?: TxData,
-    ): Promise<boolean> {
+    public async isCancelled(debtOrder: DebtOrderData, txOptions?: TxData): Promise<boolean> {
         const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        const debtOrderWrapped = new DebtOrderDataWrapper(debtOrder);
 
         const commitmentHash = debtOrderWrapped.getDebtorCommitmentHash();
 

@@ -266,17 +266,17 @@ export class OrderScenarioRunner {
                 });
 
                 test("isCancelled returns false before cancel", async () => {
-                    const isCancelled = await this.orderApi.isCancelled(debtOrder);
+                    const isCancelled = await this.orderApi.isCancelled(debtOrderData);
 
                     expect(isCancelled).toEqual(false);
                 });
 
                 test("isCancelled returns true after cancel", async () => {
-                    await this.orderApi.cancelOrderAsync(debtOrder, {
+                    await this.orderApi.cancelOrderAsync(debtOrderData, {
                         from: scenario.canceller,
                     });
 
-                    const isCancelled = await this.orderApi.isCancelled(debtOrder);
+                    const isCancelled = await this.orderApi.isCancelled(debtOrderData);
 
                     expect(isCancelled).toEqual(true);
                 });

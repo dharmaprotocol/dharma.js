@@ -13,7 +13,7 @@ import { SimpleInterestTermsContractContract } from "./contract_wrappers/simple_
 import { TermsContract } from "./contract_wrappers/terms_contract_wrapper";
 import { TokenRegistryContract } from "./contract_wrappers/token_registry_wrapper";
 import { TokenTransferProxyContract } from "./contract_wrappers/token_transfer_proxy_wrapper";
-import { DebtOrderDataWrapper } from "./debt_order_wrapper";
+import { DebtOrderDataWrapper } from "./debt_order_data_wrapper";
 
 export type ContractWrapper =
     | DebtKernelContract

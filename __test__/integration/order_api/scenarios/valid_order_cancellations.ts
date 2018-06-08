@@ -13,7 +13,11 @@ import { ACCOUNTS } from "../../../accounts";
 import { OrderCancellationScenario } from "./";
 
 // Wrappers
-import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "../../../../src/wrappers";
+import {
+    DebtKernelContract,
+    DummyTokenContract,
+    RepaymentRouterContract,
+} from "../../../../src/wrappers";
 
 const defaultOrderAttributes = {
     principalAmount: Units.ether(1),

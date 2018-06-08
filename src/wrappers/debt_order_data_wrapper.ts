@@ -11,7 +11,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 /**
  * Decorate a given debt order with various higher level functions.
  */
-export class DebtOrderWrapper {
+export class DebtOrderDataWrapper {
     constructor(private debtOrderData: DebtOrderData) {}
 
     /**

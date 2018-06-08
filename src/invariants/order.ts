@@ -322,8 +322,6 @@ export class OrderAssertions {
         debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
         const debtOrderWrapped = new DebtOrderDataWrapper(debtOrderData);
 
-        return debtKernel.debtOrderCancelled.callAsync(
-            debtOrderWrapped.getDebtorCommitmentHash(),
-        );
+        return debtKernel.debtOrderCancelled.callAsync(debtOrderWrapped.getDebtorCommitmentHash());
     }
 }
