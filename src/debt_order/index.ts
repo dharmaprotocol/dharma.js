@@ -26,6 +26,24 @@ export class DebtOrder {
         if (this.isSignedByCreditor()) {
             return;
         }
+        // TODO(kayvon): pass debt order data interface to underyling api methods.
         this.creditorSignature = await this.dharma.sign.asCreditor(this);
     }
+
+    public async signAsUnderwriter() {
+        if (this.isSignedByUnderwriter()) {
+            return;
+        }
+        // TODO(kayvon): pass debt order data interface to underyling api methods.
+        this.creditorSignature = await this.dharma.sign.asUnderwriter(this);
+    }
+
+    public async signAsDebtor() {
+        if (this.isSignedByDebtor()) {
+            return;
+        }
+        // TODO(kayvon): pass debt order data interface to underyling api methods.
+        this.creditorSignature = await this.dharma.sign.asDebtor(this);
+    }
+
 }
