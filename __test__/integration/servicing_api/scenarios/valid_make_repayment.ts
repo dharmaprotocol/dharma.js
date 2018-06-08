@@ -1,7 +1,7 @@
 // utils
 import * as Units from "utils/units";
 
-import { DebtOrder } from "src/types";
+import { DebtOrderData } from "src/types";
 import { MakeRepaymentScenario } from "./";
 
 const defaultArgs = {

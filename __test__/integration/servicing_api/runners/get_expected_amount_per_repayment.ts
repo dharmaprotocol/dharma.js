@@ -6,7 +6,7 @@ import * as Web3 from "web3";
 import * as Units from "../../../../utils/units";
 
 import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "../../../../src/apis";
-import { DebtOrder } from "../../../../src/types";
+import { DebtOrderData } from "../../../../src/types";
 import {
     DummyTokenContract,
     RepaymentRouterContract,
@@ -34,7 +34,7 @@ export class GetExpectedAmountPerRepayment {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder;
+        let debtOrderData: DebtOrderData;
         let issuanceHash: string;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;
@@ -72,7 +72,7 @@ export class GetExpectedAmountPerRepayment {
                 { from: CREDITOR },
             );
 
-            debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
+            debtOrderData = await adaptersApi.simpleInterestLoan.toDebtOrder({
                 debtor: DEBTOR,
                 creditor: CREDITOR,
                 principalAmount: scenario.principalAmount,
@@ -82,9 +82,9 @@ export class GetExpectedAmountPerRepayment {
                 termLength: scenario.termLength,
             });
 
-            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
+            debtOrderData.debtorSignature = await signerApi.asDebtor(debtOrderData, false);
 
-            issuanceHash = await orderApi.getIssuanceHash(debtOrder);
+            issuanceHash = await orderApi.getIssuanceHash(debtOrderData);
 
             ABIDecoder.addABI(repaymentRouter.abi);
         });
@@ -101,7 +101,7 @@ export class GetExpectedAmountPerRepayment {
                 // read about Jest's order of execution in scoped tests:
                 // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
                 if (scenario.agreementExists) {
-                    await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+                    await orderApi.fillAsync(debtOrderData, { from: CREDITOR });
                 }
             });
 

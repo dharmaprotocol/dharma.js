@@ -1,15 +1,15 @@
-import * as Units from "utils/units";
+import { ACCOUNTS } from "__test__/accounts";
 import * as moment from "moment";
 import { BigNumber } from "utils/bignumber";
-import { ACCOUNTS } from "__test__/accounts";
-import { NULL_BYTES32, NULL_ADDRESS } from "utils/constants";
+import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
+import * as Units from "utils/units";
 
-import { DebtKernelError, DebtOrder } from "src/types";
+import { DebtKernelError, DebtOrderData } from "src/types";
 import {
-    DebtOrderWrapper,
     DebtKernelContract,
-    RepaymentRouterContract,
+    DebtOrderDataWrapper,
     DummyTokenContract,
+    RepaymentRouterContract,
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
 
@@ -18,7 +18,7 @@ import { DebtKernelErrorScenario } from "./error_scenarios";
 export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     {
         description: "where principal < debtor fee",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -57,7 +57,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "with no underwriter but with underwriter fee",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -96,7 +96,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "with a relayer fee but no assigned relayer",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -135,7 +135,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "creditor + debtor fee does not equal underwriter + relayer fee",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -174,7 +174,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "order has already expired",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -213,7 +213,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "non-consensual order",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -252,7 +252,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "insufficient balance",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -292,7 +292,7 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
     },
     {
         description: "order has been cancelled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -328,20 +328,20 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             creditor: false,
             underwriter: true,
         },
-        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
-            const debtOrderWrapper = new DebtOrderWrapper(debtOrder);
+        beforeBlock: async (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => {
+            const debtOrderDataWrapper = new DebtOrderDataWrapper(debtOrderData);
 
             await debtKernel.cancelDebtOrder.sendTransactionAsync(
-                debtOrderWrapper.getOrderAddresses(),
-                debtOrderWrapper.getOrderValues(),
-                debtOrderWrapper.getOrderBytes32(),
-                { from: debtOrder.debtor },
+                debtOrderDataWrapper.getOrderAddresses(),
+                debtOrderDataWrapper.getOrderValues(),
+                debtOrderDataWrapper.getOrderBytes32(),
+                { from: debtOrderData.debtor },
             );
         },
     },
     {
         description: "order has already been filled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -377,24 +377,24 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             creditor: false,
             underwriter: true,
         },
-        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
-            const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+        beforeBlock: async (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => {
+            const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
-            return await debtKernel.fillDebtOrder.sendTransactionAsync(
-                debtOrderWrapped.getCreditor(),
-                debtOrderWrapped.getOrderAddresses(),
-                debtOrderWrapped.getOrderValues(),
-                debtOrderWrapped.getOrderBytes32(),
-                debtOrderWrapped.getSignaturesV(),
-                debtOrderWrapped.getSignaturesR(),
-                debtOrderWrapped.getSignaturesS(),
-                { from: debtOrderWrapped.getCreditor() },
+            return debtKernel.fillDebtOrder.sendTransactionAsync(
+                debtOrderDataWrapped.getCreditor(),
+                debtOrderDataWrapped.getOrderAddresses(),
+                debtOrderDataWrapped.getOrderValues(),
+                debtOrderDataWrapped.getOrderBytes32(),
+                debtOrderDataWrapped.getSignaturesV(),
+                debtOrderDataWrapped.getSignaturesR(),
+                debtOrderDataWrapped.getSignaturesS(),
+                { from: debtOrderDataWrapped.getCreditor() },
             );
         },
     },
     {
         description: "issuance has been canceled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -430,16 +430,16 @@ export const INVALID_ORDERS: DebtKernelErrorScenario[] = [
             creditor: false,
             underwriter: true,
         },
-        beforeBlock: async (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => {
-            return await debtKernel.cancelIssuance.sendTransactionAsync(
-                debtOrder.issuanceVersion,
-                debtOrder.debtor,
-                debtOrder.termsContract,
-                debtOrder.termsContractParameters,
-                debtOrder.underwriter,
-                debtOrder.underwriterRiskRating,
-                debtOrder.salt,
-                { from: debtOrder.debtor },
+        beforeBlock: async (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => {
+            return debtKernel.cancelIssuance.sendTransactionAsync(
+                debtOrderData.issuanceVersion,
+                debtOrderData.debtor,
+                debtOrderData.termsContract,
+                debtOrderData.termsContractParameters,
+                debtOrderData.underwriter,
+                debtOrderData.underwriterRiskRating,
+                debtOrderData.salt,
+                { from: debtOrderData.debtor },
             );
         },
     },

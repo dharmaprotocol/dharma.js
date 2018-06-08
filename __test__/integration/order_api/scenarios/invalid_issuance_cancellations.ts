@@ -1,16 +1,16 @@
-import { IssuanceCancellationScenario } from "./";
-import { DebtKernelContract, RepaymentRouterContract, DummyTokenContract } from "src/wrappers";
-import * as Units from "utils/units";
 import { ACCOUNTS } from "__test__/accounts";
-import { NULL_BYTES32 } from "utils/constants";
 import * as moment from "moment";
-import { BigNumber } from "utils/bignumber";
 import { OrderAPIErrors } from "src/apis/order_api";
+import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "src/wrappers";
+import { BigNumber } from "utils/bignumber";
+import { NULL_BYTES32 } from "utils/constants";
+import * as Units from "utils/units";
+import { IssuanceCancellationScenario } from "./";
 
 export const INVALID_ISSUANCE_CANCELLATIONS: IssuanceCancellationScenario[] = [
     {
         description: "Canceller is creditor",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -45,7 +45,7 @@ export const INVALID_ISSUANCE_CANCELLATIONS: IssuanceCancellationScenario[] = [
     },
     {
         description: "Canceller is relayer",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -83,7 +83,7 @@ export const INVALID_ISSUANCE_CANCELLATIONS: IssuanceCancellationScenario[] = [
     },
     {
         description: "Debt issuance commitment has already been cancelled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
