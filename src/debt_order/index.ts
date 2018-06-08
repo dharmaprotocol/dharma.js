@@ -53,7 +53,8 @@ export class DebtOrder {
     }
 
     public async isCanceled(): Promise<boolean> {
-        // TODO(kayvon): use new method from order api.
+        // TODO(kayvon): pass debt order data interface to underyling api methods.
+        return this.dharma.order.isCancelled(this);
     }
 
     public async cancel(): Promise<string> {
