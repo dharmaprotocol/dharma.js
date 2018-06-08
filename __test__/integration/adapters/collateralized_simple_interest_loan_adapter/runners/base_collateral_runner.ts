@@ -4,32 +4,32 @@ import * as moment from "moment";
 import * as Web3 from "web3";
 
 // Utils
-import * as Units from "utils/units";
-import { Web3Utils } from "utils/web3_utils";
+import * as Units from "../../../../../utils/units";
+import { Web3Utils } from "../../../../../utils/web3_utils";
 
 // Scenarios
 import { ReturnCollateralScenario, SeizeCollateralScenario } from "../scenarios";
 
 // Adapters
-import { CollateralizedSimpleInterestLoanAdapter } from "src/adapters/collateralized_simple_interest_loan_adapter";
+import { CollateralizedSimpleInterestLoanAdapter } from "../../../../../src/adapters/collateralized_simple_interest_loan_adapter";
 
 // Wrappers
-import { CollateralizedSimpleInterestTermsContractContract } from "src/wrappers/contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
-import { DebtKernelContract } from "src/wrappers/contract_wrappers/debt_kernel_wrapper";
-import { DummyTokenContract } from "src/wrappers/contract_wrappers/dummy_token_wrapper";
-import { RepaymentRouterContract } from "src/wrappers/contract_wrappers/repayment_router_wrapper";
-import { TokenTransferProxyContract } from "src/wrappers/contract_wrappers/token_transfer_proxy_wrapper";
+import { CollateralizedSimpleInterestTermsContractContract } from "../../../../../src/wrappers/contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
+import { DebtKernelContract } from "../../../../../src/wrappers/contract_wrappers/debt_kernel_wrapper";
+import { DummyTokenContract } from "../../../../../src/wrappers/contract_wrappers/dummy_token_wrapper";
+import { RepaymentRouterContract } from "../../../../../src/wrappers/contract_wrappers/repayment_router_wrapper";
+import { TokenTransferProxyContract } from "../../../../../src/wrappers/contract_wrappers/token_transfer_proxy_wrapper";
 
 // APIs
-import { OrderAPI } from "src/apis/order_api";
-import { ServicingAPI } from "src/apis/servicing_api";
-import { SignerAPI } from "src/apis/signer_api";
+import { OrderAPI } from "../../../../../src/apis/order_api";
+import { ServicingAPI } from "../../../../../src/apis/servicing_api";
+import { SignerAPI } from "../../../../../src/apis/signer_api";
 
 // Types
-import { DebtOrderData } from "src/types/debt_order";
+import { DebtOrderData } from "../../../../../src/types/debt_order";
 
 // Accounts
-import { ACCOUNTS } from "__test__/accounts";
+import { ACCOUNTS } from "../../../../../__test__/accounts";
 
 import { ContractsAPI } from "../../../../../src/apis/contracts_api";
 import { TokenAPI } from "../../../../../src/apis/token_api";

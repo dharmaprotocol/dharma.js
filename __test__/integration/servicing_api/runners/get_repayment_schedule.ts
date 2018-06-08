@@ -1,18 +1,18 @@
 // libraries
 import * as ABIDecoder from "abi-decoder";
-import { BigNumber } from "utils/bignumber";
 import * as Web3 from "web3";
+import { BigNumber } from "../../../../utils/bignumber";
 
 // utils
-import * as Units from "utils/units";
+import * as Units from "../../../../utils/units";
 
-import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "src/apis";
-import { DebtOrderData } from "src/types";
+import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "../../../../src/apis";
+import { DebtOrderData } from "../../../../src/types";
 import {
     DummyTokenContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
-} from "src/wrappers";
+} from "../../../../src/wrappers";
 
 import { ACCOUNTS } from "../../../accounts";
 
@@ -48,7 +48,7 @@ export class GetRepaymentScheduleRunner {
             const principalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
                 "REP",
             );
-            const repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
+            repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
 
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
             principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);

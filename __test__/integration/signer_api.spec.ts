@@ -1,12 +1,12 @@
 import * as moment from "moment";
-import { ContractsAPI } from "src/apis";
-import { SignerAPI, SignerAPIErrors } from "src/apis/signer_api";
-import { BigNumber } from "utils/bignumber";
-import { SignatureUtils } from "utils/signature_utils";
-import * as Units from "utils/units";
 import * as Web3 from "web3";
+import { ContractsAPI } from "../../src/apis";
+import { SignerAPI, SignerAPIErrors } from "../../src/apis/signer_api";
+import { BigNumber } from "../../utils/bignumber";
+import { SignatureUtils } from "../../utils/signature_utils";
+import * as Units from "../../utils/units";
 
-import { Web3Utils } from "utils/web3_utils";
+import { Web3Utils } from "../../utils/web3_utils";
 
 import { ACCOUNTS, NULL_ADDRESS } from "../accounts";
 
