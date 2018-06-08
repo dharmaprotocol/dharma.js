@@ -17,7 +17,7 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 // we can test making repayments and returning collateral.
                 await this.generateAndFillOrder(scenario);
 
-                agreementId = await this.orderApi.getIssuanceHash(this.debtOrder);
+                agreementId = await this.orderApi.getIssuanceHash(this.debtOrderData);
 
                 // The time, in seconds since unix epoch, at which the term will end.
                 const termEnd = await this.termsContract.getTermEndTimestamp.callAsync(agreementId);
@@ -53,7 +53,7 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
 
                 it("transfers collateral back to the debtor", async () => {
                     const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrder.debtor,
+                        this.debtOrderData.debtor,
                     );
 
                     expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
@@ -68,7 +68,7 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 if (!scenario.collateralWithdrawn) {
                     it("does not transfer collateral back to the debtor", async () => {
                         const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                            this.debtOrder.debtor,
+                            this.debtOrderData.debtor,
                         );
 
                         expect(collateralAmount.toNumber()).toEqual(0);

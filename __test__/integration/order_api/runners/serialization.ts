@@ -1,4 +1,4 @@
-import { DebtOrder } from "../../../../src/types";
+import { DebtOrderData } from "../../../../src/types";
 
 import { OrderAPI } from "../../../../src/apis";
 import { DeserializeOrderScenario, SerializeOrderScenario } from "../scenarios";
@@ -15,9 +15,9 @@ export class SerializationScenarioRunner {
         describe("when given a JSON string of a debt order", () => {
             test("it returns a valid DebtOrder", async () => {
                 const input = scenario.input;
-                const debtOrder = scenario.output;
+                const debtOrderData = scenario.output;
 
-                expect(this.orderApi.deserialize(input)).toEqual(debtOrder);
+                expect(this.orderApi.deserialize(input)).toEqual(debtOrderData);
             });
         });
     }
@@ -25,10 +25,10 @@ export class SerializationScenarioRunner {
     public testSerializeScenario(scenario: SerializeOrderScenario) {
         describe("when given a debt order", () => {
             test("it returns the debt order as a JSON string", async () => {
-                const debtOrder = scenario.input;
+                const debtOrderData = scenario.input;
                 const expected = scenario.output;
 
-                expect(this.orderApi.serialize(debtOrder)).toEqual(expected);
+                expect(this.orderApi.serialize(debtOrderData)).toEqual(expected);
             });
         });
     }

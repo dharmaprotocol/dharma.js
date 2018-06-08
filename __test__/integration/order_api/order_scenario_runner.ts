@@ -8,7 +8,7 @@ import { BigNumber } from "../../../utils/bignumber";
 // Wrappers
 import {
     DebtKernelContract,
-    DebtOrderWrapper,
+    DebtOrderDataWrapper,
     DummyTokenContract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
@@ -30,7 +30,7 @@ import {
 
 // Types
 import { Adapter } from "../../../src/adapters";
-import { DebtOrder } from "../../../src/types";
+import { DebtOrderData } from "../../../src/types";
 
 // Utils
 import { CollateralizedSimpleInterestLoanOrder } from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
@@ -75,7 +75,7 @@ export class OrderScenarioRunner {
 
     public testCheckOrderFilledScenario(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -86,19 +86,19 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = await this.setUpFillScenario(scenario);
+                debtOrderData = await this.setUpFillScenario(scenario);
             });
 
             test("returns false if order has not been filled", async () => {
-                expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(false);
+                expect(await this.orderApi.checkOrderFilledAsync(debtOrderData)).toEqual(false);
             });
 
             test("returns true if order has been filled", async () => {
-                await this.orderApi.fillAsync(debtOrder, {
+                await this.orderApi.fillAsync(debtOrderData, {
                     from: scenario.filler,
                 });
 
-                expect(await this.orderApi.checkOrderFilledAsync(debtOrder)).toEqual(true);
+                expect(await this.orderApi.checkOrderFilledAsync(debtOrderData)).toEqual(true);
             });
 
             describe("when validating the loan order", () => {
@@ -110,7 +110,7 @@ export class OrderScenarioRunner {
 
                 beforeAll(async () => {
                     adapter = await this.adaptersApi.getAdapterByTermsContractAddress(
-                        debtOrder.termsContract,
+                        debtOrderData.termsContract,
                     );
 
                     originalValidate = adapter.validateAsync;
@@ -125,7 +125,7 @@ export class OrderScenarioRunner {
                 });
 
                 test("it calls validate on the appropriate adapter once", async () => {
-                    await this.orderApi.fillAsync(debtOrder, {
+                    await this.orderApi.fillAsync(debtOrderData, {
                         from: scenario.filler,
                     });
 
@@ -133,9 +133,9 @@ export class OrderScenarioRunner {
                 });
 
                 test("it calls validate with a loan order adapted from the debt order", async () => {
-                    const loanOrder = await adapter.fromDebtOrder(debtOrder);
+                    const loanOrder = await adapter.fromDebtOrder(debtOrderData);
 
-                    await this.orderApi.fillAsync(debtOrder, {
+                    await this.orderApi.fillAsync(debtOrderData, {
                         from: scenario.filler,
                     });
 
@@ -148,7 +148,7 @@ export class OrderScenarioRunner {
 
     public testAssertFillable(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -159,13 +159,13 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = await this.setUpFillScenario(scenario);
+                debtOrderData = await this.setUpFillScenario(scenario);
             });
 
             if (scenario.successfullyFills) {
                 test("does not throw", async () => {
                     await expect(
-                        this.orderApi.assertFillableAsync(debtOrder, {
+                        this.orderApi.assertFillableAsync(debtOrderData, {
                             from: scenario.filler,
                         }),
                     ).resolves.not.toThrow();
@@ -173,7 +173,7 @@ export class OrderScenarioRunner {
             } else {
                 test(`throws ${scenario.errorType} error`, async () => {
                     await expect(
-                        this.orderApi.assertFillableAsync(debtOrder, { from: scenario.filler }),
+                        this.orderApi.assertFillableAsync(debtOrderData, { from: scenario.filler }),
                     ).rejects.toThrow(scenario.errorMessage);
                 });
             }
@@ -182,7 +182,7 @@ export class OrderScenarioRunner {
 
     public testFillScenario(scenario: FillScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -193,12 +193,12 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = await this.setUpFillScenario(scenario);
+                debtOrderData = await this.setUpFillScenario(scenario);
             });
 
             if (scenario.successfullyFills) {
                 test("emits log indicating successful fill", async () => {
-                    const txHash = await this.orderApi.fillAsync(debtOrder, {
+                    const txHash = await this.orderApi.fillAsync(debtOrderData, {
                         from: scenario.filler,
                     });
 
@@ -211,7 +211,7 @@ export class OrderScenarioRunner {
             } else {
                 test(`throws ${scenario.errorType} error`, async () => {
                     await expect(
-                        this.orderApi.fillAsync(debtOrder, { from: scenario.filler }),
+                        this.orderApi.fillAsync(debtOrderData, { from: scenario.filler }),
                     ).rejects.toThrow(scenario.errorMessage);
                 });
             }
@@ -220,7 +220,7 @@ export class OrderScenarioRunner {
 
     public async testOrderCancelScenario(scenario: OrderCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -231,28 +231,30 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = scenario.generateDebtOrder(
+                debtOrderData = scenario.generateDebtOrderData(
                     this.debtKernel,
                     this.repaymentRouter,
                     this.principalToken,
                 );
 
                 if (scenario.orderAlreadyCancelled) {
-                    await this.orderApi.cancelOrderAsync(debtOrder, { from: debtOrder.debtor });
+                    await this.orderApi.cancelOrderAsync(debtOrderData, {
+                        from: debtOrderData.debtor,
+                    });
                 }
 
                 if (scenario.issuanceAlreadyCancelled) {
-                    const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+                    const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
                     await this.orderApi.cancelIssuanceAsync(
-                        debtOrderWrapped.getIssuanceCommitment(),
-                        { from: debtOrder.debtor },
+                        debtOrderDataWrapped.getIssuanceCommitment(),
+                        { from: debtOrderData.debtor },
                     );
                 }
             });
 
             if (scenario.successfullyCancels) {
                 test("emits log indicating successful fill", async () => {
-                    const txHash = await this.orderApi.cancelOrderAsync(debtOrder, {
+                    const txHash = await this.orderApi.cancelOrderAsync(debtOrderData, {
                         from: scenario.canceller,
                     });
 
@@ -264,24 +266,24 @@ export class OrderScenarioRunner {
                 });
 
                 test("isCancelled returns false before cancel", async () => {
-                    const isCancelled = await this.orderApi.isCancelled(debtOrder);
+                    const isCancelled = await this.orderApi.isCancelled(debtOrderData);
 
                     expect(isCancelled).toEqual(false);
                 });
 
                 test("isCancelled returns true after cancel", async () => {
-                    await this.orderApi.cancelOrderAsync(debtOrder, {
+                    await this.orderApi.cancelOrderAsync(debtOrderData, {
                         from: scenario.canceller,
                     });
 
-                    const isCancelled = await this.orderApi.isCancelled(debtOrder);
+                    const isCancelled = await this.orderApi.isCancelled(debtOrderData);
 
                     expect(isCancelled).toEqual(true);
                 });
             } else {
                 test(`throws ${scenario.errorType} error`, async () => {
                     await expect(
-                        this.orderApi.cancelOrderAsync(debtOrder, { from: scenario.canceller }),
+                        this.orderApi.cancelOrderAsync(debtOrderData, { from: scenario.canceller }),
                     ).rejects.toThrow(scenario.errorMessage);
                 });
             }
@@ -290,7 +292,7 @@ export class OrderScenarioRunner {
 
     public async testIssuanceCancelScenario(scenario: IssuanceCancellationScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
 
             beforeAll(() => {
                 ABIDecoder.addABI(this.debtKernel.abi);
@@ -301,31 +303,33 @@ export class OrderScenarioRunner {
             });
 
             beforeEach(async () => {
-                debtOrder = scenario.generateDebtOrder(
+                debtOrderData = scenario.generateDebtOrderData(
                     this.debtKernel,
                     this.repaymentRouter,
                     this.principalToken,
                 );
 
                 if (scenario.orderAlreadyCancelled) {
-                    await this.orderApi.cancelOrderAsync(debtOrder, { from: debtOrder.debtor });
+                    await this.orderApi.cancelOrderAsync(debtOrderData, {
+                        from: debtOrderData.debtor,
+                    });
                 }
 
                 if (scenario.issuanceAlreadyCancelled) {
-                    const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+                    const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
                     await this.orderApi.cancelIssuanceAsync(
-                        debtOrderWrapped.getIssuanceCommitment(),
-                        { from: debtOrder.debtor },
+                        debtOrderDataWrapped.getIssuanceCommitment(),
+                        { from: debtOrderData.debtor },
                     );
                 }
             });
 
             if (scenario.successfullyCancels) {
                 test("emits log indicating successful fill", async () => {
-                    const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+                    const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
                     const txHash = await this.orderApi.cancelIssuanceAsync(
-                        debtOrderWrapped.getIssuanceCommitment(),
+                        debtOrderDataWrapped.getIssuanceCommitment(),
                         { from: scenario.canceller },
                     );
                     const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
@@ -336,11 +340,11 @@ export class OrderScenarioRunner {
                 });
             } else {
                 test(`throws ${scenario.errorType} error`, async () => {
-                    const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+                    const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
                     await expect(
                         this.orderApi.cancelIssuanceAsync(
-                            debtOrderWrapped.getIssuanceCommitment(),
+                            debtOrderDataWrapped.getIssuanceCommitment(),
                             { from: scenario.canceller },
                         ),
                     ).rejects.toThrow(scenario.errorMessage);
@@ -359,11 +363,13 @@ export class OrderScenarioRunner {
 
             if (!scenario.throws) {
                 test("returns order translated by adapter from input parameters", async () => {
-                    const expectedDebtOrder = await adapter.toDebtOrder(scenario.inputParameters);
+                    const expectedDebtOrderData = await adapter.toDebtOrder(
+                        scenario.inputParameters,
+                    );
 
                     await expect(
                         this.orderApi.generate(adapter, scenario.inputParameters),
-                    ).resolves.toEqual(expectedDebtOrder);
+                    ).resolves.toEqual(expectedDebtOrderData);
                 });
             } else {
                 test(`should throw ${scenario.errorType}`, async () => {
@@ -377,14 +383,14 @@ export class OrderScenarioRunner {
 
     public testUnpackTermsScenario(scenario: UnpackTermsScenario) {
         describe(scenario.description, () => {
-            let debtOrder: DebtOrder;
+            let debtOrderData: DebtOrderData;
 
             beforeEach(async () => {
                 const simpleInterestTermsContract = this.termsContract;
                 const collateralizedSimpleInterestTermsContract = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
                 const otherTermsContractAddress = ACCOUNTS[4].address;
 
-                debtOrder = {
+                debtOrderData = {
                     kernelVersion: this.debtKernel.address,
                     issuanceVersion: this.repaymentRouter.address,
                     principalAmount: Units.ether(1),
@@ -412,13 +418,13 @@ export class OrderScenarioRunner {
 
             if (!scenario.throws) {
                 test("returns correctly unpacked parameters", async () => {
-                    await expect(this.orderApi.unpackTerms(debtOrder)).resolves.toEqual(
+                    await expect(this.orderApi.unpackTerms(debtOrderData)).resolves.toEqual(
                         scenario.expectedParameters,
                     );
                 });
             } else {
                 test(`throws ${scenario.errorType}`, async () => {
-                    await expect(this.orderApi.unpackTerms(debtOrder)).rejects.toThrow(
+                    await expect(this.orderApi.unpackTerms(debtOrderData)).rejects.toThrow(
                         scenario.errorMessage,
                     );
                 });
@@ -434,13 +440,13 @@ export class OrderScenarioRunner {
         await this.web3Utils.revertToSnapshot(this.currentSnapshotId);
     }
 
-    private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrder> {
-        let debtOrder;
+    private async setUpFillScenario(scenario: FillScenario): Promise<DebtOrderData> {
+        let debtOrderData;
 
         if (scenario.isCollateralized) {
             const collateralizedTC = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract();
 
-            debtOrder = scenario.generateDebtOrder(
+            debtOrderData = scenario.generateDebtOrderData(
                 this.debtKernel,
                 this.repaymentRouter,
                 this.principalToken,
@@ -463,17 +469,17 @@ export class OrderScenarioRunner {
             );
 
             await collateralToken.setBalance.sendTransactionAsync(
-                debtOrder.debtor,
+                debtOrderData.debtor,
                 new BigNumber(scenario.collateralBalance),
             );
 
             await collateralToken.approve.sendTransactionAsync(
                 this.tokenTransferProxy.address,
                 new BigNumber(scenario.collateralAllowance),
-                { from: debtOrder.debtor },
+                { from: debtOrderData.debtor },
             );
         } else {
-            debtOrder = scenario.generateDebtOrder(
+            debtOrderData = scenario.generateDebtOrderData(
                 this.debtKernel,
                 this.repaymentRouter,
                 this.principalToken,
@@ -486,36 +492,37 @@ export class OrderScenarioRunner {
         // their assigned values in the fill scenario, or
         // to a default amount (i.e sufficient balance / allowance
         // necessary for order fill)
-        const creditorBalance = scenario.creditorBalance || debtOrder.principalAmount.times(2);
-        const creditorAllowance = scenario.creditorAllowance || debtOrder.principalAmount.times(2);
+        const creditorBalance = scenario.creditorBalance || debtOrderData.principalAmount.times(2);
+        const creditorAllowance =
+            scenario.creditorAllowance || debtOrderData.principalAmount.times(2);
 
         await this.principalToken.setBalance.sendTransactionAsync(
-            debtOrder.creditor,
+            debtOrderData.creditor,
             creditorBalance,
         );
         await this.principalToken.approve.sendTransactionAsync(
             this.tokenTransferProxy.address,
             creditorAllowance,
-            { from: debtOrder.creditor },
+            { from: debtOrderData.creditor },
         );
 
         // We dynamically attach signatures based on whether the
         // the scenario specifies that a signature from a signatory
         // ought to be attached.
-        debtOrder.debtorSignature = scenario.signatories.debtor
-            ? await this.orderSigner.asDebtor(debtOrder, false)
+        debtOrderData.debtorSignature = scenario.signatories.debtor
+            ? await this.orderSigner.asDebtor(debtOrderData, false)
             : null;
-        debtOrder.creditorSignature = scenario.signatories.creditor
-            ? await this.orderSigner.asCreditor(debtOrder, false)
+        debtOrderData.creditorSignature = scenario.signatories.creditor
+            ? await this.orderSigner.asCreditor(debtOrderData, false)
             : null;
-        debtOrder.underwriterSignature = scenario.signatories.underwriter
-            ? await this.orderSigner.asUnderwriter(debtOrder, false)
+        debtOrderData.underwriterSignature = scenario.signatories.underwriter
+            ? await this.orderSigner.asUnderwriter(debtOrderData, false)
             : null;
 
         if (scenario.beforeBlock) {
-            await scenario.beforeBlock(debtOrder, this.debtKernel);
+            await scenario.beforeBlock(debtOrderData, this.debtKernel);
         }
 
-        return debtOrder;
+        return debtOrderData;
     }
 }

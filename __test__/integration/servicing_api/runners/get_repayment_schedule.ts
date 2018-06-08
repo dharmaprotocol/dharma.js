@@ -1,18 +1,18 @@
 // libraries
-import * as Web3 from "web3";
 import * as ABIDecoder from "abi-decoder";
-import { BigNumber } from "utils/bignumber";
+import * as Web3 from "web3";
+import { BigNumber } from "../../../../utils/bignumber";
 
 // utils
-import * as Units from "utils/units";
+import * as Units from "../../../../utils/units";
 
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI } from "src/apis";
-import { DebtOrder } from "src/types";
+import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI } from "../../../../src/apis";
+import { DebtOrderData } from "../../../../src/types";
 import {
     DummyTokenContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
-} from "src/wrappers";
+} from "../../../../src/wrappers";
 
 import { ACCOUNTS } from "../../../accounts";
 
@@ -29,11 +29,11 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 import { GetRepaymentScheduleScenario } from "../scenarios/index";
 
 export class GetRepaymentScheduleRunner {
-    static testGetRepaymentScheduleScenario(scenario: GetRepaymentScheduleScenario) {
+    public static testGetRepaymentScheduleScenario(scenario: GetRepaymentScheduleScenario) {
         let principalToken: DummyTokenContract;
         let tokenTransferProxy: TokenTransferProxyContract;
         let repaymentRouter: RepaymentRouterContract;
-        let debtOrder: DebtOrder;
+        let debtOrderData: DebtOrderData;
         let issuanceHash: string;
         let issuanceBlockTimestamp: BigNumber;
 
@@ -48,7 +48,7 @@ export class GetRepaymentScheduleRunner {
             const principalTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
                 "REP",
             );
-            const repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
+            repaymentRouter = await contractsApi.loadRepaymentRouterAsync();
 
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
             principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);
@@ -71,7 +71,7 @@ export class GetRepaymentScheduleRunner {
                 { from: CREDITOR },
             );
 
-            debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
+            debtOrderData = await adaptersApi.simpleInterestLoan.toDebtOrder({
                 debtor: DEBTOR,
                 creditor: CREDITOR,
                 principalAmount: Units.ether(1),
@@ -81,9 +81,9 @@ export class GetRepaymentScheduleRunner {
                 termLength: scenario.termLength,
             });
 
-            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
+            debtOrderData.debtorSignature = await signerApi.asDebtor(debtOrderData, false);
 
-            issuanceHash = await orderApi.getIssuanceHash(debtOrder);
+            issuanceHash = await orderApi.getIssuanceHash(debtOrderData);
 
             ABIDecoder.addABI(repaymentRouter.abi);
         });
@@ -99,7 +99,7 @@ export class GetRepaymentScheduleRunner {
                 // in the parent scope's `beforeEach` block.  For more information,
                 // read about Jest's order of execution in scoped tests:
                 // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
-                await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+                await orderApi.fillAsync(debtOrderData, { from: CREDITOR });
 
                 const debtRegistryEntry = await servicingApi.getDebtRegistryEntry(issuanceHash);
                 issuanceBlockTimestamp = debtRegistryEntry.issuanceBlockTimestamp;

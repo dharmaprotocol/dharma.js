@@ -15,7 +15,7 @@ import { SimpleInterestLoanAdapter } from "../../../../src/adapters";
 import { AdaptersAPI, ContractsAPI, LogsAPI, OrderAPI, SignerAPI } from "../../../../src/apis/";
 
 // Types
-import { DebtOrder } from "../../../../src/types";
+import { DebtOrderData } from "../../../../src/types";
 
 // Scenarios
 import { RepaymentRouterErrorScenario } from "../scenarios";
@@ -122,11 +122,11 @@ export class GetScenarioRunner {
                 // Set up a valid repayment scenario.
                 const principalToken = await this.generateTransferOfToken("REP");
 
-                const debtOrder = await this.generateSignedDebtOrderWithToken("REP");
+                const debtOrderData = await this.generateSignedDebtOrderDataWithToken("REP");
 
-                const issuanceHash = await this.orderAPI.getIssuanceHash(debtOrder);
+                const issuanceHash = await this.orderAPI.getIssuanceHash(debtOrderData);
 
-                await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
+                await this.orderAPI.fillAsync(debtOrderData, { from: CREDITOR });
 
                 txHash = await this.repaymentRouter.repay.sendTransactionAsync(
                     issuanceHash,
@@ -317,8 +317,10 @@ export class GetScenarioRunner {
         return token;
     }
 
-    private async generateSignedDebtOrderWithToken(tokenSymbol: string): Promise<DebtOrder> {
-        const debtOrder = await this.simpleInterestLoan.toDebtOrder({
+    private async generateSignedDebtOrderDataWithToken(
+        tokenSymbol: string,
+    ): Promise<DebtOrderData> {
+        const debtOrderData = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
             principalAmount: PRINCIPAL_AMOUNT,
@@ -329,8 +331,8 @@ export class GetScenarioRunner {
             salt: new BigNumber(0),
         });
 
-        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder, false);
+        debtOrderData.debtorSignature = await this.signerAPI.asDebtor(debtOrderData, false);
 
-        return debtOrder;
+        return debtOrderData;
     }
 }

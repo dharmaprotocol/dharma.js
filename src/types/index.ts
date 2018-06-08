@@ -1,4 +1,4 @@
-export { DebtOrder, DEBT_ORDER_DEFAULTS } from "./debt_order";
+export { DebtOrderData, DEBT_ORDER_DEFAULTS } from "./debt_order";
 export { ECDSASignature } from "./ecdsa_signature";
 export { IssuanceCommitment } from "./issuance_commitment";
 export { TxData, TxDataPayable, TransactionOptions } from "./transaction_options";

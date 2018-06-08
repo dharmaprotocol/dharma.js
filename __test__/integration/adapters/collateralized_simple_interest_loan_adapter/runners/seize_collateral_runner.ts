@@ -17,7 +17,7 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 // we can test making repayments and returning collateral.
                 await this.generateAndFillOrder(scenario);
 
-                agreementId = await this.orderApi.getIssuanceHash(this.debtOrder);
+                agreementId = await this.orderApi.getIssuanceHash(this.debtOrderData);
 
                 // The time, in seconds since unix epoch, at which the term will end.
                 const termEnd = await this.termsContract.getTermEndTimestamp.callAsync(agreementId);
@@ -53,7 +53,7 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
 
                 it("transfers the collateral to the creditor", async () => {
                     const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrder.creditor,
+                        this.debtOrderData.creditor,
                     );
 
                     expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
@@ -67,7 +67,7 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
 
                 it("does not transfer the collateral to the creditor", async () => {
                     const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrder.creditor,
+                        this.debtOrderData.creditor,
                     );
 
                     expect(collateralAmount.toNumber()).toEqual(0);

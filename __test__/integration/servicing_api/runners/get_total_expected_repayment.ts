@@ -13,7 +13,7 @@ import {
     SignerAPI,
     TokenAPI,
 } from "../../../../src/apis";
-import { DebtOrder } from "../../../../src/types";
+import { DebtOrderData } from "../../../../src/types";
 import { DummyTokenContract } from "../../../../src/wrappers";
 
 import { ACCOUNTS } from "../../../accounts";
@@ -34,7 +34,7 @@ import { GetTotalExpectedRepaymentScenario } from "../scenarios";
 export class GetTotalExpectedRepaymentRunner {
     public static testScenario(scenario: GetTotalExpectedRepaymentScenario) {
         let principalToken: DummyTokenContract;
-        let debtOrder: DebtOrder;
+        let debtOrderData: DebtOrderData;
         let issuanceHash: string;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;
@@ -65,7 +65,7 @@ export class GetTotalExpectedRepaymentRunner {
                 from: CREDITOR,
             });
 
-            debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
+            debtOrderData = await adaptersApi.simpleInterestLoan.toDebtOrder({
                 debtor: DEBTOR,
                 creditor: CREDITOR,
                 principalAmount: scenario.principalAmount,
@@ -75,9 +75,9 @@ export class GetTotalExpectedRepaymentRunner {
                 termLength: new BigNumber(scenario.termLength),
             });
 
-            debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
+            debtOrderData.debtorSignature = await signerApi.asDebtor(debtOrderData, false);
 
-            issuanceHash = await orderApi.getIssuanceHash(debtOrder);
+            issuanceHash = await orderApi.getIssuanceHash(debtOrderData);
         });
 
         describe(scenario.description, () => {
@@ -88,7 +88,7 @@ export class GetTotalExpectedRepaymentRunner {
                     // in the parent scope's `beforeEach` block.  For more information,
                     // read about Jest's order of execution in scoped tests:
                     // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
-                    await orderApi.fillAsync(debtOrder, { from: CREDITOR });
+                    await orderApi.fillAsync(debtOrderData, { from: CREDITOR });
                 });
             }
 

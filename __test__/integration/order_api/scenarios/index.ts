@@ -27,30 +27,30 @@ export { VALID_ORDERS } from "./valid_orders";
 
 // Types
 import { Adapter } from "../../../../src/adapters";
-import { DebtOrder } from "../../../../src/types";
+import { DebtOrderData } from "../../../../src/types";
 
 import { AdaptersAPI } from "../../../../src/apis";
 
 export interface SerializeOrderScenario {
-    input: DebtOrder;
+    input: DebtOrderData;
     output: string;
 }
 
 export interface DeserializeOrderScenario {
     input: string;
-    output: DebtOrder;
+    output: DebtOrderData;
 }
 
 export interface FillScenario {
     description: string;
-    generateDebtOrder: (
+    generateDebtOrderData: (
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
         termsContract:
             | SimpleInterestTermsContractContract
             | CollateralizedSimpleInterestTermsContractContract,
-    ) => DebtOrder;
+    ) => DebtOrderData;
     filler: string;
     signatories: {
         debtor: boolean;
@@ -66,16 +66,16 @@ export interface FillScenario {
     collateralBalance?: BigNumber;
     collateralAllowance?: BigNumber;
     collateralTokenIndex?: BigNumber;
-    beforeBlock?: (debtOrder: DebtOrder, debtKernel: DebtKernelContract) => Promise<any>;
+    beforeBlock?: (debtOrderData: DebtOrderData, debtKernel: DebtKernelContract) => Promise<any>;
 }
 
 export interface OrderCancellationScenario {
     description: string;
-    generateDebtOrder: (
+    generateDebtOrderData: (
         debtKernel: DebtKernelContract,
         repaymentRouter: RepaymentRouterContract,
         principalToken: DummyTokenContract,
-    ) => DebtOrder;
+    ) => DebtOrderData;
     canceller: string;
     successfullyCancels: boolean;
     orderAlreadyCancelled: boolean;

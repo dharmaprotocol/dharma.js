@@ -8,7 +8,7 @@ import * as Units from "utils/units";
 import { ACCOUNTS } from "../../../accounts";
 
 // apis
-import { OrderAPI, ServicingAPI, SignerAPI, ContractsAPI, AdaptersAPI, TokenAPI } from "src/apis";
+import { AdaptersAPI, ContractsAPI, OrderAPI, ServicingAPI, SignerAPI, TokenAPI } from "src/apis";
 
 // wrappers
 import { DummyTokenContract } from "src/wrappers";
@@ -27,7 +27,7 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 import { GetInvestmentsScenario } from "../scenarios";
 
 export class GetInvestmentsRunner {
-    static testScenario(scenario: GetInvestmentsScenario) {
+    public static testScenario(scenario: GetInvestmentsScenario) {
         let principalToken: DummyTokenContract;
 
         const CONTRACT_OWNER = ACCOUNTS[0].address;
@@ -57,11 +57,11 @@ export class GetInvestmentsRunner {
         });
 
         describe(scenario.description, () => {
-            let issuanceHashes = [];
+            const issuanceHashes = [];
 
             beforeEach(async () => {
                 for (let i = 0; i < scenario.numInvestments; i++) {
-                    const debtOrder = await adaptersApi.simpleInterestLoan.toDebtOrder({
+                    const debtOrderData = await adaptersApi.simpleInterestLoan.toDebtOrder({
                         debtor: DEBTOR,
                         creditor: scenario.creditor,
                         principalAmount: Units.ether(1),
@@ -72,9 +72,9 @@ export class GetInvestmentsRunner {
                         salt: new BigNumber(i),
                     });
 
-                    debtOrder.debtorSignature = await signerApi.asDebtor(debtOrder, false);
+                    debtOrderData.debtorSignature = await signerApi.asDebtor(debtOrderData, false);
 
-                    const issuanceHash = await orderApi.getIssuanceHash(debtOrder);
+                    const issuanceHash = await orderApi.getIssuanceHash(debtOrderData);
                     issuanceHashes.push(issuanceHash);
 
                     // NOTE: We fill debt orders in the `beforeEach` block to ensure
@@ -82,7 +82,7 @@ export class GetInvestmentsRunner {
                     // in the parent scope's `beforeEach` block.  For more information,
                     // read about Jest's order of execution in scoped tests:
                     // https://facebook.github.io/jest/docs/en/setup-teardown.html#scoping
-                    await orderApi.fillAsync(debtOrder, { from: scenario.creditor });
+                    await orderApi.fillAsync(debtOrderData, { from: scenario.creditor });
                 }
             });
 

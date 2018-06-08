@@ -1,15 +1,15 @@
-import * as Units from "utils/units";
+import { ACCOUNTS } from "__test__/accounts";
 import * as moment from "moment";
 import { BigNumber } from "utils/bignumber";
-import { ACCOUNTS } from "__test__/accounts";
-import { NULL_BYTES32, NULL_ADDRESS } from "utils/constants";
+import { NULL_ADDRESS, NULL_BYTES32 } from "utils/constants";
+import * as Units from "utils/units";
 
-import { DebtKernelError, DebtOrder } from "src/types";
+import { DebtKernelError, DebtOrderData } from "src/types";
 import {
-    DebtOrderWrapper,
     DebtKernelContract,
-    RepaymentRouterContract,
+    DebtOrderDataWrapper,
     DummyTokenContract,
+    RepaymentRouterContract,
     SimpleInterestTermsContractContract,
 } from "src/wrappers";
 
@@ -18,7 +18,7 @@ import { DebtKernelErrorScenario } from "./error_scenarios";
 export const VALID_ORDERS: DebtKernelErrorScenario[] = [
     {
         description: "order is valid",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,

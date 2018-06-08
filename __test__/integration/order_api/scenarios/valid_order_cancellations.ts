@@ -13,7 +13,11 @@ import { ACCOUNTS } from "../../../accounts";
 import { OrderCancellationScenario } from "./";
 
 // Wrappers
-import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "../../../../src/wrappers";
+import {
+    DebtKernelContract,
+    DummyTokenContract,
+    RepaymentRouterContract,
+} from "../../../../src/wrappers";
 
 const defaultOrderAttributes = {
     principalAmount: Units.ether(1),
@@ -39,7 +43,7 @@ const defaultOrderAttributes = {
 export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     {
         description: "Canceller is debtor and order has not already been cancelled (Order #1)",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -58,7 +62,7 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Canceller is debtor and order has not already been cancelled (Order #2)",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -88,7 +92,7 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Canceller is debtor and order has not already been cancelled (Order #3)",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
