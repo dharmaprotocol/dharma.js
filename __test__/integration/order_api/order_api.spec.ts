@@ -39,6 +39,7 @@ import {
     TokenRegistryContract,
     TokenTransferProxyContract,
 } from "../../../src/wrappers";
+
 import { SerializationScenarioRunner } from "./runners/serialization";
 
 // Given that this is an integration test, we unmock the Dharma

@@ -104,20 +104,22 @@ export class OrderAssertions {
         }
     }
 
-    // Debt order cannot have been cancelled
+    /**
+     * If the given DebtOrder is cancelled, throws the given errorMessage.
+     *
+     * @param {DebtOrder} debtOrder
+     * @param {DebtKernelContract} debtKernel
+     * @param {string} errorMessage
+     * @returns {Promise<void>}
+     */
     public async debtOrderNotCancelledAsync(
         debtOrder: DebtOrder,
         debtKernel: DebtKernelContract,
         errorMessage: string,
-    ) {
-        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
-        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+    ): Promise<void> {
+        const orderCancelled = await this.isCancelled(debtOrder, debtKernel);
 
-        if (
-            await debtKernel.debtOrderCancelled.callAsync(
-                debtOrderWrapped.getDebtorCommitmentHash(),
-            )
-        ) {
+        if (orderCancelled) {
             throw new Error(errorMessage);
         }
     }
@@ -297,5 +299,29 @@ export class OrderAssertions {
         if (collateralizerBalance.lt(collateralAmount)) {
             throw new Error(errorMessage);
         }
+    }
+
+    /**
+     * Given a DebtOrder instance, eventually returns true if that DebtOrder has
+     * been cancelled. Returns false otherwise.
+     *
+     * @example
+     * await dharma.order.isCancelled(debtOrder, debtKernel);
+     * => false
+     *
+     * @param {DebtOrder} debtOrder
+     * @param {DebtKernelContract} debtKernel
+     * @returns {Promise<boolean>}
+     */
+    private async isCancelled(
+        debtOrder: DebtOrder,
+        debtKernel: DebtKernelContract,
+    ): Promise<boolean> {
+        debtOrder = await applyNetworkDefaults(debtOrder, this.contracts);
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
+        return debtKernel.debtOrderCancelled.callAsync(
+            debtOrderWrapped.getDebtorCommitmentHash(),
+        );
     }
 }

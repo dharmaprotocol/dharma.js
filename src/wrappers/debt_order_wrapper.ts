@@ -1,16 +1,24 @@
-// external
+// External libraries
 import { BigNumber } from "../../utils/bignumber";
 
-// types
-import { ECDSASignature, DebtOrder, IssuanceCommitment } from "../types";
+// Types
+import { DebtOrder, ECDSASignature, IssuanceCommitment } from "../types";
 
-// utils
-import { Web3Utils } from "../../utils/web3_utils";
+// Utils
 import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+import { Web3Utils } from "../../utils/web3_utils";
 
+/**
+ * Decorate a given debt order with various higher level functions.
+ */
 export class DebtOrderWrapper {
     constructor(private debtOrder: DebtOrder) {}
 
+    /**
+     * Returns the address representing the creditor of the debt order.
+     *
+     * @returns {string}
+     */
     public getCreditor(): string {
         return this.debtOrder.creditor;
     }
