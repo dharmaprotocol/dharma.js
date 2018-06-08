@@ -55,4 +55,13 @@ export class DebtOrder {
         this.dharma.order.cancelOrderAsync(this);
     }
 
+    public async isFilled(): Promise<boolean> {
+        // TODO(kayvon): fix
+        return this.dharma.order.checkOrderFilledAsync(this);
+    }
+
+    public async fill(): Promise<string> {
+        // TODO(kayvon): fix
+        return this.dharma.order.fillAsync(this);
+    }
 }
