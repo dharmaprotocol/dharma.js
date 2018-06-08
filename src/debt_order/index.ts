@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { Dharma } from "../";
-import { ECDSASignature, TokenAmount } from "../types";
+import { ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
 
 export class DebtOrder {
     // Signatures
@@ -8,7 +8,13 @@ export class DebtOrder {
     private creditorSignature?: ECDSASignature;
     private underwriterSignature?: ECDSASignature;
 
-    constructor(private dharma: Dharma) {}
+    constructor(
+        private dharma: Dharma,
+        private principal: TokenAmount,
+        private collateral: TokenAmount,
+        private interestRate: InterestRate,
+        private term: Term,
+    ) {}
 
     public isSignedByUnderwriter(): boolean {
         return !_.isEmpty(this.underwriterSignature);

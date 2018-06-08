@@ -11,3 +11,5 @@ export { RepaymentSchedule } from "./repayment_schedule";
 export { RepaymentRouterError } from "./repayment_router_error";
 export { Token } from "./token";
 export { TokenAmount, TokenAmountType } from "./token_amount";
+export { AmortizationUnitType, Term } from "./term";
+export { InterestRate } from "./interest_rate";
