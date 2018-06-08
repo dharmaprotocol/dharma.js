@@ -28,7 +28,7 @@ import {
 } from "../../../src/wrappers";
 
 // types
-import { DEBT_ORDER_DEFAULTS, DebtOrderData, DebtRegistryEntry } from "../../../src/types";
+import { DEBT_ORDER_DATA_DEFAULTS, DebtOrderData, DebtRegistryEntry } from "../../../src/types";
 
 // adapters
 import {
@@ -317,7 +317,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
         const principalAmountForScenario3 = new BigNumber(50 * 10 ** 18);
 
         const debtOrderDataBase = {
-            ...DEBT_ORDER_DEFAULTS,
+            ...DEBT_ORDER_DATA_DEFAULTS,
             kernelVersion: debtKernel.address,
             issuanceVersion: repaymentRouter.address,
             termsContract: termsContract.address,

@@ -6,7 +6,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS, NULL_BYTES32, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { ECDSASignature } from "./ecdsa_signature";
 
-export const DEBT_ORDER_DEFAULTS = {
+export const DEBT_ORDER_DATA_DEFAULTS = {
     kernelVersion: NULL_ADDRESS,
     issuanceVersion: NULL_ADDRESS,
     principalAmount: new BigNumber(0),
