@@ -19,7 +19,7 @@ import { Assertions } from "../invariants";
 import { DebtOrder, ECDSASignature } from "../types";
 
 // Wrappers
-import { DebtOrderWrapper } from "../wrappers/debt_order_wrapper";
+import { DebtOrderWrapper } from "../wrappers";
 
 import { ContractsAPI } from "./";
 
@@ -45,7 +45,7 @@ export class SignerAPI {
 
     /**
      * Given a debt order, produce ECDSA signature of the debtor commitment hash using the debtor's
-     * private key.  If current web3 provider is unable to produce a cryptographic signature using
+     * private key. If current web3 provider is unable to produce a cryptographic signature using
      * the debtor's private key (for instance, if the account is not unlocked in Geth / Parity), it
      * throws.
      *
