@@ -1,6 +1,7 @@
 // External
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
+
 import { BigNumber } from "../../utils/bignumber";
 
 // APIs
@@ -218,6 +219,31 @@ export class OrderAPI {
             debtOrderDataWrapped.getOrderBytes32(),
             txOptions,
         );
+    }
+
+    /**
+     * Given a DebtOrder instance, eventually returns true if that DebtOrder has
+     * been cancelled. Returns false otherwise.
+     *
+     * @example
+     * await dharma.order.isCancelled(debtOrder);
+     * => false
+     *
+     * @param {DebtOrder} debtOrder
+     * @param {TxData} txOptions
+     * @returns {Promise<boolean>}
+     */
+    public async isCancelled(
+        debtOrder: DebtOrder,
+        txOptions?: TxData,
+    ): Promise<boolean> {
+        const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
+
+        const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+
+        const commitmentHash = debtOrderWrapped.getDebtorCommitmentHash();
+
+        return debtKernel.debtOrderCancelled.callAsync(commitmentHash);
     }
 
     /**

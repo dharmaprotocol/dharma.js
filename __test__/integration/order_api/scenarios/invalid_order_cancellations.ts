@@ -1,10 +1,21 @@
-import { ACCOUNTS } from "__test__/accounts";
+// External libraries
 import * as moment from "moment";
-import { OrderAPIErrors } from "src/apis/order_api";
-import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "src/wrappers";
-import { BigNumber } from "utils/bignumber";
-import { NULL_BYTES32 } from "utils/constants";
-import * as Units from "utils/units";
+
+// Utils
+import { BigNumber } from "../../../../utils/bignumber";
+import { NULL_BYTES32 } from "../../../../utils/constants";
+import * as Units from "../../../../utils/units";
+
+// Accounts
+import { ACCOUNTS } from "../../../accounts";
+
+// APIs
+import { OrderAPIErrors } from "../../../../src/apis/order_api";
+
+// Wrappers
+import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "../../../../src/wrappers";
+
+// Scenarios
 import { OrderCancellationScenario } from "./";
 
 export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [

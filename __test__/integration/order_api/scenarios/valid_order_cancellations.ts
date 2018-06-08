@@ -1,11 +1,40 @@
-import { ACCOUNTS } from "__test__/accounts";
+// External libraries
 import * as moment from "moment";
-import { OrderAPIErrors } from "src/apis/order_api";
-import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "src/wrappers";
-import { BigNumber } from "utils/bignumber";
-import { NULL_BYTES32 } from "utils/constants";
-import * as Units from "utils/units";
+
+// Utils
+import { BigNumber } from "../../../../utils/bignumber";
+import { NULL_BYTES32 } from "../../../../utils/constants";
+import * as Units from "../../../../utils/units";
+
+// Accounts
+import { ACCOUNTS } from "../../../accounts";
+
+// Scenarios
 import { OrderCancellationScenario } from "./";
+
+// Wrappers
+import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "../../../../src/wrappers";
+
+const defaultOrderAttributes = {
+    principalAmount: Units.ether(1),
+    debtor: ACCOUNTS[1].address,
+    debtorFee: Units.ether(0.001),
+    creditor: ACCOUNTS[2].address,
+    creditorFee: Units.ether(0.001),
+    relayer: ACCOUNTS[3].address,
+    relayerFee: Units.ether(0.002),
+    termsContract: ACCOUNTS[5].address,
+    termsContractParameters: NULL_BYTES32,
+    expirationTimestampInSec: new BigNumber(
+        moment()
+            .add(7, "days")
+            .unix(),
+    ),
+    underwriter: ACCOUNTS[7].address,
+    underwriterFee: new BigNumber(0),
+    underwriterRiskRating: new BigNumber(0),
+    salt: new BigNumber(0),
+};
 
 export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     {
@@ -16,24 +45,10 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
             principalToken: DummyTokenContract,
         ) => {
             return {
+                ...defaultOrderAttributes,
                 kernelVersion: debtKernel.address,
                 issuanceVersion: repaymentRouter.address,
-                principalAmount: Units.ether(1),
                 principalToken: principalToken.address,
-                debtor: ACCOUNTS[1].address,
-                debtorFee: Units.ether(0.001),
-                creditor: ACCOUNTS[2].address,
-                creditorFee: Units.ether(0.001),
-                relayer: ACCOUNTS[3].address,
-                relayerFee: Units.ether(0.002),
-                termsContract: ACCOUNTS[5].address,
-                termsContractParameters: NULL_BYTES32,
-                expirationTimestampInSec: new BigNumber(
-                    moment()
-                        .add(7, "days")
-                        .unix(),
-                ),
-                salt: new BigNumber(0),
             };
         },
         canceller: ACCOUNTS[1].address,
@@ -49,6 +64,7 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
             principalToken: DummyTokenContract,
         ) => {
             return {
+                ...defaultOrderAttributes,
                 kernelVersion: debtKernel.address,
                 issuanceVersion: repaymentRouter.address,
                 principalAmount: Units.ether(3),
@@ -58,13 +74,11 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
                 creditor: ACCOUNTS[5].address,
                 creditorFee: Units.ether(0),
                 termsContract: ACCOUNTS[6].address,
-                termsContractParameters: NULL_BYTES32,
                 expirationTimestampInSec: new BigNumber(
                     moment()
                         .add(7, "days")
                         .unix(),
                 ),
-                salt: new BigNumber(0),
             };
         },
         canceller: ACCOUNTS[4].address,
@@ -80,6 +94,9 @@ export const VALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
             principalToken: DummyTokenContract,
         ) => {
             return {
+                ...defaultOrderAttributes,
+                kernelVersion: debtKernel.address,
+                issuanceVersion: repaymentRouter.address,
                 principalAmount: Units.ether(100),
                 principalToken: principalToken.address,
                 debtor: ACCOUNTS[6].address,

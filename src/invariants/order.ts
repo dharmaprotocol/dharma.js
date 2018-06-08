@@ -104,20 +104,22 @@ export class OrderAssertions {
         }
     }
 
-    // Debt order cannot have been cancelled
+    /**
+     * If the given DebtOrder is cancelled, throws the given errorMessage.
+     *
+     * @param {debtOrderData} DebtOrderData
+     * @param {DebtKernelContract} debtKernel
+     * @param {string} errorMessage
+     * @returns {Promise<void>}
+     */
     public async debtOrderNotCancelledAsync(
         debtOrderData: DebtOrderData,
         debtKernel: DebtKernelContract,
         errorMessage: string,
-    ) {
-        debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
-        const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
+    ): Promise<void> {
+        const orderCancelled = await this.isCancelled(debtOrderData, debtKernel);
 
-        if (
-            await debtKernel.debtOrderCancelled.callAsync(
-                debtOrderDataWrapped.getDebtorCommitmentHash(),
-            )
-        ) {
+        if (orderCancelled) {
             throw new Error(errorMessage);
         }
     }
@@ -299,5 +301,29 @@ export class OrderAssertions {
         if (collateralizerBalance.lt(collateralAmount)) {
             throw new Error(errorMessage);
         }
+    }
+
+    /**
+     * Given a DebtOrder instance, eventually returns true if that DebtOrder has
+     * been cancelled. Returns false otherwise.
+     *
+     * @example
+     * await dharma.order.isCancelled(debtOrder, debtKernel);
+     * => false
+     *
+     * @param {DebtOrderData} debtOrderData
+     * @param {DebtKernelContract} debtKernel
+     * @returns {Promise<boolean>}
+     */
+    private async isCancelled(
+        debtOrderData: DebtOrderData,
+        debtKernel: DebtKernelContract,
+    ): Promise<boolean> {
+        debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
+        const debtOrderWrapped = new DebtOrderDataWrapper(debtOrderData);
+
+        return debtKernel.debtOrderCancelled.callAsync(
+            debtOrderWrapped.getDebtorCommitmentHash(),
+        );
     }
 }

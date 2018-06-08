@@ -257,11 +257,28 @@ export class OrderScenarioRunner {
                     const txHash = await this.orderApi.cancelOrderAsync(debtOrderData, {
                         from: scenario.canceller,
                     });
+
                     const receipt = await this.web3Utils.getTransactionReceiptAsync(txHash);
 
                     const [debtOrderCancelledLog] = compact(ABIDecoder.decodeLogs(receipt.logs));
 
                     expect(debtOrderCancelledLog.name).toBe("LogDebtOrderCancelled");
+                });
+
+                test("isCancelled returns false before cancel", async () => {
+                    const isCancelled = await this.orderApi.isCancelled(debtOrder);
+
+                    expect(isCancelled).toEqual(false);
+                });
+
+                test("isCancelled returns true after cancel", async () => {
+                    await this.orderApi.cancelOrderAsync(debtOrder, {
+                        from: scenario.canceller,
+                    });
+
+                    const isCancelled = await this.orderApi.isCancelled(debtOrder);
+
+                    expect(isCancelled).toEqual(true);
                 });
             } else {
                 test(`throws ${scenario.errorType} error`, async () => {
