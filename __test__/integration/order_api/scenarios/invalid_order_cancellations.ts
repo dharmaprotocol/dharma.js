@@ -13,7 +13,11 @@ import { ACCOUNTS } from "../../../accounts";
 import { OrderAPIErrors } from "../../../../src/apis/order_api";
 
 // Wrappers
-import { DebtKernelContract, DummyTokenContract, RepaymentRouterContract } from "../../../../src/wrappers";
+import {
+    DebtKernelContract,
+    DummyTokenContract,
+    RepaymentRouterContract,
+} from "../../../../src/wrappers";
 
 // Scenarios
 import { OrderCancellationScenario } from "./";
@@ -21,7 +25,7 @@ import { OrderCancellationScenario } from "./";
 export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     {
         description: "Canceller is creditor",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -56,7 +60,7 @@ export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Canceller is underwriter",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -94,7 +98,7 @@ export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Canceller is relayer",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -132,7 +136,7 @@ export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Debt order has already been cancelled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,
@@ -170,7 +174,7 @@ export const INVALID_ORDER_CANCELLATIONS: OrderCancellationScenario[] = [
     },
     {
         description: "Debt issuance commitment has already been cancelled",
-        generateDebtOrder: (
+        generateDebtOrderData: (
             debtKernel: DebtKernelContract,
             repaymentRouter: RepaymentRouterContract,
             principalToken: DummyTokenContract,

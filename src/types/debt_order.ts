@@ -33,7 +33,7 @@ export const DEBT_ORDER_DEFAULTS = {
     underwriterSignature: NULL_ECDSA_SIGNATURE,
 };
 
-export interface DebtOrder {
+export interface DebtOrderData {
     kernelVersion?: string;
     issuanceVersion?: string;
     principalAmount?: BigNumber;

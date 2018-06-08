@@ -1,12 +1,12 @@
 // libraries
-import * as Web3 from "web3";
 import * as moment from "moment";
+import * as Web3 from "web3";
 
 // utils
 import { BigNumber } from "utils/bignumber";
-import { ACCOUNTS } from "../../accounts";
 import * as Units from "utils/units";
 import { Web3Utils } from "utils/web3_utils";
+import { ACCOUNTS } from "../../accounts";
 
 // wrappers
 import {
@@ -21,10 +21,10 @@ import { DEBT_ORDER_DEFAULTS, DebtRegistryEntry } from "src/types";
 
 // adapters
 import {
+    AmortizationUnit,
+    SimpleInterestAdapterErrors,
     SimpleInterestLoanAdapter,
     SimpleInterestLoanOrder,
-    SimpleInterestAdapterErrors,
-    AmortizationUnit,
 } from "src/adapters/simple_interest_loan_adapter";
 
 import { ContractsAPI, ContractsError } from "src/apis/contracts_api";
@@ -591,7 +591,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                     beneficiary: "0",
                     underwriter: "0",
                     underwriterRiskRating: new BigNumber(0),
-                    termsContract: termsContract,
+                    termsContract,
                     termsContractParameters: contractTermsParameters,
                     issuanceBlockTimestamp: new BigNumber(issuanceTime),
                 };
