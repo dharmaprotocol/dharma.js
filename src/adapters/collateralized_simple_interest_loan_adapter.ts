@@ -114,7 +114,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
     }
 
-    public async toDebtOrderData(
+    public async toDebtOrder(
         collateralizedSimpleInterestLoanOrder: CollateralizedSimpleInterestLoanOrder,
     ): Promise<DebtOrderData> {
         this.assert.schema.collateralizedSimpleInterestLoanOrder(
@@ -211,7 +211,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * @param {DebtOrderData} debtOrderData
      * @returns {Promise<CollateralizedSimpleInterestLoanOrder>}
      */
-    public async fromDebtOrderData(
+    public async fromDebtOrder(
         debtOrderData: DebtOrderData,
     ): Promise<CollateralizedSimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrderData);

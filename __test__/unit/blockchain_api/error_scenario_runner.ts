@@ -14,7 +14,7 @@ import { SimpleInterestLoanAdapter } from "../../../src/adapters";
 import { AdaptersAPI, BlockchainAPI, ContractsAPI, OrderAPI, SignerAPI } from "../../../src/apis/";
 
 // Types
-import { DebtKernelError, DebtOrder, RepaymentRouterError } from "../../../src/types";
+import { DebtKernelError, DebtOrderData, RepaymentRouterError } from "../../../src/types";
 
 // Scenarios
 import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenarios";
@@ -22,7 +22,7 @@ import { DebtKernelErrorScenario, RepaymentRouterErrorScenario } from "./scenari
 // Wrappers
 import {
     DebtKernelContract,
-    DebtOrderWrapper,
+    DebtOrderDataWrapper,
     DummyTokenContract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
@@ -121,13 +121,13 @@ export class ErrorScenarioRunner {
             beforeEach(async () => {
                 const principalToken = await this.generateTokenForSymbol("REP");
 
-                const debtOrder = await this.generateSignedDebtOrderWithToken("REP");
+                const debtOrderData = await this.generateSignedDebtOrderDataWithToken("REP");
 
-                const issuanceHash = await this.orderAPI.getIssuanceHash(debtOrder);
+                const issuanceHash = await this.orderAPI.getIssuanceHash(debtOrderData);
 
                 // Should there be a valid debt agreement in this scenario?
                 if (scenario.agreementExists) {
-                    await this.orderAPI.fillAsync(debtOrder, { from: CREDITOR });
+                    await this.orderAPI.fillAsync(debtOrderData, { from: CREDITOR });
                 }
 
                 // Does the debtor have sufficient balance to make the repayment?
@@ -183,7 +183,7 @@ export class ErrorScenarioRunner {
             let txHash: string;
 
             beforeEach(async () => {
-                let debtOrder = scenario.generateDebtOrder(
+                let debtOrderData = scenario.generateDebtOrderData(
                     this.debtKernel,
                     this.repaymentRouter,
                     this.principalToken,
@@ -196,53 +196,53 @@ export class ErrorScenarioRunner {
                 // to a default amount (i.e sufficient balance / allowance
                 // necessary for order fill)
                 const creditorBalance =
-                    scenario.creditorBalance || debtOrder.principalAmount.times(2);
+                    scenario.creditorBalance || debtOrderData.principalAmount.times(2);
                 const creditorAllowance =
-                    scenario.creditorAllowance || debtOrder.principalAmount.times(2);
+                    scenario.creditorAllowance || debtOrderData.principalAmount.times(2);
 
                 await this.principalToken.setBalance.sendTransactionAsync(
-                    debtOrder.creditor,
+                    debtOrderData.creditor,
                     creditorBalance,
                 );
 
                 await this.principalToken.approve.sendTransactionAsync(
                     this.tokenTransferProxy.address,
                     creditorAllowance,
-                    { from: debtOrder.creditor },
+                    { from: debtOrderData.creditor },
                 );
 
                 // We dynamically attach signatures based on whether the
                 // the scenario specifies that a signature from a signatory
                 // ought to be attached.
-                debtOrder.debtorSignature = scenario.signatories.debtor
-                    ? await this.signerAPI.asDebtor(debtOrder, false)
+                debtOrderData.debtorSignature = scenario.signatories.debtor
+                    ? await this.signerAPI.asDebtor(debtOrderData, false)
                     : undefined;
-                debtOrder.creditorSignature = scenario.signatories.creditor
-                    ? await this.signerAPI.asCreditor(debtOrder, false)
+                debtOrderData.creditorSignature = scenario.signatories.creditor
+                    ? await this.signerAPI.asCreditor(debtOrderData, false)
                     : undefined;
-                debtOrder.underwriterSignature = scenario.signatories.underwriter
-                    ? await this.signerAPI.asUnderwriter(debtOrder, false)
+                debtOrderData.underwriterSignature = scenario.signatories.underwriter
+                    ? await this.signerAPI.asUnderwriter(debtOrderData, false)
                     : undefined;
 
                 if (scenario.beforeBlock) {
-                    await scenario.beforeBlock(debtOrder, this.debtKernel);
+                    await scenario.beforeBlock(debtOrderData, this.debtKernel);
                 }
 
-                debtOrder = await TransactionUtils.applyNetworkDefaults(
-                    debtOrder,
+                debtOrderData = await TransactionUtils.applyNetworkDefaults(
+                    debtOrderData,
                     this.contractsAPI,
                 );
-                const debtOrderWrapped = new DebtOrderWrapper(debtOrder);
+                const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
                 txHash = await this.debtKernel.fillDebtOrder.sendTransactionAsync(
-                    debtOrderWrapped.getCreditor(),
-                    debtOrderWrapped.getOrderAddresses(),
-                    debtOrderWrapped.getOrderValues(),
-                    debtOrderWrapped.getOrderBytes32(),
-                    debtOrderWrapped.getSignaturesV(),
-                    debtOrderWrapped.getSignaturesR(),
-                    debtOrderWrapped.getSignaturesS(),
-                    { from: debtOrderWrapped.getCreditor() },
+                    debtOrderDataWrapped.getCreditor(),
+                    debtOrderDataWrapped.getOrderAddresses(),
+                    debtOrderDataWrapped.getOrderValues(),
+                    debtOrderDataWrapped.getOrderBytes32(),
+                    debtOrderDataWrapped.getSignaturesV(),
+                    debtOrderDataWrapped.getSignaturesR(),
+                    debtOrderDataWrapped.getSignaturesS(),
+                    { from: debtOrderDataWrapped.getCreditor() },
                 );
             });
 
@@ -308,8 +308,8 @@ export class ErrorScenarioRunner {
         return token;
     }
 
-    private async generateSignedDebtOrderWithToken(token: string): Promise<DebtOrder> {
-        const debtOrder = await this.simpleInterestLoan.toDebtOrder({
+    private async generateSignedDebtOrderDataWithToken(token: string): Promise<DebtOrderData> {
+        const debtOrderData = await this.simpleInterestLoan.toDebtOrder({
             debtor: DEBTOR,
             creditor: CREDITOR,
             principalAmount: PRINCIPAL_AMOUNT,
@@ -320,8 +320,8 @@ export class ErrorScenarioRunner {
             salt: new BigNumber(0),
         });
 
-        debtOrder.debtorSignature = await this.signerAPI.asDebtor(debtOrder, false);
+        debtOrderData.debtorSignature = await this.signerAPI.asDebtor(debtOrderData, false);
 
-        return debtOrder;
+        return debtOrderData;
     }
 }

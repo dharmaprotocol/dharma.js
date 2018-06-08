@@ -98,7 +98,7 @@ export class SimpleInterestLoanAdapter implements Adapter {
      * @param  simpleInterestLoanOrder a simple interest loan order instance.
      * @return the generated Dharma debt order.
      */
-    public async toDebtOrderData(
+    public async toDebtOrder(
         simpleInterestLoanOrder: SimpleInterestLoanOrder,
     ): Promise<DebtOrderData> {
         this.assert.schema.simpleInterestLoanOrder(
@@ -151,7 +151,7 @@ export class SimpleInterestLoanAdapter implements Adapter {
      * @param  debtOrderData a Dharma debt order instance.
      * @return           the generated simple interest loan order.
      */
-    public async fromDebtOrderData(debtOrderData: DebtOrderData): Promise<SimpleInterestLoanOrder> {
+    public async fromDebtOrder(debtOrderData: DebtOrderData): Promise<SimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrderData);
 
         const {

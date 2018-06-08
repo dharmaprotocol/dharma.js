@@ -3,10 +3,10 @@ import { CollateralizedSimpleInterestLoanOrder } from "./collateralized_simple_i
 import { SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
 
 export interface Adapter {
-    fromDebtOrderData: (
+    fromDebtOrder: (
         debtOrder: DebtOrderData,
     ) => Promise<SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder>;
-    toDebtOrderData: (params: object) => Promise<DebtOrderData>;
+    toDebtOrder: (params: object) => Promise<DebtOrderData>;
     fromDebtRegistryEntry: (entry: DebtRegistryEntry) => Promise<object>;
     getRepaymentSchedule: (entry: DebtRegistryEntry) => number[];
     unpackParameters: (packedParams: string) => object;
@@ -17,13 +17,13 @@ export interface Adapter {
 
 export function conformsToAdapterInterface(object: any): object is Adapter {
     return (
-        "fromDebtOrderData" in object &&
-        "toDebtOrderData" in object &&
+        "fromDebtOrder" in object &&
+        "toDebtOrder" in object &&
         "fromDebtRegistryEntry" in object &&
         "getRepaymentSchedule" in object &&
         "unpackParameters" in object &&
-        typeof object.fromDebtOrderData === "function" &&
-        typeof object.toDebtOrderData === "function" &&
+        typeof object.fromDebtOrder === "function" &&
+        typeof object.toDebtOrder === "function" &&
         typeof object.fromDebtRegistryEntry === "function" &&
         typeof object.getRepaymentSchedule === "function" &&
         typeof object.unpackParameters === "function"

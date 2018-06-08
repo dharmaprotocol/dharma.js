@@ -114,7 +114,7 @@ export class OrderAssertions {
         const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
         if (
-            await debtKernel.debtOrderDataCancelled.callAsync(
+            await debtKernel.debtOrderCancelled.callAsync(
                 debtOrderDataWrapped.getDebtorCommitmentHash(),
             )
         ) {
