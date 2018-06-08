@@ -46,4 +46,13 @@ export class DebtOrder {
         this.creditorSignature = await this.dharma.sign.asDebtor(this);
     }
 
+    public async isCanceled(): Promise<boolean> {
+        // TODO(kayvon): use new method from order api.
+    }
+
+    public async cancel(): Promise<string> {
+        // TODO(kayvon): fix
+        this.dharma.order.cancelOrderAsync(this);
+    }
+
 }
