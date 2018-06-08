@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import { Dharma } from "../";
-import { ECDSASignature, TokenAmount } from "../types";
+import { ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
 
 export class DebtOrder {
     // Signatures
@@ -12,6 +12,8 @@ export class DebtOrder {
         private dharma: Dharma,
         private principal: TokenAmount,
         private collateral: TokenAmount,
+        private interestRate: InterestRate,
+        private term: Term,
     ) {}
 
     public isSignedByUnderwriter(): boolean {
