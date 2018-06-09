@@ -17,7 +17,7 @@ import {
 } from "src/wrappers";
 
 // types
-import { DEBT_ORDER_DEFAULTS, DebtRegistryEntry } from "src/types";
+import { DEBT_ORDER_DATA_DEFAULTS, DebtRegistryEntry } from "src/types";
 
 // adapters
 import {
@@ -474,7 +474,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termLength,
                         }),
                     ).resolves.toEqual({
-                        ...DEBT_ORDER_DEFAULTS,
+                        ...DEBT_ORDER_DATA_DEFAULTS,
                         kernelVersion: debtKernelAddress,
                         issuanceVersion: repaymentRouterAddress,
                         principalAmount,
@@ -509,7 +509,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termLength,
                         }),
                     ).resolves.toEqual({
-                        ...DEBT_ORDER_DEFAULTS,
+                        ...DEBT_ORDER_DATA_DEFAULTS,
                         kernelVersion: debtKernelAddress,
                         issuanceVersion: repaymentRouterAddress,
                         principalAmount,
@@ -544,7 +544,7 @@ describe("Simple Interest Loan Adapter (Unit Tests)", async () => {
                             termLength,
                         }),
                     ).resolves.toEqual({
-                        ...DEBT_ORDER_DEFAULTS,
+                        ...DEBT_ORDER_DATA_DEFAULTS,
                         kernelVersion: debtKernelAddress,
                         issuanceVersion: repaymentRouterAddress,
                         principalAmount,
