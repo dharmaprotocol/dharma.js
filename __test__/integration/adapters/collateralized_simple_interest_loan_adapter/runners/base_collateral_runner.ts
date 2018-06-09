@@ -26,7 +26,7 @@ import { ServicingAPI } from "../../../../../src/apis/servicing_api";
 import { SignerAPI } from "../../../../../src/apis/signer_api";
 
 // Types
-import { DebtOrderData } from "../../../../../src/types/debt_order";
+import { DebtOrderData } from "../../../../../src/types/debt_order_data";
 
 // Accounts
 import { ACCOUNTS } from "../../../../../__test__/accounts";
