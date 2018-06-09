@@ -1,12 +1,9 @@
 import * as _ from "lodash";
 import { Dharma } from "../";
-import { ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
 
 export class DebtOrder {
-    // Signatures
-    private debtorSignature?: ECDSASignature;
-    private creditorSignature?: ECDSASignature;
-    private underwriterSignature?: ECDSASignature;
+    private debtOrderData: DebtOrderData = {};
 
     constructor(
         private dharma: Dharma,
@@ -14,73 +11,73 @@ export class DebtOrder {
         private collateral: TokenAmount,
         private interestRate: InterestRate,
         private term: Term,
-    ) {}
+    ) {
+        this.debtOrderData.principalAmount = principal.rawAmount;
+        this.debtOrderData.principalToken = principal.tokenSymbol;
+    }
 
     public isSignedByUnderwriter(): boolean {
-        return !_.isEmpty(this.underwriterSignature);
+        return !_.isEmpty(this.debtOrderData.underwriterSignature);
     }
 
     public isSignedByDebtor(): boolean {
-        return !_.isEmpty(this.debtorSignature);
+        return !_.isEmpty(this.debtOrderData.debtorSignature);
     }
 
     public isSignedByCreditor(): boolean {
-        return !_.isEmpty(this.creditorSignature);
+        return !_.isEmpty(this.debtOrderData.creditorSignature);
     }
 
     public async signAsCreditor() {
         if (this.isSignedByCreditor()) {
             return;
         }
-        // TODO(kayvon): pass debt order data interface to underyling api methods.
-        this.creditorSignature = await this.dharma.sign.asCreditor(this);
+
+        this.debtOrderData.creditorSignature = await this.dharma.sign.asCreditor(
+            this.debtOrderData,
+            true,
+        );
     }
 
     public async signAsUnderwriter() {
         if (this.isSignedByUnderwriter()) {
             return;
         }
-        // TODO(kayvon): pass debt order data interface to underyling api methods.
-        this.creditorSignature = await this.dharma.sign.asUnderwriter(this);
+
+        this.debtOrderData.underwriterSignature = await this.dharma.sign.asUnderwriter(
+            this.debtOrderData,
+            true,
+        );
     }
 
     public async signAsDebtor() {
         if (this.isSignedByDebtor()) {
             return;
         }
-        // TODO(kayvon): pass debt order data interface to underyling api methods.
-        this.creditorSignature = await this.dharma.sign.asDebtor(this);
+
+        this.debtOrderData.debtorSignature = await this.dharma.sign.asDebtor(
+            this.debtOrderData,
+            true,
+        );
     }
 
-    public async isCanceled(): Promise<boolean> {
-        // TODO(kayvon): pass debt order data interface to underyling api methods.
-        return this.dharma.order.isCancelled(this);
+    public async isCancelled(): Promise<boolean> {
+        return this.dharma.order.isCancelled(this.debtOrderData);
     }
 
     public async cancel(): Promise<string> {
-        // TODO(kayvon): fix
-        this.dharma.order.cancelOrderAsync(this);
+        return this.dharma.order.cancelOrderAsync(this.debtOrderData);
     }
 
     public async isFilled(): Promise<boolean> {
-        // TODO(kayvon): fix
-        return this.dharma.order.checkOrderFilledAsync(this);
+        return this.dharma.order.checkOrderFilledAsync(this.debtOrderData);
     }
 
     public async fill(): Promise<string> {
-        // TODO(kayvon): fix
-        return this.dharma.order.fillAsync(this);
+        return this.dharma.order.fillAsync(this.debtOrderData);
     }
 
-    public async isDelinquent(): Promise<boolean> {
-        // stub
-    }
-
-    public async isFullyRepaid(): Promise<boolean> {
-        // stub
-    }
-
-    public async hasCollateralBeenSeized(): Promise<boolean> {
-        // stub
+    private serialize(): DebtOrderData {
+        return this.debtOrderData;
     }
 }
