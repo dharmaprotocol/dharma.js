@@ -1,9 +1,9 @@
 import * as _ from "lodash";
 import { BigNumber } from "../../utils/bignumber";
 
+import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
-import { Dharma } from "../";
 
 export interface DebtOrderParams {
     principal: TokenAmount;
