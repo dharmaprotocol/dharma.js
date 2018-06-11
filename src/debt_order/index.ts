@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import * as moment from "moment";
 
 import { BigNumber } from "../../utils/bignumber";
 
@@ -7,6 +8,10 @@ import { Dharma } from "../";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
 
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
+
+export type DurationUnit = (
+    "hour" | "hours" | "day" | "days" | "month" | "months" | "year" | "years"
+);
 
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
@@ -31,10 +36,40 @@ export class DebtOrder {
         // This timestamp comes from the blockchain.
         const expirationTimestamp: BigNumber = this.debtOrderData.expirationTimestampInSec;
         // We compare this timestamp to the expected timestamp of the next block.
-        const latestBlockTime = await this.dharma.blockchain.getCurrentBlockTime();
+        const latestBlockTime = await this.getCurrentBlocktime();
         const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
 
         return expirationTimestamp.lt(approximateNextBlockTime);
+    }
+
+    /**
+     * Given some duration expressed as an amount (e.g. "5") and unit (e.g. "weeks"), sets the
+     * DebtOrder's expiration equal to the expected blockchain timestamp after that duration
+     * has elapsed from the current time.
+     *
+     * @example
+     * order.setExpiration(5, "days");
+     * => Promise<void>
+     *
+     * order.setExpiration(2, "hours");
+     * => Promise<void>
+     *
+     * order.setExpiration(1, "year");
+     * => Promise<void>
+     *
+     * @param {number} amount
+     * @param {DurationUnit} unit
+     * @returns {Promise<void>}
+     */
+    public async setExpiration(amount: number, unit: DurationUnit): Promise<void> {
+        const latestBlockTime = await this.getCurrentBlocktime();
+
+        // Find the UNIX timestamp in seconds for the intended expiration date.
+        const currentDate = moment.unix(latestBlockTime);
+        const expirationDate = currentDate.add(amount, unit);
+        const expirationInSeconds = expirationDate.unix();
+
+        this.debtOrderData.expirationTimestampInSec = new BigNumber(expirationInSeconds);
     }
 
     public isSignedByUnderwriter(): boolean {
@@ -100,5 +135,9 @@ export class DebtOrder {
 
     private serialize(): DebtOrderData {
         return this.debtOrderData;
+    }
+
+    private async getCurrentBlocktime(): Promise<number> {
+        return this.dharma.blockchain.getCurrentBlockTime();
     }
 }
