@@ -1,6 +1,10 @@
 import * as _ from "lodash";
-import { Dharma } from "../";
+import { BigNumber } from "../../utils/bignumber";
+
+import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+import { Dharma } from "../";
+
 export interface DebtOrderParams {
     principal: TokenAmount;
     collateral: TokenAmount;
@@ -11,16 +15,33 @@ export interface DebtOrderParams {
 
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
+    private debtOrderParams?: DebtOrderParams;
 
-    constructor(
-        private dharma: Dharma,
-        private principal: TokenAmount,
-        private collateral: TokenAmount,
-        private interestRate: InterestRate,
-        private term: Term,
-    ) {
-        this.debtOrderData.principalAmount = principal.rawAmount;
-        this.debtOrderData.principalToken = principal.tokenSymbol;
+    constructor(private dharma: Dharma) {}
+
+    public async open(params: DebtOrderParams) {
+        const { principal, collateral, interestRate, term, debtor } = params;
+
+        const loanOrder: CollateralizedSimpleInterestLoanOrder = {
+            principalAmount: principal.rawAmount,
+            principalTokenSymbol: principal.tokenSymbol,
+
+            interestRate: interestRate.raw,
+            amortizationUnit: term.unit,
+            termLength: term.length(),
+
+            collateralTokenSymbol: principal.tokenSymbol,
+            collateralAmount: collateral.rawAmount,
+            gracePeriodInDays: new BigNumber(0),
+        };
+
+        this.debtOrderData = await this.dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(
+            loanOrder,
+        );
+
+        this.debtOrderData.debtor = debtor;
+
+        await this.signAsDebtor();
     }
 
     public isSignedByUnderwriter(): boolean {
