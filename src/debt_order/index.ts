@@ -34,7 +34,7 @@ export class DebtOrder {
 
             interestRate: interestRate.raw,
             amortizationUnit: term.unit,
-            termLength: term.length(),
+            termLength: term.getLength(),
 
             collateralTokenSymbol: principal.tokenSymbol,
             collateralAmount: collateral.rawAmount,

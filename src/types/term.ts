@@ -36,7 +36,7 @@ export class Term {
         public installments: number,
     ) {}
 
-    public length(): BigNumber {
+    public getLength(): BigNumber {
         return new BigNumber(this.duration);
     }
 }
