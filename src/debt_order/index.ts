@@ -9,9 +9,15 @@ import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "
 
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
-export type DurationUnit = (
-    "hour" | "hours" | "day" | "days" | "month" | "months" | "year" | "years"
-);
+export type DurationUnit =
+    | "hour"
+    | "hours"
+    | "day"
+    | "days"
+    | "month"
+    | "months"
+    | "year"
+    | "years";
 
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
