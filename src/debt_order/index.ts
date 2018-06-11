@@ -1,6 +1,13 @@
 import * as _ from "lodash";
 import { Dharma } from "../";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+export interface DebtOrderParams {
+    principal: TokenAmount;
+    collateral: TokenAmount;
+    interestRate: InterestRate;
+    term: Term;
+    debtor: string;
+}
 
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
