@@ -161,18 +161,22 @@ export class DebtOrder {
         return this.dharma.order.fillAsync(this.debtOrderData);
     }
 
-    public async hasCollateralBeenSeized(): Promise<boolean> {
-        // stub.
-        return false;
+    public async isCollateralWithdrawn(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.isCollateralWithdrawn(
+            this.getAgreementId(),
+        );
     }
 
     public async isCollateralSeizable(): Promise<boolean> {
-        // stub
-        return false;
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.canSeizeCollateral(
+            this.getAgreementId(),
+        );
     }
 
     public async isCollateralReturnable(): Promise<boolean> {
-        return false;
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.canReturnCollateral(
+            this.getAgreementId(),
+        );
     }
 
     private isSignedByCreditor(): boolean {
