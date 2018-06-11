@@ -86,7 +86,7 @@ export class DebtOrder {
     public async fill(parameters: FillParameters): Promise<string> {
         this.debtOrderData.creditor = parameters.creditorAddress;
 
-        this.debtOrderData.creditorSignature = await this.signAsCreditor();
+        await this.signAsCreditor();
 
         return this.dharma.order.fillAsync(this.debtOrderData);
     }
@@ -95,17 +95,15 @@ export class DebtOrder {
         return !_.isEmpty(this.debtOrderData.creditorSignature);
     }
 
-    private async signAsCreditor(): Promise<ECDSASignature> {
+    private async signAsCreditor() {
         if (this.isSignedByCreditor()) {
-            return this.debtOrderData.creditorSignature;
+            return;
         }
 
         this.debtOrderData.creditorSignature = await this.dharma.sign.asCreditor(
             this.debtOrderData,
             true,
         );
-
-        return this.debtOrderData.creditorSignature;
     }
 
     private serialize(): DebtOrderData {
