@@ -24,21 +24,6 @@ export class DebtOrder {
         return !_.isEmpty(this.debtOrderData.debtorSignature);
     }
 
-    public isSignedByCreditor(): boolean {
-        return !_.isEmpty(this.debtOrderData.creditorSignature);
-    }
-
-    public async signAsCreditor() {
-        if (this.isSignedByCreditor()) {
-            return;
-        }
-
-        this.debtOrderData.creditorSignature = await this.dharma.sign.asCreditor(
-            this.debtOrderData,
-            true,
-        );
-    }
-
     public async signAsUnderwriter() {
         if (this.isSignedByUnderwriter()) {
             return;
@@ -73,8 +58,29 @@ export class DebtOrder {
         return this.dharma.order.checkOrderFilledAsync(this.debtOrderData);
     }
 
-    public async fill(): Promise<string> {
+    public async fill(creditorAddress: string): Promise<string> {
+        this.debtOrderData.creditor = creditorAddress;
+
+        this.debtOrderData.creditorSignature = await this.signAsCreditor();
+
         return this.dharma.order.fillAsync(this.debtOrderData);
+    }
+
+    private isSignedByCreditor(): boolean {
+        return !_.isEmpty(this.debtOrderData.creditorSignature);
+    }
+
+    private async signAsCreditor(): Promise<ECDSASignature> {
+        if (this.isSignedByCreditor()) {
+            return Promise.resolve(this.debtOrderData.creditorSignature);
+        }
+
+        this.debtOrderData.creditorSignature = await this.dharma.sign.asCreditor(
+            this.debtOrderData,
+            true,
+        );
+
+        return Promise.resolve(this.debtOrderData.creditorSignature);
     }
 
     private serialize(): DebtOrderData {
