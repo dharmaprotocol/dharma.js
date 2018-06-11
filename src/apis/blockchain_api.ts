@@ -1,4 +1,5 @@
 import * as singleLineString from "single-line-string";
+import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
 
 import { ContractsAPI } from ".";
@@ -27,10 +28,14 @@ export class BlockchainAPI {
 
     private readonly web3Utils: Web3Utils;
 
+    private readonly web3: Web3;
+
     private assert;
     private contracts: ContractsAPI;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
+        this.web3 = web3;
+
         this.web3Utils = new Web3Utils(web3);
         this.intervalManager = new IntervalManager();
         this.assert = new Assertions(web3, contracts);
@@ -84,5 +89,25 @@ export class BlockchainAPI {
                 timeoutMs,
             );
         });
+    }
+
+    /**
+     * Returns the current blocktime in seconds.
+     *
+     * @returns {Promise<number>}
+     */
+    public async getCurrentBlockTime(): Promise<number> {
+        const currentBlock = await this.getCurrentBlock();
+
+        return currentBlock.timestamp;
+    }
+
+    /**
+     * Returns the current block data, as BlockWithoutTransactionData.
+     *
+     * @returns {Promise<Web3.BlockWithoutTransactionData>}
+     */
+    public async getCurrentBlock(): Promise<Web3.BlockWithoutTransactionData> {
+        return promisify(this.web3.eth.getBlock)("latest");
     }
 }
