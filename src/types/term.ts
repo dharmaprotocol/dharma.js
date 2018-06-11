@@ -36,7 +36,7 @@ export class Term {
         public installments: number,
     ) {}
 
-    public numberOfSeconds(): BigNumber {
-        return new BigNumber(numberOfSeconds(this.unit));
+    public length(): BigNumber {
+        return new BigNumber(this.duration);
     }
 }
