@@ -2,6 +2,10 @@ import * as _ from "lodash";
 import { Dharma } from "../";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
 
+export interface FillParameters {
+    creditorAddress: string;
+}
+
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
 
@@ -58,8 +62,8 @@ export class DebtOrder {
         return this.dharma.order.checkOrderFilledAsync(this.debtOrderData);
     }
 
-    public async fill(creditorAddress: string): Promise<string> {
-        this.debtOrderData.creditor = creditorAddress;
+    public async fill(parameters: FillParameters): Promise<string> {
+        this.debtOrderData.creditor = parameters.creditorAddress;
 
         this.debtOrderData.creditorSignature = await this.signAsCreditor();
 
@@ -72,7 +76,7 @@ export class DebtOrder {
 
     private async signAsCreditor(): Promise<ECDSASignature> {
         if (this.isSignedByCreditor()) {
-            return Promise.resolve(this.debtOrderData.creditorSignature);
+            return this.debtOrderData.creditorSignature;
         }
 
         this.debtOrderData.creditorSignature = await this.dharma.sign.asCreditor(
@@ -80,7 +84,7 @@ export class DebtOrder {
             true,
         );
 
-        return Promise.resolve(this.debtOrderData.creditorSignature);
+        return this.debtOrderData.creditorSignature;
     }
 
     private serialize(): DebtOrderData {
