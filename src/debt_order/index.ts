@@ -140,7 +140,7 @@ export class DebtOrder {
         return !_.isEmpty(this.debtOrderData.creditorSignature);
     }
 
-    private async signAsCreditor() {
+    private async signAsCreditor(): Promise<void> {
         if (this.isSignedByCreditor()) {
             return;
         }
