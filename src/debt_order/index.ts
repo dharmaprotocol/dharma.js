@@ -5,6 +5,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+import { DebtOrderDataWrapper } from "../wrappers";
 
 export interface DebtOrderParams {
     principal: TokenAmount;
@@ -160,6 +161,24 @@ export class DebtOrder {
         return this.dharma.order.fillAsync(this.debtOrderData);
     }
 
+    public async isCollateralWithdrawn(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.isCollateralWithdrawn(
+            this.getAgreementId(),
+        );
+    }
+
+    public async isCollateralSeizable(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.canSeizeCollateral(
+            this.getAgreementId(),
+        );
+    }
+
+    public async isCollateralReturnable(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.canReturnCollateral(
+            this.getAgreementId(),
+        );
+    }
+
     private isSignedByCreditor(): boolean {
         return !_.isEmpty(this.debtOrderData.creditorSignature);
     }
@@ -173,6 +192,10 @@ export class DebtOrder {
             this.debtOrderData,
             true,
         );
+    }
+
+    private getAgreementId(): string {
+        return new DebtOrderDataWrapper(this.debtOrderData).getHash();
     }
 
     private serialize(): DebtOrderData {
