@@ -1,6 +1,12 @@
 import * as _ from "lodash";
+
+import { BigNumber } from "../../utils/bignumber";
+
 import { Dharma } from "../";
+
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+
+import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
@@ -14,6 +20,21 @@ export class DebtOrder {
     ) {
         this.debtOrderData.principalAmount = principal.rawAmount;
         this.debtOrderData.principalToken = principal.tokenSymbol;
+    }
+
+    /**
+     * Eventually returns true if the current debt order will be expired for the next block.
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isExpired(): Promise<boolean> {
+        // This timestamp comes from the blockchain.
+        const expirationTimestamp: BigNumber = this.debtOrderData.expirationTimestampInSec;
+        // We compare this timestamp to the expected timestamp of the next block.
+        const latestBlockTime = await this.dharma.blockchain.getCurrentBlockTime();
+        const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
+
+        return expirationTimestamp.lt(approximateNextBlockTime);
     }
 
     public isSignedByUnderwriter(): boolean {

@@ -7,6 +7,13 @@ export namespace ERC20TokenSymbol {
     export const MKR = "MKR";
 }
 
+/**
+ * An estimate of Ethereum blocktime: The typical number of sections between each block.
+ *
+ * @type {number}
+ */
+export const BLOCK_TIME_ESTIMATE_SECONDS = 14;
+
 export const NULL_ECDSA_SIGNATURE = {
     r: "",
     s: "",
