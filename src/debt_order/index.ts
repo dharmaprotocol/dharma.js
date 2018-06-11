@@ -35,35 +35,35 @@ export interface FillParameters {
 }
 
 export class DebtOrder {
-    private debtOrderData: DebtOrderData = {};
-    private debtOrderParams?: DebtOrderParams;
-
-    constructor(private dharma: Dharma) {}
-
-    public async open(params: DebtOrderParams) {
+    public static async create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder> {
         const { principal, collateral, interestRate, term, debtorAddress } = params;
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
             principalTokenSymbol: principal.tokenSymbol,
-
             interestRate: interestRate.raw,
             amortizationUnit: term.unit,
             termLength: term.getLength(),
-
             collateralTokenSymbol: principal.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
         };
 
-        this.debtOrderData = await this.dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(
-            loanOrder,
-        );
+        const data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
+        data.debtor = debtorAddress;
 
-        this.debtOrderData.debtor = debtorAddress;
+        const debtOrder = new DebtOrder(dharma, params, data);
 
-        await this.signAsDebtor();
+        await debtOrder.signAsDebtor();
+
+        return debtOrder;
     }
+
+    private constructor(
+        private dharma: Dharma,
+        private params: DebtOrderParams,
+        private data: DebtOrderData,
+    ) {}
 
     /**
      * Eventually returns true if the current debt order will be expired for the next block.
@@ -72,7 +72,7 @@ export class DebtOrder {
      */
     public async isExpired(): Promise<boolean> {
         // This timestamp comes from the blockchain.
-        const expirationTimestamp: BigNumber = this.debtOrderData.expirationTimestampInSec;
+        const expirationTimestamp: BigNumber = this.data.expirationTimestampInSec;
         // We compare this timestamp to the expected timestamp of the next block.
         const latestBlockTime = await this.getCurrentBlocktime();
         const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
@@ -107,15 +107,15 @@ export class DebtOrder {
         const expirationDate = currentDate.add(amount, unit);
         const expirationInSeconds = expirationDate.unix();
 
-        this.debtOrderData.expirationTimestampInSec = new BigNumber(expirationInSeconds);
+        this.data.expirationTimestampInSec = new BigNumber(expirationInSeconds);
     }
 
     public isSignedByUnderwriter(): boolean {
-        return !_.isEmpty(this.debtOrderData.underwriterSignature);
+        return !_.isEmpty(this.data.underwriterSignature);
     }
 
     public isSignedByDebtor(): boolean {
-        return !_.isEmpty(this.debtOrderData.debtorSignature);
+        return !_.isEmpty(this.data.debtorSignature);
     }
 
     public async signAsUnderwriter() {
@@ -123,10 +123,7 @@ export class DebtOrder {
             return;
         }
 
-        this.debtOrderData.underwriterSignature = await this.dharma.sign.asUnderwriter(
-            this.debtOrderData,
-            true,
-        );
+        this.data.underwriterSignature = await this.dharma.sign.asUnderwriter(this.data, true);
     }
 
     public async signAsDebtor() {
@@ -134,34 +131,31 @@ export class DebtOrder {
             return;
         }
 
-        this.debtOrderData.debtorSignature = await this.dharma.sign.asDebtor(
-            this.debtOrderData,
-            true,
-        );
+        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, true);
     }
 
     public async isCancelled(): Promise<boolean> {
-        return this.dharma.order.isCancelled(this.debtOrderData);
+        return this.dharma.order.isCancelled(this.data);
     }
 
     public async cancel(): Promise<string> {
-        return this.dharma.order.cancelOrderAsync(this.debtOrderData);
+        return this.dharma.order.cancelOrderAsync(this.data);
     }
 
     public async isFilled(): Promise<boolean> {
-        return this.dharma.order.checkOrderFilledAsync(this.debtOrderData);
+        return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
     public async fill(parameters: FillParameters): Promise<string> {
-        this.debtOrderData.creditor = parameters.creditorAddress;
+        this.data.creditor = parameters.creditorAddress;
 
         await this.signAsCreditor();
 
-        return this.dharma.order.fillAsync(this.debtOrderData);
+        return this.dharma.order.fillAsync(this.data);
     }
 
     private isSignedByCreditor(): boolean {
-        return !_.isEmpty(this.debtOrderData.creditorSignature);
+        return !_.isEmpty(this.data.creditorSignature);
     }
 
     private async signAsCreditor(): Promise<void> {
@@ -169,14 +163,11 @@ export class DebtOrder {
             return;
         }
 
-        this.debtOrderData.creditorSignature = await this.dharma.sign.asCreditor(
-            this.debtOrderData,
-            true,
-        );
+        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, true);
     }
 
     private serialize(): DebtOrderData {
-        return this.debtOrderData;
+        return this.data;
     }
 
     private async getCurrentBlocktime(): Promise<number> {
