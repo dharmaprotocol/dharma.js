@@ -51,6 +51,8 @@ export class Web3Utils {
     /**
      * Returns the current blocktime in seconds.
      *
+     * @deprecated Extract this into Blockchain API.
+     *
      * @returns {Promise<number>}
      */
     public async getCurrentBlockTime(): Promise<number> {
@@ -59,6 +61,11 @@ export class Web3Utils {
         return currentBlock.timestamp;
     }
 
+    /**
+     * @deprecated Extract this into Blockchain API.
+     *
+     * @returns {Promise<Web3.BlockWithoutTransactionData>}
+     */
     public async getCurrentBlock(): Promise<Web3.BlockWithoutTransactionData> {
         return promisify(
             this.web3.eth.getBlock,

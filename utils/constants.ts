@@ -7,6 +7,8 @@ export namespace ERC20TokenSymbol {
     export const MKR = "MKR";
 }
 
+export const BLOCK_TIME_ESTIMATE_SECONDS = 14;
+
 export const NULL_ECDSA_SIGNATURE = {
     r: "",
     s: "",
