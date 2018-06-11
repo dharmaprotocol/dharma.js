@@ -5,6 +5,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
 export class DebtOrder {

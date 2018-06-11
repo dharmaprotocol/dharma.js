@@ -108,8 +108,6 @@ export class BlockchainAPI {
      * @returns {Promise<Web3.BlockWithoutTransactionData>}
      */
     public async getCurrentBlock(): Promise<Web3.BlockWithoutTransactionData> {
-        return promisify(
-            this.web3.eth.getBlock,
-        )("latest");
+        return promisify(this.web3.eth.getBlock)("latest");
     }
 }
