@@ -10,7 +10,7 @@ import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
 /**
- * A list of options for specifying in units of duration, in singular and plural forms,
+ * A list of options for specifying units of duration, in singular and plural forms,
  * ranging from hours as the smallest value to years as the largest.
  */
 export type DurationUnit =
