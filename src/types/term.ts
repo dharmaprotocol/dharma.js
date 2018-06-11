@@ -27,6 +27,11 @@ export enum AmortizationUnitType {
     Weeks,
     Months,
     Years,
+    Hours = "hours",
+    Days = "days",
+    Weeks = "weeks",
+    Months = "months",
+    Years = "years",
 }
 
 export class Term {
