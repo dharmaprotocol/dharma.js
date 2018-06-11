@@ -10,7 +10,7 @@ export interface DebtOrderParams {
     collateral: TokenAmount;
     interestRate: InterestRate;
     term: Term;
-    debtor: string;
+    debtorAddress: string;
 }
 
 export class DebtOrder {
@@ -20,7 +20,7 @@ export class DebtOrder {
     constructor(private dharma: Dharma) {}
 
     public async open(params: DebtOrderParams) {
-        const { principal, collateral, interestRate, term, debtor } = params;
+        const { principal, collateral, interestRate, term, debtorAddress } = params;
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
@@ -39,7 +39,7 @@ export class DebtOrder {
             loanOrder,
         );
 
-        this.debtOrderData.debtor = debtor;
+        this.debtOrderData.debtor = debtorAddress;
 
         await this.signAsDebtor();
     }
