@@ -6,27 +6,22 @@ const WEEK_LENGTH_IN_SECONDS = DAY_LENGTH_IN_SECONDS * 7;
 const MONTH_LENGTH_IN_SECONDS = DAY_LENGTH_IN_SECONDS * 30;
 const YEAR_LENGTH_IN_SECONDS = DAY_LENGTH_IN_SECONDS * 365;
 
-function numberOfSeconds(unit: AmortizationUnitType): number {
+function numberOfSeconds(unit: AmortizationUnitCode): number {
     switch (unit) {
-        case AmortizationUnitType.Hours:
+        case AmortizationUnitCode.Hours:
             return HOUR_LENGTH_IN_SECONDS;
-        case AmortizationUnitType.Days:
+        case AmortizationUnitCode.Days:
             return DAY_LENGTH_IN_SECONDS;
-        case AmortizationUnitType.Weeks:
+        case AmortizationUnitCode.Weeks:
             return WEEK_LENGTH_IN_SECONDS;
-        case AmortizationUnitType.Months:
+        case AmortizationUnitCode.Months:
             return MONTH_LENGTH_IN_SECONDS;
-        case AmortizationUnitType.Years:
+        case AmortizationUnitCode.Years:
             return YEAR_LENGTH_IN_SECONDS;
     }
 }
 
-export enum AmortizationUnitType {
-    Hours,
-    Days,
-    Weeks,
-    Months,
-    Years,
+export enum AmortizationUnitCode {
     Hours = "hours",
     Days = "days",
     Weeks = "weeks",
@@ -37,7 +32,7 @@ export enum AmortizationUnitType {
 export class Term {
     constructor(
         public duration: number,
-        public unit: AmortizationUnitType,
+        public unit: AmortizationUnitCode,
         public installments: number,
     ) {}
 
