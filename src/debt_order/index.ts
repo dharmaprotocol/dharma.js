@@ -5,6 +5,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+import { DebtOrderDataWrapper } from "../wrappers";
 
 export interface DebtOrderParams {
     principal: TokenAmount;
@@ -173,6 +174,10 @@ export class DebtOrder {
             this.debtOrderData,
             true,
         );
+    }
+
+    private getAgreementId(): string {
+        return new DebtOrderDataWrapper(this.debtOrderData).getHash();
     }
 
     private serialize(): DebtOrderData {
