@@ -1,11 +1,18 @@
 import * as _ from "lodash";
 import * as moment from "moment";
-
 import { BigNumber } from "../../utils/bignumber";
 
 import { Dharma } from "../";
-
+import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+
+export interface DebtOrderParams {
+    principal: TokenAmount;
+    collateral: TokenAmount;
+    interestRate: InterestRate;
+    term: Term;
+    debtorAddress: string;
+}
 
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
@@ -29,16 +36,33 @@ export interface FillParameters {
 
 export class DebtOrder {
     private debtOrderData: DebtOrderData = {};
+    private debtOrderParams?: DebtOrderParams;
 
-    constructor(
-        private dharma: Dharma,
-        private principal: TokenAmount,
-        private collateral: TokenAmount,
-        private interestRate: InterestRate,
-        private term: Term,
-    ) {
-        this.debtOrderData.principalAmount = principal.rawAmount;
-        this.debtOrderData.principalToken = principal.tokenSymbol;
+    constructor(private dharma: Dharma) {}
+
+    public async open(params: DebtOrderParams) {
+        const { principal, collateral, interestRate, term, debtorAddress } = params;
+
+        const loanOrder: CollateralizedSimpleInterestLoanOrder = {
+            principalAmount: principal.rawAmount,
+            principalTokenSymbol: principal.tokenSymbol,
+
+            interestRate: interestRate.raw,
+            amortizationUnit: term.unit,
+            termLength: term.getLength(),
+
+            collateralTokenSymbol: principal.tokenSymbol,
+            collateralAmount: collateral.rawAmount,
+            gracePeriodInDays: new BigNumber(0),
+        };
+
+        this.debtOrderData = await this.dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(
+            loanOrder,
+        );
+
+        this.debtOrderData.debtor = debtorAddress;
+
+        await this.signAsDebtor();
     }
 
     /**
