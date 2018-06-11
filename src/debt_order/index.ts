@@ -161,6 +161,20 @@ export class DebtOrder {
         return this.dharma.order.fillAsync(this.debtOrderData);
     }
 
+    public async hasCollateralBeenSeized(): Promise<boolean> {
+        // stub.
+        return false;
+    }
+
+    public async isCollateralSeizable(): Promise<boolean> {
+        // stub
+        return false;
+    }
+
+    public async isCollateralReturnable(): Promise<boolean> {
+        return false;
+    }
+
     private isSignedByCreditor(): boolean {
         return !_.isEmpty(this.debtOrderData.creditorSignature);
     }
