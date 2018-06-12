@@ -33,10 +33,7 @@ export class TimeInterval {
      * @param {number} amount
      * @param {DurationUnit} unit
      */
-    constructor(
-        private readonly amount: number,
-        private readonly unit: DurationUnit,
-    ) {}
+    constructor(private readonly amount: number, private readonly unit: DurationUnit) {}
 
     /**
      * Given a UNIX timestamp (e.g. blocktime), returns a UNIX timestamp in seconds
@@ -59,7 +56,6 @@ export class TimeInterval {
      * @returns {BigNumber}
      */
     public fromTimestamp(timestamp: BigNumber): BigNumber {
-        // Find the UNIX timestamp in seconds for the intended expiration date.
         const currentDate = moment.unix(timestamp.toNumber());
         currentDate.add(this.amount, this.unit);
 
