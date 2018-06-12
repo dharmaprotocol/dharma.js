@@ -19,12 +19,12 @@ export type DurationUnit =
     | "years";
 
 /**
- * A class used for representing and manipulating durations of time.
+ * A wrapper for a duration of time expressed as an amount (e.g. "5") and unit (e.g. "weeks").
  */
 export class TimeInterval {
     /**
-     * A wrapper for a duration of time expressed as an amount (e.g. "5") and unit (e.g. "weeks"),
-     * which can be used to create a representation of time relative to a blockchain timestamp.
+     * Given an amount (e.g. 1) and a unit of time (e.g. "year"), creates a representation of
+     * that duration of time.
      *
      * @example
      * const interval = new TimeInterval(3, "months");
@@ -57,6 +57,7 @@ export class TimeInterval {
      */
     public fromTimestamp(timestamp: BigNumber): BigNumber {
         const currentDate = moment.unix(timestamp.toNumber());
+
         currentDate.add(this.amount, this.unit);
 
         const expirationInSeconds = currentDate.unix();
