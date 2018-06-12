@@ -4,13 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import {
-    DebtOrderData,
-    InterestRate,
-    Term,
-    TokenAmount,
-    TokenAmountType,
-} from "../types";
+import { DebtOrderData, InterestRate, Term, TokenAmount, TokenAmountType } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -133,6 +127,40 @@ export class DebtOrder {
         await this.signAsCreditor();
 
         return this.dharma.order.fillAsync(this.data);
+    }
+
+    /**
+     * Makes a repayment on the loan, with the default payment amount being the
+     * expected size of a single installment given the principal, interest rate,
+     * and terms.
+     *
+     * @example
+     * order.makeRepayment();
+     * => Promise<string>
+     *
+     * const outstandingAmount = await order.getOutstandingAmount();
+     * order.makeRepayment(outstandingAmount);
+     * => Promise<string>
+     *
+     * @returns {Promise<string>} the hash of the transaction to make the repayment
+     */
+    public async makeRepayment(repaymentAmount?: TokenAmount): Promise<string> {
+        const agreementId = this.getAgreementId();
+        const tokenSymbol = this.params.principal.tokenSymbol;
+        const principalTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
+            tokenSymbol,
+        );
+
+        // If repaymentAmount is not specified, we default to the expected amount per installment
+        const rawRepaymentAmount = repaymentAmount
+            ? repaymentAmount.rawAmount
+            : await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId);
+
+        return this.dharma.servicing.makeRepayment(
+            agreementId,
+            rawRepaymentAmount,
+            principalTokenAddress,
+        );
     }
 
     public async isCollateralWithdrawn(): Promise<boolean> {
