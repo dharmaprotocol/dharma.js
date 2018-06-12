@@ -3,11 +3,12 @@ import * as moment from "moment";
 
 // Utils
 import { BigNumber } from "../../utils/bignumber";
+
 import { Dharma } from "../index";
 
 /**
  * A list of options for specifying units of duration, in singular and plural forms,
- * ranging from hours as the smallest value to years as the largest.
+ * ranging from "hours" as the smallest value to "years" as the largest.
  */
 export type DurationUnit =
     | "hour"
