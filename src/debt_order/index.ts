@@ -1,5 +1,4 @@
 import * as _ from "lodash";
-import * as moment from "moment";
 import { BigNumber } from "../../utils/bignumber";
 
 import { Dharma } from "../";
@@ -7,7 +6,6 @@ import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralize
 
 import {
     DebtOrderData,
-    ECDSASignature,
     InterestRate,
     Term,
     TokenAmount,

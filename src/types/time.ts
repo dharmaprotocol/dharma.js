@@ -4,7 +4,7 @@ import * as moment from "moment";
 // Utils
 import { BigNumber } from "../../utils/bignumber";
 
-import { Dharma } from "../index";
+import { Dharma } from "../";
 
 /**
  * A list of options for specifying units of duration, in singular and plural forms,
@@ -37,7 +37,11 @@ export class Time {
      * @param {DurationUnit} unit
      * @returns {Promise<BigNumber>}
      */
-    public static async afterDuration(dharma: Dharma, amount: number, unit: DurationUnit) {
+    public static async afterDuration(
+        dharma: Dharma,
+        amount: number,
+        unit: DurationUnit,
+    ): Promise<BigNumber> {
         const latestBlockTime = await dharma.blockchain.getCurrentBlockTime();
 
         // Find the UNIX timestamp in seconds for the intended expiration date.
