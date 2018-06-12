@@ -52,14 +52,19 @@ export class Time {
      * Given a string representation of a date, returns the UNIX timestamp in seconds.
      *
      * @example
-     * Time.at("2013-02-08")
+     * const timestamp = Time.at("2013-02-08")
+     * => { ... }
+     *
+     * timestamp.toNumber();
      * => 1360310400
      *
      * @param {string} dateInput
      * @returns {number}
      */
-    public static at(dateInput: string) {
+    public static at(dateInput: string): BigNumber {
         const date = moment(dateInput);
-        return date.unix();
+        const timestamp = date.unix();
+
+        return new BigNumber(timestamp);
     }
 }
