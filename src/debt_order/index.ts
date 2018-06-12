@@ -13,6 +13,7 @@ import {
     TokenAmount,
     TokenAmountType,
 } from "../types";
+
 import { DebtOrderDataWrapper } from "../wrappers";
 
 export interface DebtOrderParams {
@@ -197,7 +198,7 @@ export class DebtOrder {
             agreementId,
         );
 
-        const tokenSymbol = this.debtOrderParams.principal.tokenSymbol;
+        const tokenSymbol = this.params.principal.tokenSymbol;
 
         return new TokenAmount({
             amount: totalExpectedRepaymentAmount,
@@ -224,7 +225,7 @@ export class DebtOrder {
             repaidAmount.rawAmount,
         );
 
-        const tokenSymbol = this.debtOrderParams.principal.tokenSymbol;
+        const tokenSymbol = this.params.principal.tokenSymbol;
 
         return new TokenAmount({
             amount: outstandingAmount,
@@ -247,7 +248,7 @@ export class DebtOrder {
 
         const repaidAmount = await this.dharma.servicing.getValueRepaid(agreementId);
 
-        const tokenSymbol = this.debtOrderParams.principal.tokenSymbol;
+        const tokenSymbol = this.params.principal.tokenSymbol;
 
         return new TokenAmount({
             amount: repaidAmount,
@@ -269,7 +270,7 @@ export class DebtOrder {
     }
 
     private getAgreementId(): string {
-        return new DebtOrderDataWrapper(this.debtOrderData).getIssuanceCommitmentHash();
+        return new DebtOrderDataWrapper(this.data).getIssuanceCommitmentHash();
     }
 
     private serialize(): DebtOrderData {
