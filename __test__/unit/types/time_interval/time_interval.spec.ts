@@ -6,7 +6,9 @@ describe("TimeInterval", () => {
     timeIntervalScenarios.forEach((scenario) => {
         let interval: TimeInterval;
 
-        describe(`when instantiated with ${scenario.amount} as the amount, and '${scenario.unit}' as the unit`, () => {
+        describe(`when instantiated with ${scenario.amount} as the amount, and '${
+            scenario.unit
+        }' as the unit`, () => {
             beforeEach(() => {
                 interval = new TimeInterval(scenario.amount, scenario.unit);
             });
@@ -18,11 +20,11 @@ describe("TimeInterval", () => {
 
             describe("#fromTimestamp", () => {
                 describe(`when given ${scenario.currentBlockTime} as an argument`, () => {
-                   it(`returns ${scenario.blockTimeAfterInterval}`, () => {
-                       expect(
-                           interval.fromTimestamp((scenario.currentBlockTime)),
-                       ).toEqual(scenario.blockTimeAfterInterval);
-                   });
+                    it(`returns ${scenario.blockTimeAfterInterval}`, () => {
+                        expect(interval.fromTimestamp(scenario.currentBlockTime)).toEqual(
+                            scenario.blockTimeAfterInterval,
+                        );
+                    });
                 });
             });
         });
