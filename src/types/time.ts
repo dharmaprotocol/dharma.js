@@ -21,55 +21,34 @@ export type DurationUnit =
     | "years";
 
 /**
- * A class used for representing expiration time as it would appear on the blockchain.
+ * A class used for representing time as it would appear on the blockchain.
  */
-export class ExpirationTime {
+export class Time {
     /**
      * Given some duration expressed as an amount (e.g. "5") and unit (e.g. "weeks"), creates the
      * a representation of an expiration time equal to the expected blockchain timestamp after that
      * duration has elapsed from the current time.
      *
-     * @example
-     * const expiration = new ExpirationTime(5, "days");
-     * => void
-     *
-     * expiration.toBigNumber();
+     * Time.afterDuration(2, "hours");
      * => Promise<BigNumber>
-     *
-     * new ExpirationTime(2, "hours");
-     * => void
-     *
-     * new ExpirationTime(1, "year");
-     * => void
      *
      * @param {Dharma} dharma
      * @param {number} amount
      * @param {DurationUnit} unit
-     * @returns {Promise<void>}
+     * @returns {Promise<BigNumber>}
      */
-    constructor(
-        private readonly dharma: Dharma,
-        private readonly amount: number,
-        private readonly unit: DurationUnit,
-    ) {}
-
-    /**
-     * Returns the expiration time in seconds as a BigNumber.
-     *
-     * @returns {BigNumber}
-     */
-    public async toBigNumber(): Promise<BigNumber> {
-        const latestBlockTime = await this.getCurrentBlocktime();
+    public static async afterDuration(
+        dharma: Dharma,
+        amount: number,
+        unit: DurationUnit,
+    ) {
+        const latestBlockTime = await dharma.blockchain.getCurrentBlockTime();
 
         // Find the UNIX timestamp in seconds for the intended expiration date.
         const currentDate = moment.unix(latestBlockTime);
-        const expirationDate = currentDate.add(this.amount, this.unit);
+        const expirationDate = currentDate.add(amount, unit);
         const expirationInSeconds = expirationDate.unix();
 
         return new BigNumber(expirationInSeconds);
-    }
-
-    private async getCurrentBlocktime(): Promise<number> {
-        return this.dharma.blockchain.getCurrentBlockTime();
     }
 }

@@ -8,7 +8,6 @@ import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralize
 import {
     DebtOrderData,
     ECDSASignature,
-    ExpirationTime,
     InterestRate,
     Term,
     TokenAmount,
@@ -21,7 +20,7 @@ export interface DebtOrderParams {
     principal: TokenAmount;
     collateral: TokenAmount;
     interestRate: InterestRate;
-    expirationTime: ExpirationTime;
+    expirationTime: BigNumber;
     term: Term;
     debtorAddress: string;
 }
@@ -45,7 +44,7 @@ export class DebtOrder {
             collateralTokenSymbol: principal.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
-            expirationTimestampInSec: await expirationTime.toBigNumber(),
+            expirationTimestampInSec: expirationTime,
         };
 
         const data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
