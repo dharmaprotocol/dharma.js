@@ -59,10 +59,15 @@ export class DebtOrder {
             gracePeriodInDays: new BigNumber(0),
         };
 
-        let data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
-        data.debtor = debtorAddress;
+        const data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
+        const debtKernel = await dharma.contracts.loadDebtKernelAsync();
+        const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
+        const salt = this.generateSalt();
 
-        data = await this.generateDataWithDefaults(dharma, data);
+        data.debtor = debtorAddress;
+        data.kernelVersion = debtKernel.address;
+        data.issuanceVersion = repaymentRouter.address;
+        data.salt = salt;
 
         const debtOrder = new DebtOrder(dharma, params, data);
 
@@ -71,20 +76,12 @@ export class DebtOrder {
         return debtOrder;
     }
 
-    private static async generateDataWithDefaults(dharma: Dharma, originalData: DebtOrderData) {
-        const data = _.cloneDeep(originalData);
-
-        const debtKernel = await dharma.contracts.loadDebtKernelAsync();
-        const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
+    private static generateSalt(): BigNumber {
         const randomNumberArray = new Uint32Array(1);
         // NOTE: window.crypto.getRandomValues could be overridden by the end user, but we don't view this as an attack.
         window.crypto.getRandomValues(randomNumberArray);
 
-        data.kernelVersion = debtKernel.address;
-        data.issuanceVersion = repaymentRouter.address;
-        data.salt = new BigNumber(randomNumberArray[0]);
-
-        return data;
+        return new BigNumber(randomNumberArray[0]);
     }
 
     private constructor(
