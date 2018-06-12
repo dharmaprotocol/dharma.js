@@ -60,13 +60,28 @@ export class DebtOrder {
         };
 
         const data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
+        const debtKernel = await dharma.contracts.loadDebtKernelAsync();
+        const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
+        const salt = this.generateSalt();
+
         data.debtor = debtorAddress;
+        data.kernelVersion = debtKernel.address;
+        data.issuanceVersion = repaymentRouter.address;
+        data.salt = salt;
 
         const debtOrder = new DebtOrder(dharma, params, data);
 
         await debtOrder.signAsDebtor();
 
         return debtOrder;
+    }
+
+    private static generateSalt(): BigNumber {
+        const randomNumberArray = new Uint32Array(1);
+        // NOTE: window.crypto.getRandomValues could be overridden by the end user, but we don't view this as an attack.
+        window.crypto.getRandomValues(randomNumberArray);
+
+        return new BigNumber(randomNumberArray[0]);
     }
 
     private constructor(
