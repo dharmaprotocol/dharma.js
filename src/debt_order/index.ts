@@ -186,7 +186,7 @@ export class DebtOrder {
     }
 
     private getAgreementId(): string {
-        return new DebtOrderDataWrapper(this.debtOrderData).getHash();
+        return new DebtOrderDataWrapper(this.debtOrderData).getIssuanceCommitmentHash();
     }
 
     private serialize(): DebtOrderData {
