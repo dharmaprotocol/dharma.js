@@ -8,6 +8,7 @@ import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralize
 import {
     DebtOrderData,
     ECDSASignature,
+    ExpirationTime,
     InterestRate,
     Term,
     TokenAmount,
@@ -20,25 +21,12 @@ export interface DebtOrderParams {
     principal: TokenAmount;
     collateral: TokenAmount;
     interestRate: InterestRate;
+    expirationTime: ExpirationTime;
     term: Term;
     debtorAddress: string;
 }
 
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
-
-/**
- * A list of options for specifying units of duration, in singular and plural forms,
- * ranging from hours as the smallest value to years as the largest.
- */
-export type DurationUnit =
-    | "hour"
-    | "hours"
-    | "day"
-    | "days"
-    | "month"
-    | "months"
-    | "year"
-    | "years";
 
 export interface FillParameters {
     creditorAddress: string;
@@ -46,7 +34,7 @@ export interface FillParameters {
 
 export class DebtOrder {
     public static async create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder> {
-        const { principal, collateral, interestRate, term, debtorAddress } = params;
+        const { principal, collateral, interestRate, term, debtorAddress, expirationTime } = params;
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
@@ -57,6 +45,7 @@ export class DebtOrder {
             collateralTokenSymbol: principal.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
+            expirationTimestampInSec: await expirationTime.toBigNumber(),
         };
 
         const data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
@@ -88,36 +77,6 @@ export class DebtOrder {
         const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
 
         return expirationTimestamp.lt(approximateNextBlockTime);
-    }
-
-    /**
-     * Given some duration expressed as an amount (e.g. "5") and unit (e.g. "weeks"), sets the
-     * DebtOrder's expiration equal to the expected blockchain timestamp after that duration
-     * has elapsed from the current time.
-     *
-     * @example
-     * order.setExpiration(5, "days");
-     * => Promise<void>
-     *
-     * order.setExpiration(2, "hours");
-     * => Promise<void>
-     *
-     * order.setExpiration(1, "year");
-     * => Promise<void>
-     *
-     * @param {number} amount
-     * @param {DurationUnit} unit
-     * @returns {Promise<void>}
-     */
-    public async setExpiration(amount: number, unit: DurationUnit): Promise<void> {
-        const latestBlockTime = await this.getCurrentBlocktime();
-
-        // Find the UNIX timestamp in seconds for the intended expiration date.
-        const currentDate = moment.unix(latestBlockTime);
-        const expirationDate = currentDate.add(amount, unit);
-        const expirationInSeconds = expirationDate.unix();
-
-        this.data.expirationTimestampInSec = new BigNumber(expirationInSeconds);
     }
 
     public isSignedByUnderwriter(): boolean {
