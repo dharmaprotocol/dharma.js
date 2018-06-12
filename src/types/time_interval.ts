@@ -13,6 +13,8 @@ export type DurationUnit =
     | "hours"
     | "day"
     | "days"
+    | "week"
+    | "weeks"
     | "month"
     | "months"
     | "year"
@@ -33,7 +35,7 @@ export class TimeInterval {
      * @param {number} amount
      * @param {DurationUnit} unit
      */
-    constructor(private readonly amount: number, private readonly unit: DurationUnit) {}
+    constructor(readonly amount: number, readonly unit: DurationUnit) {}
 
     /**
      * Given a UNIX timestamp (e.g. blocktime), returns a UNIX timestamp in seconds
