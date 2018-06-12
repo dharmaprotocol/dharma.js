@@ -1,41 +1,23 @@
 import * as _ from "lodash";
-import * as moment from "moment";
 import { BigNumber } from "../../utils/bignumber";
 
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
-import {
-    DebtOrderData,
-    ECDSASignature,
-    InterestRate,
-    Term,
-    TokenAmount,
-    TokenAmountType,
-} from "../types";
+
+import { DebtOrderData, InterestRate, Term, TokenAmount, TokenAmountType } from "../types";
+
+import { DebtOrderDataWrapper } from "../wrappers";
 
 export interface DebtOrderParams {
     principal: TokenAmount;
     collateral: TokenAmount;
     interestRate: InterestRate;
+    expirationTime: BigNumber;
     term: Term;
     debtorAddress: string;
 }
 
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
-
-/**
- * A list of options for specifying units of duration, in singular and plural forms,
- * ranging from hours as the smallest value to years as the largest.
- */
-export type DurationUnit =
-    | "hour"
-    | "hours"
-    | "day"
-    | "days"
-    | "month"
-    | "months"
-    | "year"
-    | "years";
 
 export interface FillParameters {
     creditorAddress: string;
@@ -43,7 +25,7 @@ export interface FillParameters {
 
 export class DebtOrder {
     public static async create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder> {
-        const { principal, collateral, interestRate, term, debtorAddress } = params;
+        const { principal, collateral, interestRate, term, debtorAddress, expirationTime } = params;
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
@@ -54,10 +36,18 @@ export class DebtOrder {
             collateralTokenSymbol: principal.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
+            expirationTimestampInSec: expirationTime,
         };
 
         const data = await dharma.adapters.collateralizedSimpleInterestLoan.toDebtOrder(loanOrder);
+        const debtKernel = await dharma.contracts.loadDebtKernelAsync();
+        const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
+        const salt = this.generateSalt();
+
         data.debtor = debtorAddress;
+        data.kernelVersion = debtKernel.address;
+        data.issuanceVersion = repaymentRouter.address;
+        data.salt = salt;
 
         const debtOrder = new DebtOrder(dharma, params, data);
 
@@ -98,6 +88,14 @@ export class DebtOrder {
         return new DebtOrder(dharma, debtOrderParams, data);
     }
 
+    private static generateSalt(): BigNumber {
+        const randomNumberArray = new Uint32Array(1);
+        // NOTE: window.crypto.getRandomValues could be overridden by the end user, but we don't view this as an attack.
+        window.crypto.getRandomValues(randomNumberArray);
+
+        return new BigNumber(randomNumberArray[0]);
+    }
+
     private constructor(
         private dharma: Dharma,
         private params: DebtOrderParams,
@@ -117,36 +115,6 @@ export class DebtOrder {
         const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
 
         return expirationTimestamp.lt(approximateNextBlockTime);
-    }
-
-    /**
-     * Given some duration expressed as an amount (e.g. "5") and unit (e.g. "weeks"), sets the
-     * DebtOrder's expiration equal to the expected blockchain timestamp after that duration
-     * has elapsed from the current time.
-     *
-     * @example
-     * order.setExpiration(5, "days");
-     * => Promise<void>
-     *
-     * order.setExpiration(2, "hours");
-     * => Promise<void>
-     *
-     * order.setExpiration(1, "year");
-     * => Promise<void>
-     *
-     * @param {number} amount
-     * @param {DurationUnit} unit
-     * @returns {Promise<void>}
-     */
-    public async setExpiration(amount: number, unit: DurationUnit): Promise<void> {
-        const latestBlockTime = await this.getCurrentBlocktime();
-
-        // Find the UNIX timestamp in seconds for the intended expiration date.
-        const currentDate = moment.unix(latestBlockTime);
-        const expirationDate = currentDate.add(amount, unit);
-        const expirationInSeconds = expirationDate.unix();
-
-        this.data.expirationTimestampInSec = new BigNumber(expirationInSeconds);
     }
 
     public isSignedByUnderwriter(): boolean {
@@ -193,6 +161,99 @@ export class DebtOrder {
         return this.dharma.order.fillAsync(this.data);
     }
 
+    public async isCollateralWithdrawn(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.isCollateralWithdrawn(
+            this.getAgreementId(),
+        );
+    }
+
+    public async isCollateralSeizable(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.canSeizeCollateral(
+            this.getAgreementId(),
+        );
+    }
+
+    public async isCollateralReturnable(): Promise<boolean> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.canReturnCollateral(
+            this.getAgreementId(),
+        );
+    }
+
+    /**
+     * Returns the total amount expected to be repaid.
+     *
+     * @example
+     * order.getTotalExpectedRepaymentAmount();
+     * => Promise<TokenAmount>
+     *
+     * @returns {Promise<TokenAmount>}
+     */
+    public async getTotalExpectedRepaymentAmount(): Promise<TokenAmount> {
+        const agreementId = this.getAgreementId();
+
+        const totalExpectedRepaymentAmount = await this.dharma.servicing.getTotalExpectedRepayment(
+            agreementId,
+        );
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return new TokenAmount({
+            amount: totalExpectedRepaymentAmount,
+            symbol: tokenSymbol,
+            type: TokenAmountType.Raw,
+        });
+    }
+
+    /**
+     * Returns the outstanding balance of the loan.
+     *
+     * @example
+     * order.getOutstandingAmount();
+     * => Promise<TokenAmount>
+     *
+     * @returns {Promise<TokenAmount>}
+     */
+    public async getOutstandingAmount(): Promise<TokenAmount> {
+        const totalExpectedRepaymentAmount = await this.getTotalExpectedRepaymentAmount();
+
+        const repaidAmount = await this.getRepaidAmount();
+
+        const outstandingAmount = totalExpectedRepaymentAmount.rawAmount.minus(
+            repaidAmount.rawAmount,
+        );
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return new TokenAmount({
+            amount: outstandingAmount,
+            symbol: tokenSymbol,
+            type: TokenAmountType.Raw,
+        });
+    }
+
+    /**
+     * Returns the total amount repaid so far.
+     *
+     * @example
+     * order.getRepaidAmount();
+     * => Promise<TokenAmount>
+     *
+     * @returns {Promise<TokenAmount>}
+     */
+    public async getRepaidAmount(): Promise<TokenAmount> {
+        const agreementId = this.getAgreementId();
+
+        const repaidAmount = await this.dharma.servicing.getValueRepaid(agreementId);
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return new TokenAmount({
+            amount: repaidAmount,
+            symbol: tokenSymbol,
+            type: TokenAmountType.Raw,
+        });
+    }
+
     private isSignedByCreditor(): boolean {
         return !_.isEmpty(this.data.creditorSignature);
     }
@@ -203,6 +264,10 @@ export class DebtOrder {
         }
 
         this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, true);
+    }
+
+    private getAgreementId(): string {
+        return new DebtOrderDataWrapper(this.data).getIssuanceCommitmentHash();
     }
 
     private serialize(): DebtOrderData {
