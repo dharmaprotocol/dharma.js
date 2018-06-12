@@ -30,6 +30,11 @@ export enum AmortizationUnitCode {
 }
 
 export class Term {
+    public static fromRaw(length: BigNumber, unitCode: string): Term {
+        const amortizationUnit = AmortizationUnitCode[unitCode];
+        return new Term(length.toNumber(), amortizationUnit, 0);
+    }
+
     constructor(
         public duration: number,
         public unit: AmortizationUnitCode,
