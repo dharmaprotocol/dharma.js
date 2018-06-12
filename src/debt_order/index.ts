@@ -4,13 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import {
-    DebtOrderData,
-    InterestRate,
-    Term,
-    TokenAmount,
-    TokenAmountType,
-} from "../types";
+import { DebtOrderData, InterestRate, Term, TokenAmount, TokenAmountType } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -60,6 +54,38 @@ export class DebtOrder {
         await debtOrder.signAsDebtor();
 
         return debtOrder;
+    }
+
+    public static async load(dharma: Dharma, data: DebtOrderData): Promise<DebtOrder> {
+        const loanOrder = await dharma.adapters.collateralizedSimpleInterestLoan.fromDebtOrder(
+            data,
+        );
+
+        const principal = new TokenAmount({
+            symbol: loanOrder.principalTokenSymbol,
+            amount: loanOrder.principalAmount,
+            type: TokenAmountType.Raw,
+        });
+
+        const collateral = new TokenAmount({
+            symbol: loanOrder.collateralTokenSymbol,
+            amount: loanOrder.collateralAmount,
+            type: TokenAmountType.Raw,
+        });
+
+        const interestRate = InterestRate.fromRaw(loanOrder.interestRate);
+
+        const term = Term.fromRaw(loanOrder.termLength, loanOrder.amortizationUnit);
+
+        const debtOrderParams = {
+            principal,
+            collateral,
+            interestRate,
+            term,
+            debtorAddress: loanOrder.debtor!, // TODO(kayvon): this could throw.
+        };
+
+        return new DebtOrder(dharma, debtOrderParams, data);
     }
 
     private static generateSalt(): BigNumber {

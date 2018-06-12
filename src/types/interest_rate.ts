@@ -1,9 +1,24 @@
 import { BigNumber } from "../../utils/bignumber";
 
 export class InterestRate {
+    public static fromRaw(value: BigNumber): InterestRate {
+        return new InterestRate(value);
+    }
+
+    public static fromPercent(value: number): InterestRate {
+        return new InterestRate(value);
+    }
+
+    public percent: number;
     public raw: BigNumber;
 
-    constructor(public percent: number) {
-        this.raw = new BigNumber(percent);
+    private constructor(value: number | BigNumber) {
+        if (typeof value === "number") {
+            this.percent = value;
+            this.raw = new BigNumber(value);
+        } else if (value instanceof BigNumber) {
+            this.percent = value.toNumber(); // TODO(kayvon): this implementation is naive.
+            this.raw = value;
+        }
     }
 }
