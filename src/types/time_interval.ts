@@ -28,7 +28,7 @@ export class TimeInterval {
      *
      * @example
      * const interval = new TimeInterval(3, "months");
-     * => void
+     * => { amount: 3, unit: "months", ... }
      *
      * @param {number} amount
      * @param {DurationUnit} unit
