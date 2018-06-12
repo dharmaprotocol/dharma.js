@@ -37,18 +37,29 @@ export class Time {
      * @param {DurationUnit} unit
      * @returns {Promise<BigNumber>}
      */
-    public static async afterDuration(
-        dharma: Dharma,
-        amount: number,
-        unit: DurationUnit,
-    ) {
+    public static async afterDuration(dharma: Dharma, amount: number, unit: DurationUnit) {
         const latestBlockTime = await dharma.blockchain.getCurrentBlockTime();
 
         // Find the UNIX timestamp in seconds for the intended expiration date.
         const currentDate = moment.unix(latestBlockTime);
-        const expirationDate = currentDate.add(amount, unit);
-        const expirationInSeconds = expirationDate.unix();
+        currentDate.add(amount, unit);
+        const expirationInSeconds = currentDate.unix();
 
         return new BigNumber(expirationInSeconds);
+    }
+
+    /**
+     * Given a string representation of a date, returns the UNIX timestamp in seconds.
+     *
+     * @example
+     * Time.at("2013-02-08")
+     * => 1360310400
+     *
+     * @param {string} dateInput
+     * @returns {number}
+     */
+    public static at(dateInput: string) {
+        const date = moment(dateInput);
+        return date.unix();
     }
 }
