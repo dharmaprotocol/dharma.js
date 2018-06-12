@@ -17,7 +17,7 @@ export class InterestRate {
             this.percent = value;
             this.raw = new BigNumber(value);
         } else if (value instanceof BigNumber) {
-            this.percent = value.toNumber(); // TODO(kayvon): this implementation is naive.
+            this.percent = value.toNumber();
             this.raw = value;
         }
     }
