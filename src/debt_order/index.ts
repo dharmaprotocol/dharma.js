@@ -4,7 +4,16 @@ import { BigNumber } from "../../utils/bignumber";
 
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
-import { DebtOrderData, ECDSASignature, InterestRate, Term, TokenAmount } from "../types";
+
+import {
+    DebtOrderData,
+    ECDSASignature,
+    InterestRate,
+    Term,
+    TokenAmount,
+    TokenAmountType,
+} from "../types";
+
 import { DebtOrderDataWrapper } from "../wrappers";
 
 export interface DebtOrderParams {
@@ -173,6 +182,81 @@ export class DebtOrder {
         );
     }
 
+    /**
+     * Returns the total amount expected to be repaid.
+     *
+     * @example
+     * order.getTotalExpectedRepaymentAmount();
+     * => Promise<TokenAmount>
+     *
+     * @returns {Promise<TokenAmount>}
+     */
+    public async getTotalExpectedRepaymentAmount(): Promise<TokenAmount> {
+        const agreementId = this.getAgreementId();
+
+        const totalExpectedRepaymentAmount = await this.dharma.servicing.getTotalExpectedRepayment(
+            agreementId,
+        );
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return new TokenAmount({
+            amount: totalExpectedRepaymentAmount,
+            symbol: tokenSymbol,
+            type: TokenAmountType.Raw,
+        });
+    }
+
+    /**
+     * Returns the outstanding balance of the loan.
+     *
+     * @example
+     * order.getOutstandingAmount();
+     * => Promise<TokenAmount>
+     *
+     * @returns {Promise<TokenAmount>}
+     */
+    public async getOutstandingAmount(): Promise<TokenAmount> {
+        const totalExpectedRepaymentAmount = await this.getTotalExpectedRepaymentAmount();
+
+        const repaidAmount = await this.getRepaidAmount();
+
+        const outstandingAmount = totalExpectedRepaymentAmount.rawAmount.minus(
+            repaidAmount.rawAmount,
+        );
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return new TokenAmount({
+            amount: outstandingAmount,
+            symbol: tokenSymbol,
+            type: TokenAmountType.Raw,
+        });
+    }
+
+    /**
+     * Returns the total amount repaid so far.
+     *
+     * @example
+     * order.getRepaidAmount();
+     * => Promise<TokenAmount>
+     *
+     * @returns {Promise<TokenAmount>}
+     */
+    public async getRepaidAmount(): Promise<TokenAmount> {
+        const agreementId = this.getAgreementId();
+
+        const repaidAmount = await this.dharma.servicing.getValueRepaid(agreementId);
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return new TokenAmount({
+            amount: repaidAmount,
+            symbol: tokenSymbol,
+            type: TokenAmountType.Raw,
+        });
+    }
+
     private isSignedByCreditor(): boolean {
         return !_.isEmpty(this.data.creditorSignature);
     }
@@ -186,7 +270,7 @@ export class DebtOrder {
     }
 
     private getAgreementId(): string {
-        return new DebtOrderDataWrapper(this.debtOrderData).getHash();
+        return new DebtOrderDataWrapper(this.data).getIssuanceCommitmentHash();
     }
 
     private serialize(): DebtOrderData {
