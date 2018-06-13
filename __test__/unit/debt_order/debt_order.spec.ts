@@ -1,16 +1,28 @@
+// Internal dependencies
 import { Dharma } from "../../../src/dharma";
-import { DebtOrder, DebtOrderParams } from "../../../src/debt_order";
 
+// Mock the dependency
 jest.mock("../../../src/dharma");
 
-import { ACCOUNTS } from "__test__/accounts";
+// Debt Order
+import { DebtOrder, DebtOrderParams } from "../../../src/debt_order";
+
+// Types
 import { InterestRate, TimeInterval, TokenAmount } from "../../../src/types";
+
+// Test utils
+import { ACCOUNTS } from "../../accounts";
 
 const debtor = ACCOUNTS[1];
 
 // Create a mocked instance of Dharma.
 const dharma = new Dharma({}, {});
 
+/**
+ * A set of params to test initialization.
+ *
+ * @type DebtOrderParams
+ */
 const defaultParams: DebtOrderParams = {
     principal: new TokenAmount(5, "REP"),
     collateral: new TokenAmount(10, "WETH"),
