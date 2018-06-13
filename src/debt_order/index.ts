@@ -117,11 +117,7 @@ export class DebtOrder {
     }
 
     private static generateSalt(): BigNumber {
-        const randomNumberArray = new Uint32Array(1);
-        // NOTE: window.crypto.getRandomValues could be overridden by the end user, but we don't view this as an attack.
-        window.crypto.getRandomValues(randomNumberArray);
-
-        return new BigNumber(randomNumberArray[0]);
+        return BigNumber.random();
     }
 
     private constructor(
