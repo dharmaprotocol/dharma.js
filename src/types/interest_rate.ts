@@ -5,8 +5,8 @@ export class InterestRate {
         return new InterestRate(value.toNumber());
     }
 
-    public percent: number;
-    public raw: BigNumber;
+    public readonly percent: number;
+    public readonly raw: BigNumber;
 
     constructor(value: number) {
         this.percent = value;
