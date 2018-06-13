@@ -4,6 +4,8 @@ import * as moment from "moment";
 // Utils
 import { BigNumber } from "../../utils/bignumber";
 
+import { AmortizationUnit } from "../adapters/simple_interest_loan_adapter";
+
 /**
  * A list of options for specifying units of duration, in singular and plural forms,
  * ranging from "hours" as the smallest value to "years" as the largest.
@@ -19,6 +21,14 @@ export type DurationUnit =
     | "months"
     | "year"
     | "years";
+
+const DURATION_TO_AMORTIZATION_UNIT = {
+    hour: "hours",
+    day: "days",
+    week: "weeks",
+    month: "months",
+    year: "years",
+};
 
 /**
  * A wrapper for a duration of time expressed as an amount (e.g. "5") and unit (e.g. "weeks").
@@ -65,5 +75,9 @@ export class TimeInterval {
         const expirationInSeconds = currentDate.unix();
 
         return new BigNumber(expirationInSeconds);
+    }
+
+    public getAmortizationUnit(): AmortizationUnit {
+        return DURATION_TO_AMORTIZATION_UNIT[this.unit] || this.unit;
     }
 }
