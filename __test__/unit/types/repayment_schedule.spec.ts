@@ -1,11 +1,11 @@
-// libraries
+// External libraries
 import * as moment from "moment";
 
-// utils
-import { BigNumber } from "utils/bignumber";
+// Utils
+import { BigNumber } from "../../../utils/bignumber";
 
-// types
-import { RepaymentSchedule } from "src/types/repayment_schedule";
+// Types
+import { RepaymentSchedule } from "../../../src/types";
 
 let amortizationUnit;
 let termLength;

@@ -1,10 +1,12 @@
-// utils
+// External libraries
 import * as _ from "lodash";
+
+// Utils
 import { BigNumber } from "../../../utils/bignumber";
 import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 
-// types
-import { TokenAmount, TokenAmountType } from "../../../src/types/token_amount";
+// Types
+import { TokenAmount, TokenAmountType } from "../../../src/types";
 
 describe("TokenAmount", () => {
     describe("instantiation", () => {
