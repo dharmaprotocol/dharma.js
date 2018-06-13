@@ -8,6 +8,8 @@ import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from 
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
+const SALT_DECIMALS = 20;
+
 export interface BaseDebtOrderParams {
     principal: TokenAmount;
     collateral: TokenAmount;
@@ -117,7 +119,7 @@ export class DebtOrder {
     }
 
     private static generateSalt(): BigNumber {
-        return BigNumber.random();
+        return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
     }
 
     private constructor(
