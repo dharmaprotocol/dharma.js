@@ -27,7 +27,7 @@ export class TokenAmount {
     public readonly rawAmount: BigNumber;
     private token: Token;
 
-    constructor(params: TokenAmountParams) {
+    constructor(amount: number, symbol: string) {
         this.token = new Token(params.symbol);
 
         switch (params.type) {
