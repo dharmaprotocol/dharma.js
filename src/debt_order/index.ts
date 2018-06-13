@@ -4,13 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import {
-    Address,
-    DebtOrderData,
-    InterestRate,
-    TimeInterval,
-    TokenAmount,
-} from "../types";
+import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
