@@ -4,7 +4,13 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { DebtOrderData, InterestRate, TimeInterval, TokenAmount, TokenAmountType } from "../types";
+import {
+    Address,
+    DebtOrderData,
+    InterestRate,
+    TimeInterval,
+    TokenAmount,
+} from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -13,7 +19,7 @@ export interface BaseDebtOrderParams {
     collateral: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
-    debtorAddress: string;
+    debtorAddress: Address;
 }
 
 export interface DebtOrderParams extends BaseDebtOrderParams {
@@ -62,7 +68,7 @@ export class DebtOrder {
         const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
         const salt = this.generateSalt();
 
-        data.debtor = debtorAddress;
+        data.debtor = debtorAddress.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
@@ -85,17 +91,15 @@ export class DebtOrder {
             data,
         );
 
-        const principal = new TokenAmount({
-            symbol: loanOrder.principalTokenSymbol,
-            amount: loanOrder.principalAmount,
-            type: TokenAmountType.Raw,
-        });
+        const principal = TokenAmount.fromRaw(
+            loanOrder.principalAmount,
+            loanOrder.principalTokenSymbol,
+        );
 
-        const collateral = new TokenAmount({
-            symbol: loanOrder.collateralTokenSymbol,
-            amount: loanOrder.collateralAmount,
-            type: TokenAmountType.Raw,
-        });
+        const collateral = TokenAmount.fromRaw(
+            loanOrder.collateralAmount,
+            loanOrder.collateralTokenSymbol,
+        );
 
         const interestRate = InterestRate.fromRaw(loanOrder.interestRate);
 
@@ -104,13 +108,15 @@ export class DebtOrder {
             loanOrder.amortizationUnit,
         );
 
+        const debtorAddress = new Address(loanOrder.debtor!); // TODO(kayvon): this could throw.
+
         const debtOrderParams = {
             principal,
             collateral,
             interestRate,
             termLength,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
-            debtorAddress: loanOrder.debtor!, // TODO(kayvon): this could throw.
+            debtorAddress,
         };
 
         return new DebtOrder(dharma, debtOrderParams, data);
@@ -259,11 +265,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return new TokenAmount({
-            amount: totalExpectedRepaymentAmount,
-            symbol: tokenSymbol,
-            type: TokenAmountType.Raw,
-        });
+        return TokenAmount.fromRaw(totalExpectedRepaymentAmount, tokenSymbol);
     }
 
     /**
@@ -286,11 +288,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return new TokenAmount({
-            amount: outstandingAmount,
-            symbol: tokenSymbol,
-            type: TokenAmountType.Raw,
-        });
+        return TokenAmount.fromRaw(outstandingAmount, tokenSymbol);
     }
 
     /**
@@ -309,11 +307,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return new TokenAmount({
-            amount: repaidAmount,
-            symbol: tokenSymbol,
-            type: TokenAmountType.Raw,
-        });
+        return TokenAmount.fromRaw(repaidAmount, tokenSymbol);
     }
 
     private isSignedByCreditor(): boolean {

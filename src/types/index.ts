@@ -1,3 +1,4 @@
+export { Address } from "./address";
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
 export { ECDSASignature } from "./ecdsa_signature";
 export { IssuanceCommitment } from "./issuance_commitment";
@@ -10,6 +11,6 @@ export { DebtKernelError } from "./debt_kernel_error";
 export { RepaymentSchedule } from "./repayment_schedule";
 export { RepaymentRouterError } from "./repayment_router_error";
 export { Token } from "./token";
-export { TokenAmount, TokenAmountType } from "./token_amount";
+export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";
