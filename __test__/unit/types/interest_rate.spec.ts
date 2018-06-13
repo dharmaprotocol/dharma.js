@@ -2,7 +2,7 @@ import { InterestRate } from "../../../src/types";
 
 import { BigNumber } from "../../../utils/bignumber";
 
-describe("InterestRate", () => {
+describe("InterestRate (Unit)", () => {
     const percent = 12.4;
     const rawAmount = new BigNumber(percent);
 
