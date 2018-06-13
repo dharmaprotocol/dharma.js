@@ -4,7 +4,13 @@ import { BigNumber } from "../../utils/bignumber";
 import { Dharma } from "../";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
+import {
+    Address,
+    DebtOrderData,
+    InterestRate,
+    TimeInterval,
+    TokenAmount,
+} from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -13,7 +19,7 @@ export interface BaseDebtOrderParams {
     collateral: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
-    debtorAddress: string;
+    debtorAddress: Address;
 }
 
 export interface DebtOrderParams extends BaseDebtOrderParams {
@@ -62,7 +68,7 @@ export class DebtOrder {
         const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
         const salt = this.generateSalt();
 
-        data.debtor = debtorAddress;
+        data.debtor = debtorAddress.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
@@ -102,13 +108,15 @@ export class DebtOrder {
             loanOrder.amortizationUnit,
         );
 
+        const debtorAddress = new Address(loanOrder.debtor!); // TODO(kayvon): this could throw.
+
         const debtOrderParams = {
             principal,
             collateral,
             interestRate,
             termLength,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
-            debtorAddress: loanOrder.debtor!, // TODO(kayvon): this could throw.
+            debtorAddress,
         };
 
         return new DebtOrder(dharma, debtOrderParams, data);
