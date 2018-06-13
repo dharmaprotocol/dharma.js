@@ -27,7 +27,7 @@ interface DebtOrderConstructorParams extends BaseDebtOrderParams {
 import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
 export interface FillParameters {
-    creditorAddress: string;
+    creditorAddress: Address;
 }
 
 export class DebtOrder {
@@ -178,7 +178,7 @@ export class DebtOrder {
     }
 
     public async fill(parameters: FillParameters): Promise<string> {
-        this.data.creditor = parameters.creditorAddress;
+        this.data.creditor = parameters.creditorAddress.toString();
 
         await this.signAsCreditor();
 
@@ -203,7 +203,7 @@ export class DebtOrder {
     public async makeRepayment(repaymentAmount?: TokenAmount): Promise<string> {
         const agreementId = this.getAgreementId();
         const tokenSymbol = this.params.principal.tokenSymbol;
-        const principalTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
+        const principalTokenAddressString = await this.dharma.contracts.getTokenAddressBySymbolAsync(
             tokenSymbol,
         );
 
@@ -215,7 +215,7 @@ export class DebtOrder {
         return this.dharma.servicing.makeRepayment(
             agreementId,
             rawRepaymentAmount,
-            principalTokenAddress,
+            principalTokenAddressString,
         );
     }
 
