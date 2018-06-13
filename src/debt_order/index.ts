@@ -10,7 +10,6 @@ import {
     InterestRate,
     TimeInterval,
     TokenAmount,
-    TokenAmountType,
 } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
@@ -92,17 +91,15 @@ export class DebtOrder {
             data,
         );
 
-        const principal = new TokenAmount({
-            symbol: loanOrder.principalTokenSymbol,
-            amount: loanOrder.principalAmount,
-            type: TokenAmountType.Raw,
-        });
+        const principal = TokenAmount.fromRaw(
+            loanOrder.principalAmount,
+            loanOrder.principalTokenSymbol,
+        );
 
-        const collateral = new TokenAmount({
-            symbol: loanOrder.collateralTokenSymbol,
-            amount: loanOrder.collateralAmount,
-            type: TokenAmountType.Raw,
-        });
+        const collateral = TokenAmount.fromRaw(
+            loanOrder.collateralAmount,
+            loanOrder.collateralTokenSymbol,
+        );
 
         const interestRate = InterestRate.fromRaw(loanOrder.interestRate);
 
@@ -268,11 +265,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return new TokenAmount({
-            amount: totalExpectedRepaymentAmount,
-            symbol: tokenSymbol,
-            type: TokenAmountType.Raw,
-        });
+        return TokenAmount.fromRaw(totalExpectedRepaymentAmount, tokenSymbol);
     }
 
     /**
@@ -295,11 +288,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return new TokenAmount({
-            amount: outstandingAmount,
-            symbol: tokenSymbol,
-            type: TokenAmountType.Raw,
-        });
+        return TokenAmount.fromRaw(outstandingAmount, tokenSymbol);
     }
 
     /**
@@ -318,11 +307,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return new TokenAmount({
-            amount: repaidAmount,
-            symbol: tokenSymbol,
-            type: TokenAmountType.Raw,
-        });
+        return TokenAmount.fromRaw(repaidAmount, tokenSymbol);
     }
 
     private isSignedByCreditor(): boolean {
