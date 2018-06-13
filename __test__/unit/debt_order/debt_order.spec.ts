@@ -7,7 +7,7 @@ jest.unmock("@dharmaprotocol/contracts");
 import { DebtOrder } from "../../../src/debt_order/";
 
 // Types
-import { DEBT_ORDERS } from "./scenarios/valid_debt_order_params";
+import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 
 // Test runners
 import { testCreate } from "./runners/create";
@@ -17,9 +17,7 @@ const web3 = new Web3(provider);
 const dharma = new Dharma(web3.currentProvider);
 
 describe("Debt Order (Integration)", () => {
-    describe("#create", () => {
-        DEBT_ORDERS.forEach(async (params, index) => {
-            await testCreate(dharma, params, index);
-        });
+    describe("#create", async () => {
+        await testCreate(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });

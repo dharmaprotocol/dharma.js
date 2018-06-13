@@ -4,8 +4,8 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src";
 
-export async function testCreate(dharma: Dharma, params: DebtOrderParams, index: number) {
-    describe(`scenario ${index}`, () => {
+export async function testCreate(dharma: Dharma, params: DebtOrderParams) {
+    describe("valid params", () => {
         let debtOrder: DebtOrder;
 
         beforeAll(async () => {
