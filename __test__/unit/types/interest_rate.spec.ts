@@ -1,4 +1,5 @@
-import { InterestRate } from "../../../src/types/interest_rate";
+import { InterestRate } from "../../../src/types";
+
 import { BigNumber } from "../../../utils/bignumber";
 
 describe("InterestRate", () => {
