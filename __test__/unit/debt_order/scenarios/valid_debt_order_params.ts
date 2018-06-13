@@ -9,7 +9,7 @@ import { ACCOUNTS } from "../../../accounts";
 
 const debtor = ACCOUNTS[1];
 
-export const ValidDebtOrderParams: DebtOrderParams[] = [
+export const DEBT_ORDERS: DebtOrderParams[] = [
     {
         principal: new TokenAmount(5, "REP"),
         collateral: new TokenAmount(10, "WETH"),
