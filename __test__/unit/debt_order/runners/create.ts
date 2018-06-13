@@ -4,20 +4,16 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src";
 
-export class CreateRunner {
-    constructor(private readonly dharma: Dharma) {}
+export async function testCreate(dharma: Dharma, params: DebtOrderParams, index: number) {
+    describe(`scenario ${index}`, () => {
+        let debtOrder: DebtOrder;
 
-    public async testCreate(params: DebtOrderParams) {
-        describe(`when given ${JSON.stringify(params)}`, async () => {
-            let debtOrder: DebtOrder;
-
-            beforeAll(async () => {
-                debtOrder = await DebtOrder.create(this.dharma, params);
-            });
-
-            it("eventually returns an instance of DebtOrder", async () => {
-                expect(typeof debtOrder).toBe(DebtOrder);
-            });
+        beforeAll(async () => {
+            debtOrder = await DebtOrder.create(dharma, params);
         });
-    }
+
+        test("eventually returns an instance of DebtOrder", () => {
+            expect(debtOrder instanceof DebtOrder).toBeTruthy();
+        });
+    });
 }
