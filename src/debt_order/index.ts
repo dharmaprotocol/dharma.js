@@ -69,7 +69,7 @@ export class DebtOrder {
         const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
         const salt = this.generateSalt();
 
-        data.debtor = debtorAddress.getAddressString();
+        data.debtor = debtorAddress.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
