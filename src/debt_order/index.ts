@@ -1,7 +1,7 @@
 import * as _ from "lodash";
-import { BigNumber } from "../../utils/bignumber";
-
 import { Dharma } from "../";
+import { BigNumber } from "../../utils/bignumber";
+import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
 import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
@@ -25,8 +25,6 @@ export interface DebtOrderParams extends BaseDebtOrderParams {
 interface DebtOrderConstructorParams extends BaseDebtOrderParams {
     expiresAt: number;
 }
-
-import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
 
 export interface FillParameters {
     creditorAddress: Address;
@@ -144,11 +142,11 @@ export class DebtOrder {
     }
 
     public isSignedByUnderwriter(): boolean {
-        return !_.isEmpty(this.data.underwriterSignature);
+        return this.data.underwriterSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     public isSignedByDebtor(): boolean {
-        return !_.isEmpty(this.data.debtorSignature);
+        return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     public async signAsUnderwriter() {
@@ -303,7 +301,7 @@ export class DebtOrder {
     }
 
     private isSignedByCreditor(): boolean {
-        return !_.isEmpty(this.data.creditorSignature);
+        return this.data.creditorSignature === NULL_ECDSA_SIGNATURE;
     }
 
     private async signAsCreditor(): Promise<void> {
