@@ -141,20 +141,8 @@ export class DebtOrder {
         return expirationTimestamp.lt(approximateNextBlockTime);
     }
 
-    public isSignedByUnderwriter(): boolean {
-        return this.data.underwriterSignature !== NULL_ECDSA_SIGNATURE;
-    }
-
     public isSignedByDebtor(): boolean {
         return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
-    }
-
-    public async signAsUnderwriter() {
-        if (this.isSignedByUnderwriter()) {
-            return;
-        }
-
-        this.data.underwriterSignature = await this.dharma.sign.asUnderwriter(this.data, true);
     }
 
     public async signAsDebtor() {

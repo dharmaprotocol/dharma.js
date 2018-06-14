@@ -5,19 +5,19 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 import { Dharma } from "../../../../src";
 
 export async function testSignAsDebtor(dharma: Dharma, params: DebtOrderParams) {
-    const spy = jest.spyOn(dharma.sign, "asDebtor");
-
-    describe("when the order is already signed by the debtor", () => {
+    describe("when the order is already signed by the debtor during #create", () => {
         let debtOrder: DebtOrder;
 
         beforeAll(async () => {
             debtOrder = await DebtOrder.create(dharma, params);
-
-            await debtOrder.signAsDebtor();
         });
 
-        it("does not call dharma.sign.asDebtor", async () => {
-            expect(spy).not.toBeCalled();
+        it("it does not call dharma.sign.byDebtor", async () => {
+            const spy = jest.spyOn(dharma.sign, "asDebtor");
+
+            await debtOrder.signAsDebtor();
+
+            expect(spy).not.toHaveBeenCalled();
         });
     });
 }
