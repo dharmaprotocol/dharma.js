@@ -153,6 +153,15 @@ export class DebtOrder {
         this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, true);
     }
 
+    /**
+     * Eventually returns true if the current debt order has been cancelled.
+     *
+     * @example
+     * await debtOrder.isCancelled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isCancelled(): Promise<boolean> {
         return this.dharma.order.isCancelled(this.data);
     }
@@ -160,6 +169,10 @@ export class DebtOrder {
     /**
      * Attempts to cancel the current debt order. A debt order can be cancelled by the debtor
      * if it is open and unfilled.
+     *
+     * @example
+     * await debtOrder.cancelAsDebtor();
+     * => "0x000..."
      *
      * @returns {Promise<string>} the transaction hash
      */
