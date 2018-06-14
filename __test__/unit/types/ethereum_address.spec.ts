@@ -36,13 +36,13 @@ describe("Ethereum Address (Unit)", () => {
     describe("#isValid", () => {
         describe("when input is valid", () => {
             test("should return true", () => {
-                expect(EthereumAddress.isValid(valid)).toBeTruthy();
+                expect(EthereumAddress.isValid(valid)).toBe(true);
             });
         });
 
         describe("when input is invalid", () => {
             test("should return false", () => {
-                expect(EthereumAddress.isValid(invalid)).toBeFalsy();
+                expect(EthereumAddress.isValid(invalid)).toBe(false);
             });
         });
     });
