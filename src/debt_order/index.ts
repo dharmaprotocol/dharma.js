@@ -238,6 +238,38 @@ export class DebtOrder {
     }
 
     /**
+     * Returns the collateral and sends it to the debtor.
+     * This will fail if the collateral is not returnable.
+     *
+     * @example
+     * order.returnCollateral();
+     * => Promise<string>
+     *
+     * @returns {Promise<string>} the hash of the transaction to return the collateral
+     */
+    public async returnCollateral(): Promise<string> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(
+            this.getAgreementId(),
+        );
+    }
+
+    /**
+     * Seizes the collateral and sends it to the creditor.
+     * This will fail if the collateral is not seizable.
+     *
+     * @example
+     * order.seizeCollateral();
+     * => Promise<string>
+     *
+     * @returns {Promise<string>} the hash of the transaction to seize the collateral
+     */
+    public async seizeCollateral(): Promise<string> {
+        return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
+            this.getAgreementId(),
+        );
+    }
+
+    /**
      * Returns the total amount expected to be repaid.
      *
      * @example
