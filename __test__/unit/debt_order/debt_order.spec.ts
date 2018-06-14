@@ -42,7 +42,7 @@ describe("Debt Order (Integration)", () => {
         await testIsCancelled(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
-    describe("#cancel", async () => {
+    describe("#cancelAsDebtor", async () => {
         await testCancel(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });
