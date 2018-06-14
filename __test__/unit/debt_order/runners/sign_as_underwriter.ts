@@ -5,7 +5,6 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 import { Dharma } from "../../../../src";
 
 export async function testSignAsUnderwriter(dharma: Dharma, params: DebtOrderParams) {
-
     describe("when the order does not have an underwriter address", () => {
         let debtOrder: DebtOrder;
 
@@ -14,12 +13,11 @@ export async function testSignAsUnderwriter(dharma: Dharma, params: DebtOrderPar
         });
 
         it("it throws an error", async () => {
-            const expectedError = "Unable to sign debt order because private key associated with " +
+            const expectedError =
+                "Unable to sign debt order because private key associated with " +
                 "0x0000000000000000000000000000000000000000 is invalid or unavailable";
 
-            await expect(
-                debtOrder.signAsUnderwriter(),
-            ).rejects.toThrow(expectedError);
+            await expect(debtOrder.signAsUnderwriter()).rejects.toThrow(expectedError);
         });
 
         it("it calls dharma.sign.asUnderwriter", async () => {

@@ -5,7 +5,6 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 import { Dharma } from "../../../../src";
 
 export async function testSignAsDebtor(dharma: Dharma, params: DebtOrderParams) {
-
     describe("when the order is already signed by the debtor during #create", () => {
         let debtOrder: DebtOrder;
 
