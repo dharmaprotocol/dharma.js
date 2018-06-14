@@ -51,7 +51,7 @@ export class DebtOrder {
             interestRate: interestRate.raw,
             amortizationUnit: termLength.getAmortizationUnit(),
             termLength: new BigNumber(termLength.amount),
-            collateralTokenSymbol: principal.tokenSymbol,
+            collateralTokenSymbol: collateral.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
             expirationTimestampInSec,
@@ -150,7 +150,7 @@ export class DebtOrder {
             return;
         }
 
-        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, true);
+        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, false);
     }
 
     public async isCancelled(): Promise<boolean> {
@@ -170,7 +170,7 @@ export class DebtOrder {
 
         await this.signAsCreditor();
 
-        return this.dharma.order.fillAsync(this.data);
+        return this.dharma.order.fillAsync(this.data, { from: this.data.creditor });
     }
 
     /**

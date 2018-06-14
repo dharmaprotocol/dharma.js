@@ -12,6 +12,7 @@ import { testCreate } from "./runners/create";
 import { testExpired } from "./runners/is_expired";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
+import { testGetTotalExpectedRepaymentAmount } from "./runners/get_total_expected_repayment_amount";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -34,5 +35,9 @@ describe("Debt Order (Integration)", () => {
 
     describe("#isSignedByDebtor", async () => {
         await testIsSignedByDebtor(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#getTotalExpectedRepaymentAmount", async () => {
+        await testGetTotalExpectedRepaymentAmount(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });
