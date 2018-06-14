@@ -4,7 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
+import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -15,7 +15,7 @@ export interface BaseDebtOrderParams {
     collateral: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
-    debtorAddress: Address;
+    debtorAddress: EthereumAddress;
 }
 
 export interface DebtOrderParams extends BaseDebtOrderParams {
@@ -27,7 +27,7 @@ interface DebtOrderConstructorParams extends BaseDebtOrderParams {
 }
 
 export interface FillParameters {
-    creditorAddress: Address;
+    creditorAddress: EthereumAddress;
 }
 
 export class DebtOrder {
@@ -102,7 +102,7 @@ export class DebtOrder {
             loanOrder.amortizationUnit,
         );
 
-        const debtorAddress = new Address(loanOrder.debtor!); // TODO(kayvon): this could throw.
+        const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
         const debtOrderParams = {
             principal,
