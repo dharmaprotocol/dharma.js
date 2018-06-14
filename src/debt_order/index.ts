@@ -301,7 +301,7 @@ export class DebtOrder {
     }
 
     private isSignedByCreditor(): boolean {
-        return this.data.creditorSignature === NULL_ECDSA_SIGNATURE;
+        return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     private async signAsCreditor(): Promise<void> {
