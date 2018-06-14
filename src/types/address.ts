@@ -1,28 +1,31 @@
-export const ADDRESS_ERRORS = {
-    INVALID_ADDRESS: (addressString: string) =>
-        `Address ${addressString} is not in the Ethereum address format`,
+export const ETHEREUM_ADDRESS_ERRORS = {
+    INVALID_ADDRESS: (value: string) => `${value} is not a valid Ethereum address.`,
 };
 
-export class Address {
+export class EthereumAddress {
     /**
-     * Returns true if the given address string matches the format of an Ethereum address.
+     * Returns true if the provided value matches the format of an Ethereum address.
      *
      * @param {string} addressString
      * @returns {boolean}
      */
-    private static isEthereumAddress(addressString: string): boolean {
+    public static isValid(value: string): boolean {
         const addressRegex = new RegExp("^0x[a-fA-F0-9]{40}$");
 
-        return addressString.match(addressRegex) !== null;
+        return value.match(addressRegex) !== null;
     }
 
-    constructor(private readonly addressString) {
-        if (!Address.isEthereumAddress(addressString)) {
-            throw Error(ADDRESS_ERRORS.INVALID_ADDRESS(addressString));
+    private readonly raw: string;
+
+    constructor(value: string) {
+        if (!EthereumAddress.isValid(value)) {
+            throw Error(ETHEREUM_ADDRESS_ERRORS.INVALID_ADDRESS(value));
         }
+
+        this.raw = value;
     }
 
-    public toString() {
-        return this.addressString;
+    public toString(): string {
+        return this.raw;
     }
 }
