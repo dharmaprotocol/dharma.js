@@ -26,10 +26,6 @@ interface DebtOrderConstructorParams extends BaseDebtOrderParams {
     expiresAt: number;
 }
 
-export interface FillParameters {
-    creditorAddress: Address;
-}
-
 export class DebtOrder {
     public static async create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder> {
         const {
@@ -165,12 +161,12 @@ export class DebtOrder {
         return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
-    public async fill(parameters: FillParameters): Promise<string> {
-        this.data.creditor = parameters.creditorAddress.toString();
+    public async fillAsCreditor(creditorAddress: Address): Promise<string> {
+        this.data.creditor = creditorAddress.toString();
 
         await this.signAsCreditor();
 
-        return this.dharma.order.fillAsync(this.data);
+        return this.dharma.order.fillAsync(this.data, { from: this.data.creditor });
     }
 
     /**
