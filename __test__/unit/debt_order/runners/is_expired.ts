@@ -4,7 +4,7 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src";
 
-import { IsExpiredScenario } from "../scenarios/expired_debt_orders";
+import { IsExpiredScenario } from "../scenarios/is_expired_scenarios";
 
 export async function testExpired(dharma: Dharma, scenario: IsExpiredScenario) {
     describe(scenario.description, () => {

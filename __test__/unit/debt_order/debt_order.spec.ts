@@ -13,6 +13,7 @@ import { testExpired } from "./runners/is_expired";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testIsSignedByUnderwriter } from "./runners/is_signed_by_underwriter";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
+import { testSignAsUnderwriter } from "./runners/sign_as_underwriter";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -35,6 +36,10 @@ describe("Debt Order (Integration)", () => {
 
     describe("#isSignedByDebtor", async () => {
         await testIsSignedByDebtor(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#signAsUnderwriter", async () => {
+        await testSignAsUnderwriter(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
     describe("#isSignedByUnderwriter", async () => {
