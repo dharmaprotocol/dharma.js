@@ -12,7 +12,7 @@ export async function testCancel(dharma: Dharma, params: DebtOrderParams) {
             debtOrder = await DebtOrder.create(dharma, params);
         });
 
-        test(`calls dharma.order.cancelOrderAsync`, async () => {
+        it(`calls dharma.order.cancelOrderAsync`, async () => {
             const spy = jest.spyOn(dharma.order, "cancelOrderAsync");
 
             await debtOrder.cancelAsDebtor();
