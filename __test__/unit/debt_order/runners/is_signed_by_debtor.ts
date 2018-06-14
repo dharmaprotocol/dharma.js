@@ -5,7 +5,7 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 import { Dharma } from "../../../../src";
 
 export async function testIsSignedByDebtor(dharma: Dharma, params: DebtOrderParams) {
-    describe("after DebtOrder initialization",  () => {
+    describe("after DebtOrder initialization", () => {
         let debtOrder: DebtOrder;
 
         beforeAll(async () => {

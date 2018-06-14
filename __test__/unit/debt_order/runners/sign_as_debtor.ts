@@ -7,7 +7,7 @@ import { Dharma } from "../../../../src";
 export async function testSignAsDebtor(dharma: Dharma, params: DebtOrderParams) {
     const spy = jest.spyOn(dharma.sign, "asDebtor");
 
-    describe("when the order is already signed by the debtor",  () => {
+    describe("when the order is already signed by the debtor", () => {
         let debtOrder: DebtOrder;
 
         beforeAll(async () => {
