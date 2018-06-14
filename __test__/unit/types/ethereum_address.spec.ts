@@ -16,7 +16,9 @@ describe("Ethereum Address (Unit)", () => {
             test("should throw", () => {
                 try {
                     const address = new EthereumAddress(invalid);
-                    expect(true).toBe(false); // note: this will fail if the above constructor call succeeds.
+                    // note: the below expectation will only be reached if the above constructor
+                    // call succeeds -- which it shouldn't.
+                    expect(true).toBe(false);
                 } catch (e) {
                     expect(e.message).toEqual(ETHEREUM_ADDRESS_ERRORS.INVALID_ADDRESS(invalid));
                 }
