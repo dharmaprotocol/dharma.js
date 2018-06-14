@@ -1,12 +1,14 @@
 import * as _ from "lodash";
-import { BigNumber } from "../../utils/bignumber";
-
 import { Dharma } from "../";
+import { BigNumber } from "../../utils/bignumber";
+import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
 import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
+
+const SALT_DECIMALS = 20;
 
 export interface BaseDebtOrderParams {
     principal: TokenAmount;
@@ -24,10 +26,8 @@ interface DebtOrderConstructorParams extends BaseDebtOrderParams {
     expiresAt: number;
 }
 
-import { BLOCK_TIME_ESTIMATE_SECONDS } from "../../utils/constants";
-
 export interface FillParameters {
-    creditorAddress: string;
+    creditorAddress: Address;
 }
 
 export class DebtOrder {
@@ -117,7 +117,7 @@ export class DebtOrder {
     }
 
     private static generateSalt(): BigNumber {
-        return BigNumber.random();
+        return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
     }
 
     private constructor(
@@ -142,11 +142,11 @@ export class DebtOrder {
     }
 
     public isSignedByUnderwriter(): boolean {
-        return !_.isEmpty(this.data.underwriterSignature);
+        return this.data.underwriterSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     public isSignedByDebtor(): boolean {
-        return !_.isEmpty(this.data.debtorSignature);
+        return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     public async signAsUnderwriter() {
@@ -178,7 +178,7 @@ export class DebtOrder {
     }
 
     public async fill(parameters: FillParameters): Promise<string> {
-        this.data.creditor = parameters.creditorAddress;
+        this.data.creditor = parameters.creditorAddress.toString();
 
         await this.signAsCreditor();
 
@@ -203,7 +203,7 @@ export class DebtOrder {
     public async makeRepayment(repaymentAmount?: TokenAmount): Promise<string> {
         const agreementId = this.getAgreementId();
         const tokenSymbol = this.params.principal.tokenSymbol;
-        const principalTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
+        const principalTokenAddressString = await this.dharma.contracts.getTokenAddressBySymbolAsync(
             tokenSymbol,
         );
 
@@ -215,7 +215,7 @@ export class DebtOrder {
         return this.dharma.servicing.makeRepayment(
             agreementId,
             rawRepaymentAmount,
-            principalTokenAddress,
+            principalTokenAddressString,
         );
     }
 
@@ -301,7 +301,7 @@ export class DebtOrder {
     }
 
     private isSignedByCreditor(): boolean {
-        return !_.isEmpty(this.data.creditorSignature);
+        return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     private async signAsCreditor(): Promise<void> {
