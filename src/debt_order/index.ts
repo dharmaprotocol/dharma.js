@@ -4,7 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
+import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount, TxData } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -157,8 +157,16 @@ export class DebtOrder {
         return this.dharma.order.isCancelled(this.data);
     }
 
-    public async cancel(): Promise<string> {
-        return this.dharma.order.cancelOrderAsync(this.data);
+    /**
+     * Attempts to cancel the current debt order. A debt order can be cancelled by the debtor
+     * if it is open and unfilled.
+     *
+     * @returns {Promise<string>} the transaction hash
+     */
+    public async cancelAsDebtor(): Promise<string> {
+        return this.dharma.order.cancelOrderAsync(this.data, {
+            from: this.data.debtor,
+        });
     }
 
     public async isFilled(): Promise<boolean> {
