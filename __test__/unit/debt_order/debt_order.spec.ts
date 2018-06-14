@@ -8,7 +8,9 @@ import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
 import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 
 // Test runners
+import { testCancel } from "./runners/cancel_as_debtor";
 import { testCreate } from "./runners/create";
+import { testIsCancelled } from "./runners/is_cancelled";
 import { testExpired } from "./runners/is_expired";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
@@ -34,5 +36,13 @@ describe("Debt Order (Integration)", () => {
 
     describe("#isSignedByDebtor", async () => {
         await testIsSignedByDebtor(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#isCancelled", async () => {
+        await testIsCancelled(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#cancelAsDebtor", async () => {
+        await testCancel(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });
