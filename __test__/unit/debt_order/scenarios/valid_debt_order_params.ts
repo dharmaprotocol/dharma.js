@@ -11,7 +11,7 @@ const debtor = ACCOUNTS[1];
 
 export const DEBT_ORDER_PARAMS_ONE: DebtOrderParams = {
     principal: new TokenAmount(5, "REP"),
-    collateral: new TokenAmount(10, "WETH"),
+    collateral: new TokenAmount(10, "MKR"),
     interestRate: new InterestRate(12.3),
     termLength: new TimeInterval(6, "months"),
     debtorAddress: new EthereumAddress(debtor.address),
