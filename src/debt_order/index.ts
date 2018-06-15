@@ -146,7 +146,7 @@ export class DebtOrder {
             return;
         }
 
-        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, true);
+        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, false);
     }
 
     /**
@@ -346,7 +346,7 @@ export class DebtOrder {
             return;
         }
 
-        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, true);
+        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, false);
     }
 
     private getAgreementId(): string {
