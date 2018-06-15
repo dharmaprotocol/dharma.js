@@ -47,7 +47,7 @@ export class DebtOrder {
             interestRate: interestRate.raw,
             amortizationUnit: termLength.getAmortizationUnit(),
             termLength: new BigNumber(termLength.amount),
-            collateralTokenSymbol: principal.tokenSymbol,
+            collateralTokenSymbol: collateral.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
             expirationTimestampInSec,
