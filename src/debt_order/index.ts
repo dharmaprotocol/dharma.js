@@ -112,9 +112,6 @@ export class DebtOrder {
         return new DebtOrder(dharma, debtOrderParams, data);
     }
 
-    private static gasPrice = 400000;
-    private static TX_DEFAULTS = { gas: DebtOrder.gasPrice };
-
     private static generateSalt(): BigNumber {
         return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
     }
@@ -176,12 +173,9 @@ export class DebtOrder {
      * @returns {Promise<string>} the transaction hash
      */
     public async cancelAsDebtor(): Promise<string> {
-        return this.dharma.order.cancelOrderAsync(
-            this.data,
-            _.assign(DebtOrder.TX_DEFAULTS, {
-                from: this.data.debtor,
-            }),
-        );
+        return this.dharma.order.cancelOrderAsync(this.data, {
+            from: this.data.debtor,
+        });
     }
 
     public async isFilled(): Promise<boolean> {
@@ -193,12 +187,7 @@ export class DebtOrder {
 
         await this.signAsCreditor();
 
-        return this.dharma.order.fillAsync(
-            this.data,
-            _.assign(DebtOrder.TX_DEFAULTS, {
-                from: this.data.creditor,
-            }),
-        );
+        return this.dharma.order.fillAsync(this.data, { from: this.data.creditor });
     }
 
     /**
@@ -232,7 +221,6 @@ export class DebtOrder {
             agreementId,
             rawRepaymentAmount,
             principalTokenAddressString,
-            DebtOrder.TX_DEFAULTS,
         );
     }
 
@@ -267,7 +255,6 @@ export class DebtOrder {
     public async returnCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(
             this.getAgreementId(),
-            DebtOrder.TX_DEFAULTS,
         );
     }
 
@@ -284,7 +271,6 @@ export class DebtOrder {
     public async seizeCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
             this.getAgreementId(),
-            DebtOrder.TX_DEFAULTS,
         );
     }
 
