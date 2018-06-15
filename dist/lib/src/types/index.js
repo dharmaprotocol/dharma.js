@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var debt_order_1 = require("../debt_order");
+exports.DebtOrder = debt_order_1.DebtOrder;
 var debt_order_data_1 = require("./debt_order_data");
 exports.DEBT_ORDER_DATA_DEFAULTS = debt_order_data_1.DEBT_ORDER_DATA_DEFAULTS;
 var transaction_options_1 = require("./transaction_options");
