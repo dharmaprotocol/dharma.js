@@ -7,7 +7,7 @@ import * as Web3 from "web3";
 // Utils
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
-import { TransactionUtils } from "../../utils/transaction_utils";
+import * as TransactionUtils from "../../utils/transaction_utils";
 import { Web3Utils } from "../../utils/web3_utils";
 
 // Apis

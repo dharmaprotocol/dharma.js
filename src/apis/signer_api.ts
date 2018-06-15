@@ -10,7 +10,7 @@ import {
     WEB3_ERROR_NO_PRIVATE_KEY,
 } from "../../utils/constants";
 import { SignatureUtils } from "../../utils/signature_utils";
-import { TransactionUtils } from "../../utils/transaction_utils";
+import * as TransactionUtils from "../../utils/transaction_utils";
 
 // Invariants
 import { Assertions } from "../invariants";

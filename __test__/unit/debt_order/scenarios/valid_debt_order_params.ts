@@ -2,7 +2,7 @@
 import { DebtOrderParams } from "../../../../src/debt_order";
 
 // Types
-import { Address, InterestRate, TimeInterval, TokenAmount } from "../../../../src/types";
+import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../../../../src/types";
 
 // Test utils
 import { ACCOUNTS } from "../../../accounts";
@@ -14,6 +14,6 @@ export const DEBT_ORDER_PARAMS_ONE: DebtOrderParams = {
     collateral: new TokenAmount(10, "MKR"),
     interestRate: new InterestRate(12.3),
     termLength: new TimeInterval(6, "months"),
-    debtorAddress: new Address(debtor.address),
+    debtorAddress: new EthereumAddress(debtor.address),
     expiresIn: new TimeInterval(5, "days"),
 };

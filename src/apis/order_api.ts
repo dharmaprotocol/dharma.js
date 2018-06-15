@@ -23,7 +23,7 @@ import { DebtOrderData, IssuanceCommitment, TransactionOptions, TxData } from ".
 
 // Utils
 import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
-import { TransactionUtils } from "../../utils/transaction_utils";
+import * as TransactionUtils from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
 import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 

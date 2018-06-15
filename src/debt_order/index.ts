@@ -4,7 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
+import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -15,7 +15,7 @@ export interface BaseDebtOrderParams {
     collateral: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
-    debtorAddress: Address;
+    debtorAddress: EthereumAddress;
 }
 
 export interface DebtOrderParams extends BaseDebtOrderParams {
@@ -27,7 +27,7 @@ interface DebtOrderConstructorParams extends BaseDebtOrderParams {
 }
 
 export interface FillParameters {
-    creditorAddress: Address;
+    creditorAddress: EthereumAddress;
 }
 
 export class DebtOrder {
@@ -102,7 +102,7 @@ export class DebtOrder {
             loanOrder.amortizationUnit,
         );
 
-        const debtorAddress = new Address(loanOrder.debtor!); // TODO(kayvon): this could throw.
+        const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
         const debtOrderParams = {
             principal,
@@ -153,12 +153,33 @@ export class DebtOrder {
         this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, false);
     }
 
+    /**
+     * Eventually returns true if the current debt order has been cancelled.
+     *
+     * @example
+     * await debtOrder.isCancelled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isCancelled(): Promise<boolean> {
         return this.dharma.order.isCancelled(this.data);
     }
 
-    public async cancel(): Promise<string> {
-        return this.dharma.order.cancelOrderAsync(this.data);
+    /**
+     * Attempts to cancel the current debt order. A debt order can be cancelled by the debtor
+     * if it is open and unfilled.
+     *
+     * @example
+     * await debtOrder.cancelAsDebtor();
+     * => "0x000..."
+     *
+     * @returns {Promise<string>} the transaction hash
+     */
+    public async cancelAsDebtor(): Promise<string> {
+        return this.dharma.order.cancelOrderAsync(this.data, {
+            from: this.data.debtor,
+        });
     }
 
     public async isFilled(): Promise<boolean> {
