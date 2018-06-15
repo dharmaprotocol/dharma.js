@@ -135,17 +135,6 @@ export class OrderAPI {
 
         const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
 
-        console.log(
-            debtOrderDataWrapped.getCreditor(),
-            debtOrderDataWrapped.getOrderAddresses(),
-            debtOrderDataWrapped.getOrderValues(),
-            debtOrderDataWrapped.getOrderBytes32(),
-            debtOrderDataWrapped.getSignaturesV(),
-            debtOrderDataWrapped.getSignaturesR(),
-            debtOrderDataWrapped.getSignaturesS(),
-            txOptions,
-        );
-
         return debtKernel.fillDebtOrder.sendTransactionAsync(
             debtOrderDataWrapped.getCreditor(),
             debtOrderDataWrapped.getOrderAddresses(),
