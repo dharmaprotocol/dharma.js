@@ -1,6 +1,8 @@
+import * as Web3 from "web3";
+
 // Types
 import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
-import { Address } from "../../../../src/types";
+import { EthereumAddress } from "../../../../src/types";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src";
@@ -8,9 +10,14 @@ import { Dharma } from "../../../../src";
 // Test utils
 import { ACCOUNTS } from "../../../accounts";
 
-import { FillScenario } from "../scenarios/fill_scenarios";
+const CREDITOR = ACCOUNTS[1];
 
-export async function testFill(dharma: Dharma, scenario: FillScenario) {
+import { FillScenario } from "../scenarios/fill_scenarios";
+import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
+
+export async function testFill(dharma: Dharma, web3: Web3, scenario: FillScenario) {
+    await setBalancesAndAllowances(dharma, web3, scenario.debtOrderParams, CREDITOR.address);
+
     describe(scenario.description, () => {
         let debtOrder: DebtOrder;
 

@@ -29,7 +29,7 @@ describe("Debt Order (Integration)", () => {
 
     describe("#fill", async () => {
         FILL_SCENARIOS.forEach(async (scenario) => {
-            await testFill(dharma, scenario);
+            await testFill(dharma, web3, scenario);
         });
     });
 
