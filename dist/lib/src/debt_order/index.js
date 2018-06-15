@@ -72,7 +72,7 @@ var DebtOrder = /** @class */ (function () {
                             interestRate: interestRate.raw,
                             amortizationUnit: termLength.getAmortizationUnit(),
                             termLength: new bignumber_1.BigNumber(termLength.amount),
-                            collateralTokenSymbol: principal.tokenSymbol,
+                            collateralTokenSymbol: collateral.tokenSymbol,
                             collateralAmount: collateral.rawAmount,
                             gracePeriodInDays: new bignumber_1.BigNumber(0),
                             expirationTimestampInSec: expirationTimestampInSec,
