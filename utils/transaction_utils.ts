@@ -7,7 +7,7 @@ import * as Web3 from "web3";
 // Types
 import { TxData } from "src/types";
 import { ContractsAPI } from "../src/apis";
-import { DEBT_ORDER_DATA_DEFAULTS, DebtOrder } from "../src/types/debt_order_data";
+import { DEBT_ORDER_DATA_DEFAULTS, DebtOrderData } from "../src/types/debt_order_data";
 
 export namespace TransactionUtils {
     function filterMethodABI(abi: any[]): Web3.MethodAbi[] {
@@ -54,7 +54,7 @@ export namespace TransactionUtils {
     }
 
     export async function applyNetworkDefaults(
-        debtOrder: DebtOrder,
+        debtOrderData: DebtOrderData,
         contracts: ContractsAPI,
     ): Promise<DebtOrder> {
         const debtKernel = await contracts.loadDebtKernelAsync();
@@ -66,6 +66,6 @@ export namespace TransactionUtils {
             issuanceVersion: repaymentRouter.address,
         };
 
-        return assignDefaults(debtOrder, networkDefaults);
+        return assignDefaults(debtOrderData, networkDefaults);
     }
 }
