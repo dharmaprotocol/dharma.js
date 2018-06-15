@@ -16,6 +16,8 @@ export declare class DebtOrder {
     private data;
     static create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder>;
     static load(dharma: Dharma, data: DebtOrderData): Promise<DebtOrder>;
+    private static gasPrice;
+    private static TX_DEFAULTS;
     private static generateSalt();
     private constructor();
     /**
