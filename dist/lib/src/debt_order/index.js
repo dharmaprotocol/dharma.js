@@ -43,7 +43,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var _ = require("lodash");
 var bignumber_1 = require("../../utils/bignumber");
 var constants_1 = require("../../utils/constants");
 var types_1 = require("../types");
@@ -203,9 +202,9 @@ var DebtOrder = /** @class */ (function () {
     DebtOrder.prototype.cancelAsDebtor = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.dharma.order.cancelOrderAsync(this.data, _.assign(DebtOrder.TX_DEFAULTS, {
+                return [2 /*return*/, this.dharma.order.cancelOrderAsync(this.data, {
                         from: this.data.debtor,
-                    }))];
+                    })];
             });
         });
     };
@@ -225,9 +224,7 @@ var DebtOrder = /** @class */ (function () {
                         return [4 /*yield*/, this.signAsCreditor()];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/, this.dharma.order.fillAsync(this.data, _.assign(DebtOrder.TX_DEFAULTS, {
-                                from: this.data.creditor,
-                            }))];
+                        return [2 /*return*/, this.dharma.order.fillAsync(this.data, { from: this.data.creditor })];
                 }
             });
         });
@@ -267,7 +264,7 @@ var DebtOrder = /** @class */ (function () {
                         _b.label = 4;
                     case 4:
                         rawRepaymentAmount = _a;
-                        return [2 /*return*/, this.dharma.servicing.makeRepayment(agreementId, rawRepaymentAmount, principalTokenAddressString, DebtOrder.TX_DEFAULTS)];
+                        return [2 /*return*/, this.dharma.servicing.makeRepayment(agreementId, rawRepaymentAmount, principalTokenAddressString)];
                 }
             });
         });
@@ -306,7 +303,7 @@ var DebtOrder = /** @class */ (function () {
     DebtOrder.prototype.returnCollateral = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(this.getAgreementId(), DebtOrder.TX_DEFAULTS)];
+                return [2 /*return*/, this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(this.getAgreementId())];
             });
         });
     };
@@ -323,7 +320,7 @@ var DebtOrder = /** @class */ (function () {
     DebtOrder.prototype.seizeCollateral = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(this.getAgreementId(), DebtOrder.TX_DEFAULTS)];
+                return [2 /*return*/, this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(this.getAgreementId())];
             });
         });
     };
@@ -438,8 +435,6 @@ var DebtOrder = /** @class */ (function () {
             });
         });
     };
-    DebtOrder.gasPrice = 400000;
-    DebtOrder.TX_DEFAULTS = { gas: DebtOrder.gasPrice };
     return DebtOrder;
 }());
 exports.DebtOrder = DebtOrder;
