@@ -14,7 +14,7 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 import { Dharma } from "../../../../src";
 
 // Types
-import { Address, TokenAmount } from "../../../../src/types";
+import { EthereumAddress, TokenAmount } from "../../../../src/types";
 
 import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
 
@@ -31,7 +31,7 @@ export async function testGetTotalExpectedRepaymentAmount(dharma: Dharma, params
 
             await setBalancesAndAllowances(dharma, web3, params, CREDITOR.address);
 
-            await debtOrder.fill({ creditorAddress: new Address(CREDITOR.address) });
+            await debtOrder.fillAsCreditor(new EthereumAddress(CREDITOR.address));
         });
 
         test(`eventually returns the open order's principal plus interest`, async () => {
