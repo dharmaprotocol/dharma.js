@@ -23,7 +23,7 @@ import { DebtOrderData, IssuanceCommitment, TransactionOptions, TxData } from ".
 
 // Utils
 import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
-import { TransactionUtils } from "../../utils/transaction_utils";
+import * as TransactionUtils from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
 import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
@@ -134,6 +134,17 @@ export class OrderAPI {
         const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         const debtOrderDataWrapped = new DebtOrderDataWrapper(debtOrderData);
+
+        console.log(
+            debtOrderDataWrapped.getCreditor(),
+            debtOrderDataWrapped.getOrderAddresses(),
+            debtOrderDataWrapped.getOrderValues(),
+            debtOrderDataWrapped.getOrderBytes32(),
+            debtOrderDataWrapped.getSignaturesV(),
+            debtOrderDataWrapped.getSignaturesR(),
+            debtOrderDataWrapped.getSignaturesS(),
+            txOptions,
+        );
 
         return debtKernel.fillDebtOrder.sendTransactionAsync(
             debtOrderDataWrapped.getCreditor(),

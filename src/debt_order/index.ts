@@ -4,7 +4,7 @@ import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { Address, DebtOrderData, InterestRate, TimeInterval, TokenAmount } from "../types";
+import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
@@ -15,7 +15,7 @@ export interface BaseDebtOrderParams {
     collateral: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
-    debtorAddress: Address;
+    debtorAddress: EthereumAddress;
 }
 
 export interface DebtOrderParams extends BaseDebtOrderParams {
@@ -47,7 +47,7 @@ export class DebtOrder {
             interestRate: interestRate.raw,
             amortizationUnit: termLength.getAmortizationUnit(),
             termLength: new BigNumber(termLength.amount),
-            collateralTokenSymbol: principal.tokenSymbol,
+            collateralTokenSymbol: collateral.tokenSymbol,
             collateralAmount: collateral.rawAmount,
             gracePeriodInDays: new BigNumber(0),
             expirationTimestampInSec,
@@ -98,7 +98,7 @@ export class DebtOrder {
             loanOrder.amortizationUnit,
         );
 
-        const debtorAddress = new Address(loanOrder.debtor!); // TODO(kayvon): this could throw.
+        const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
         const debtOrderParams = {
             principal,
@@ -111,6 +111,9 @@ export class DebtOrder {
 
         return new DebtOrder(dharma, debtOrderParams, data);
     }
+
+    private static gasPrice = 400000;
+    private static TX_DEFAULTS = { gas: DebtOrder.gasPrice };
 
     private static generateSalt(): BigNumber {
         return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
@@ -149,24 +152,53 @@ export class DebtOrder {
         this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, false);
     }
 
+    /**
+     * Eventually returns true if the current debt order has been cancelled.
+     *
+     * @example
+     * await debtOrder.isCancelled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isCancelled(): Promise<boolean> {
         return this.dharma.order.isCancelled(this.data);
     }
 
-    public async cancel(): Promise<string> {
-        return this.dharma.order.cancelOrderAsync(this.data);
+    /**
+     * Attempts to cancel the current debt order. A debt order can be cancelled by the debtor
+     * if it is open and unfilled.
+     *
+     * @example
+     * await debtOrder.cancelAsDebtor();
+     * => "0x000..."
+     *
+     * @returns {Promise<string>} the transaction hash
+     */
+    public async cancelAsDebtor(): Promise<string> {
+        return this.dharma.order.cancelOrderAsync(
+            this.data,
+            _.assign(DebtOrder.TX_DEFAULTS, {
+                from: this.data.debtor,
+            }),
+        );
     }
 
     public async isFilled(): Promise<boolean> {
         return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
-    public async fillAsCreditor(creditorAddress: Address): Promise<string> {
+    public async fillAsCreditor(creditorAddress: EthereumAddress): Promise<string> {
         this.data.creditor = creditorAddress.toString();
 
         await this.signAsCreditor();
 
-        return this.dharma.order.fillAsync(this.data, { from: this.data.creditor });
+        return this.dharma.order.fillAsync(
+            this.data,
+            _.assign(DebtOrder.TX_DEFAULTS, {
+                from: this.data.creditor,
+            }),
+        );
     }
 
     /**
@@ -200,6 +232,7 @@ export class DebtOrder {
             agreementId,
             rawRepaymentAmount,
             principalTokenAddressString,
+            DebtOrder.TX_DEFAULTS,
         );
     }
 
@@ -234,6 +267,7 @@ export class DebtOrder {
     public async returnCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(
             this.getAgreementId(),
+            DebtOrder.TX_DEFAULTS,
         );
     }
 
@@ -250,6 +284,7 @@ export class DebtOrder {
     public async seizeCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
             this.getAgreementId(),
+            DebtOrder.TX_DEFAULTS,
         );
     }
 
