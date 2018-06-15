@@ -176,10 +176,10 @@ export class LogsAPI {
         // Create a mapping of event names to the contract where they originate.
         // E.g. "LogDebtOrderFilled" => DebtKernel
         const eventToContract = {};
-        contractWrappers.forEach((wrapper) => {
+        contractWrappers.forEach((wrapper: BaseContract) => {
             const filteredEvents = _.filter(wrapper.abi, (element) => element.type === "event");
 
-            filteredEvents.forEach((event) => {
+            filteredEvents.forEach((event: Web3.MethodAbi) => {
                 eventToContract[event.name] = wrapper;
             });
         });
