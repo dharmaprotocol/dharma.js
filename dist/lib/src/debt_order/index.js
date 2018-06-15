@@ -165,7 +165,7 @@ var DebtOrder = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         _a = this.data;
-                        return [4 /*yield*/, this.dharma.sign.asDebtor(this.data, true)];
+                        return [4 /*yield*/, this.dharma.sign.asDebtor(this.data, false)];
                     case 1:
                         _a.debtorSignature = _b.sent();
                         return [2 /*return*/];
@@ -215,16 +215,16 @@ var DebtOrder = /** @class */ (function () {
             });
         });
     };
-    DebtOrder.prototype.fill = function (parameters) {
+    DebtOrder.prototype.fillAsCreditor = function (creditorAddress) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.data.creditor = parameters.creditorAddress.toString();
+                        this.data.creditor = creditorAddress.toString();
                         return [4 /*yield*/, this.signAsCreditor()];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/, this.dharma.order.fillAsync(this.data)];
+                        return [2 /*return*/, this.dharma.order.fillAsync(this.data, { from: this.data.creditor })];
                 }
             });
         });
@@ -414,7 +414,7 @@ var DebtOrder = /** @class */ (function () {
                             return [2 /*return*/];
                         }
                         _a = this.data;
-                        return [4 /*yield*/, this.dharma.sign.asCreditor(this.data, true)];
+                        return [4 /*yield*/, this.dharma.sign.asCreditor(this.data, false)];
                     case 1:
                         _a.creditorSignature = _b.sent();
                         return [2 /*return*/];

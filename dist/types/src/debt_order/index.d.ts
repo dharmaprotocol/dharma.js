@@ -10,9 +10,6 @@ export interface BaseDebtOrderParams {
 export interface DebtOrderParams extends BaseDebtOrderParams {
     expiresIn: TimeInterval;
 }
-export interface FillParameters {
-    creditorAddress: EthereumAddress;
-}
 export declare class DebtOrder {
     private dharma;
     private params;
@@ -51,7 +48,7 @@ export declare class DebtOrder {
      */
     cancelAsDebtor(): Promise<string>;
     isFilled(): Promise<boolean>;
-    fill(parameters: FillParameters): Promise<string>;
+    fillAsCreditor(creditorAddress: EthereumAddress): Promise<string>;
     /**
      * Makes a repayment on the loan, with the default payment amount being the
      * expected size of a single installment given the principal, interest rate,
