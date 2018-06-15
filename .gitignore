@@ -5,7 +5,9 @@
 generated_docs/
 scripts/documentation/output/*
 
-dist
+# TODO(kayvon): ignore dist before merging into master
+#dist
+
 node_modules
 coverage
 .nyc_output
