@@ -27,6 +27,21 @@ interface DebtOrderConstructorParams extends BaseDebtOrderParams {
 }
 
 export class DebtOrder {
+    /**
+     * Eventually returns an instance of an open DebtOrder signed by the debtor.
+     *
+     * @example
+     * const debtOrder = await Types.DebtOrder.create(dharma, {
+     *   principal: new Types.TokenAmount(3, "WETH"),
+     *   collateral: new Types.TokenAmount(100, "REP"),
+     *   debtorAddress: new Types.EthereumAddress("0xd2f45e02ab7b190ac9a87b743eab4c8f2ed0e491"),
+     *   interestRate: new Types.InterestRate(2.5),
+     *   termLength: new Types.TimeInterval(6, "months"),
+     *   expiresIn: new Types.TimeInterval(1, "week")
+     * });
+     *
+     * @returns {Promise<DebtOrder>}
+     */
     public static async create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder> {
         const {
             principal,
@@ -125,6 +140,10 @@ export class DebtOrder {
     /**
      * Eventually returns true if the current debt order will be expired for the next block.
      *
+     * @example
+     * await debtOrder.isExpired();
+     * => true
+     *
      * @returns {Promise<boolean>}
      */
     public async isExpired(): Promise<boolean> {
@@ -163,14 +182,14 @@ export class DebtOrder {
     }
 
     /**
-     * Attempts to cancel the current debt order. A debt order can be cancelled by the debtor
+     * Eventually attempts to cancel the current debt order. A debt order can be cancelled by the debtor
      * if it is open and unfilled.
      *
      * @example
      * await debtOrder.cancelAsDebtor();
      * => "0x000..."
      *
-     * @returns {Promise<string>} the transaction hash
+     * @returns {Promise<string>} the hash of the Ethereum transaction to cancel the debt order
      */
     public async cancelAsDebtor(): Promise<string> {
         return this.dharma.order.cancelOrderAsync(this.data, {
@@ -178,10 +197,29 @@ export class DebtOrder {
         });
     }
 
+    /**
+     * Eventually returns true if the current debt order has been filled by a creditor.
+     *
+     * @example
+     * await debtOrder.isFilled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isFilled(): Promise<boolean> {
         return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
+    /**
+     * Eventually fills the debt order as the creditor, transfering the principal to the debtor.
+     *
+     * @example
+     * const creditorAddress = new EthereumAddress("0x000...");
+     * order.fillAsCreditor(creditorAddress);
+     * => Promise<string>
+     *
+     * @returns {Promise<string>} the hash of the Ethereum transaction to fill the debt order
+     */
     public async fillAsCreditor(creditorAddress: EthereumAddress): Promise<string> {
         this.data.creditor = creditorAddress.toString();
 
@@ -191,7 +229,7 @@ export class DebtOrder {
     }
 
     /**
-     * Makes a repayment on the loan, with the default payment amount being the
+     * Eventually makes a repayment on the loan, with the default payment amount being the
      * expected size of a single installment given the principal, interest rate,
      * and terms.
      *
@@ -203,7 +241,7 @@ export class DebtOrder {
      * order.makeRepayment(outstandingAmount);
      * => Promise<string>
      *
-     * @returns {Promise<string>} the hash of the transaction to make the repayment
+     * @returns {Promise<string>} the hash of the Ethereum transaction to make the repayment
      */
     public async makeRepayment(repaymentAmount?: TokenAmount): Promise<string> {
         const agreementId = this.getAgreementId();
@@ -224,18 +262,48 @@ export class DebtOrder {
         );
     }
 
+    /**
+     * Eventually returns true if the debt order's collateral has been either seized
+     * by the creditor or returned to the debtor.
+     *
+     * @example
+     * await debtOrder.isCollateralWithdrawn();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isCollateralWithdrawn(): Promise<boolean> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.isCollateralWithdrawn(
             this.getAgreementId(),
         );
     }
 
+    /**
+     * Eventually returns true if the debt order's collateral is seizable
+     * by the creditor.
+     *
+     * @example
+     * await debtOrder.isCollateralSeizable();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isCollateralSeizable(): Promise<boolean> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.canSeizeCollateral(
             this.getAgreementId(),
         );
     }
 
+    /**
+     * Eventually returns true if the debt order's collateral is returnable
+     * to the debtor.
+     *
+     * @example
+     * await debtOrder.isCollateralReturnable();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
     public async isCollateralReturnable(): Promise<boolean> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.canReturnCollateral(
             this.getAgreementId(),
@@ -243,14 +311,14 @@ export class DebtOrder {
     }
 
     /**
-     * Returns the collateral and sends it to the debtor.
+     * Eventually returns the collateral and sends it to the debtor.
      * This will fail if the collateral is not returnable.
      *
      * @example
      * order.returnCollateral();
      * => Promise<string>
      *
-     * @returns {Promise<string>} the hash of the transaction to return the collateral
+     * @returns {Promise<string>} the hash of the Ethereum transaction to return the collateral
      */
     public async returnCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(
@@ -259,14 +327,14 @@ export class DebtOrder {
     }
 
     /**
-     * Seizes the collateral and sends it to the creditor.
+     * Eventually seizes the collateral and sends it to the creditor.
      * This will fail if the collateral is not seizable.
      *
      * @example
      * order.seizeCollateral();
      * => Promise<string>
      *
-     * @returns {Promise<string>} the hash of the transaction to seize the collateral
+     * @returns {Promise<string>} the hash of the Ethereum transaction to seize the collateral
      */
     public async seizeCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
@@ -275,7 +343,7 @@ export class DebtOrder {
     }
 
     /**
-     * Returns the total amount expected to be repaid.
+     * Eventually returns the total amount expected to be repaid.
      *
      * @example
      * order.getTotalExpectedRepaymentAmount();
@@ -296,7 +364,7 @@ export class DebtOrder {
     }
 
     /**
-     * Returns the outstanding balance of the loan.
+     * Eventually returns the outstanding balance of the loan.
      *
      * @example
      * order.getOutstandingAmount();
@@ -319,7 +387,7 @@ export class DebtOrder {
     }
 
     /**
-     * Returns the total amount repaid so far.
+     * Eventually returns the total amount repaid so far.
      *
      * @example
      * order.getRepaidAmount();
