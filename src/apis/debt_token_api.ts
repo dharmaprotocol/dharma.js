@@ -1,14 +1,16 @@
 // External
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
+
+// Utils
 import { BigNumber } from "../../utils/bignumber";
+import { generateTxOptions } from "../../utils/transaction_utils";
 
 // Types
 import { TxData } from "../types";
 
-// Utils
+// Invariants
 import { Assertions } from "../invariants";
-import { generateTxOptions } from "../../utils/transaction_utils";
 
 // APIs
 import { ContractsAPI } from "./";
