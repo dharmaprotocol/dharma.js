@@ -1,1 +1,3 @@
-export { Dharma } from "./dharma";
+import { Dharma } from "./dharma";
+
+export default Dharma;
