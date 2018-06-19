@@ -6,7 +6,6 @@ generated_docs/
 scripts/documentation/output/*
 
 dist
-
 node_modules
 coverage
 .nyc_output

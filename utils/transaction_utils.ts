@@ -3,6 +3,7 @@ import * as ethjsABI from "ethjs-abi";
 import * as assignDefaults from "lodash.defaults";
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
+import { Web3Utils } from "./web3_utils";
 
 import { ContractsAPI } from "../src/apis";
 import { DEBT_ORDER_DATA_DEFAULTS, DebtOrderData, TxData } from "../src/types";
@@ -60,4 +61,21 @@ export async function applyNetworkDefaults(
     };
 
     return assignDefaults(debtOrderData, networkDefaults);
+}
+
+export async function generateTxOptions(
+    web3: Web3,
+    gas: number,
+    options?: TxData,
+): Promise<TxData> {
+    const web3Utils = new Web3Utils(web3);
+    const accounts = await web3Utils.getAvailableAddressesAsync();
+
+    // TODO(kayvon): Add fault tolerance to scenario in which no addresses are available.
+
+    return {
+        gas,
+        from: accounts[0],
+        ...options,
+    };
 }

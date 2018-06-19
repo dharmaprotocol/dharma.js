@@ -19,13 +19,12 @@ import {
 } from "../wrappers";
 
 // Types
-import { DebtOrderData, IssuanceCommitment, TransactionOptions, TxData } from "../types";
+import { DebtOrderData, IssuanceCommitment, TxData } from "../types";
 
 // Utils
 import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
-import * as TransactionUtils from "../../utils/transaction_utils";
+import { applyNetworkDefaults, generateTxOptions } from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
-import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
 
 const ORDER_FILL_GAS_MAXIMUM = 600000;
 
@@ -121,11 +120,7 @@ export class OrderAPI {
      * @return           the hash of the ethereum transaction that fulfilled the debt order.
      */
     public async fillAsync(debtOrderData: DebtOrderData, options?: TxData): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ORDER_FILL_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await generateTxOptions(this.web3, ORDER_FILL_GAS_MAXIMUM, options);
 
         debtOrderData = await applyNetworkDefaults(debtOrderData, this.contracts);
 
@@ -183,11 +178,7 @@ export class OrderAPI {
      * @return           the hash of the resulting Ethereum transaction.
      */
     public async cancelOrderAsync(debtOrderData: DebtOrderData, options?: TxData): Promise<string> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ORDER_FILL_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await generateTxOptions(this.web3, ORDER_FILL_GAS_MAXIMUM, options);
 
         const { debtKernel } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
@@ -254,11 +245,7 @@ export class OrderAPI {
         debtOrderData: DebtOrderData,
         options?: TxData,
     ): Promise<boolean> {
-        const txOptions = await TransactionOptions.generateTxOptions(
-            this.web3,
-            ORDER_FILL_GAS_MAXIMUM,
-            options,
-        );
+        const txOptions = await generateTxOptions(this.web3, ORDER_FILL_GAS_MAXIMUM, options);
         const { debtToken } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         const issuanceHash = await this.getIssuanceHash(debtOrderData);
