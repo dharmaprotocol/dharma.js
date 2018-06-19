@@ -71,7 +71,7 @@ export async function generateTxOptions(
     const web3Utils = new Web3Utils(web3);
     const accounts = await web3Utils.getAvailableAddressesAsync();
 
-    // TODO: Add fault tolerance to scenario in which not addresses are available
+    // TODO(kayvon): Add fault tolerance to scenario in which no addresses are available.
 
     return {
         gas,
