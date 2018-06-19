@@ -1,3 +1,3 @@
 import { Dharma } from "./dharma";
 
-export default Dharma;
+module.exports = Dharma;

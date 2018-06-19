@@ -7,7 +7,7 @@ import { ACCOUNTS } from "../../../accounts";
 import { DebtOrderParams } from "../../../../src/debt_order";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src";
+import { Dharma } from "../../../../src/dharma";
 
 // Wrappers
 import { DummyTokenContract } from "../../../../src/wrappers";
