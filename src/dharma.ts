@@ -11,9 +11,11 @@ import {
     TokenAPI,
 } from "./apis";
 
-import * as Types from "./types";
+import * as DharmaTypes from "./types";
 
 class Dharma {
+    public static Types = DharmaTypes;
+
     public sign: SignerAPI;
     public order: OrderAPI;
     public contracts: ContractsAPI;
@@ -25,7 +27,7 @@ class Dharma {
 
     private readonly web3: Web3;
 
-    constructor(web3Provider: Web3.Provider, addressBook: Types.AddressBook = {}) {
+    constructor(web3Provider: Web3.Provider, addressBook: DharmaTypes.AddressBook = {}) {
         this.web3 = new Web3(web3Provider);
 
         this.contracts = new ContractsAPI(this.web3, addressBook);
@@ -40,4 +42,4 @@ class Dharma {
     }
 }
 
-export { Dharma, Types };
+export { Dharma };

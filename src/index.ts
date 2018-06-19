@@ -1,1 +1,1 @@
-export { Dharma, Types } from "./dharma";
+export { Dharma } from "./dharma";
