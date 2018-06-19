@@ -105,7 +105,8 @@ class TypedocParser {
 
         const firstChild = typedocObj.children[0];
         // All class representations are referred to as "Class".
-        return firstChild.kindString === "Class" && typedocObj.name !== '"index"';
+        console.log(typedocObj.name);
+        return firstChild.kindString === "Class" && typedocObj.name !== '"index"' && typedocObj.name !== '"dharma"';
     }
 
     private static methodSignature(methodName: string, signature: any, params: string) {
