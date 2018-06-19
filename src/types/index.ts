@@ -2,7 +2,7 @@ export { DebtOrder } from "../debt_order";
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
 export { ECDSASignature } from "./ecdsa_signature";
 export { IssuanceCommitment } from "./issuance_commitment";
-export { TxData, TxDataPayable, TransactionOptions } from "./transaction_options";
+export { TxData, TxDataPayable } from "./transaction_options";
 export { AddressBook } from "./address_book";
 export { DebtRegistryEntry, DebtRegistryEntryData } from "./debt_registry_entry";
 export { Logging } from "./logging";
