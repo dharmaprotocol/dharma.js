@@ -1,107 +1,67 @@
-// utils
+// External libraries
 import * as _ from "lodash";
+
+// Utils
 import { BigNumber } from "../../../utils/bignumber";
 import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 
-// types
-import { TokenAmount, TokenAmountType } from "../../../src/types/token_amount";
+// Types
+import { TokenAmount } from "../../../src/types";
 
-describe("TokenAmount", () => {
+describe("TokenAmount (Unit)", () => {
+    const symbol = "REP";
+    const registryDataForREP = _.find(
+        TOKEN_REGISTRY_TRACKED_TOKENS,
+        (tokenObject) => tokenObject.symbol === symbol,
+    );
+    const numDecimals = registryDataForREP.decimals;
+    const amount = 10.2;
+    const amountAsString = `${amount} ${symbol}`;
+    const rawAmount = new BigNumber(amount).times(
+        new BigNumber(10).pow(registryDataForREP.decimals),
+    );
+
     describe("instantiation", () => {
-        const symbol = "REP";
-        const registryDataForREP = _.find(
-            TOKEN_REGISTRY_TRACKED_TOKENS,
-            (tokenObject) => tokenObject.symbol === symbol,
-        );
-        const numDecimals = new BigNumber(registryDataForREP.decimals);
-        const decimalAmount = new BigNumber(4.5);
-        const rawAmount = decimalAmount.times(new BigNumber(10).pow(registryDataForREP.decimals));
-        const amountAsString = `${decimalAmount} ${symbol}`;
+        const tokenAmount = new TokenAmount(amount, symbol);
 
-        describe("with valid decimal amount", () => {
-            const tokenAmount = new TokenAmount({
-                symbol,
-                amount: decimalAmount,
-                type: TokenAmountType.Decimal,
-            });
-
-            test("should expose the token amount as raw big number", () => {
-                expect(tokenAmount.rawAmount).toEqual(rawAmount);
-            });
-
-            test("should expose token amount in decimal", () => {
-                expect(tokenAmount.decimalAmount).toEqual(decimalAmount);
-            });
-
-            test("should expose the token amount as a string", () => {
-                expect(tokenAmount.toString()).toEqual(amountAsString);
-            });
-
-            test("should expose metadata about the underyling token", () => {
-                expect(tokenAmount.tokenSymbol).toEqual(symbol);
-                expect(tokenAmount.tokenNumDecimals).toEqual(numDecimals);
-                expect(tokenAmount.tokenName).toEqual(registryDataForREP.name);
-            });
+        test("should expose the token amount as raw big number", () => {
+            expect(tokenAmount.rawAmount).toEqual(rawAmount);
         });
 
-        describe("with valid raw amount", () => {
-            const tokenAmount = new TokenAmount({
-                symbol,
-                amount: rawAmount,
-                type: TokenAmountType.Raw,
-            });
-
-            test("should expose the token amount as raw big number", () => {
-                expect(tokenAmount.rawAmount).toEqual(rawAmount);
-            });
-
-            test("should expose token amount in decimal", () => {
-                expect(tokenAmount.decimalAmount).toEqual(decimalAmount);
-            });
-
-            test("should expose the token amount as a string", () => {
-                expect(tokenAmount.toString()).toEqual(amountAsString);
-            });
-
-            test("should expose metadata about the underyling token", () => {
-                expect(tokenAmount.tokenSymbol).toEqual(symbol);
-                expect(tokenAmount.tokenNumDecimals).toEqual(numDecimals);
-                expect(tokenAmount.tokenName).toEqual(registryDataForREP.name);
-            });
+        test("should expose token amount in decimal", () => {
+            expect(tokenAmount.decimalAmount).toEqual(amount);
         });
 
-        describe("with invalid token amount type", () => {
-            test("should throw", () => {
-                let error: Error;
-                try {
-                    const amount = new TokenAmount({
-                        symbol,
-                        amount: rawAmount,
-                        type: 3, // only {0,1} are valid token amount types.
-                    });
-                } catch (e) {
-                    error = e;
-                }
-                expect(error.message).toEqual("invalid token amount type");
-            });
+        test("should expose the token amount as a string", () => {
+            expect(tokenAmount.toString()).toEqual(amountAsString);
         });
 
-        describe("with invalid token symbol", () => {
-            test("should throw", () => {
-                let error: Error;
-                try {
-                    const amount = new TokenAmount({
-                        symbol: "GOOGLE",
-                        amount: rawAmount,
-                        type: TokenAmountType.Raw,
-                    });
-                } catch (e) {
-                    error = e;
-                }
-                expect(error.message).toEqual(
-                    "Cannot find token with given symbol in token registry",
-                );
-            });
+        test("should expose metadata about the underyling token", () => {
+            expect(tokenAmount.tokenSymbol).toEqual(symbol);
+            expect(tokenAmount.tokenNumDecimals).toEqual(numDecimals);
+            expect(tokenAmount.tokenName).toEqual(registryDataForREP.name);
+        });
+    });
+
+    describe("#fromRaw", () => {
+        const tokenAmount = TokenAmount.fromRaw(rawAmount, symbol);
+
+        test("should expose the token amount as raw big number", () => {
+            expect(tokenAmount.rawAmount).toEqual(rawAmount);
+        });
+
+        test("should expose token amount in decimal", () => {
+            expect(tokenAmount.decimalAmount).toEqual(amount);
+        });
+
+        test("should expose the token amount as a string", () => {
+            expect(tokenAmount.toString()).toEqual(amountAsString);
+        });
+
+        test("should expose metadata about the underyling token", () => {
+            expect(tokenAmount.tokenSymbol).toEqual(symbol);
+            expect(tokenAmount.tokenNumDecimals).toEqual(numDecimals);
+            expect(tokenAmount.tokenName).toEqual(registryDataForREP.name);
         });
     });
 });

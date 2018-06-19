@@ -8,7 +8,7 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
-import { TransactionUtils } from "../../../utils/transaction_utils";
+import * as TransactionUtils from "../../../utils/transaction_utils";
 import { DebtToken as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
