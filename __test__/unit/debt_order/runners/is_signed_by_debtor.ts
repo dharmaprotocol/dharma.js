@@ -2,7 +2,7 @@
 import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src";
+import { Dharma } from "../../../../src/dharma";
 
 export async function testIsSignedByDebtor(dharma: Dharma, params: DebtOrderParams) {
     describe("after DebtOrder initialization", () => {

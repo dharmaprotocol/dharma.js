@@ -11,7 +11,7 @@ import { ACCOUNTS } from "../../../accounts";
 import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src";
+import { Dharma } from "../../../../src/dharma";
 
 // Types
 import { EthereumAddress, TokenAmount } from "../../../../src/types";

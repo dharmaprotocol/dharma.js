@@ -1,5 +1,5 @@
 import * as _ from "lodash";
-import { Dharma } from "../";
+import Dharma from "../";
 import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
