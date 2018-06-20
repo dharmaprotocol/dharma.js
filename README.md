@@ -12,12 +12,12 @@ Extensive documentation on the libraries can be found [here](https://docs.dharma
 For examples of how to integrate `dharma.js` into a client application, we recommend perusing the [Dharma React Starter Kit](https://github.com/dharmaprotocol/dharma-react-starter-kit) repository and playing around with the sample application
 
 ##### Installation & Setup:
-```
+```bash
 yarn add @dharmaprotocol/dharma.js
 ```
 
 ##### Using ES6 style imports (recommended):
-```javascript
+```typescript
 import Dharma from "@dharmaprotocol/dharma.js"
 
 const dharma = new Dharma(web3.currentProvider);
@@ -37,19 +37,19 @@ We recommend brushing up on the basics of Dharma protocol before diving in -- a 
 ##### Dependencies
 
 Install dependencies:
-```
+```bash
 yarn
 ```
 
 ##### Compile & Migrate Contracts
 
 Start `testrpc` and setup dependencies:
-```
+```bash
 yarn chain
 ```
 Wait until the `dependency migration complete` message appears before interacting with the contracts.
 
 ##### Testing
-```
+```bash
 yarn test:watch
 ```
