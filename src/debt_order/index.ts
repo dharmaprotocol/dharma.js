@@ -410,7 +410,7 @@ export class DebtOrder {
      * @returns {Promise<TokenAmount>}
      */
     public async getOutstandingAmount(): Promise<number> {
-        const repaymentToken = this.getTotalExpectedRepaymentToken();
+        const repaymentToken = this.getRepaymentToken();
 
         const totalExpectedRepaymentAmount = new TokenAmount(
             await this.getTotalExpectedRepaymentAmount(),
