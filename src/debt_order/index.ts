@@ -396,7 +396,7 @@ export class DebtOrder {
      *
      * @returns {string}
      */
-    public getTotalExpectedRepaymentToken(): string {
+    public getRepaymentToken(): string {
         return this.params.principal.tokenSymbol;
     }
 
