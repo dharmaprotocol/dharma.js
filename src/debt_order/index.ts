@@ -46,13 +46,16 @@ export class DebtOrder {
      *
      * @example
      * const debtOrder = await Types.DebtOrder.create(dharma, {
-     *   principal: new Types.TokenAmount(3, "WETH"),
-     *   collateral: new Types.TokenAmount(100, "REP"),
-     *   debtorAddress: new Types.EthereumAddress("0xd2f45e02ab7b190ac9a87b743eab4c8f2ed0e491"),
-     *   interestRate: new Types.InterestRate(2.5),
-     *   termLength: new Types.TimeInterval(6, "months"),
-     *   expiresIn: new Types.TimeInterval(1, "week")
-     * });
+     *      principalAmount: 5,
+     *      principalToken: "REP",
+     *      collateralAmount: 10,
+     *      collateralToken: "MKR",
+     *      interestRate: 12.3,
+     *      termDuration: 6,
+     *      termUnit: "months",
+     *      debtorAddress: debtor.address,
+     *      expiresInUnit: "days",
+     *  });
      *
      * @returns {Promise<DebtOrder>}
      */
@@ -396,7 +399,7 @@ export class DebtOrder {
      *
      * @returns {string}
      */
-    public getRepaymentToken(): string {
+    public getRepaymentTokenSymbol(): string {
         return this.params.principal.tokenSymbol;
     }
 
@@ -410,7 +413,7 @@ export class DebtOrder {
      * @returns {Promise<TokenAmount>}
      */
     public async getOutstandingAmount(): Promise<number> {
-        const repaymentToken = this.getRepaymentToken();
+        const repaymentToken = this.getRepaymentTokenSymbol();
 
         const totalExpectedRepaymentAmount = new TokenAmount(
             await this.getTotalExpectedRepaymentAmount(),
