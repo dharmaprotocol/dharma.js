@@ -1,9 +1,10 @@
 // Debt Order
 import { DebtOrderParams } from "../../../../src/debt_order";
 
+import { DurationUnit } from "../../../../src/types";
+
 // Test utils
 import { ACCOUNTS } from "../../../accounts";
-import { DurationUnit } from "../../../../src/types";
 
 const debtor = ACCOUNTS[1];
 
