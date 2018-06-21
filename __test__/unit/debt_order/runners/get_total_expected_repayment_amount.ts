@@ -47,7 +47,7 @@ export async function testGetTotalExpectedRepaymentAmount(dharma: Dharma, params
             const expectedValue = TokenAmount.fromRaw(
                 new BigNumber(principalPlusInterest),
                 principal.tokenSymbol,
-            );
+            ).decimalAmount;
 
             expect(amount).toEqual(expectedValue);
         });

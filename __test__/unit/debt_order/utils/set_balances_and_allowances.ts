@@ -42,21 +42,13 @@ export const setBalancesAndAllowances = async (
     const collateral = new TokenAmount(params.collateralAmount, params.collateralToken);
 
     // Grant creditor a balance of tokens
-    await principalToken.setBalance.sendTransactionAsync(
-        creditorAddress,
-        principal.rawAmount,
-        {
-            from: contractOwner.address,
-        },
-    );
+    await principalToken.setBalance.sendTransactionAsync(creditorAddress, principal.rawAmount, {
+        from: contractOwner.address,
+    });
 
-    await collateralToken.setBalance.sendTransactionAsync(
-        debtorAddress,
-        collateral.rawAmount,
-        {
-            from: contractOwner.address,
-        },
-    );
+    await collateralToken.setBalance.sendTransactionAsync(debtorAddress, collateral.rawAmount, {
+        from: contractOwner.address,
+    });
 
     await tokenApi.setUnlimitedProxyAllowanceAsync(principalToken.address, {
         from: creditorAddress,

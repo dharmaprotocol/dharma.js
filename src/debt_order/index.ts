@@ -163,8 +163,7 @@ export class DebtOrder {
         private dharma: Dharma,
         private params: DebtOrderConstructorParams,
         private data: DebtOrderData,
-    ) {
-    }
+    ) {}
 
     /**
      * Eventually returns true if the current debt order will be expired for the next block.
@@ -375,12 +374,12 @@ export class DebtOrder {
      * Eventually returns the total amount expected to be repaid.
      *
      * @example
-     * order.getTotalExpectedRepaymentAmount();
-     * => Promise<TokenAmount>
+     * await order.getTotalExpectedRepaymentAmount();
+     * => 13.5
      *
-     * @returns {Promise<TokenAmount>}
+     * @returns {Promise<number>}
      */
-    public async getTotalExpectedRepaymentAmount(): Promise<TokenAmount> {
+    public async getTotalExpectedRepaymentAmount(): Promise<number> {
         const agreementId = this.getAgreementId();
 
         const totalExpectedRepaymentAmount = await this.dharma.servicing.getTotalExpectedRepayment(
@@ -389,7 +388,16 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return TokenAmount.fromRaw(totalExpectedRepaymentAmount, tokenSymbol);
+        return TokenAmount.fromRaw(totalExpectedRepaymentAmount, tokenSymbol).decimalAmount;
+    }
+
+    /**
+     * Returns the symbol of the token to be repaid.
+     *
+     * @returns {string}
+     */
+    public getTotalExpectedRepaymentToken(): string {
+        return this.params.principal.tokenSymbol;
     }
 
     /**
