@@ -409,10 +409,18 @@ export class DebtOrder {
      *
      * @returns {Promise<TokenAmount>}
      */
-    public async getOutstandingAmount(): Promise<TokenAmount> {
-        const totalExpectedRepaymentAmount = await this.getTotalExpectedRepaymentAmount();
+    public async getOutstandingAmount(): Promise<number> {
+        const repaymentToken = this.getTotalExpectedRepaymentToken();
 
-        const repaidAmount = await this.getRepaidAmount();
+        const totalExpectedRepaymentAmount = new TokenAmount(
+            await this.getTotalExpectedRepaymentAmount(),
+            repaymentToken,
+        );
+
+        const repaidAmount = new TokenAmount(
+            await this.getRepaidAmount(),
+            repaymentToken,
+        );
 
         const outstandingAmount = totalExpectedRepaymentAmount.rawAmount.minus(
             repaidAmount.rawAmount,
@@ -420,7 +428,7 @@ export class DebtOrder {
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return TokenAmount.fromRaw(outstandingAmount, tokenSymbol);
+        return TokenAmount.fromRaw(outstandingAmount, tokenSymbol).decimalAmount;
     }
 
     /**
@@ -432,14 +440,14 @@ export class DebtOrder {
      *
      * @returns {Promise<TokenAmount>}
      */
-    public async getRepaidAmount(): Promise<TokenAmount> {
+    public async getRepaidAmount(): Promise<number> {
         const agreementId = this.getAgreementId();
 
         const repaidAmount = await this.dharma.servicing.getValueRepaid(agreementId);
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
-        return TokenAmount.fromRaw(repaidAmount, tokenSymbol);
+        return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
     }
 
     private isSignedByCreditor(): boolean {
