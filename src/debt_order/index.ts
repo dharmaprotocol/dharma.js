@@ -1,28 +1,42 @@
-import * as _ from "lodash";
 import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
+
 import { Dharma } from "../dharma";
 
-import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
+import {
+    DebtOrderData,
+    DurationUnit,
+    EthereumAddress,
+    InterestRate,
+    TimeInterval,
+    TokenAmount,
+} from "../types";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
 const SALT_DECIMALS = 20;
 
-export interface BaseDebtOrderParams {
+export interface DebtOrderParams {
+    principalAmount: number;
+    principalToken: string;
+    collateralAmount: number;
+    collateralToken: string;
+    interestRate: number;
+    termDuration: number;
+    termUnit: DurationUnit;
+    debtorAddress: string;
+    expiresInDuration: number;
+    expiresInUnit: DurationUnit;
+}
+
+interface DebtOrderConstructorParams {
     principal: TokenAmount;
     collateral: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
     debtorAddress: EthereumAddress;
-}
-
-export interface DebtOrderParams extends BaseDebtOrderParams {
-    expiresIn: TimeInterval;
-}
-
-interface DebtOrderConstructorParams extends BaseDebtOrderParams {
     expiresAt: number;
 }
 
@@ -44,22 +58,42 @@ export class DebtOrder {
      */
     public static async create(dharma: Dharma, params: DebtOrderParams): Promise<DebtOrder> {
         const {
-            principal,
-            collateral,
+            principalAmount,
+            principalToken,
+            collateralAmount,
+            collateralToken,
             interestRate,
-            termLength,
+            termDuration,
+            termUnit,
             debtorAddress,
-            expiresIn,
+            expiresInDuration,
+            expiresInUnit,
         } = params;
+
+        const principal = new TokenAmount(principalAmount, principalToken);
+        const collateral = new TokenAmount(collateralAmount, collateralToken);
+        const interestRateTyped = new InterestRate(interestRate);
+        const termLength = new TimeInterval(termDuration, termUnit);
+        const debtorAddressTyped = new EthereumAddress(debtorAddress);
+        const expiresIn = new TimeInterval(expiresInDuration, expiresInUnit);
 
         const currentBlocktime = new BigNumber(await dharma.blockchain.getCurrentBlockTime());
 
         const expirationTimestampInSec = expiresIn.fromTimestamp(currentBlocktime);
 
+        const debtOrderConstructorParams: DebtOrderConstructorParams = {
+            principal,
+            collateral,
+            interestRate: interestRateTyped,
+            termLength,
+            debtorAddress: debtorAddressTyped,
+            expiresAt: expirationTimestampInSec.toNumber(),
+        };
+
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
             principalTokenSymbol: principal.tokenSymbol,
-            interestRate: interestRate.raw,
+            interestRate: interestRateTyped.raw,
             amortizationUnit: termLength.getAmortizationUnit(),
             termLength: new BigNumber(termLength.amount),
             collateralTokenSymbol: collateral.tokenSymbol,
@@ -73,16 +107,10 @@ export class DebtOrder {
         const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
         const salt = this.generateSalt();
 
-        data.debtor = debtorAddress.toString();
+        data.debtor = debtorAddressTyped.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
-
-        const debtOrderConstructorParams = {
-            ...params,
-            expiresAt: expirationTimestampInSec.toNumber(),
-        };
-        delete debtOrderConstructorParams.expiresIn;
 
         const debtOrder = new DebtOrder(dharma, debtOrderConstructorParams, data);
 
@@ -118,8 +146,8 @@ export class DebtOrder {
         const debtOrderParams = {
             principal,
             collateral,
-            interestRate,
             termLength,
+            interestRate,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
             debtorAddress,
         };
@@ -135,7 +163,8 @@ export class DebtOrder {
         private dharma: Dharma,
         private params: DebtOrderConstructorParams,
         private data: DebtOrderData,
-    ) {}
+    ) {
+    }
 
     /**
      * Eventually returns true if the current debt order will be expired for the next block.

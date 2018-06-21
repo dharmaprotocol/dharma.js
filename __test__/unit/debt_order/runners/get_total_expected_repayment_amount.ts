@@ -14,7 +14,7 @@ import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
 import { Dharma } from "../../../../src/dharma";
 
 // Types
-import { EthereumAddress, TokenAmount } from "../../../../src/types";
+import { EthereumAddress, InterestRate, TokenAmount } from "../../../../src/types";
 
 import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
 
@@ -37,14 +37,16 @@ export async function testGetTotalExpectedRepaymentAmount(dharma: Dharma, params
         test(`eventually returns the open order's principal plus interest`, async () => {
             const amount = await debtOrder.getTotalExpectedRepaymentAmount();
 
-            const principal = params.principal.rawAmount.toNumber();
-            const interest = params.interestRate.raw.toNumber();
+            const principal = new TokenAmount(params.principalAmount, params.principalToken);
+            const interestRate = new InterestRate(params.interestRate);
+            const principalAmount = principal.rawAmount.toNumber();
+            const interest = interestRate.raw.toNumber();
 
-            const principalPlusInterest = (1 + interest / 100) * principal;
+            const principalPlusInterest = (1 + interest / 100) * principalAmount;
 
             const expectedValue = TokenAmount.fromRaw(
                 new BigNumber(principalPlusInterest),
-                params.principal.tokenSymbol,
+                principal.tokenSymbol,
             );
 
             expect(amount).toEqual(expectedValue);

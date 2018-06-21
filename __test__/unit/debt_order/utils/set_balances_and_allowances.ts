@@ -14,6 +14,7 @@ import { DummyTokenContract } from "../../../../src/wrappers";
 
 // APIs
 import { ContractsAPI, TokenAPI } from "../../../../src/apis";
+import { TokenAmount } from "../../../../src/types";
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
@@ -37,10 +38,13 @@ export const setBalancesAndAllowances = async (
     const principalToken = await DummyTokenContract.at(principalTokenAddress, web3, TX_DEFAULTS);
     const collateralToken = await DummyTokenContract.at(collateralTokenAddress, web3, TX_DEFAULTS);
 
+    const principal = new TokenAmount(params.principalAmount, params.principalToken);
+    const collateral = new TokenAmount(params.collateralAmount, params.collateralToken);
+
     // Grant creditor a balance of tokens
     await principalToken.setBalance.sendTransactionAsync(
         creditorAddress,
-        params.principal.rawAmount,
+        principal.rawAmount,
         {
             from: contractOwner.address,
         },
@@ -48,7 +52,7 @@ export const setBalancesAndAllowances = async (
 
     await collateralToken.setBalance.sendTransactionAsync(
         debtorAddress,
-        params.collateral.rawAmount,
+        collateral.rawAmount,
         {
             from: contractOwner.address,
         },
