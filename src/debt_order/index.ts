@@ -417,10 +417,7 @@ export class DebtOrder {
             repaymentToken,
         );
 
-        const repaidAmount = new TokenAmount(
-            await this.getRepaidAmount(),
-            repaymentToken,
-        );
+        const repaidAmount = new TokenAmount(await this.getRepaidAmount(), repaymentToken);
 
         const outstandingAmount = totalExpectedRepaymentAmount.rawAmount.minus(
             repaidAmount.rawAmount,
