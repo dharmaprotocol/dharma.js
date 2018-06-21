@@ -1,8 +1,7 @@
 // Debt Order
 import { DebtOrderParams } from "../../../../src/debt_order";
 
-// Types
-import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../../../../src/types";
+import { DurationUnit } from "../../../../src/types";
 
 // Test utils
 import { ACCOUNTS } from "../../../accounts";
@@ -15,40 +14,40 @@ export interface IsExpiredScenario {
     isExpired: boolean;
 }
 
+const defaultParams = {
+    principalAmount: 5,
+    principalToken: "REP",
+    collateralAmount: 10,
+    collateralToken: "MKR",
+    interestRate: 12.3,
+    termDuration: 6,
+    termUnit: "months" as DurationUnit,
+    debtorAddress: debtor.address,
+    expiresInDuration: 5,
+    expiresInUnit: "days" as DurationUnit,
+};
+
 export const IS_EXPIRED_SCENARIOS: IsExpiredScenario[] = [
     {
         description: "when given valid params and the expiration is 5 days in the future",
         params: {
-            principal: new TokenAmount(5, "REP"),
-            collateral: new TokenAmount(10, "WETH"),
-            interestRate: new InterestRate(12.3),
-            termLength: new TimeInterval(6, "months"),
-            debtorAddress: new EthereumAddress(debtor.address),
-            expiresIn: new TimeInterval(5, "days"),
+            ...defaultParams,
         },
         isExpired: false,
     },
     {
         description: "when given valid params and the expiration is 5 days in the past",
         params: {
-            principal: new TokenAmount(5, "REP"),
-            collateral: new TokenAmount(10, "WETH"),
-            interestRate: new InterestRate(12.3),
-            termLength: new TimeInterval(6, "months"),
-            debtorAddress: new EthereumAddress(debtor.address),
-            expiresIn: new TimeInterval(-5, "days"),
+            ...defaultParams,
+            expiresInDuration: -5,
         },
         isExpired: true,
     },
     {
         description: "when given valid params and the expiration is 1 day in the past",
         params: {
-            principal: new TokenAmount(5, "REP"),
-            collateral: new TokenAmount(10, "WETH"),
-            interestRate: new InterestRate(12.3),
-            termLength: new TimeInterval(6, "months"),
-            debtorAddress: new EthereumAddress(debtor.address),
-            expiresIn: new TimeInterval(-1, "day"),
+            ...defaultParams,
+            expiresInDuration: -1,
         },
         isExpired: true,
     },

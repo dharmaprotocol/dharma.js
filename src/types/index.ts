@@ -1,5 +1,6 @@
 export { DebtOrder } from "../debt_order";
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
+export { DurationUnit } from "./time_interval";
 export { ECDSASignature } from "./ecdsa_signature";
 export { IssuanceCommitment } from "./issuance_commitment";
 export { TxData, TxDataPayable } from "./transaction_options";

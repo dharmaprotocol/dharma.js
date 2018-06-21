@@ -10,10 +10,14 @@ import { ACCOUNTS } from "../../../accounts";
 const debtor = ACCOUNTS[1];
 
 export const DEBT_ORDER_PARAMS_ONE: DebtOrderParams = {
-    principal: new TokenAmount(5, "REP"),
-    collateral: new TokenAmount(10, "MKR"),
-    interestRate: new InterestRate(12.3),
-    termLength: new TimeInterval(6, "months"),
-    debtorAddress: new EthereumAddress(debtor.address),
-    expiresIn: new TimeInterval(5, "days"),
+    principalAmount: 5,
+    principalToken: "REP",
+    collateralAmount: 10,
+    collateralToken: "MKR",
+    interestRate: 12.3,
+    termDuration: 6,
+    termUnit: "months",
+    debtorAddress: debtor.address,
+    expiresInDuration: 5,
+    expiresInUnit: "days",
 };
