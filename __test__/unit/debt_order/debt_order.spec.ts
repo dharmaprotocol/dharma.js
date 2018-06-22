@@ -1,5 +1,4 @@
 // Internal dependencies
-import * as Web3 from "web3";
 import { Dharma } from "../../../src/dharma";
 
 jest.unmock("@dharmaprotocol/contracts");
@@ -16,9 +15,7 @@ import { testExpired } from "./runners/is_expired";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
 
-const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-const web3 = new Web3(provider);
-const dharma = new Dharma(web3.currentProvider);
+const dharma = new Dharma("http://localhost:8545");
 
 describe("Debt Order (Integration)", () => {
     describe("#create", async () => {

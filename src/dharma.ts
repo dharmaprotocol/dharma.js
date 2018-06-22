@@ -27,8 +27,23 @@ class Dharma {
 
     private readonly web3: Web3;
 
-    constructor(web3Provider: Web3.Provider, addressBook: DharmaTypes.AddressBook = {}) {
-        this.web3 = new Web3(web3Provider);
+    constructor(blockchainHost?: string, addressBook: DharmaTypes.AddressBook = {}) {
+        /*
+            There are two ways we can access a web3 provider:
+                1. We pass in the address of an Eth node, e.g. https://localhost:8545
+                2. Web3 has been injected into the browser window (e.g. via Metamask.)
+         */
+        if (blockchainHost) {
+            const web3Provider = new Web3.providers.HttpProvider(blockchainHost);
+            this.web3 = new Web3(web3Provider);
+        } else {
+            // Assume we are on a browser with web3 injected.
+            if (typeof (window as any).web3 !== "undefined") {
+                this.web3 = new Web3((window as any).web3.currentProvider);
+            } else {
+                throw new Error("Pass in the address of your blockchain node.");
+            }
+        }
 
         this.contracts = new ContractsAPI(this.web3, addressBook);
 
