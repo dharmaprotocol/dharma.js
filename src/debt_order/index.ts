@@ -253,7 +253,9 @@ export class DebtOrder {
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the debt order
      */
     public async fillAsCreditor(creditorAddress: string): Promise<string> {
-        this.data.creditor = creditorAddress;
+        const creditorAddressTyped = new EthereumAddress(creditorAddress);
+
+        this.data.creditor = creditorAddressTyped.toString();
 
         await this.signAsCreditor();
 
@@ -283,8 +285,9 @@ export class DebtOrder {
         );
 
         // If repaymentAmount is not specified, we default to the expected amount per installment
-        const rawRepaymentAmount = repaymentAmount ||
-            await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId);
+        const rawRepaymentAmount =
+            repaymentAmount ||
+            (await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId));
 
         return this.dharma.servicing.makeRepayment(
             agreementId,
