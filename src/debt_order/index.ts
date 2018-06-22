@@ -54,6 +54,7 @@ export class DebtOrder {
      *      termDuration: 6,
      *      termUnit: "months",
      *      debtorAddress: debtor.address,
+     *      expiresInDuration: 5,
      *      expiresInUnit: "days",
      *  });
      *
@@ -242,17 +243,19 @@ export class DebtOrder {
     }
 
     /**
-     * Eventually fills the debt order as the creditor, transfering the principal to the debtor.
+     * Eventually fills the debt order as the creditor, transferring the principal to the debtor.
      *
      * @example
-     * const creditorAddress = new EthereumAddress("0x000...");
+     * const creditorAddress = "0x000...";
      * order.fillAsCreditor(creditorAddress);
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the debt order
      */
-    public async fillAsCreditor(creditorAddress: EthereumAddress): Promise<string> {
-        this.data.creditor = creditorAddress.toString();
+    public async fillAsCreditor(creditorAddress: string): Promise<string> {
+        const creditorAddressTyped = new EthereumAddress(creditorAddress);
+
+        this.data.creditor = creditorAddressTyped.toString();
 
         await this.signAsCreditor();
 
@@ -274,7 +277,7 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to make the repayment
      */
-    public async makeRepayment(repaymentAmount?: TokenAmount): Promise<string> {
+    public async makeRepayment(repaymentAmount?: number): Promise<string> {
         const agreementId = this.getAgreementId();
         const tokenSymbol = this.params.principal.tokenSymbol;
         const principalTokenAddressString = await this.dharma.contracts.getTokenAddressBySymbolAsync(
@@ -282,13 +285,13 @@ export class DebtOrder {
         );
 
         // If repaymentAmount is not specified, we default to the expected amount per installment
-        const rawRepaymentAmount = repaymentAmount
-            ? repaymentAmount.rawAmount
-            : await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId);
+        const rawRepaymentAmount =
+            repaymentAmount ||
+            (await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId));
 
         return this.dharma.servicing.makeRepayment(
             agreementId,
-            rawRepaymentAmount,
+            new BigNumber(rawRepaymentAmount),
             principalTokenAddressString,
         );
     }

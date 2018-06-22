@@ -31,7 +31,7 @@ export async function testGetTotalExpectedRepaymentAmount(dharma: Dharma, params
 
             await setBalancesAndAllowances(dharma, web3, params, CREDITOR.address);
 
-            await debtOrder.fillAsCreditor(new EthereumAddress(CREDITOR.address));
+            await debtOrder.fillAsCreditor(CREDITOR.address);
         });
 
         test(`eventually returns the open order's principal plus interest`, async () => {
