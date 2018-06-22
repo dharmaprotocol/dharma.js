@@ -1,5 +1,7 @@
 // We must explicitly unmock the dharma protocol contract artifacts
 // in instances where we need our deployed artifacts in our test environment.
+import { EthereumAddress } from "../../../src/types";
+
 jest.unmock("@dharmaprotocol/contracts");
 
 // libraries
@@ -26,6 +28,32 @@ const blockchainApi = new BlockchainAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
 
 describe("Blockchain API (Unit Tests)", () => {
+    describe("#getAccounts", () => {
+        describe("when the correct web3 host is provided", () => {
+            it("returns a list of account addresses", async () => {
+                const result = (await blockchainApi.getAccounts()) as string[];
+
+                expect(result.length).toBeGreaterThan(0);
+                expect(new EthereumAddress(result[0]).toString()).toEqual(result[0]);
+            });
+        });
+
+        describe("when a bad web3 host is provided", () => {
+            let badBlockchainApi: BlockchainAPI;
+            
+            beforeAll(() => {
+                const badWeb3 = new Web3(new Web3.providers.HttpProvider("http://localhost:0000"));
+                badBlockchainApi = new BlockchainAPI(badWeb3, contractsApi);
+            });
+
+            it("returns an error", async () => {
+                await expect(badBlockchainApi.getAccounts()).rejects.toThrowError(
+                    'Could not retrieve accounts from web3, error: Invalid JSON RPC response: ""',
+                );
+            });
+        });
+    });
+
     describe("#awaitTransactionMinedAsync()", () => {
         let pollingInterval;
         let timeout;

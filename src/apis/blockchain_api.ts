@@ -92,6 +92,23 @@ export class BlockchainAPI {
     }
 
     /**
+     * Eventually returns an array of addresses as strings.
+     *
+     * @returns {promise<string[]>}
+     */
+    public async getAccounts() {
+        return new Promise((resolve, reject) => {
+            this.web3.eth.getAccounts((err, result) => {
+                if (err) {
+                    reject(`Could not retrieve accounts from web3, error: ${err.message}`);
+                } else {
+                    resolve(result);
+                }
+            });
+        });
+    }
+
+    /**
      * Returns the current blocktime in seconds.
      *
      * @returns {Promise<number>}
