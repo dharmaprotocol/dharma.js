@@ -280,18 +280,21 @@ export class DebtOrder {
     public async makeRepayment(repaymentAmount?: number): Promise<string> {
         const agreementId = this.getAgreementId();
         const tokenSymbol = this.params.principal.tokenSymbol;
+
+        const repaymentAmountType = new TokenAmount(repaymentAmount, tokenSymbol);
+
         const principalTokenAddressString = await this.dharma.contracts.getTokenAddressBySymbolAsync(
             tokenSymbol,
         );
 
-        // If repaymentAmount is not specified, we default to the expected amount per installment
+        // If repaymentAmount is not specified, we default to the expected amount per installment.
         const rawRepaymentAmount =
-            repaymentAmount ||
-            (await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId));
+            repaymentAmountType.rawAmount ||
+            await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId);
 
         return this.dharma.servicing.makeRepayment(
             agreementId,
-            new BigNumber(rawRepaymentAmount),
+            rawRepaymentAmount,
             principalTokenAddressString,
         );
     }
