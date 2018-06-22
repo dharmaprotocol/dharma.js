@@ -20,8 +20,6 @@ import {
 import { DummyTokenContract } from "../../../src/wrappers/contract_wrappers/dummy_token_wrapper";
 
 import { ACCOUNTS } from "../../accounts";
-import { CONTRACT_WRAPPER_ERRORS } from "../../../src/wrappers/contract_wrappers/base_contract_wrapper";
-import { DebtKernelContract } from "../../../src/wrappers";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3Utils = new Web3Utils(web3);
@@ -48,9 +46,7 @@ describe("Blockchain API (Unit Tests)", () => {
             });
 
             it("returns an error", async () => {
-                await expect(
-                    badBlockchainApi.getAccounts(),
-                ).rejects.toThrowError(
+                await expect(badBlockchainApi.getAccounts()).rejects.toThrowError(
                     'Could not retrieve accounts from web3, error: Invalid JSON RPC response: ""',
                 );
             });
