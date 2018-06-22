@@ -1,5 +1,7 @@
 // We must explicitly unmock the dharma protocol contract artifacts
 // in instances where we need our deployed artifacts in our test environment.
+import { EthereumAddress } from "../../../src/types";
+
 jest.unmock("@dharmaprotocol/contracts");
 
 // libraries
@@ -26,6 +28,15 @@ const blockchainApi = new BlockchainAPI(web3, contractsApi);
 const tokenApi = new TokenAPI(web3, contractsApi);
 
 describe("Blockchain API (Unit Tests)", () => {
+    describe("#getAccounts", () => {
+       it("returns a list of account addresses", async () => {
+         const result = await blockchainApi.getAccounts() as string[];
+
+         expect(result.length).toBeGreaterThan(0);
+         expect(new EthereumAddress(result[0]).toString()).toEqual(result[0]);
+       });
+    });
+
     describe("#awaitTransactionMinedAsync()", () => {
         let pollingInterval;
         let timeout;

@@ -97,8 +97,14 @@ export class BlockchainAPI {
      * @returns {promise<string[]>}
      */
     public async getAccounts() {
-        return new Promise(resolve => {
-            this.web3.eth.getAccounts((err, result) => resolve(result));
+        return new Promise((resolve, reject) => {
+            this.web3.eth.getAccounts((err, result) => {
+                if (err) {
+                    reject(`Could not retrieve accounts from web3, error: ${err.message}`);
+                } else {
+                    resolve(result);
+                }
+            });
         });
     }
 
