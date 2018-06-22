@@ -20,6 +20,8 @@ import {
 import { DummyTokenContract } from "../../../src/wrappers/contract_wrappers/dummy_token_wrapper";
 
 import { ACCOUNTS } from "../../accounts";
+import { CONTRACT_WRAPPER_ERRORS } from "../../../src/wrappers/contract_wrappers/base_contract_wrapper";
+import { DebtKernelContract } from "../../../src/wrappers";
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 const web3Utils = new Web3Utils(web3);
@@ -29,12 +31,30 @@ const tokenApi = new TokenAPI(web3, contractsApi);
 
 describe("Blockchain API (Unit Tests)", () => {
     describe("#getAccounts", () => {
-       it("returns a list of account addresses", async () => {
-         const result = await blockchainApi.getAccounts() as string[];
+        describe("when the correct web3 host is provided", () => {
+            it("returns a list of account addresses", async () => {
+                const result = (await blockchainApi.getAccounts()) as string[];
 
-         expect(result.length).toBeGreaterThan(0);
-         expect(new EthereumAddress(result[0]).toString()).toEqual(result[0]);
-       });
+                expect(result.length).toBeGreaterThan(0);
+                expect(new EthereumAddress(result[0]).toString()).toEqual(result[0]);
+            });
+        });
+
+        describe("when a bad web3 host is provided", () => {
+            let badBlockchainApi: BlockchainAPI;
+            beforeAll(() => {
+                const badWeb3 = new Web3(new Web3.providers.HttpProvider("http://localhost:0000"));
+                badBlockchainApi = new BlockchainAPI(badWeb3, contractsApi);
+            });
+
+            it("returns an error", async () => {
+                await expect(
+                    badBlockchainApi.getAccounts(),
+                ).rejects.toThrowError(
+                    'Could not retrieve accounts from web3, error: Invalid JSON RPC response: ""',
+                );
+            });
+        });
     });
 
     describe("#awaitTransactionMinedAsync()", () => {
