@@ -40,7 +40,7 @@ describe("Blockchain API (Unit Tests)", () => {
 
         describe("when a bad web3 host is provided", () => {
             let badBlockchainApi: BlockchainAPI;
-            
+
             beforeAll(() => {
                 const badWeb3 = new Web3(new Web3.providers.HttpProvider("http://localhost:0000"));
                 badBlockchainApi = new BlockchainAPI(badWeb3, contractsApi);
