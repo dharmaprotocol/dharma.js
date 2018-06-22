@@ -290,7 +290,7 @@ export class DebtOrder {
         // If repaymentAmount is not specified, we default to the expected amount per installment.
         const rawRepaymentAmount =
             repaymentAmountType.rawAmount ||
-            await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId);
+            (await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId));
 
         return this.dharma.servicing.makeRepayment(
             agreementId,
