@@ -94,6 +94,10 @@ export class BlockchainAPI {
     /**
      * Eventually returns an array of addresses as strings.
      *
+     * @example
+     * await dharma.blockchain.getAccounts();
+     * => ["0x...", "0x...", ...]
+     *
      * @returns {promise<string[]>}
      */
     public async getAccounts() {
