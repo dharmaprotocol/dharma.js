@@ -131,4 +131,17 @@ export class BlockchainAPI {
     public async getCurrentBlock(): Promise<Web3.BlockWithoutTransactionData> {
         return promisify(this.web3.eth.getBlock)("latest");
     }
+
+    /**
+     * Returns the current network id, as a number.
+     *
+     * @example
+     * const networkId = await dharma.blockchain.getNetworkId();
+     * => 1
+     *
+     * @returns {Promise<number>}
+     */
+    public async getNetworkId(): Promise<number> {
+        return promisify(this.web3.version.getNetwork)();
+    }
 }
