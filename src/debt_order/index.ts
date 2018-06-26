@@ -182,7 +182,9 @@ export class DebtOrder {
     public async allowCollateralTransfer(): Promise<string> {
         const ethereumAddress = this.params.debtorAddress;
 
-        return this.enableCollateralTokenTransfers(ethereumAddress);
+        const tokenSymbol = this.params.collateral.tokenSymbol;
+
+        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
     }
 
     /**
@@ -211,7 +213,9 @@ export class DebtOrder {
             throw new Error("The creditor's address cannot be the same as the debtor's address.");
         }
 
-        return this.enablePrincipalTokenTransfers(ethereumAddress);
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
     }
 
     /**
@@ -227,7 +231,9 @@ export class DebtOrder {
     public async allowRepayments(): Promise<string> {
         const ethereumAddress = this.params.debtorAddress;
 
-        return this.enablePrincipalTokenTransfers(ethereumAddress);
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
     }
 
     /**
@@ -517,19 +523,10 @@ export class DebtOrder {
         return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
     }
 
-    private async enableCollateralTokenTransfers(address: EthereumAddress): Promise<string> {
-        const tokenSymbol = this.params.collateral.tokenSymbol;
-
-        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
-
-        return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
-            from: address.toString(),
-        });
-    }
-
-    private async enablePrincipalTokenTransfers(address: EthereumAddress): Promise<string> {
-        const tokenSymbol = this.params.principal.tokenSymbol;
-
+    private async enableTokenTransfers(
+        address: EthereumAddress,
+        tokenSymbol: string,
+    ): Promise<string> {
         const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
 
         return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
