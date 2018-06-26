@@ -170,6 +170,42 @@ export class DebtOrder {
     ) {}
 
     /**
+     * Eventually enables the account at the given address to transfer the collateral token
+     * on Dharma Protocol.
+     *
+     * @example
+     * await debtOrder.enableCollateralTokenTransfers(debtorAddress);
+     * => "0x000..."
+     *
+     * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
+     */
+    public async enableCollateralTokenTransfers(address: string): Promise<string> {
+        const ethereumAddress = new EthereumAddress(address);
+
+        const tokenSymbol = this.params.collateral.tokenSymbol;
+
+        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
+    }
+
+    /**
+     * Eventually enables the account at the given address to transfer the principal token
+     * on Dharma Protocol.
+     *
+     * @example
+     * await debtOrder.enablePrincipalTokenTransfers(debtorAddress);
+     * => "0x000..."
+     *
+     * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
+     */
+    public async enablePrincipalTokenTransfers(address: string): Promise<string> {
+        const ethereumAddress = new EthereumAddress(address);
+
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
+        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
+    }
+
+    /**
      * Eventually returns true if the current debt order will be expired for the next block.
      *
      * @example
@@ -290,7 +326,7 @@ export class DebtOrder {
         // If repaymentAmount is not specified, we default to the expected amount per installment.
         const rawRepaymentAmount =
             repaymentAmountType.rawAmount ||
-            await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId);
+            (await this.dharma.servicing.getExpectedAmountPerRepayment(agreementId));
 
         return this.dharma.servicing.makeRepayment(
             agreementId,
@@ -454,6 +490,17 @@ export class DebtOrder {
         const tokenSymbol = this.params.principal.tokenSymbol;
 
         return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
+    }
+
+    private async enableTokenTransfers(
+        address: EthereumAddress,
+        tokenSymbol: string,
+    ): Promise<string> {
+        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+
+        return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
+            from: address.toString(),
+        });
     }
 
     private isSignedByCreditor(): boolean {
