@@ -170,10 +170,8 @@ export class DebtOrder {
     ) {}
 
     /**
-     * Eventually enables the account at the given address to transfer the collateral token
+     * Eventually enables the account at the default address to transfer the collateral token
      * on Dharma Protocol.
-     *
-     * We default the address to the default address given by web3.
      *
      * @example
      * await debtOrder.allowCollateralTransfer();
@@ -181,25 +179,15 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
      */
-    public async allowCollateralTransfer(address?: string): Promise<string> {
-        if (!address) {
-            const accounts = await this.dharma.blockchain.getAccounts();
+    public async allowCollateralTransfer(): Promise<string> {
+        const ethereumAddress = this.params.debtorAddress;
 
-            address = accounts[0];
-        }
-
-        const ethereumAddress = new EthereumAddress(address);
-
-        const tokenSymbol = this.params.collateral.tokenSymbol;
-
-        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
+        return this.enableCollateralTokenTransfers(ethereumAddress);
     }
 
     /**
-     * Eventually enables the account at the given address to transfer the principal token
+     * Eventually enables the account at the default address to transfer the principal token
      * on Dharma Protocol.
-     *
-     * We default the address to the default address given by web3.
      *
      * @example
      * await debtOrder.allowPrincipalTransfer();
@@ -207,25 +195,28 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
      */
-    public async allowPrincipalTransfer(address?: string): Promise<string> {
-        if (!address) {
-            const accounts = await this.dharma.blockchain.getAccounts();
+    public async allowPrincipalTransfer(): Promise<string> {
+        const accounts = await this.dharma.blockchain.getAccounts();
 
-            address = accounts[0];
-        }
+        const address = accounts[0];
 
         const ethereumAddress = new EthereumAddress(address);
 
-        const tokenSymbol = this.params.principal.tokenSymbol;
+        const networkId = await this.dharma.blockchain.getNetworkId();
 
-        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
+        if (
+            networkId === 1 &&
+            ethereumAddress.toString() === this.params.debtorAddress.toString()
+        ) {
+            throw new Error("The creditor's address cannot be the same as the debtor's address.");
+        }
+
+        return this.enablePrincipalTokenTransfers(ethereumAddress);
     }
 
     /**
-     * Eventually enables the account at the given address to make repayments
+     * Eventually enables the account at the default address to make repayments
      * on Dharma Protocol.
-     *
-     * We default the address to the default address given by web3.
      *
      * @example
      * await debtOrder.allowRepayments();
@@ -233,8 +224,10 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
      */
-    public async allowRepayments(address?: string): Promise<string> {
-        return this.allowPrincipalTransfer(address);
+    public async allowRepayments(): Promise<string> {
+        const ethereumAddress = this.params.debtorAddress;
+
+        return this.enablePrincipalTokenTransfers(ethereumAddress);
     }
 
     /**
@@ -524,10 +517,19 @@ export class DebtOrder {
         return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
     }
 
-    private async enableTokenTransfers(
-        address: EthereumAddress,
-        tokenSymbol: string,
-    ): Promise<string> {
+    private async enableCollateralTokenTransfers(address: EthereumAddress): Promise<string> {
+        const tokenSymbol = this.params.collateral.tokenSymbol;
+
+        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+
+        return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
+            from: address.toString(),
+        });
+    }
+
+    private async enablePrincipalTokenTransfers(address: EthereumAddress): Promise<string> {
+        const tokenSymbol = this.params.principal.tokenSymbol;
+
         const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
 
         return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
