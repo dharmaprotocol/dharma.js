@@ -459,13 +459,17 @@ export class DebtOrder {
     public async getCurrentCollateralAmount(): Promise<number> {
         const isFilled = await this.isFilled();
 
+        if (!isFilled) {
+            return 0;
+        }
+
         const isCollateralWithdrawn = await this.isCollateralWithdrawn();
 
-        if (!isFilled || isCollateralWithdrawn) {
+        if (isCollateralWithdrawn) {
             return 0;
-        } else {
-            return this.params.collateral.decimalAmount;
         }
+
+        return this.params.collateral.decimalAmount;
     }
 
     /**
