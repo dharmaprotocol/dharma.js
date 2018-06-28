@@ -447,6 +447,32 @@ export class DebtOrder {
     }
 
     /**
+     * Eventually returns the amount held as collateral for this debt order.
+     * This will return 0 if the loan order has not yet been filled, or the collateral has already been seized.
+     *
+     * @example
+     * order.getCurrentCollateralAmount();
+     * => Promise<number>
+     *
+     * @returns {Promise<number>} the amount currently held as collateral for the debt order
+     */
+    public async getCurrentCollateralAmount(): Promise<number> {
+        const isFilled = await this.isFilled();
+
+        if (!isFilled) {
+            return 0;
+        }
+
+        const isCollateralWithdrawn = await this.isCollateralWithdrawn();
+
+        if (isCollateralWithdrawn) {
+            return 0;
+        }
+
+        return this.params.collateral.decimalAmount;
+    }
+
+    /**
      * Eventually returns the total amount expected to be repaid.
      *
      * @example
