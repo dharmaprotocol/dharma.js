@@ -6,6 +6,7 @@ import { BaseCollateralRunner } from "./base_collateral_runner";
 export class SeizeCollateralRunner extends BaseCollateralRunner {
     public testScenario(scenario: SeizeCollateralScenario) {
         let agreementId;
+        let initialCreditorCollateralTokenBalance;
 
         describe(scenario.description, () => {
             beforeAll(async () => {
@@ -16,6 +17,10 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 // We fill a generic collateralized loan order, against which
                 // we can test making repayments and returning collateral.
                 await this.generateAndFillOrder(scenario);
+
+                initialCreditorCollateralTokenBalance = await this.collateralToken.balanceOf.callAsync(
+                    this.debtOrderData.creditor,
+                );
 
                 agreementId = await this.orderApi.getIssuanceHash(this.debtOrderData);
 
@@ -52,11 +57,15 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 });
 
                 it("transfers the collateral to the creditor", async () => {
-                    const collateralAmount = await this.collateralToken.balanceOf.callAsync(
+                    const currentCreditorCollateralTokenBalance = await this.collateralToken.balanceOf.callAsync(
                         this.debtOrderData.creditor,
                     );
 
-                    expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
+                    expect(
+                        currentCreditorCollateralTokenBalance.minus(
+                            initialCreditorCollateralTokenBalance,
+                        ),
+                    ).toEqual(scenario.collateralTerms.collateralAmount);
                 });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
@@ -66,11 +75,15 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 });
 
                 it("does not transfer the collateral to the creditor", async () => {
-                    const collateralAmount = await this.collateralToken.balanceOf.callAsync(
+                    const currentCreditorCollateralTokenBalance = await this.collateralToken.balanceOf.callAsync(
                         this.debtOrderData.creditor,
                     );
 
-                    expect(collateralAmount.toNumber()).toEqual(0);
+                    expect(
+                        currentCreditorCollateralTokenBalance
+                            .minus(initialCreditorCollateralTokenBalance)
+                            .toNumber(),
+                    ).toEqual(0);
                 });
             }
         });
