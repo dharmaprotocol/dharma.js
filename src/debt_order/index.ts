@@ -310,17 +310,18 @@ export class DebtOrder {
     }
 
     /**
-     * Eventually fills the debt order as the creditor, transferring the principal to the debtor.
+     * Eventually fills the debt order, transferring the principal to the debtor.
      *
      * @example
-     * const creditorAddress = "0x000...";
-     * order.fillAsCreditor(creditorAddress);
+     * order.fill();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the debt order
      */
-    public async fillAsCreditor(creditorAddress: string): Promise<string> {
-        const creditorAddressTyped = new EthereumAddress(creditorAddress);
+    public async fill(creditorAddress?: string): Promise<string> {
+        const creditor = creditorAddress || (await this.getCurrentUser());
+
+        const creditorAddressTyped = new EthereumAddress(creditor);
 
         this.data.creditor = creditorAddressTyped.toString();
 
