@@ -132,9 +132,9 @@
   dependencies:
     find-up "^2.1.0"
 
-"@dharmaprotocol/contracts@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.1.0.tgz#10ba8a3b09b65699d84501e093e2149beb863c00"
+"@dharmaprotocol/contracts@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.1.1.tgz#e15b04745662ed6c4d5f71d8b95f61c362adcec0"
   dependencies:
     zeppelin-solidity "1.8.0"
 
