@@ -583,4 +583,10 @@ export class DebtOrder {
     private async getCurrentBlocktime(): Promise<number> {
         return this.dharma.blockchain.getCurrentBlockTime();
     }
+
+    private async getCurrentUser(): Promise<string> {
+        const accounts = await this.dharma.blockchain.getAccounts();
+
+        return accounts[0];
+    }
 }
