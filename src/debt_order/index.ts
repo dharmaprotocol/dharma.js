@@ -179,8 +179,10 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
      */
-    public async allowCollateralTransfer(): Promise<string> {
-        const ethereumAddress = this.params.debtorAddress;
+    public async allowCollateralTransfer(debtorAddress?: string): Promise<string> {
+        const debtor = debtorAddress || this.params.debtorAddress.toString();
+
+        const ethereumAddress = new EthereumAddress(debtor);
 
         const tokenSymbol = this.params.collateral.tokenSymbol;
 
@@ -197,12 +199,10 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
      */
-    public async allowPrincipalTransfer(): Promise<string> {
-        const accounts = await this.dharma.blockchain.getAccounts();
+    public async allowPrincipalTransfer(creditorAddress?: string): Promise<string> {
+        const creditor = creditorAddress || (await this.getCurrentUser());
 
-        const address = accounts[0];
-
-        const ethereumAddress = new EthereumAddress(address);
+        const ethereumAddress = new EthereumAddress(creditor);
 
         const networkId = await this.dharma.blockchain.getNetworkId();
 
@@ -228,8 +228,10 @@ export class DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
      */
-    public async allowRepayments(): Promise<string> {
-        const ethereumAddress = this.params.debtorAddress;
+    public async allowRepayments(debtorAddress?: string): Promise<string> {
+        const debtor = debtorAddress || this.params.debtorAddress.toString();
+
+        const ethereumAddress = new EthereumAddress(debtor);
 
         const tokenSymbol = this.params.principal.tokenSymbol;
 
@@ -310,17 +312,18 @@ export class DebtOrder {
     }
 
     /**
-     * Eventually fills the debt order as the creditor, transferring the principal to the debtor.
+     * Eventually fills the debt order, transferring the principal to the debtor.
      *
      * @example
-     * const creditorAddress = "0x000...";
-     * order.fillAsCreditor(creditorAddress);
+     * order.fill();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the debt order
      */
-    public async fillAsCreditor(creditorAddress: string): Promise<string> {
-        const creditorAddressTyped = new EthereumAddress(creditorAddress);
+    public async fill(creditorAddress?: string): Promise<string> {
+        const creditor = creditorAddress || (await this.getCurrentUser());
+
+        const creditorAddressTyped = new EthereumAddress(creditor);
 
         this.data.creditor = creditorAddressTyped.toString();
 
@@ -582,5 +585,11 @@ export class DebtOrder {
 
     private async getCurrentBlocktime(): Promise<number> {
         return this.dharma.blockchain.getCurrentBlockTime();
+    }
+
+    private async getCurrentUser(): Promise<string> {
+        const accounts = await this.dharma.blockchain.getAccounts();
+
+        return accounts[0];
     }
 }
