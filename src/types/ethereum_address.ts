@@ -22,7 +22,7 @@ export class EthereumAddress {
             throw Error(ETHEREUM_ADDRESS_ERRORS.INVALID_ADDRESS(value));
         }
 
-        this.raw = value;
+        this.raw = value.toLowerCase();
     }
 
     public toString(): string {
