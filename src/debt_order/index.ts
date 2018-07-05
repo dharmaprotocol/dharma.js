@@ -415,6 +415,12 @@ export class DebtOrder {
      * @returns {Promise<boolean>}
      */
     public async isRepaid(): Promise<boolean> {
+        const isFilled = await this.isFilled();
+
+        if (!isFilled) {
+            return false;
+        }
+
         const outstandingAmount = await this.getOutstandingAmount();
 
         return outstandingAmount <= 0;
