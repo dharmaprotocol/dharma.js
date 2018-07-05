@@ -406,6 +406,21 @@ export class DebtOrder {
     }
 
     /**
+     * Eventually returns true if the debt order has been fully repaid.
+     *
+     * @example
+     * await debtOrder.isRepaid();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isRepaid(): Promise<boolean> {
+        const outstandingAmount = await this.getOutstandingAmount();
+
+        return outstandingAmount <= 0;
+    }
+
+    /**
      * Eventually returns true if the debt order's collateral is returnable
      * to the debtor.
      *
