@@ -24,7 +24,10 @@ export class TokenAmount {
 
     constructor(amount: number, symbol: string) {
         this.token = new Token(symbol);
-        this.rawAmount = TokenAmount.convertToRaw(new BigNumber(amount), this.token.numDecimals);
+        this.rawAmount = TokenAmount.convertToRaw(
+            new BigNumber(amount.toString()),
+            this.token.numDecimals,
+        );
     }
 
     get tokenNumDecimals(): number {
