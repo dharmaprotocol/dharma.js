@@ -74,7 +74,7 @@ export class LoanRequest extends BaseLoan {
 
         const expirationTimestampInSec = expiresIn.fromTimestamp(currentBlocktime);
 
-        const debtOrderConstructorParams: BaseLoanConstructorParams = {
+        const loanRequestConstructorParams: BaseLoanConstructorParams = {
             principal,
             collateral,
             interestRate: interestRateTyped,
@@ -105,11 +105,11 @@ export class LoanRequest extends BaseLoan {
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
 
-        const debtOrder = new LoanRequest(dharma, debtOrderConstructorParams, data);
+        const loanRequest = new LoanRequest(dharma, loanRequestConstructorParams, data);
 
-        await debtOrder.signAsDebtor();
+        await loanRequest.signAsDebtor();
 
-        return debtOrder;
+        return loanRequest;
     }
 
     public static async load(dharma: Dharma, data: DebtOrderData): Promise<LoanRequest> {
@@ -136,7 +136,7 @@ export class LoanRequest extends BaseLoan {
 
         const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
-        const debtOrderParams = {
+        const loanRequestParams = {
             principal,
             collateral,
             termLength,
@@ -145,7 +145,7 @@ export class LoanRequest extends BaseLoan {
             debtorAddress,
         };
 
-        return new LoanRequest(dharma, debtOrderParams, data);
+        return new LoanRequest(dharma, loanRequestParams, data);
     }
 
     /**
@@ -153,7 +153,7 @@ export class LoanRequest extends BaseLoan {
      * on Dharma Protocol.
      *
      * @example
-     * await debtOrder.allowCollateralTransfer();
+     * await loanRequest.allowCollateralTransfer();
      * => "0x000..."
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
@@ -173,7 +173,7 @@ export class LoanRequest extends BaseLoan {
      * on Dharma Protocol.
      *
      * @example
-     * await debtOrder.allowPrincipalTransfer();
+     * await loanRequest.allowPrincipalTransfer();
      * => "0x000..."
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
@@ -201,7 +201,7 @@ export class LoanRequest extends BaseLoan {
      * Eventually returns true if the current debt order will be expired for the next block.
      *
      * @example
-     * await debtOrder.isExpired();
+     * await loanRequest.isExpired();
      * => true
      *
      * @returns {Promise<boolean>}
@@ -232,7 +232,7 @@ export class LoanRequest extends BaseLoan {
      * Eventually returns true if the current debt order has been cancelled.
      *
      * @example
-     * await debtOrder.isCancelled();
+     * await loanRequest.isCancelled();
      * => true
      *
      * @returns {Promise<boolean>}
@@ -246,7 +246,7 @@ export class LoanRequest extends BaseLoan {
      * if it is open and unfilled.
      *
      * @example
-     * await debtOrder.cancelAsDebtor();
+     * await loanRequest.cancelAsDebtor();
      * => "0x000..."
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to cancel the debt order
@@ -261,7 +261,7 @@ export class LoanRequest extends BaseLoan {
      * Eventually returns true if the current debt order has been filled by a creditor.
      *
      * @example
-     * await debtOrder.isFilled();
+     * await loanRequest.isFilled();
      * => true
      *
      * @returns {Promise<boolean>}
