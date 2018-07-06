@@ -35,7 +35,7 @@ export class Loan extends BaseLoan {
      * on Dharma Protocol.
      *
      * @example
-     * await debtOrder.allowRepayments();
+     * await loan.allowRepayments();
      * => "0x000..."
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
@@ -96,7 +96,7 @@ export class Loan extends BaseLoan {
      * by the creditor or returned to the debtor.
      *
      * @example
-     * await debtOrder.isCollateralWithdrawn();
+     * await loan.isCollateralWithdrawn();
      * => true
      *
      * @returns {Promise<boolean>}
@@ -112,7 +112,7 @@ export class Loan extends BaseLoan {
      * by the creditor.
      *
      * @example
-     * await debtOrder.isCollateralSeizable();
+     * await loan.isCollateralSeizable();
      * => true
      *
      * @returns {Promise<boolean>}
@@ -127,7 +127,7 @@ export class Loan extends BaseLoan {
      * Eventually returns true if the debt order has been fully repaid.
      *
      * @example
-     * await debtOrder.isRepaid();
+     * await loan.isRepaid();
      * => true
      *
      * @returns {Promise<boolean>}
@@ -143,7 +143,7 @@ export class Loan extends BaseLoan {
      * to the debtor.
      *
      * @example
-     * await debtOrder.isCollateralReturnable();
+     * await loan.isCollateralReturnable();
      * => true
      *
      * @returns {Promise<boolean>}
