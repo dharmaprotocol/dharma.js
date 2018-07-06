@@ -14,10 +14,6 @@ import {
     TokenAmount,
 } from "../types";
 
-import { DebtOrderDataWrapper } from "../wrappers";
-
-const SALT_DECIMALS = 20;
-
 export interface DebtOrderParams {
     principalAmount: number;
     principalToken: string;
@@ -29,15 +25,6 @@ export interface DebtOrderParams {
     debtorAddress: string;
     expiresInDuration: number;
     expiresInUnit: DurationUnit;
-}
-
-interface DebtOrderConstructorParams {
-    principal: TokenAmount;
-    collateral: TokenAmount;
-    interestRate: InterestRate;
-    termLength: TimeInterval;
-    debtorAddress: EthereumAddress;
-    expiresAt: number;
 }
 
 export class DebtOrder {
@@ -158,16 +145,6 @@ export class DebtOrder {
 
         return new DebtOrder(dharma, debtOrderParams, data);
     }
-
-    private static generateSalt(): BigNumber {
-        return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
-    }
-
-    private constructor(
-        private dharma: Dharma,
-        private params: DebtOrderConstructorParams,
-        private data: DebtOrderData,
-    ) {}
 
     /**
      * Eventually enables the account at the default address to transfer the collateral token
@@ -577,17 +554,6 @@ export class DebtOrder {
         return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
     }
 
-    private async enableTokenTransfers(
-        address: EthereumAddress,
-        tokenSymbol: string,
-    ): Promise<string> {
-        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
-
-        return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
-            from: address.toString(),
-        });
-    }
-
     private isSignedByCreditor(): boolean {
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
@@ -598,23 +564,5 @@ export class DebtOrder {
         }
 
         this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, false);
-    }
-
-    private getAgreementId(): string {
-        return new DebtOrderDataWrapper(this.data).getIssuanceCommitmentHash();
-    }
-
-    private serialize(): DebtOrderData {
-        return this.data;
-    }
-
-    private async getCurrentBlocktime(): Promise<number> {
-        return this.dharma.blockchain.getCurrentBlockTime();
-    }
-
-    private async getCurrentUser(): Promise<string> {
-        const accounts = await this.dharma.blockchain.getAccounts();
-
-        return accounts[0];
     }
 }
