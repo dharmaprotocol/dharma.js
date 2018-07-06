@@ -12,9 +12,9 @@ import {
     DurationUnit,
     EthereumAddress,
     InterestRate,
+    Loan,
     TimeInterval,
     TokenAmount,
-    Loan,
 } from "../types";
 
 export interface LoanRequestParams {
