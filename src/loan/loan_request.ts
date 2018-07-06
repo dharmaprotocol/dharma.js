@@ -14,6 +14,7 @@ import {
     InterestRate,
     TimeInterval,
     TokenAmount,
+    Loan,
 } from "../types";
 
 export interface LoanRequestParams {
@@ -146,6 +147,16 @@ export class LoanRequest extends BaseLoan {
         };
 
         return new LoanRequest(dharma, loanRequestParams, data);
+    }
+
+    public async generateLoan(): Promise<Loan> {
+        const isFilled = await this.isFilled();
+
+        if (!isFilled) {
+            throw new Error("The loan request has yet to be filled on the blockchain.");
+        }
+
+        return new Loan(this.dharma, this.params, this.data);
     }
 
     /**
