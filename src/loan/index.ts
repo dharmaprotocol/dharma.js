@@ -1,2 +1,2 @@
-export { LoanRequest } from "./loan_request";
+export { LoanRequest, LoanRequestParams } from "./loan_request";
 export { Loan } from "./loan";

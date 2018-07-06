@@ -1,21 +1,21 @@
 // Debt Order
-import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
+import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/dharma";
 
-export async function testCancel(dharma: Dharma, params: DebtOrderParams) {
+export async function testCancel(dharma: Dharma, params: LoanRequestParams) {
     describe("when the cancel function is called on an open order", () => {
-        let debtOrder: DebtOrder;
+        let loanRequest: LoanRequest;
 
         beforeAll(async () => {
-            debtOrder = await DebtOrder.create(dharma, params);
+            loanRequest = await LoanRequest.create(dharma, params);
         });
 
         it(`calls dharma.order.cancelOrderAsync`, async () => {
             const spy = jest.spyOn(dharma.order, "cancelOrderAsync");
 
-            await debtOrder.cancelAsDebtor();
+            await loanRequest.cancelAsDebtor();
 
             expect(spy).toHaveBeenCalled();
         });

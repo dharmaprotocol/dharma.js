@@ -1,5 +1,5 @@
 // Debt Order
-import { DebtOrderParams } from "../../../../src/debt_order";
+import { LoanRequestParams } from "../../../../src/loan";
 
 import { DurationUnit } from "../../../../src/types";
 
@@ -10,7 +10,7 @@ const debtor = ACCOUNTS[1];
 
 export interface IsExpiredScenario {
     description: string;
-    params: DebtOrderParams;
+    params: LoanRequestParams;
     isExpired: boolean;
 }
 
