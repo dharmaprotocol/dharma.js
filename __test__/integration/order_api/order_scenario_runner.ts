@@ -64,6 +64,7 @@ export class OrderScenarioRunner {
         this.testCheckOrderFilledScenario = this.testCheckOrderFilledScenario.bind(this);
         this.testFillScenario = this.testFillScenario.bind(this);
         this.testAssertFillable = this.testAssertFillable.bind(this);
+        this.testAssertReadyToFill = this.testAssertReadyToFill.bind(this);
         this.testOrderCancelScenario = this.testOrderCancelScenario.bind(this);
         this.testIssuanceCancelScenario = this.testIssuanceCancelScenario.bind(this);
         this.testOrderGenerationScenario = this.testOrderGenerationScenario.bind(this);
@@ -143,6 +144,32 @@ export class OrderScenarioRunner {
                     expect(validateMock).toHaveBeenCalledWith(loanOrder);
                 });
             });
+        });
+    }
+
+    public testAssertReadyToFill(scenario: FillScenario) {
+        describe(scenario.description, () => {
+            let debtOrderData: DebtOrderData;
+
+            beforeEach(async () => {
+                debtOrderData = await this.setUpFillScenario(scenario);
+            });
+
+            if (scenario.successfullyFills) {
+                test("does not throw", async () => {
+                    await expect(
+                        this.orderApi.assertReadyToFill(debtOrderData, {
+                            from: scenario.filler,
+                        }),
+                    ).resolves.not.toThrow();
+                });
+            } else {
+                test(`throws ${scenario.errorType} error`, async () => {
+                    await expect(
+                        this.orderApi.assertReadyToFill(debtOrderData, { from: scenario.filler }),
+                    ).rejects.toThrow(scenario.errorMessage);
+                });
+            }
         });
     }
 

@@ -171,6 +171,42 @@ export class OrderAPI {
     }
 
     /**
+     * Asserts that a debt order is ready to be filled by any creditor, by validating
+     * invariants except for those pertaining to the creditor.
+     *
+     * @param {DebtOrderData} debtOrderData
+     * @param {TxData} txOptions
+     * @returns {Promise<void>}
+     */
+    public async assertReadyToFill(
+        debtOrderData: DebtOrderData,
+        txOptions?: TxData,
+    ) {
+        const {
+            debtKernel,
+            debtToken,
+        } = await this.contracts.loadDharmaContractsAsync(txOptions);
+
+        await this.assertValidityInvariantsAsync(debtOrderData, debtKernel, debtToken);
+
+        await this.assert.order.validDebtorSignature(
+            debtOrderData,
+            txOptions,
+            OrderAPIErrors.INVALID_DEBTOR_SIGNATURE(),
+        );
+
+        if (debtOrderData.underwriter && debtOrderData.underwriter !== NULL_ADDRESS) {
+            await this.assert.order.validUnderwriterSignature(
+                debtOrderData,
+                txOptions,
+                OrderAPIErrors.INVALID_UNDERWRITER_SIGNATURE(),
+            );
+        }
+
+        await this.assertValidLoanTerms(debtOrderData);
+    }
+
+    /**
      * Asynchronously cancel a debt order if it has yet to be fulfilled.
      *
      * @param  debtOrderData the debt order to be canceled.
