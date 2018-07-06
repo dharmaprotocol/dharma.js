@@ -178,14 +178,8 @@ export class OrderAPI {
      * @param {TxData} txOptions
      * @returns {Promise<void>}
      */
-    public async assertReadyToFill(
-        debtOrderData: DebtOrderData,
-        txOptions?: TxData,
-    ) {
-        const {
-            debtKernel,
-            debtToken,
-        } = await this.contracts.loadDharmaContractsAsync(txOptions);
+    public async assertReadyToFill(debtOrderData: DebtOrderData, txOptions?: TxData) {
+        const { debtKernel, debtToken } = await this.contracts.loadDharmaContractsAsync(txOptions);
 
         await this.assertValidityInvariantsAsync(debtOrderData, debtKernel, debtToken);
 
