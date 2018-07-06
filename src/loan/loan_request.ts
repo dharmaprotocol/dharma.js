@@ -16,7 +16,7 @@ import {
     TokenAmount,
 } from "../types";
 
-export interface DebtOrderParams {
+export interface LoanRequestParams {
     principalAmount: number;
     principalToken: string;
     collateralAmount: number;
@@ -49,7 +49,7 @@ export class LoanRequest extends BaseLoan {
      *
      * @returns {Promise<LoanRequest>}
      */
-    public static async create(dharma: Dharma, params: DebtOrderParams): Promise<LoanRequest> {
+    public static async create(dharma: Dharma, params: LoanRequestParams): Promise<LoanRequest> {
         const {
             principalAmount,
             principalToken,
