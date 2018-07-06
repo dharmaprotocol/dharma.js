@@ -1,5 +1,5 @@
 // Debt Order
-import { DebtOrderParams } from "../../../../src/debt_order";
+import { LoanRequestParams } from "../../../../src/loan";
 
 // Types
 import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../../../../src/types";
@@ -9,7 +9,7 @@ import { ACCOUNTS } from "../../../accounts";
 
 const debtor = ACCOUNTS[1];
 
-export const DEBT_ORDER_PARAMS_ONE: DebtOrderParams = {
+export const DEBT_ORDER_PARAMS_ONE: LoanRequestParams = {
     principalAmount: 5,
     principalToken: "REP",
     collateralAmount: 10,

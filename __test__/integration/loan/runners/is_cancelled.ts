@@ -1,19 +1,19 @@
 // Debt Order
-import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
+import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/dharma";
 
-export async function testIsCancelled(dharma: Dharma, params: DebtOrderParams) {
-    let debtOrder: DebtOrder;
+export async function testIsCancelled(dharma: Dharma, params: LoanRequestParams) {
+    let loanRequest: LoanRequest;
 
     describe("when an order has just been opened", () => {
         beforeAll(async () => {
-            debtOrder = await DebtOrder.create(dharma, params);
+            loanRequest = await LoanRequest.create(dharma, params);
         });
 
         test(`eventually returns false`, async () => {
-            const isCancelled = await debtOrder.isCancelled();
+            const isCancelled = await loanRequest.isCancelled();
 
             expect(isCancelled).toEqual(false);
         });
@@ -21,12 +21,12 @@ export async function testIsCancelled(dharma: Dharma, params: DebtOrderParams) {
 
     describe("when an order has been cancelled", () => {
         beforeAll(async () => {
-            debtOrder = await DebtOrder.create(dharma, params);
-            await debtOrder.cancelAsDebtor();
+            loanRequest = await LoanRequest.create(dharma, params);
+            await loanRequest.cancelAsDebtor();
         });
 
         test(`eventually returns true`, async () => {
-            const isCancelled = await debtOrder.isCancelled();
+            const isCancelled = await loanRequest.isCancelled();
 
             expect(isCancelled).toEqual(true);
         });
