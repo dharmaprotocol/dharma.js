@@ -130,11 +130,11 @@ describe("Order API (Integration Tests)", () => {
     });
 
     describe("#assertReadyToFill", () => {
-        describe("Valid orders", () => {
+        describe("Orders that are ready to be filled", () => {
             READY_TO_FILL_SCENARIOS.forEach(scenarioRunner.testAssertReadyToFill);
         });
 
-        describe("Invalid, consensual order fills", () => {
+        describe("Orders that are not ready to be filled", () => {
             NOT_READY_TO_FILL_SCENARIOS.forEach(scenarioRunner.testAssertReadyToFill);
         });
     });
