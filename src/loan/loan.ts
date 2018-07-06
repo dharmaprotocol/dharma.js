@@ -16,19 +16,6 @@ import {
     TokenAmount,
 } from "../types";
 
-export interface DebtOrderParams {
-    principalAmount: number;
-    principalToken: string;
-    collateralAmount: number;
-    collateralToken: string;
-    interestRate: number;
-    termDuration: number;
-    termUnit: DurationUnit;
-    debtorAddress: string;
-    expiresInDuration: number;
-    expiresInUnit: DurationUnit;
-}
-
 export class Loan extends BaseLoan {
     /**
      * Eventually enables the account at the default address to make repayments
