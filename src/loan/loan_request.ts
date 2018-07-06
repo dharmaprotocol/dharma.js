@@ -149,6 +149,14 @@ export class LoanRequest extends BaseLoan {
         return new LoanRequest(dharma, loanRequestParams, data);
     }
 
+    /**
+     * Eventually returns an instance of a loan iff the loan is filled.
+     *
+     * @example
+     * const loan = await LoanRequest.generateLoan();
+     *
+     * @returns {Promise<Loan>}
+     */
     public async generateLoan(): Promise<Loan> {
         const isFilled = await this.isFilled();
 
