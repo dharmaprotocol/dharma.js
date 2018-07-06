@@ -4,7 +4,7 @@ import * as Web3 from "web3";
 import { ACCOUNTS } from "../../../accounts";
 
 // Debt Order
-import { DebtOrderParams } from "../../../../src/debt_order";
+import { LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/dharma";
@@ -21,7 +21,7 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 export const setBalancesAndAllowances = async (
     dharma: Dharma,
     web3: Web3,
-    params: DebtOrderParams,
+    params: LoanRequestParams,
     creditorAddress: string,
 ) => {
     const debtorAddress = params.debtorAddress.toString();
