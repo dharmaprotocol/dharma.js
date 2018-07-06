@@ -79,7 +79,7 @@ export class Loan extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the debt order's collateral has been either seized
+     * Eventually returns true if the loan's collateral has been either seized
      * by the creditor or returned to the debtor.
      *
      * @example
@@ -95,7 +95,7 @@ export class Loan extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the debt order's collateral is seizable
+     * Eventually returns true if the loan's collateral is seizable
      * by the creditor.
      *
      * @example
@@ -111,7 +111,7 @@ export class Loan extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the debt order has been fully repaid.
+     * Eventually returns true if the loan has been fully repaid.
      *
      * @example
      * await loan.isRepaid();
@@ -126,8 +126,7 @@ export class Loan extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the debt order's collateral is returnable
-     * to the debtor.
+     * Eventually returns true if the loan's collateral is returnable to the debtor.
      *
      * @example
      * await loan.isCollateralReturnable();
@@ -174,22 +173,17 @@ export class Loan extends BaseLoan {
     }
 
     /**
-     * Eventually returns the amount held as collateral for this debt order.
-     * This will return 0 if the loan order has not yet been filled, or the collateral has already been seized.
+     * Eventually returns the amount held as collateral for this loan.
+     *
+     * This will return 0 if the loan's collateral is withdrawn.
      *
      * @example
      * order.getCurrentCollateralAmount();
      * => Promise<number>
      *
-     * @returns {Promise<number>} the amount currently held as collateral for the debt order
+     * @returns {Promise<number>} the amount currently held as collateral for the loan
      */
     public async getCurrentCollateralAmount(): Promise<number> {
-        const isFilled = await this.isFilled();
-
-        if (!isFilled) {
-            return 0;
-        }
-
         const isCollateralWithdrawn = await this.isCollateralWithdrawn();
 
         if (isCollateralWithdrawn) {
@@ -236,7 +230,7 @@ export class Loan extends BaseLoan {
      * order.getOutstandingAmount();
      * => Promise<TokenAmount>
      *
-     * @returns {Promise<TokenAmount>}
+     * @returns {Promise<number>}
      */
     public async getOutstandingAmount(): Promise<number> {
         const repaymentToken = this.getRepaymentTokenSymbol();
@@ -264,7 +258,7 @@ export class Loan extends BaseLoan {
      * order.getRepaidAmount();
      * => Promise<TokenAmount>
      *
-     * @returns {Promise<TokenAmount>}
+     * @returns {Promise<number>}
      */
     public async getRepaidAmount(): Promise<number> {
         const agreementId = this.getAgreementId();
