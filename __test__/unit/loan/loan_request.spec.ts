@@ -17,7 +17,7 @@ import { testSignAsDebtor } from "./runners/sign_as_debtor";
 
 const dharma = new Dharma("http://localhost:8545");
 
-describe("Loan Request(Integration)", () => {
+describe("Loan Request (Integration)", () => {
     describe("#create", async () => {
         await testCreate(dharma, DEBT_ORDER_PARAMS_ONE);
     });
