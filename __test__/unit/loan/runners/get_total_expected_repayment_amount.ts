@@ -8,7 +8,7 @@ import { BigNumber } from "../../../../utils/bignumber";
 import { ACCOUNTS } from "../../../accounts";
 
 // Debt Order
-import { DebtOrder, DebtOrderParams } from "../../../../src/debt_order";
+import { Loan, LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/dharma";
@@ -22,20 +22,26 @@ const CREDITOR = ACCOUNTS[3];
 
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
-export async function testGetTotalExpectedRepaymentAmount(dharma: Dharma, params: DebtOrderParams) {
+export async function testGetTotalExpectedRepaymentAmount(
+    dharma: Dharma,
+    params: LoanRequestParams,
+) {
     describe("when called on a filled DebtOrder instance", () => {
-        let debtOrder: DebtOrder;
+        let loanRequest: LoanRequest;
+        let loan: Loan;
 
         beforeAll(async () => {
-            debtOrder = await DebtOrder.create(dharma, params);
+            loanRequest = await LoanRequest.create(dharma, params);
 
             await setBalancesAndAllowances(dharma, web3, params, CREDITOR.address);
 
-            await debtOrder.fill(CREDITOR.address);
+            await loanRequest.fill(CREDITOR.address);
+
+            loan = await loanRequest.generateLoan();
         });
 
         test(`eventually returns the open order's principal plus interest`, async () => {
-            const amount = await debtOrder.getTotalExpectedRepaymentAmount();
+            const amount = await loan.getTotalExpectedRepaymentAmount();
 
             const principal = new TokenAmount(params.principalAmount, params.principalToken);
             const interestRate = new InterestRate(params.interestRate);
