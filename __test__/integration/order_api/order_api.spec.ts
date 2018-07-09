@@ -42,6 +42,9 @@ import {
 
 import { SerializationScenarioRunner } from "./runners/serialization";
 
+import { NOT_READY_TO_FILL_SCENARIOS } from "./scenarios/not_ready_to_fill_scenarios";
+import { READY_TO_FILL_SCENARIOS } from "./scenarios/ready_to_fill_scenarios";
+
 // Given that this is an integration test, we unmock the Dharma
 // smart contracts artifacts package to pull the most recently
 // deployed contracts on the current network.
@@ -124,6 +127,16 @@ describe("Order API (Integration Tests)", () => {
 
         describe("Valid, non-consensual order fills", () => {
             NONCONSENUAL_ORDERS.forEach(scenarioRunner.testAssertFillable);
+        });
+    });
+
+    describe("#assertReadyToFill", () => {
+        describe("Orders that are ready to be filled", () => {
+            READY_TO_FILL_SCENARIOS.forEach(scenarioRunner.testAssertReadyToFill);
+        });
+
+        describe("Orders that are not ready to be filled", () => {
+            NOT_READY_TO_FILL_SCENARIOS.forEach(scenarioRunner.testAssertReadyToFill);
         });
     });
 
