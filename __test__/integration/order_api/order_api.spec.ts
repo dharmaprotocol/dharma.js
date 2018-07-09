@@ -41,8 +41,9 @@ import {
 } from "../../../src/wrappers";
 
 import { SerializationScenarioRunner } from "./runners/serialization";
-import { READY_TO_FILL_SCENARIOS } from "./scenarios/ready_to_fill_scenarios";
+
 import { NOT_READY_TO_FILL_SCENARIOS } from "./scenarios/not_ready_to_fill_scenarios";
+import { READY_TO_FILL_SCENARIOS } from "./scenarios/ready_to_fill_scenarios";
 
 // Given that this is an integration test, we unmock the Dharma
 // smart contracts artifacts package to pull the most recently
