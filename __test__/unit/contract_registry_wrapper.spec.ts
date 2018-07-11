@@ -37,6 +37,7 @@ describe("Contract Registry Contract Wrapper (Unit)", () => {
 
         const readFilePromise = promisify(fs.readFile);
         const artifact = await readFilePromise(CONTRACT_REGISTRY_RAW_ARTIFACTS_PATH);
+
         const { networks, abi } = JSON.parse(artifact);
         const { address } = networks[networkId];
 
@@ -54,7 +55,7 @@ describe("Contract Registry Contract Wrapper (Unit)", () => {
                 await expect(
                     ContractRegistryContract.deployed(web3, TX_DEFAULTS),
                 ).rejects.toThrowError(
-                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DebtKernel", networkId),
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ContractRegistry", networkId),
                 );
             });
         });
@@ -74,7 +75,7 @@ describe("Contract Registry Contract Wrapper (Unit)", () => {
                 await expect(
                     ContractRegistryContract.deployed(web3, TX_DEFAULTS),
                 ).rejects.toThrowError(
-                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DebtKernel", networkId),
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ContractRegistry", networkId),
                 );
             });
         });
@@ -90,7 +91,7 @@ describe("Contract Registry Contract Wrapper (Unit)", () => {
                 ContractArtifactsMock.mock(contractRegistryContractAbi, mockNetworks);
             });
 
-            test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
+            test("returns new ContractRegistryWrapper w/ current address correctly set", async () => {
                 const contractWrapper = await ContractRegistryContract.deployed(web3, TX_DEFAULTS);
 
                 expect(contractWrapper.address).toBe(contractRegistryContractAddress);
@@ -115,7 +116,7 @@ describe("Contract Registry Contract Wrapper (Unit)", () => {
                 await expect(
                     ContractRegistryContract.at(ACCOUNTS[0].address, web3, TX_DEFAULTS),
                 ).rejects.toThrowError(
-                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("DebtKernel", networkId),
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ContractRegistry", networkId),
                 );
             });
         });
@@ -131,7 +132,7 @@ describe("Contract Registry Contract Wrapper (Unit)", () => {
                 ContractArtifactsMock.mock(contractRegistryContractAbi, mockNetworks);
             });
 
-            test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
+            test("returns new ContractRegistryWrapper w/ current address correctly set", async () => {
                 const contractWrapper = await ContractRegistryContract.at(
                     contractRegistryContractAddress,
                     web3,
