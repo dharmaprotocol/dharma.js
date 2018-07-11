@@ -467,14 +467,16 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         const collateralizerAddress = "0x4b86bbe375577262cb0b3b7893e3de0d11751dd6";
 
         return new Promise<boolean>((resolve) => {
-            this.web3.eth.filter({
-                address: collateralizerAddress,
-                fromBlock: 0,
-                toBlock: "latest",
-            }).get((err, result) => {
-                console.log(result);
-                resolve(true);
-            });
+            this.web3.eth
+                .filter({
+                    address: collateralizerAddress,
+                    fromBlock: 0,
+                    toBlock: "latest",
+                })
+                .get((err, result) => {
+                    console.log(result);
+                    resolve(true);
+                });
         });
     }
 
