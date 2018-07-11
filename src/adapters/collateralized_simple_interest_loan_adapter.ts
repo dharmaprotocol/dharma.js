@@ -103,10 +103,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
     private web3Utils: Web3Utils;
+    private web3: Web3;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
         this.assert = new Assertions(web3, contractsAPI);
         this.web3Utils = new Web3Utils(web3);
+        this.web3 = web3;
 
         this.contractsAPI = contractsAPI;
 
@@ -452,6 +454,28 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         );
 
         return collateralizerAddress === NULL_ADDRESS;
+    }
+
+    /**
+     * Eventually returns true if the collateral associated with the given debt agreement ID
+     * was returned to the debtor.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<boolean>}
+     */
+    public async isCollateralReturned(agreementId: string): Promise<boolean> {
+        const collateralizerAddress = "0x4b86bbe375577262cb0b3b7893e3de0d11751dd6";
+
+        return new Promise<boolean>((resolve) => {
+            this.web3.eth.filter({
+                address: collateralizerAddress,
+                fromBlock: 0,
+                toBlock: "latest",
+            }).get((err, result) => {
+                console.log(result);
+                resolve(true);
+            });
+        });
     }
 
     private async assertTokenCorrespondsToSymbol(

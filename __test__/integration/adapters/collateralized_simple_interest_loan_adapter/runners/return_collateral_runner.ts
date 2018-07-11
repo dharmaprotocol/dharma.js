@@ -1,4 +1,5 @@
 // Scenarios
+import * as ABIDecoder from "abi-decoder";
 import { ReturnCollateralScenario } from "../scenarios";
 
 import { BaseCollateralRunner } from "./base_collateral_runner";
@@ -6,6 +7,7 @@ import { BaseCollateralRunner } from "./base_collateral_runner";
 export class ReturnCollateralRunner extends BaseCollateralRunner {
     public testScenario(scenario: ReturnCollateralScenario) {
         let agreementId;
+        let collateralizer;
 
         describe(scenario.description, () => {
             beforeAll(async () => {
@@ -35,11 +37,17 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 if (scenario.collateralWithdrawn) {
                     await this.adapter.returnCollateralAsync(agreementId);
                 }
+
+                collateralizer = await this.contractsApi.loadCollateralizerAsync();
+
+                ABIDecoder.addABI(collateralizer.abi);
             });
 
             afterAll(async () => {
                 // Once the test has run, revert to a clean EVM state.
                 await this.web3Utils.revertToSnapshot(this.snapshotId);
+
+                ABIDecoder.removeABI(collateralizer.abi);
             });
 
             if (scenario.succeeds) {
@@ -58,6 +66,14 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
 
                     expect(collateralAmount).toEqual(scenario.collateralTerms.collateralAmount);
                 });
+
+                describe("#isCollateralReturned", () => {
+                    it("returns true", async () => {
+                        const isReturned = await this.adapter.isCollateralReturned(agreementId);
+
+                        expect(isReturned).toEqual(true);
+                    });
+                });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
@@ -72,6 +88,14 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                         );
 
                         expect(collateralAmount.toNumber()).toEqual(0);
+                    });
+
+                    describe("#isCollateralReturned", () => {
+                        it("returns false", async () => {
+                            const isReturned = await this.adapter.isCollateralReturned(agreementId);
+
+                            expect(isReturned).toEqual(false);
+                        });
                     });
                 }
             }
