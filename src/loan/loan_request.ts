@@ -261,16 +261,18 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually attempts to cancel the current debt order. A debt order can be cancelled by the debtor
-     * if it is open and unfilled.
+     * Eventually attempts to cancel the loan request.
+     *
+     * Note that a loan request can only be canceled by the debtor, and transaction will only
+     * succeed if the request has yet to be filled and has yet to expire.
      *
      * @example
-     * await loanRequest.cancelAsDebtor();
+     * await loanRequest.cancel();
      * => "0x000..."
      *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to cancel the debt order
+     * @returns {Promise<string>} the hash of the Ethereum transaction to cancel the loan request
      */
-    public async cancelAsDebtor(): Promise<string> {
+    public async cancel(): Promise<string> {
         return this.dharma.order.cancelOrderAsync(this.data, {
             from: this.data.debtor,
         });
