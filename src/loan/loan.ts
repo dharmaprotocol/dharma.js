@@ -43,11 +43,11 @@ export class Loan extends BaseLoan {
      * and terms.
      *
      * @example
-     * order.makeRepayment();
+     * loan.makeRepayment();
      * => Promise<string>
      *
-     * const outstandingAmount = await order.getOutstandingAmount();
-     * order.makeRepayment(outstandingAmount);
+     * const outstandingAmount = await loan.getOutstandingAmount();
+     * loan.makeRepayment(outstandingAmount);
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to make the repayment
@@ -145,7 +145,7 @@ export class Loan extends BaseLoan {
      * This will fail if the collateral is not returnable.
      *
      * @example
-     * order.returnCollateral();
+     * loan.returnCollateral();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to return the collateral
@@ -161,7 +161,7 @@ export class Loan extends BaseLoan {
      * This will fail if the collateral is not seizable.
      *
      * @example
-     * order.seizeCollateral();
+     * loan.seizeCollateral();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to seize the collateral
@@ -178,8 +178,8 @@ export class Loan extends BaseLoan {
      * This will return 0 if the loan's collateral is withdrawn.
      *
      * @example
-     * order.getCurrentCollateralAmount();
-     * => Promise<number>
+     * await loan.getCurrentCollateralAmount();
+     * => 10
      *
      * @returns {Promise<number>} the amount currently held as collateral for the loan
      */
@@ -197,7 +197,7 @@ export class Loan extends BaseLoan {
      * Eventually returns the total amount expected to be repaid.
      *
      * @example
-     * await order.getTotalExpectedRepaymentAmount();
+     * await loan.getTotalExpectedRepaymentAmount();
      * => 13.5
      *
      * @returns {Promise<number>}
@@ -217,6 +217,10 @@ export class Loan extends BaseLoan {
     /**
      * Returns the symbol of the token to be repaid.
      *
+     * * @example
+     * await loan.getRepaymentTokenSymbol();
+     * => "REP"
+     *
      * @returns {string}
      */
     public getRepaymentTokenSymbol(): string {
@@ -227,8 +231,8 @@ export class Loan extends BaseLoan {
      * Eventually returns the outstanding balance of the loan.
      *
      * @example
-     * order.getOutstandingAmount();
-     * => Promise<TokenAmount>
+     * await loan.getOutstandingAmount();
+     * => 25
      *
      * @returns {Promise<number>}
      */
@@ -255,8 +259,8 @@ export class Loan extends BaseLoan {
      * Eventually returns the total amount repaid so far.
      *
      * @example
-     * order.getRepaidAmount();
-     * => Promise<TokenAmount>
+     * await loan.getRepaidAmount();
+     * => 10
      *
      * @returns {Promise<number>}
      */
