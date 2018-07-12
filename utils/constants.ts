@@ -26,6 +26,7 @@ export const WEB3_ERROR_NO_PRIVATE_KEY = "cannot sign data; no private key";
 
 export const DEBT_KERNEL_CONTRACT_CACHE_KEY = "DebtKernel";
 export const DEBT_REGISTRY_CONTRACT_CACHE_KEY = "DebtRegistry";
+export const CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "ContractRegistry";
 export const DEBT_TOKEN_CONTRACT_CACHE_KEY = "DebtToken";
 export const REPAYMENT_ROUTER_CONTRACT_CACHE_KEY = "RepaymentRouter";
 export const SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY = "SimpleInterestTermsContract";

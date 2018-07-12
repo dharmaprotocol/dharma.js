@@ -1,4 +1,5 @@
 // External libraries
+import * as ABIDecoder from "abi-decoder";
 import * as _ from "lodash";
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
@@ -27,7 +28,7 @@ import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 import { Adapter } from "./adapter";
 
-import { ERC20Contract } from "../wrappers";
+import { CollateralizerContract, ERC20Contract } from "../wrappers";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -48,7 +49,8 @@ export interface CollateralizedTermsContractParameters {
 
 export interface CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        CollateralizedTermsContractParameters {}
+        CollateralizedTermsContractParameters {
+}
 
 export const CollateralizerAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
@@ -464,18 +466,40 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * @returns {Promise<boolean>}
      */
     public async isCollateralReturned(agreementId: string): Promise<boolean> {
-        const collateralizerAddress = "0x4b86bbe375577262cb0b3b7893e3de0d11751dd6";
+        // We use the contract registry to get the address of the collateralizer contract.
+        const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
+        // Collateralizer contract is required for decoding logs.
+        const collateralizer = await this.contractsAPI.loadCollateralizerAsync();
+
+        const collateralizerAddress = await contractRegistry.collateralizer.callAsync();
 
         return new Promise<boolean>((resolve) => {
             this.web3.eth
                 .filter({
                     address: collateralizerAddress,
-                    fromBlock: 0,
+                    fromBlock: 1,
                     toBlock: "latest",
+                    topics: [null, agreementId, null],
                 })
                 .get((err, result) => {
-                    console.log(result);
-                    resolve(true);
+                    ABIDecoder.addABI(collateralizer.abi);
+
+                    const decodedResults = ABIDecoder.decodeLogs(result);
+
+                    ABIDecoder.removeABI(collateralizer.abi);
+
+                    // We find events that are called "CollateralReturned" and specify
+                    // the appropriate agreementID.
+                    const collateralReturnedEvent = _.find(decodedResults, (log) => {
+                        const event = _.find(log.events, {
+                            name: "agreementID",
+                            value: agreementId,
+                        });
+
+                        return log.name === "CollateralReturned" && event;
+                    });
+
+                    resolve(!_.isUndefined(collateralReturnedEvent));
                 });
         });
     }

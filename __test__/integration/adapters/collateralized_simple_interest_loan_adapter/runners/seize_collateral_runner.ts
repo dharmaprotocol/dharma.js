@@ -67,6 +67,14 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                         ),
                     ).toEqual(scenario.collateralTerms.collateralAmount);
                 });
+
+                describe("#isCollateralReturned", () => {
+                    it("returns false", async () => {
+                        const isReturned = await this.adapter.isCollateralReturned(agreementId);
+
+                        expect(isReturned).toEqual(false);
+                    });
+                });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(

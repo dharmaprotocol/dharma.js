@@ -39,15 +39,11 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 }
 
                 collateralizer = await this.contractsApi.loadCollateralizerAsync();
-
-                ABIDecoder.addABI(collateralizer.abi);
             });
 
             afterAll(async () => {
                 // Once the test has run, revert to a clean EVM state.
                 await this.web3Utils.revertToSnapshot(this.snapshotId);
-
-                ABIDecoder.removeABI(collateralizer.abi);
             });
 
             if (scenario.succeeds) {
