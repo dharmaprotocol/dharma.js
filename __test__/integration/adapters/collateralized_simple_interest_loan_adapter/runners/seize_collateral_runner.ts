@@ -75,6 +75,14 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                         expect(isReturned).toEqual(false);
                     });
                 });
+
+                describe("#isCollateralSeized", () => {
+                    it("returns true", async () => {
+                        const isSeized = await this.adapter.isCollateralSeized(agreementId);
+
+                        expect(isSeized).toEqual(true);
+                    });
+                });
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
@@ -92,6 +100,14 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                             .minus(initialCreditorCollateralTokenBalance)
                             .toNumber(),
                     ).toEqual(0);
+                });
+
+                describe("#isCollateralSeized", () => {
+                    it("returns false", async () => {
+                        const isSeized = await this.adapter.isCollateralSeized(agreementId);
+
+                        expect(isSeized).toEqual(false);
+                    });
                 });
             }
         });

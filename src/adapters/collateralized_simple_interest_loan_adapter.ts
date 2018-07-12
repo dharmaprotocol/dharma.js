@@ -482,7 +482,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
                 })
                 .get((err, result) => {
                     if (err) {
-                       reject(err);
+                        reject(err);
                     }
 
                     ABIDecoder.addABI(collateralizer.abi);
@@ -500,6 +500,54 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
                         });
 
                         return log.name === "CollateralReturned" && event;
+                    });
+
+                    resolve(!_.isUndefined(collateralReturnedEvent));
+                });
+        });
+    }
+
+    /**
+     * Eventually returns true if the collateral associated with the given debt agreement ID
+     * was seized by the creditor.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<boolean>}
+     */
+    public async isCollateralSeized(agreementId: string): Promise<boolean> {
+        // We use the contract registry to get the address of the collateralizer contract.
+        const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
+        // Collateralizer contract is required for decoding logs.
+        const collateralizer = await this.contractsAPI.loadCollateralizerAsync();
+
+        const collateralizerAddress = await contractRegistry.collateralizer.callAsync();
+
+        return new Promise<boolean>((resolve, reject) => {
+            this.web3.eth
+                .filter({
+                    address: collateralizerAddress,
+                    fromBlock: 1,
+                    toBlock: "latest",
+                    topics: [null, agreementId, null],
+                })
+                .get((err, result) => {
+                    if (err) {
+                        reject(err);
+                    }
+
+                    ABIDecoder.addABI(collateralizer.abi);
+
+                    const decodedResults = ABIDecoder.decodeLogs(result);
+
+                    ABIDecoder.removeABI(collateralizer.abi);
+
+                    const collateralReturnedEvent = _.find(decodedResults, (log) => {
+                        const event = _.find(log.events, {
+                            name: "agreementID",
+                            value: agreementId,
+                        });
+
+                        return log.name === "CollateralSeized" && event;
                     });
 
                     resolve(!_.isUndefined(collateralReturnedEvent));
