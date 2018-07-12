@@ -465,46 +465,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * @returns {Promise<boolean>}
      */
     public async isCollateralReturned(agreementId: string): Promise<boolean> {
-        // We use the contract registry to get the address of the collateralizer contract.
-        const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
-        // Collateralizer contract is required for decoding logs.
-        const collateralizer = await this.contractsAPI.loadCollateralizerAsync();
-
-        const collateralizerAddress = await contractRegistry.collateralizer.callAsync();
-
-        return new Promise<boolean>((resolve, reject) => {
-            this.web3.eth
-                .filter({
-                    address: collateralizerAddress,
-                    fromBlock: 1,
-                    toBlock: "latest",
-                    topics: [null, agreementId, null],
-                })
-                .get((err, result) => {
-                    if (err) {
-                        reject(err);
-                    }
-
-                    ABIDecoder.addABI(collateralizer.abi);
-
-                    const decodedResults = ABIDecoder.decodeLogs(result);
-
-                    ABIDecoder.removeABI(collateralizer.abi);
-
-                    // We find events that are called "CollateralReturned" and specify
-                    // the appropriate agreementID.
-                    const collateralReturnedEvent = _.find(decodedResults, (log) => {
-                        const event = _.find(log.events, {
-                            name: "agreementID",
-                            value: agreementId,
-                        });
-
-                        return log.name === "CollateralReturned" && event;
-                    });
-
-                    resolve(!_.isUndefined(collateralReturnedEvent));
-                });
-        });
+        return this.eventEmittedForAgreement("CollateralReturned", agreementId);
     }
 
     /**
@@ -515,6 +476,10 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * @returns {Promise<boolean>}
      */
     public async isCollateralSeized(agreementId: string): Promise<boolean> {
+        return this.eventEmittedForAgreement("CollateralSeized", agreementId);
+    }
+
+    private async eventEmittedForAgreement(eventName: string, agreementId: string): Promise<boolean> {
         // We use the contract registry to get the address of the collateralizer contract.
         const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
         // Collateralizer contract is required for decoding logs.
@@ -547,7 +512,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
                             value: agreementId,
                         });
 
-                        return log.name === "CollateralSeized" && event;
+                        return log.name === eventName && event;
                     });
 
                     resolve(!_.isUndefined(collateralReturnedEvent));
