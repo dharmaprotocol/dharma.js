@@ -8,7 +8,10 @@ import { BigNumber } from "../../utils/bignumber";
 import { ContractsAPI } from "./";
 
 // Utils
-import { DISABLED_TOKEN_SYMBOLS } from "../../utils/constants";
+import {
+    DISABLED_TOKEN_SYMBOLS,
+    UNLIMITED_PROXY_TOKEN_TRANSFER_ALLOWANCE,
+} from "../../utils/constants";
 import { generateTxOptions } from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
 import { TxData } from "../types";
@@ -173,11 +176,11 @@ export class TokenAPI {
 
         await this.assert.token.implementsERC20(tokenContract);
 
-        // We set an allowance to be "unlimited" by setting it to
-        // it's maximum possible value -- namely, 2^256 - 1.
-        const unlimitedAllowance = new BigNumber(2).pow(256).sub(1);
-
-        return this.setProxyAllowanceAsync(tokenAddress, unlimitedAllowance, options);
+        return this.setProxyAllowanceAsync(
+            tokenAddress,
+            UNLIMITED_PROXY_TOKEN_TRANSFER_ALLOWANCE,
+            options,
+        );
     }
 
     /**
