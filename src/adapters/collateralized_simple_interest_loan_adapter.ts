@@ -472,7 +472,7 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
         const collateralizerAddress = await contractRegistry.collateralizer.callAsync();
 
-        return new Promise<boolean>((resolve) => {
+        return new Promise<boolean>((resolve, reject) => {
             this.web3.eth
                 .filter({
                     address: collateralizerAddress,
@@ -481,6 +481,10 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
                     topics: [null, agreementId, null],
                 })
                 .get((err, result) => {
+                    if (err) {
+                       reject(err);
+                    }
+
                     ABIDecoder.addABI(collateralizer.abi);
 
                     const decodedResults = ABIDecoder.decodeLogs(result);
