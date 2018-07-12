@@ -14,6 +14,7 @@ import { testCreate } from "./runners/create";
 import { testGenerateLoan } from "./runners/generate_loan";
 import { testIsCancelled } from "./runners/is_cancelled";
 import { testExpired } from "./runners/is_expired";
+import { testIsFilled } from "./runners/is_filled";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
 
@@ -34,6 +35,10 @@ describe("Loan Request (Integration)", () => {
 
     describe("#allowPrincipalTransfer", async () => {
         await testAllowPrincipalTransfer(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#isFilled", async () => {
+        await testIsFilled(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
     describe("#isExpired", async () => {
