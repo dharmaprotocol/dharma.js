@@ -7,7 +7,8 @@ import { BigNumber } from "../../utils/bignumber";
 // wrappers
 import {
     CollateralizedSimpleInterestTermsContractContract,
-    CollateralizerContract, ContractRegistryContract,
+    CollateralizerContract,
+    ContractRegistryContract,
     ContractWrapper,
     DebtKernelContract,
     DebtRegistryContract,
@@ -177,7 +178,10 @@ export class ContractsAPI {
                 transactionOptions,
             );
         } else {
-            contractRegistry = await ContractRegistryContract.deployed(this.web3, transactionOptions);
+            contractRegistry = await ContractRegistryContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
         }
 
         this.cache[CONTRACT_REGISTRY_CONTRACT_CACHE_KEY] = contractRegistry;

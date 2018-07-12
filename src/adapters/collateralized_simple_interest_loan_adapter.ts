@@ -28,7 +28,7 @@ import { SimpleInterestLoanTerms } from "./simple_interest_loan_terms";
 
 import { Adapter } from "./adapter";
 
-import { CollateralizerContract, ERC20Contract } from "../wrappers";
+import { ERC20Contract } from "../wrappers";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -49,8 +49,7 @@ export interface CollateralizedTermsContractParameters {
 
 export interface CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        CollateralizedTermsContractParameters {
-}
+        CollateralizedTermsContractParameters {}
 
 export const CollateralizerAdapterErrors = {
     INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
