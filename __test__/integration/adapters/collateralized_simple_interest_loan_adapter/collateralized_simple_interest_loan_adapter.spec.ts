@@ -16,18 +16,6 @@ import { UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessfu
 // Runners
 import { ReturnCollateralRunner, SeizeCollateralRunner } from "./runners";
 
-import { Assertions } from "src/invariants";
-
-// Wrappers
-import {
-    DummyTokenContract,
-    TokenRegistryContract,
-    DebtKernelContract,
-    RepaymentRouterContract,
-    SimpleInterestTermsContractContract,
-    TokenTransferProxyContract,
-} from "src/wrappers";
-
 import { CollateralizedSimpleInterestLoanAdapter } from "src/adapters/collateralized_simple_interest_loan_adapter";
 
 import { ServicingAPI } from "src/apis/servicing_api";

@@ -8,6 +8,7 @@ import { BigNumber } from "../../utils/bignumber";
 import {
     CollateralizedSimpleInterestTermsContractContract,
     CollateralizerContract,
+    ContractRegistryContract,
     ContractWrapper,
     DebtKernelContract,
     DebtRegistryContract,
@@ -33,6 +34,7 @@ import {
     TERMS_CONTRACT_TYPES,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
+    CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
 } from "../../utils/constants";
 
 // types
@@ -158,6 +160,33 @@ export class ContractsAPI {
         this.cache[DEBT_REGISTRY_CONTRACT_CACHE_KEY] = debtRegistry;
 
         return debtRegistry;
+    }
+
+    public async loadContractRegistryAsync(
+        transactionOptions: object = {},
+    ): Promise<ContractRegistryContract> {
+        if (CONTRACT_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[CONTRACT_REGISTRY_CONTRACT_CACHE_KEY] as ContractRegistryContract;
+        }
+
+        let contractRegistry: ContractRegistryContract;
+
+        if (this.addressBook.debtRegistryAddress) {
+            contractRegistry = await ContractRegistryContract.at(
+                this.addressBook.debtRegistryAddress,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            contractRegistry = await ContractRegistryContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+        }
+
+        this.cache[CONTRACT_REGISTRY_CONTRACT_CACHE_KEY] = contractRegistry;
+
+        return contractRegistry;
     }
 
     public async loadDebtTokenAsync(transactionOptions: object = {}): Promise<DebtTokenContract> {

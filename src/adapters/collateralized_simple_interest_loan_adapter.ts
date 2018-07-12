@@ -1,4 +1,5 @@
 // External libraries
+import * as ABIDecoder from "abi-decoder";
 import * as _ from "lodash";
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
@@ -103,10 +104,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
     private collateralizedLoanTerms: CollateralizedLoanTerms;
     private web3Utils: Web3Utils;
+    private web3: Web3;
 
     public constructor(web3: Web3, contractsAPI: ContractsAPI) {
         this.assert = new Assertions(web3, contractsAPI);
         this.web3Utils = new Web3Utils(web3);
+        this.web3 = web3;
 
         this.contractsAPI = contractsAPI;
 
@@ -452,6 +455,56 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         );
 
         return collateralizerAddress === NULL_ADDRESS;
+    }
+
+    /**
+     * Eventually returns true if the collateral associated with the given debt agreement ID
+     * was returned to the debtor.
+     *
+     * @param {string} agreementId
+     * @returns {Promise<boolean>}
+     */
+    public async isCollateralReturned(agreementId: string): Promise<boolean> {
+        // We use the contract registry to get the address of the collateralizer contract.
+        const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
+        // Collateralizer contract is required for decoding logs.
+        const collateralizer = await this.contractsAPI.loadCollateralizerAsync();
+
+        const collateralizerAddress = await contractRegistry.collateralizer.callAsync();
+
+        return new Promise<boolean>((resolve, reject) => {
+            this.web3.eth
+                .filter({
+                    address: collateralizerAddress,
+                    fromBlock: 1,
+                    toBlock: "latest",
+                    topics: [null, agreementId, null],
+                })
+                .get((err, result) => {
+                    if (err) {
+                       reject(err);
+                    }
+
+                    ABIDecoder.addABI(collateralizer.abi);
+
+                    const decodedResults = ABIDecoder.decodeLogs(result);
+
+                    ABIDecoder.removeABI(collateralizer.abi);
+
+                    // We find events that are called "CollateralReturned" and specify
+                    // the appropriate agreementID.
+                    const collateralReturnedEvent = _.find(decodedResults, (log) => {
+                        const event = _.find(log.events, {
+                            name: "agreementID",
+                            value: agreementId,
+                        });
+
+                        return log.name === "CollateralReturned" && event;
+                    });
+
+                    resolve(!_.isUndefined(collateralReturnedEvent));
+                });
+        });
     }
 
     private async assertTokenCorrespondsToSymbol(
