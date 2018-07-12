@@ -150,10 +150,10 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns an instance of a loan iff the loan is filled.
+     * Eventually returns an instance of the associated loan iff the loan is filled.
      *
      * @example
-     * const loan = await LoanRequest.generateLoan();
+     * const loan = await loanRequest.generateLoan();
      *
      * @returns {Promise<Loan>}
      */
@@ -217,7 +217,7 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the current debt order will be expired for the next block.
+     * Eventually returns true if the current loan request will be expired for the next block.
      *
      * @example
      * await loanRequest.isExpired();
@@ -248,7 +248,7 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the current debt order has been cancelled.
+     * Eventually returns true if the loan request has been cancelled.
      *
      * @example
      * await loanRequest.isCancelled();
@@ -279,7 +279,7 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the current debt order has been filled by a creditor.
+     * Eventually returns true if the current loan request has been filled by a creditor.
      *
      * @example
      * await loanRequest.isFilled();
@@ -292,13 +292,13 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually fills the debt order, transferring the principal to the debtor.
+     * Eventually fills the loan request, transferring the principal to the debtor.
      *
      * @example
      * order.fill();
      * => Promise<string>
      *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to fill the debt order
+     * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
     public async fill(creditorAddress?: string): Promise<string> {
         const creditor = creditorAddress || (await this.getCurrentUser());
