@@ -517,13 +517,12 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
                     ABIDecoder.removeABI(collateralizer.abi);
 
-                    const collateralReturnedEvent = _.find(decodedResults, (log) => {
-                        const event = _.find(log.events, {
-                            name: "agreementID",
-                            value: agreementId,
+                    const collateralReturnedEvent = _.find(decodedResults, (log: any) => {
+                        const foundEvent = _.find(log.events, (event: any) => {
+                            return event.name === "agreementID" && event.value === agreementId;
                         });
 
-                        return log.name === eventName && event;
+                        return log.name === eventName && foundEvent;
                     });
 
                     resolve(!_.isUndefined(collateralReturnedEvent));
