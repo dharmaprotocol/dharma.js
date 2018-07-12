@@ -9,6 +9,7 @@ import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 // Test runners
 import { testCancel } from "./runners/cancel_as_debtor";
 import { testCreate } from "./runners/create";
+import { testGenerateLoan } from "./runners/generate_loan";
 import { testIsCancelled } from "./runners/is_cancelled";
 import { testExpired } from "./runners/is_expired";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
@@ -19,6 +20,10 @@ const dharma = new Dharma("http://localhost:8545");
 describe("Loan Request (Integration)", () => {
     describe("#create", async () => {
         await testCreate(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#generateLoan", async () => {
+        await testGenerateLoan(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
     describe("#isExpired", async () => {
