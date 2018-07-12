@@ -461,6 +461,10 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * Eventually returns true if the collateral associated with the given debt agreement ID
      * was returned to the debtor.
      *
+     * @example
+     * await adapter.isCollateralReturned("0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f")
+     * => true
+     *
      * @param {string} agreementId
      * @returns {Promise<boolean>}
      */
@@ -472,6 +476,10 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * Eventually returns true if the collateral associated with the given debt agreement ID
      * was seized by the creditor.
      *
+     * @example
+     * await adapter.isCollateralSeized("0x21eee309abd17832e55d231fb4147334081ed6da543d226c035d4b2420c68a7f")
+     * => true
+     *
      * @param {string} agreementId
      * @returns {Promise<boolean>}
      */
@@ -479,7 +487,10 @@ export class CollateralizedSimpleInterestLoanAdapter implements Adapter {
         return this.eventEmittedForAgreement("CollateralSeized", agreementId);
     }
 
-    private async eventEmittedForAgreement(eventName: string, agreementId: string): Promise<boolean> {
+    private async eventEmittedForAgreement(
+        eventName: string,
+        agreementId: string,
+    ): Promise<boolean> {
         // We use the contract registry to get the address of the collateralizer contract.
         const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
         // Collateralizer contract is required for decoding logs.
