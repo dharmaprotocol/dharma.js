@@ -7,6 +7,7 @@ import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
 import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 
 // Test runners
+import { testAllowCollateralTransfer } from "./runners/allow_collateral_transfer";
 import { testCancel } from "./runners/cancel_as_debtor";
 import { testCreate } from "./runners/create";
 import { testGenerateLoan } from "./runners/generate_loan";
@@ -24,6 +25,10 @@ describe("Loan Request (Integration)", () => {
 
     describe("#generateLoan", async () => {
         await testGenerateLoan(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#allowCollateralTransfer", async () => {
+        await testAllowCollateralTransfer(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
     describe("#isExpired", async () => {
