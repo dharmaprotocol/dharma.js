@@ -27,6 +27,12 @@ export class LogsAPI {
     }
 
     /**
+     * Given the name of an event, or an array of event names, returns a list of matching
+     * events emitted by Dharma Protocol contracts.
+     *
+     * Optionally allows specifying a range of block numbers between which the events must have
+     * occurred, and a limit for the number of results returned.
+     *
      * @example
      * // Get all "LogLoanOrderFilled" events between blocks 0 and 300.
      * await dharma.logs.get(["LogLoanOrderFilled"], { from: 0, to: 300 });
