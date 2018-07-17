@@ -1,3 +1,5 @@
+import { BigNumber } from "./bignumber";
+
 export const NULL_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const NULL_BYTES32 = "0x0000000000000000000000000000000000000000000000000000000000000000";
 
@@ -19,6 +21,8 @@ export const NULL_ECDSA_SIGNATURE = {
     s: "",
     v: 0,
 };
+
+export const UNLIMITED_PROXY_TOKEN_TRANSFER_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
 
 export const WEB3_ERROR_INVALID_ADDRESS = "invalid address";
 export const WEB3_ERROR_ACCOUNT_NOT_FOUND = "Account not found";

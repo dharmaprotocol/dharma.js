@@ -6,7 +6,11 @@ import * as Web3 from "web3";
 
 // Utils
 import { BigNumber } from "../../utils/bignumber";
-import { DISABLED_TOKEN_SYMBOLS, TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
+import {
+    DISABLED_TOKEN_SYMBOLS,
+    TOKEN_REGISTRY_TRACKED_TOKENS,
+    UNLIMITED_PROXY_TOKEN_TRANSFER_ALLOWANCE,
+} from "../../utils/constants";
 import * as Units from "../../utils/units";
 import { Web3Utils } from "../../utils/web3_utils";
 
@@ -426,11 +430,9 @@ describe("Token API (Integration Tests)", () => {
                 });
 
                 test("should return specified allowance to proxy", async () => {
-                    const unlimitedAllowance = new BigNumber(2).pow(256).sub(1);
-
                     await expect(
                         dummyZRXToken.allowance.callAsync(RECIPIENT, tokenTransferProxy.address),
-                    ).resolves.toEqual(unlimitedAllowance);
+                    ).resolves.toEqual(UNLIMITED_PROXY_TOKEN_TRANSFER_ALLOWANCE);
                 });
 
                 // TODO: Add fault tolerance
