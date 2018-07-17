@@ -41,6 +41,12 @@ describe("Loan Request (Integration)", () => {
         await testIsFilled(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
+    // describe("#fill", async () => {});
+    //
+    // describe("#isSignedByCreditor", async () => {});
+    //
+    // describe("#signAsCreditor", async () => {});
+
     describe("#isExpired", async () => {
         IS_EXPIRED_SCENARIOS.forEach(async (scenario) => {
             await testExpired(dharma, scenario);
