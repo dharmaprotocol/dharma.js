@@ -7,7 +7,8 @@ export const generateDebtOrderData = (principalToken: string, termsContract: str
         termsContract,
         principalAmount: new BigNumber("2000000000000000000"),
         expirationTimestampInSec: new BigNumber("1532382995"),
-        termsContractParameters: "0x04000000001bc16d674ec8000000c3502000400000000029a2241af62c000000",
+        termsContractParameters:
+            "0x04000000001bc16d674ec8000000c3502000400000000029a2241af62c000000",
         kernelVersion: "0x384cdafd4dddd1b7f9210534a16931e60809b658",
         issuanceVersion: "0x7b79a84b92b41a4626fa85a8c2db9b09df063caf",
         debtor: "0xd2f45e02ab7b190ac9a87b743eab4c8f2ed0e491",

@@ -2,10 +2,7 @@ import { BaseLoan } from "./base_loan";
 
 import { BigNumber } from "../../utils/bignumber";
 
-import {
-    EthereumAddress,
-    TokenAmount,
-} from "../types";
+import { EthereumAddress, TokenAmount } from "../types";
 
 export class Loan extends BaseLoan {
     /**

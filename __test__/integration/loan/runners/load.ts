@@ -34,9 +34,7 @@ export async function testLoad(
         beforeAll(async () => {
             const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
 
-            const wethAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync(
-                "WETH",
-            );
+            const wethAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("WETH");
 
             const collateralizedTerms = await contracts.loadCollateralizedSimpleInterestTermsContract();
             const collateralizedTermsAddress = collateralizedTerms.address;
