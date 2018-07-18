@@ -1,9 +1,6 @@
 // Debt Order
 import { LoanRequestParams } from "../../../../src/loan";
 
-// Types
-import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../../../../src/types";
-
 // Test utils
 import { ACCOUNTS } from "../../../accounts";
 
