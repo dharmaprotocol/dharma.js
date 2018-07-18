@@ -172,7 +172,7 @@ export class LoanRequest extends BaseLoan {
             debtorAddress,
         };
 
-        return new LoanRequest(dharma, loanRequestParams, data);
+        return new LoanRequest(dharma, loanRequestParams, debtOrderData);
     }
 
     /**
