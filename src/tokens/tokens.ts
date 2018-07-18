@@ -23,30 +23,32 @@ export class Tokens {
     public async get(): Promise<TokenData[]> {
         const tokens = await this.dharma.token.getSupportedTokens();
 
-        return tokens.map(async (token) => {
-            const { address, symbol } = token;
+        return Promise.all(
+            tokens.map(async (token) => {
+                const { address, symbol } = token;
 
-            const rawBalance = await this.dharma.token.getBalanceAsync(
-                address,
-                this.owner.toString(),
-            );
+                const rawBalance = await this.dharma.token.getBalanceAsync(
+                    address,
+                    this.owner.toString(),
+                );
 
-            const rawAllowance = await this.dharma.token.getProxyAllowanceAsync(
-                address,
-                this.owner.toString(),
-            );
+                const rawAllowance = await this.dharma.token.getProxyAllowanceAsync(
+                    address,
+                    this.owner.toString(),
+                );
 
-            const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
-            const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
+                const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
+                const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-            const hasUnlimitedAllowance = allowanceAmount.rawAmount.equals(UNLIMITED_ALLOWANCE);
+                const hasUnlimitedAllowance = allowanceAmount.rawAmount.equals(UNLIMITED_ALLOWANCE);
 
-            return {
-                symbol,
-                balance: balanceAmount.decimalAmount,
-                allowance: allowanceAmount.decimalAmount,
-                hasUnlimitedAllowance,
-            };
-        });
+                return {
+                    symbol,
+                    balance: balanceAmount.decimalAmount,
+                    allowance: allowanceAmount.decimalAmount,
+                    hasUnlimitedAllowance,
+                };
+            }),
+        );
     }
 }
