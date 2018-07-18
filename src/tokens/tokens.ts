@@ -18,37 +18,46 @@ export class Tokens {
 
     public constructor(private dharma: Dharma, owner: string) {
         this.owner = new EthereumAddress(owner);
+
+        this.getDataPromise = this.getDataPromise.bind(this);
     }
 
     public async get(): Promise<TokenData[]> {
         const tokens = await this.dharma.token.getSupportedTokens();
 
-        return Promise.all(
-            tokens.map(async (token) => {
-                const { address, symbol } = token;
+        return Promise.all(tokens.map(this.getDataPromise));
+    }
 
-                const rawBalance = await this.dharma.token.getBalanceAsync(
-                    address,
-                    this.owner.toString(),
-                );
+    private getDataPromise(token): Promise<TokenData> {
+        return new Promise((resolve) => {
+            const { address, symbol } = token;
 
-                const rawAllowance = await this.dharma.token.getProxyAllowanceAsync(
-                    address,
-                    this.owner.toString(),
-                );
+            const balancePromise = this.dharma.token.getBalanceAsync(
+                address,
+                this.owner.toString(),
+            );
+
+            const allowancePromise = this.dharma.token.getProxyAllowanceAsync(
+                address,
+                this.owner.toString(),
+            );
+
+            Promise.all([balancePromise, allowancePromise]).then((values) => {
+                const [rawBalance, rawAllowance] = values;
 
                 const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
+
                 const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
                 const hasUnlimitedAllowance = allowanceAmount.rawAmount.equals(UNLIMITED_ALLOWANCE);
 
-                return {
+                resolve({
                     symbol,
                     balance: balanceAmount.decimalAmount,
                     allowance: allowanceAmount.decimalAmount,
                     hasUnlimitedAllowance,
-                };
-            }),
-        );
+                });
+            });
+        });
     }
 }
