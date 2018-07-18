@@ -40,7 +40,7 @@ export async function testGetTerms(dharma: Dharma, params: LoanRequestParams) {
     describe("when a loan request is loaded from serialized data", () => {
         beforeAll(async () => {
             const tempLoanRequest = await LoanRequest.create(dharma, params);
-            const data = tempLoanRequest.serialize();
+            const data = tempLoanRequest.toJSON();
             loanRequest = await LoanRequest.load(dharma, data);
         });
 
