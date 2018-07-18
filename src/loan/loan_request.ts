@@ -1,4 +1,4 @@
-import { BaseLoan, BaseLoanConstructorParams } from "./base_loan";
+import { BaseLoan, BaseLoanConstructorParams, LoanData } from "./base_loan";
 
 import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
@@ -6,8 +6,6 @@ import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/c
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
 import { Dharma } from "../dharma";
-
-import { LoanData } from "./base_loan";
 
 import {
     DebtOrderData,
