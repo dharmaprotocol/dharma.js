@@ -1,4 +1,4 @@
-import { BaseLoan, BaseLoanConstructorParams } from "./base_loan";
+import { BaseLoan, BaseLoanConstructorParams, LoanData } from "./base_loan";
 
 import { BigNumber } from "../../utils/bignumber";
 import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
@@ -125,9 +125,21 @@ export class LoanRequest extends BaseLoan {
         return loanRequest;
     }
 
-    public static async load(dharma: Dharma, data: DebtOrderData): Promise<LoanRequest> {
+    public static async load(dharma: Dharma, data: LoanData): Promise<LoanRequest> {
+        const debtOrderData: DebtOrderData = {
+            ...data,
+            principalAmount: new BigNumber(data.principalAmount),
+            debtorFee: new BigNumber(data.debtorFee),
+            creditorFee: new BigNumber(data.creditorFee),
+            relayerFee: new BigNumber(data.relayerFee),
+            underwriterFee: new BigNumber(data.underwriterFee),
+            underwriterRiskRating: new BigNumber(data.underwriterRiskRating),
+            expirationTimestampInSec: new BigNumber(data.expirationTimestampInSec),
+            salt: new BigNumber(data.salt),
+        };
+
         const loanOrder = await dharma.adapters.collateralizedSimpleInterestLoan.fromDebtOrder(
-            data,
+            debtOrderData,
         );
 
         const principal = TokenAmount.fromRaw(
@@ -158,7 +170,7 @@ export class LoanRequest extends BaseLoan {
             debtorAddress,
         };
 
-        return new LoanRequest(dharma, loanRequestParams, data);
+        return new LoanRequest(dharma, loanRequestParams, debtOrderData);
     }
 
     /**
