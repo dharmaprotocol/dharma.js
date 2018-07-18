@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.1.19",
+    "version": "0.1.20",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -79,8 +79,7 @@
                 "statements": 55
             }
         },
-        "collectCoverage": true,
-        "mapCoverage": true
+        "collectCoverage": true
     },
     "devDependencies": {
         "@commitlint/cli": "^6.1.3",

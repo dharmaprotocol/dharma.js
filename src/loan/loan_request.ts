@@ -30,6 +30,18 @@ export interface LoanRequestParams {
     expiresInUnit: DurationUnit;
 }
 
+export interface LoanRequestTerms {
+    principalAmount: number;
+    principalTokenSymbol: string;
+    collateralAmount: number;
+    collateralTokenSymbol: string;
+    interestRate: number;
+    termDuration: number;
+    termUnit: string;
+    debtorAddress: string;
+    expiresAt: number;
+}
+
 export class LoanRequest extends BaseLoan {
     /**
      * Eventually returns an instance of a loan request signed by the debtor.
@@ -147,6 +159,37 @@ export class LoanRequest extends BaseLoan {
         };
 
         return new LoanRequest(dharma, loanRequestParams, data);
+    }
+
+    /**
+     *  Returns the terms of the loan request as vanilla JS types.
+     *
+     * @example
+     * const terms = loanRequest.getTerms();
+     *
+     * @returns {LoanRequestTerms}
+     */
+    public getTerms(): LoanRequestTerms {
+        const {
+            principal,
+            collateral,
+            interestRate,
+            termLength,
+            debtorAddress,
+            expiresAt,
+        } = this.params;
+
+        return {
+            principalAmount: principal.decimalAmount,
+            principalTokenSymbol: principal.tokenSymbol,
+            collateralAmount: collateral.decimalAmount,
+            collateralTokenSymbol: collateral.tokenSymbol,
+            interestRate: interestRate.percent,
+            termDuration: termLength.amount,
+            termUnit: termLength.getAmortizationUnit(),
+            debtorAddress: debtorAddress.toString(),
+            expiresAt,
+        };
     }
 
     /**

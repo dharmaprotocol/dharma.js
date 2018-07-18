@@ -9,6 +9,7 @@ import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 // Test runners
 import { testCancel } from "./runners/cancel_as_debtor";
 import { testCreate } from "./runners/create";
+import { testGetTerms } from "./runners/get_terms";
 import { testIsCancelled } from "./runners/is_cancelled";
 import { testExpired } from "./runners/is_expired";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
@@ -41,5 +42,9 @@ describe("Loan Request (Integration)", () => {
 
     describe("#cancel", async () => {
         await testCancel(dharma, DEBT_ORDER_PARAMS_ONE);
+    });
+
+    describe("#getTerms", async () => {
+        await testGetTerms(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });
