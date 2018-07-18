@@ -16,7 +16,7 @@ const UNLIMITED_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
 export class Tokens {
     private readonly owner: EthereumAddress;
 
-    constructor(private dharma: Dharma, owner: string) {
+    public constructor(private dharma: Dharma, owner: string) {
         this.owner = new EthereumAddress(owner);
     }
 
