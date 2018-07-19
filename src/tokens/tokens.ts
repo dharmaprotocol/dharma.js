@@ -4,6 +4,8 @@ import { BigNumber } from "../../utils/bignumber";
 
 import { EthereumAddress, TokenAmount } from "../types";
 
+import { TokenAttributes } from "../apis/token_api";
+
 export interface TokenData {
     symbol: string;
     balance: number;
@@ -28,9 +30,15 @@ export class Tokens {
         return Promise.all(tokens.map(this.getDataPromise));
     }
 
-    private getDataPromise(token): Promise<TokenData> {
+    public async getTokenDataForSymbol(symbol: string): Promise<TokenData> {
+        const attributes = await this.dharma.token.getTokenAttributesBySymbol(symbol);
+
+        return this.getDataPromise(attributes);
+    }
+
+    private getDataPromise(tokenAttributes: TokenAttributes): Promise<TokenData> {
         return new Promise((resolve) => {
-            const { address, symbol } = token;
+            const { address, symbol } = tokenAttributes;
 
             const balancePromise = this.dharma.token.getBalanceAsync(
                 address,
@@ -49,7 +57,9 @@ export class Tokens {
 
                 const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-                const hasUnlimitedAllowance = allowanceAmount.rawAmount.equals(UNLIMITED_ALLOWANCE);
+                const hasUnlimitedAllowance = allowanceAmount.rawAmount.greaterThan(
+                    UNLIMITED_ALLOWANCE,
+                );
 
                 resolve({
                     symbol,
