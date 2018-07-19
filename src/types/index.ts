@@ -1,4 +1,6 @@
 export { Loan, LoanRequest } from "../loan";
+export { Tokens } from "../tokens";
+
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
 export { DurationUnit } from "./time_interval";
 export { ECDSASignature } from "./ecdsa_signature";
