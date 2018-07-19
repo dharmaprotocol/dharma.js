@@ -56,11 +56,13 @@ describe("Token API (Integration Tests)", () => {
     let currentNetworkId: number;
     let currentSnapshotId: number;
 
+    let dummyREPAddress: string;
+
     beforeEach(async () => {
         currentSnapshotId = await web3Utils.saveTestSnapshot();
 
         const dummyTokenRegistry = await contractsApi.loadTokenRegistry();
-        const dummyREPAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
+        dummyREPAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("REP");
         const dummyZRXAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("ZRX");
         const dummyMKRAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("MKR");
 
@@ -493,6 +495,21 @@ describe("Token API (Integration Tests)", () => {
                         tokenApi.getProxyAllowanceAsync(dummyMKRToken.address, OPERATOR),
                     ).resolves.toEqual(Units.ether(200));
                 });
+            });
+        });
+    });
+
+    describe("#getTokenAttributesBySymbol", () => {
+        describe("given a symbol for a token in the token registry", () => {
+            test("should return an object with the token's attributes ", async () => {
+                const expectedAttributes = _.find(TOKEN_REGISTRY_TRACKED_TOKENS, { symbol: "REP" });
+
+                const attributes = await tokenApi.getTokenAttributesBySymbol("REP");
+
+                expect(attributes.address).toEqual(dummyREPAddress);
+                expect(attributes.name).toEqual(expectedAttributes.name);
+                expect(attributes.symbol).toEqual(expectedAttributes.symbol);
+                expect(attributes.numDecimals.toNumber()).toEqual(expectedAttributes.decimals);
             });
         });
     });

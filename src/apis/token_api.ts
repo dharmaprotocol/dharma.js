@@ -202,6 +202,30 @@ export class TokenAPI {
     }
 
     /**
+     * Returns a token attributes object, including symbol and name, for the token with the given
+     * symbol that is listed in Dharma's token registry.
+     *
+     * @returns {Promise<TokenAttributes>}
+     */
+    public async getTokenAttributesBySymbol(symbol: string): Promise<TokenAttributes> {
+        const tokenRegistry = await this.contracts.loadTokenRegistry();
+
+        const [
+            address,
+            index,
+            name,
+            numDecimals,
+        ] = await tokenRegistry.getTokenAttributesBySymbol.callAsync(symbol);
+
+        return {
+            address,
+            symbol,
+            name,
+            numDecimals,
+        };
+    }
+
+    /**
      * Returns an array of token attributes, including symbol and name, for tokens that are
      * listed in Dharma's token registry.
      *
