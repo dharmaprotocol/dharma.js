@@ -55,7 +55,7 @@ describe("Loan Request (Integration)", () => {
         await testGetTerms(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 
-    describe("#isFillable", async() => {
-       await testIsFillable(dharma, DEBT_ORDER_PARAMS_ONE);
+    describe("#isFillable", async () => {
+        await testIsFillable(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });
