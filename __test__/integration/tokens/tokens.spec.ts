@@ -2,8 +2,8 @@ import * as Web3 from "web3";
 
 import { ACCOUNTS } from "../../accounts";
 
-import { ether } from "../../../utils/units";
 import { BigNumber } from "../../../utils/bignumber";
+import { ether } from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
 
 import { Dharma } from "../../../src/dharma";
