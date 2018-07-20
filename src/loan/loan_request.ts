@@ -347,6 +347,23 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
+     * Eventually returns true if the current user is able to fill the loan request.
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isFillable(): Promise<boolean> {
+        try {
+            const currentUser = await this.getCurrentUser();
+
+            await this.dharma.order.assertReadyToFill(this.data, { from: currentUser });
+
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
+    /**
      * Eventually fills the loan request, transferring the principal to the debtor.
      *
      * @example
