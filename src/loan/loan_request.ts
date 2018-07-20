@@ -353,14 +353,24 @@ export class LoanRequest extends BaseLoan {
      */
     public async isFillable(): Promise<boolean> {
         try {
-            const currentUser = await this.getCurrentUser();
-
-            await this.dharma.order.assertReadyToFill(this.data, { from: currentUser });
+            await this.assertFillable();
 
             return true;
         } catch (e) {
             return false;
         }
+    }
+
+    /**
+     * Eventually throws if the order is not ready to be filled by the current user. The
+     * resulting error states the reason for the order not being fillable.
+     *
+     * @returns {Promise<void>}
+     */
+    public async assertFillable(): Promise<void> {
+        const currentUser = await this.getCurrentUser();
+
+        await this.dharma.order.assertReadyToFill(this.data, { from: currentUser });
     }
 
     /**
