@@ -13,10 +13,10 @@ import { testCreate } from "./runners/create";
 import { testGetTerms } from "./runners/get_terms";
 import { testIsCancelled } from "./runners/is_cancelled";
 import { testExpired } from "./runners/is_expired";
+import { testIsFillable } from "./runners/is_fillable";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testLoad } from "./runners/load";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
-import { testIsFillable } from "./runners/test_is_fillable";
 
 const dharma = new Dharma("http://localhost:8545");
 
