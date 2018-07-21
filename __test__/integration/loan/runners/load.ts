@@ -41,7 +41,7 @@ export async function testLoad(
             loanRequest = await LoanRequest.load(dharma, loanData);
         });
 
-        it.only("eventually returns a LoanRequest", () => {
+        it("eventually returns a LoanRequest", () => {
             expect(loanRequest instanceof LoanRequest).toEqual(true);
         });
     });
