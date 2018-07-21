@@ -31,12 +31,12 @@ export async function testLoad(
         beforeAll(async () => {
             const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
 
-            const mkrAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("MKR");
+            const wethAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(4);
 
             const collateralizedTerms = await contracts.loadCollateralizedSimpleInterestTermsContract();
             const collateralizedTermsAddress = collateralizedTerms.address;
 
-            const loanData = generateLoanData(mkrAddress, collateralizedTermsAddress);
+            const loanData = generateLoanData(wethAddress, collateralizedTermsAddress);
 
             loanRequest = await LoanRequest.load(dharma, loanData);
         });
