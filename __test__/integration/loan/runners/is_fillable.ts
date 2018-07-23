@@ -10,13 +10,8 @@ const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
 export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) {
-    let loanRequest: LoanRequest;
-    let currentSnapshotId: number;
-
     describe("for a debt order with valid parameters", () => {
-        beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, params);
-        });
+        let currentSnapshotId: number;
 
         beforeEach(async () => {
             currentSnapshotId = await web3Utils.saveTestSnapshot();
@@ -27,7 +22,9 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
         });
 
         describe("when the debtor has not granted sufficient allowance", () => {
-            test(`eventually returns false`, async () => {
+            test("eventually returns false", async () => {
+                const loanRequest = await LoanRequest.create(dharma, params);
+
                 const isFillable = await loanRequest.isFillable();
 
                 expect(isFillable).toEqual(false);
@@ -35,11 +32,10 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
         });
 
         describe("when the debtor has granted sufficient allowance", () => {
-            beforeAll(async () => {
+            test("eventually returns true", async () => {
+                const loanRequest = await LoanRequest.create(dharma, params);
                 await loanRequest.allowCollateralTransfer();
-            });
 
-            test(`eventually returns true`, async () => {
                 const isFillable = await loanRequest.isFillable();
 
                 expect(isFillable).toEqual(true);

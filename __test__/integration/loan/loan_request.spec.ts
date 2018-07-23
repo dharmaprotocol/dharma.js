@@ -4,8 +4,8 @@ import { Dharma } from "../../../src/dharma";
 jest.unmock("@dharmaprotocol/contracts");
 
 import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
-import { generateDebtOrderData } from "./scenarios/valid_debt_order_data";
 import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
+import { generateLoanData } from "./scenarios/valid_loan_data";
 
 // Test runners
 import { testCancel } from "./runners/cancel_as_debtor";
@@ -13,10 +13,10 @@ import { testCreate } from "./runners/create";
 import { testGetTerms } from "./runners/get_terms";
 import { testIsCancelled } from "./runners/is_cancelled";
 import { testExpired } from "./runners/is_expired";
+import { testIsFillable } from "./runners/is_fillable";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testLoad } from "./runners/load";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
-import { testIsFillable } from "./runners/test_is_fillable";
 
 const dharma = new Dharma("http://localhost:8545");
 
@@ -44,7 +44,7 @@ describe("Loan Request (Integration)", () => {
     });
 
     describe("#load", async () => {
-        await testLoad(dharma, generateDebtOrderData);
+        await testLoad(dharma, generateLoanData);
     });
 
     describe("#cancel", async () => {

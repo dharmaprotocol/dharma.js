@@ -1,8 +1,8 @@
 // External libraries
 import * as Web3 from "web3";
 
-// Debt Order
 import { LoanRequest } from "../../../../src/loan";
+import { LoanData } from "../../../../src/loan/base_loan";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/dharma";
@@ -12,9 +12,6 @@ import { TokenRegistryContract } from "../../../../src/wrappers";
 
 // APIs
 import { ContractsAPI } from "../../../../src/apis";
-
-// Types
-import { DebtOrderData } from "../../../../src/types";
 
 import { ACCOUNTS } from "../../../accounts";
 
@@ -26,7 +23,7 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
 export async function testLoad(
     dharma: Dharma,
-    generateDebtOrderData: (principalToken: string, termsContract: string) => DebtOrderData,
+    generateLoanData: (principalToken: string, termsContract: string) => LoanData,
 ) {
     describe("when given valid data for a LoanRequest", () => {
         let loanRequest: LoanRequest;
@@ -34,17 +31,17 @@ export async function testLoad(
         beforeAll(async () => {
             const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
 
-            const wethAddress = await dummyTokenRegistry.getTokenAddressBySymbol.callAsync("WETH");
+            const wethAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(4);
 
             const collateralizedTerms = await contracts.loadCollateralizedSimpleInterestTermsContract();
             const collateralizedTermsAddress = collateralizedTerms.address;
 
-            const orderData = generateDebtOrderData(wethAddress, collateralizedTermsAddress);
+            const loanData = generateLoanData(wethAddress, collateralizedTermsAddress);
 
-            loanRequest = await LoanRequest.load(dharma, orderData);
+            loanRequest = await LoanRequest.load(dharma, loanData);
         });
 
-        it("eventually returns a LoadRequest", () => {
+        it("eventually returns a LoanRequest", () => {
             expect(loanRequest instanceof LoanRequest).toEqual(true);
         });
     });
