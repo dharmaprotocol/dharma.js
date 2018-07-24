@@ -36,6 +36,9 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
             beforeEach(async () => {
                 await loanRequest.allowCollateralTransfer();
                 await loanRequest.allowPrincipalTransfer(CREDITOR);
+            });
+
+            test("eventually returns false", async () => {
                 await setBalanceForSymbol(
                     dharma,
                     params.principalAmount,
@@ -43,9 +46,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                     CREDITOR,
                 );
                 await revokeBalanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
-            });
 
-            test("eventually returns false", async () => {
                 await loanRequest.allowCollateralTransfer();
                 const isFillable = await loanRequest.isFillableBy(CREDITOR);
 
@@ -86,12 +87,10 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
             });
 
             describe("when the creditor has not granted sufficient allowance", () => {
-                beforeEach(async () => {
+                test("eventually returns false", async () => {
                     await loanRequest.allowCollateralTransfer();
                     await revokeAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
-                });
-
-                test("eventually returns false", async () => {
+                    
                     const isFillable = await loanRequest.isFillableBy(CREDITOR);
                     expect(isFillable).toEqual(false);
                 });
