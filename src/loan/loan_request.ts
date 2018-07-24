@@ -20,7 +20,6 @@ import {
     TimeInterval,
     TokenAmount,
 } from "../types";
-import { OrderAPIErrors } from "../apis/order_api";
 
 export interface LoanRequestParams {
     principalAmount: number;
