@@ -11,11 +11,15 @@ import {
     setBalanceForSymbol,
 } from "../../../utils/utils";
 
+import { DummyTokenContract } from "../../../../src/wrappers";
+
 const CREDITOR = ACCOUNTS[5].address;
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
+
+const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams) {
     describe("for a loan request with valid parameters", () => {
