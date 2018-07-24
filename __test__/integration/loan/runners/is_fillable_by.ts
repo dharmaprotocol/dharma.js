@@ -33,8 +33,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
         let loanRequest: LoanRequest;
 
         beforeAll(async () => {
-            const amount = new TokenAmount(params.collateralAmount, params.collateralToken);
-
+            const amount = new TokenAmount(0, params.collateralToken);
             await setBalance(dharma, amount, params.debtorAddress);
         });
 
@@ -59,22 +58,8 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
 
         describe("when the debtor has sufficient balance", () => {
             beforeEach(async () => {
-                const tokenRegistry = await dharma.contracts.loadTokenRegistry();
-
-                const collateralTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
-                    params.collateralToken,
-                );
-
-                const collateralToken = await DummyTokenContract.at(
-                    collateralTokenAddress,
-                    web3,
-                    TX_DEFAULTS,
-                );
-
-                await collateralToken.setBalance.sendTransactionAsync(
-                    params.debtorAddress,
-                    new BigNumber(params.collateralAmount).times(10 ** 18),
-                );
+                const amount = new TokenAmount(params.collateralAmount, params.collateralToken);
+                await setBalance(dharma, amount, params.debtorAddress);
             });
 
             describe("when the debtor has not granted sufficient allowance", () => {
