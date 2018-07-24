@@ -34,6 +34,14 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
 
         describe("when the debtor has insufficient balance", () => {
             beforeEach(async () => {
+                await loanRequest.allowCollateralTransfer();
+                await loanRequest.allowPrincipalTransfer(CREDITOR);
+                await setBalanceForSymbol(
+                    dharma,
+                    params.principalAmount,
+                    params.principalToken,
+                    CREDITOR,
+                );
                 await revokeBalanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
             });
 
