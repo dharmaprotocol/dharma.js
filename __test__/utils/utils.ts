@@ -56,11 +56,9 @@ export async function revokeAllowanceForSymbol(
 
     const token = await DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
 
-    return token.approve.sendTransactionAsync(
-        tokenTransferProxy,
-        new BigNumber(0),
-        { from: recipient },
-    );
+    return token.approve.sendTransactionAsync(tokenTransferProxy, new BigNumber(0), {
+        from: recipient,
+    });
 }
 
 export async function revokeBalanceForSymbol(
