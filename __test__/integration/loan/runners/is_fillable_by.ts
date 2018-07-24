@@ -27,15 +27,33 @@ async function setBalance(dharma: Dharma, amount: TokenAmount, recipient: string
     return token.setBalance.sendTransactionAsync(recipient, amount.rawAmount);
 }
 
+async function revokeAllowanceForSymbol(
+    dharma: Dharma,
+    tokenSymbol: string,
+    recipient: string,
+): Promise<string> {
+    const tokenRegistry = await dharma.contracts.loadTokenRegistry();
+
+    const tokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(tokenSymbol);
+
+    const token = await DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
+
+    return token.approve.sendTransactionAsync(recipient, new BigNumber(0));
+}
+
+async function revokeBalanceForSymbol(
+    dharma: Dharma,
+    tokenSymbol: string,
+    recipient: string,
+): Promise<string> {
+    const amount = new TokenAmount(0, tokenSymbol);
+    return setBalance(dharma, amount, recipient);
+}
+
 export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams) {
     describe("for a loan request with valid parameters", () => {
         let currentSnapshotId: number;
         let loanRequest: LoanRequest;
-
-        beforeAll(async () => {
-            const amount = new TokenAmount(0, params.collateralToken);
-            await setBalance(dharma, amount, params.debtorAddress);
-        });
 
         beforeEach(async () => {
             currentSnapshotId = await web3Utils.saveTestSnapshot();
@@ -48,6 +66,10 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
         });
 
         describe("when the debtor has insufficient balance", () => {
+            beforeEach(async () => {
+                revokeBalanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
+            });
+
             test("eventually returns false", async () => {
                 await loanRequest.allowCollateralTransfer();
                 const isFillable = await loanRequest.isFillableBy(CREDITOR);
@@ -63,6 +85,10 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
             });
 
             describe("when the debtor has not granted sufficient allowance", () => {
+                beforeEach(async () => {
+                    revokeAllowanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
+                });
+
                 test("eventually returns false", async () => {
                     const isFillable = await loanRequest.isFillableBy(CREDITOR);
 
@@ -71,6 +97,10 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
             });
 
             describe("when the creditor has not granted sufficient allowance", () => {
+                beforeEach(async () => {
+                    revokeAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
+                });
+
                 test("eventually returns false", async () => {
                     await loanRequest.allowCollateralTransfer();
 
