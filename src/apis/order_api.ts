@@ -437,7 +437,6 @@ export class OrderAPI {
 
             return true;
         } catch (e) {
-            console.log("error!", e);
             return false;
         }
     }
