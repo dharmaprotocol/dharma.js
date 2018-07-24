@@ -20,6 +20,7 @@ import {
     TimeInterval,
     TokenAmount,
 } from "../types";
+import { OrderAPIErrors } from "../apis/order_api";
 
 export interface LoanRequestParams {
     principalAmount: number;
@@ -351,30 +352,19 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the current user is able to fill the loan request.
+     * Eventually returns true if the specified creditor address, or that of the current user,
+     * is able to fill the loan request.
      *
      * @returns {Promise<boolean>}
      */
-    public async isFillable(): Promise<boolean> {
-        try {
-            await this.assertFillable();
+    public async isFillableBy(prospectiveCreditorAddress?: string): Promise<boolean> {
+        const creditorAddress = new EthereumAddress(
+            prospectiveCreditorAddress || (await this.getCurrentUser()),
+        ).toString();
 
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
-
-    /**
-     * Eventually throws if the order is not ready to be filled by the current user. The
-     * resulting error states the reason for the order not being fillable.
-     *
-     * @returns {Promise<void>}
-     */
-    public async assertFillable(): Promise<void> {
-        const currentUser = await this.getCurrentUser();
-
-        await this.dharma.order.assertFillableAsync(this.data, { from: currentUser });
+        return this.dharma.order.isFillableBy(this.data, creditorAddress, {
+            from: creditorAddress,
+        });
     }
 
     /**

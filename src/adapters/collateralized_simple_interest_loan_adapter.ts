@@ -66,7 +66,7 @@ export const CollateralizerAdapterErrors = {
         `Debtor has not granted sufficient allowance for collateral transfer.`,
 
     INSUFFICIENT_COLLATERAL_TOKEN_BALANCE: () =>
-        `Debtor does not have sufficient allowance required for collateral transfer.`,
+        `Debtor does not have sufficient balance required for collateral transfer.`,
 
     GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
 
