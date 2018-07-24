@@ -33,6 +33,25 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
         });
 
         describe("when the debtor has insufficient balance", () => {
+            beforeEach(async () => {
+                const tokenRegistry = await dharma.contracts.loadTokenRegistry();
+
+                const collateralTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
+                    params.collateralToken,
+                );
+
+                const collateralToken = await DummyTokenContract.at(
+                    collateralTokenAddress,
+                    web3,
+                    TX_DEFAULTS,
+                );
+
+                await collateralToken.setBalance.sendTransactionAsync(
+                    params.debtorAddress,
+                    new BigNumber(0),
+                );
+            });
+
             test("eventually returns false", async () => {
                 await loanRequest.allowCollateralTransfer();
                 const isFillable = await loanRequest.isFillableBy(CREDITOR);
@@ -44,9 +63,11 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
         describe("when the debtor has sufficient balance", () => {
             beforeEach(async () => {
                 const tokenRegistry = await dharma.contracts.loadTokenRegistry();
+
                 const collateralTokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(
                     params.collateralToken,
                 );
+
                 const collateralToken = await DummyTokenContract.at(
                     collateralTokenAddress,
                     web3,
