@@ -90,7 +90,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                 test("eventually returns false", async () => {
                     await loanRequest.allowCollateralTransfer();
                     await revokeAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
-                    
+
                     const isFillable = await loanRequest.isFillableBy(CREDITOR);
                     expect(isFillable).toEqual(false);
                 });
