@@ -18,7 +18,7 @@ const web3Utils = new Web3Utils(web3);
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
 export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams) {
-    describe("for a debt order with valid parameters", () => {
+    describe("for a loan request with valid parameters", () => {
         let currentSnapshotId: number;
         let loanRequest: LoanRequest;
 

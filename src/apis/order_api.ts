@@ -408,6 +408,15 @@ export class OrderAPI {
         );
     }
 
+    /**
+     * Checks if this debt order is in a state that is ready to be filled by a
+     * particular creditor in that the creditor has sufficient balance and allowance.
+     *
+     * @param  debtOrderData
+     * @param  prospectiveCreditor
+     * @param  txOptions
+     * @return
+     */
     public async isFillableBy(
         debtOrderData: DebtOrderData,
         prospectiveCreditor: string,
