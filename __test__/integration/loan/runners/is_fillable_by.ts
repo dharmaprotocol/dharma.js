@@ -28,14 +28,9 @@ async function setBalance(dharma: Dharma, amount: TokenAmount, recipient: string
 }
 
 export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams) {
-    describe("for a loan request with valid parameters", () => {
+    describe.only("for a loan request with valid parameters", () => {
         let currentSnapshotId: number;
         let loanRequest: LoanRequest;
-
-        beforeAll(async () => {
-            const amount = new TokenAmount(0, params.collateralToken);
-            await setBalance(dharma, amount, params.debtorAddress);
-        });
 
         beforeEach(async () => {
             currentSnapshotId = await web3Utils.saveTestSnapshot();
@@ -49,6 +44,9 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
 
         describe("when the debtor has insufficient balance", () => {
             test("eventually returns false", async () => {
+                const amount = new TokenAmount(0, params.collateralToken);
+                await setBalance(dharma, amount, params.debtorAddress);
+
                 await loanRequest.allowCollateralTransfer();
                 const isFillable = await loanRequest.isFillableBy(CREDITOR);
 
