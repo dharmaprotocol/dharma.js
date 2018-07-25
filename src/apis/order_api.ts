@@ -416,7 +416,7 @@ export class OrderAPI {
      * @param  txOptions
      * @returns {Promise<void>}
      */
-    public async assertIsFillableBy(
+    public async assertFillableBy(
         debtOrderData: DebtOrderData,
         prospectiveCreditor: string,
         txOptions?: TxData,
@@ -448,7 +448,7 @@ export class OrderAPI {
         txOptions?: TxData,
     ): Promise<boolean> {
         try {
-            await this.assertIsFillableBy(debtOrderData, prospectiveCreditor, txOptions);
+            await this.assertFillableBy(debtOrderData, prospectiveCreditor, txOptions);
             return true;
         } catch (e) {
             return false;
