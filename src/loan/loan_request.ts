@@ -1,11 +1,7 @@
 import { BaseLoan, BaseLoanConstructorParams, LoanData } from "./base_loan";
 
 import { BigNumber } from "../../utils/bignumber";
-import {
-    BLOCK_TIME_ESTIMATE_SECONDS,
-    NULL_ADDRESS,
-    NULL_ECDSA_SIGNATURE,
-} from "../../utils/constants";
+import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
@@ -351,32 +347,29 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the specified creditor address, or that of the current user,
-     * is able to fill the loan request.
+     * Eventually determines if the prospective creditor is able to fill the loan request.
      *
      * @returns {Promise<boolean>}
      */
-    public async isFillableBy(prospectiveCreditorAddress?: string): Promise<boolean> {
-        const creditorAddress = new EthereumAddress(
-            prospectiveCreditorAddress || (await this.getCurrentUser()),
-        ).toString();
+    public async isFillable(prospectiveCreditorAddress?: string): Promise<boolean> {
+        const creditor = await this.validAddressOrCurrentUser(prospectiveCreditorAddress);
 
-        return this.dharma.order.isFillableBy(this.data, creditorAddress, {
-            from: creditorAddress,
+        return this.dharma.order.isFillableBy(this.data, creditor, {
+            from: creditor,
         });
     }
 
     /**
-     * Eventually sets the creditor on the loan request.
+     * Eventually throws if the prospective creditor is unable to fill the loan request.
      *
      * @returns {Promise<void>}
      */
-    public async specifyCreditor(creditorAddress?: string): Promise<void> {
-        const creditor = creditorAddress || (await this.getCurrentUser());
+    public async assertFillable(prospectiveCreditorAddress?: string): Promise<void> {
+        const creditor = await this.validAddressOrCurrentUser(prospectiveCreditorAddress);
 
-        const creditorAddressTyped = new EthereumAddress(creditor);
-
-        this.data.creditor = creditorAddressTyped.toString();
+        return this.dharma.order.assertFillableBy(this.data, creditor, {
+            from: creditor,
+        });
     }
 
     /**
@@ -389,18 +382,7 @@ export class LoanRequest extends BaseLoan {
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
     public async fill(creditorAddress?: string): Promise<string> {
-        /**
-         * There are two scenarios in which we might need to specify a creditor:
-         * 1 - when there is no existing creditor specified (i.e, NULL_ADDRESS)
-         * 2 - when the caller of `fill` is specifiying a creditor and that creditor is different
-         *     from the one already specified.
-         */
-        if (
-            this.data.creditor === NULL_ADDRESS ||
-            (creditorAddress && this.data.creditor !== creditorAddress)
-        ) {
-            await this.specifyCreditor(creditorAddress);
-        }
+        this.data.creditor = await this.validAddressOrCurrentUser(creditorAddress);
 
         await this.signAsCreditor();
 

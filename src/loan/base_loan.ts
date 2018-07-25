@@ -107,4 +107,20 @@ export abstract class BaseLoan {
 
         return accounts[0];
     }
+
+    /**
+     * Validates the user-specified address if present. Otherwise, retrieves the current user from
+     * web3. This function will throw is the address specified is invalid.
+     *
+     * @param  address
+     * @returns {Promise<string>} a validated user-specified address, or the current user.
+     */
+    public async validAddressOrCurrentUser(address?: string): Promise<string> {
+        if (address) {
+            const validAddress = new EthereumAddress(address);
+            return validAddress.toString();
+        } else {
+            return this.getCurrentUser();
+        }
+    }
 }

@@ -22,7 +22,7 @@ import {
 import { DebtOrderData, IssuanceCommitment, TxData } from "../types";
 
 // Utils
-import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
+import { NULL_ADDRESS } from "../../utils/constants";
 import { applyNetworkDefaults, generateTxOptions } from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
 
@@ -409,32 +409,46 @@ export class OrderAPI {
     }
 
     /**
-     * Checks if this debt order is in a state that is ready to be filled by a
-     * particular creditor in that the creditor has sufficient balance and allowance.
+     * Throws if the debt order is not fillable by the prospective creditor.
      *
      * @param  debtOrderData
      * @param  prospectiveCreditor
      * @param  txOptions
-     * @return
+     * @returns {Promise<void>}
+     */
+    public async assertFillableBy(
+        debtOrderData: DebtOrderData,
+        prospectiveCreditor: string,
+        txOptions?: TxData,
+    ): Promise<void> {
+        debtOrderData.creditor = prospectiveCreditor;
+        const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync(txOptions);
+
+        await Promise.all([
+            this.assertReadyToFill(debtOrderData, txOptions),
+            this.assertCreditorBalanceAndAllowanceInvariantsAsync(
+                debtOrderData,
+                tokenTransferProxy,
+                txOptions,
+            ),
+        ]);
+    }
+
+    /**
+     * Determines if the debt order is fillable by the prospective creditor.
+     *
+     * @param  debtOrderData
+     * @param  prospectiveCreditor
+     * @param  txOptions
+     * @returns {Promise<boolean>}
      */
     public async isFillableBy(
         debtOrderData: DebtOrderData,
         prospectiveCreditor: string,
         txOptions?: TxData,
-    ) {
+    ): Promise<boolean> {
         try {
-            debtOrderData.creditor = prospectiveCreditor;
-            const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync(txOptions);
-
-            await Promise.all([
-                this.assertReadyToFill(debtOrderData, txOptions),
-                this.assertCreditorBalanceAndAllowanceInvariantsAsync(
-                    debtOrderData,
-                    tokenTransferProxy,
-                    txOptions,
-                ),
-            ]);
-
+            await this.assertFillableBy(debtOrderData, prospectiveCreditor, txOptions);
             return true;
         } catch (e) {
             return false;
