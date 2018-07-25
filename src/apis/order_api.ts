@@ -22,7 +22,7 @@ import {
 import { DebtOrderData, IssuanceCommitment, TxData } from "../types";
 
 // Utils
-import { NULL_ADDRESS, TERMS_CONTRACT_TYPES } from "../../utils/constants";
+import { NULL_ADDRESS } from "../../utils/constants";
 import { applyNetworkDefaults, generateTxOptions } from "../../utils/transaction_utils";
 import { Assertions } from "../invariants";
 
