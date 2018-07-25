@@ -409,6 +409,32 @@ export class OrderAPI {
     }
 
     /**
+     * Throws if the debt order is not fillable by the prospective creditor.
+     *
+     * @param  debtOrderData
+     * @param  prospectiveCreditor
+     * @param  txOptions
+     * @returns {Promise<void>}
+     */
+    public async assertIsFillableBy(
+        debtOrderData: DebtOrderData,
+        prospectiveCreditor: string,
+        txOptions?: TxData,
+    ): Promise<void> {
+        debtOrderData.creditor = prospectiveCreditor;
+        const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync(txOptions);
+
+        await Promise.all([
+            this.assertReadyToFill(debtOrderData, txOptions),
+            this.assertCreditorBalanceAndAllowanceInvariantsAsync(
+                debtOrderData,
+                tokenTransferProxy,
+                txOptions,
+            ),
+        ]);
+    }
+
+    /**
      * Determines if the debt order is in a state where it is ready to be filled by a particular
      * creditor -- ensuring that the creditor has sufficient balance and allowance to
      * fill the loan.
@@ -424,18 +450,7 @@ export class OrderAPI {
         txOptions?: TxData,
     ): Promise<boolean> {
         try {
-            debtOrderData.creditor = prospectiveCreditor;
-            const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync(txOptions);
-
-            await Promise.all([
-                this.assertReadyToFill(debtOrderData, txOptions),
-                this.assertCreditorBalanceAndAllowanceInvariantsAsync(
-                    debtOrderData,
-                    tokenTransferProxy,
-                    txOptions,
-                ),
-            ]);
-
+            await this.assertIsFillableBy(debtOrderData, prospectiveCreditor, txOptions);
             return true;
         } catch (e) {
             return false;
