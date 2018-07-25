@@ -347,18 +347,28 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually returns true if the specified creditor address, or that of the current user,
-     * is able to fill the loan request.
+     * Eventually determines if the prospective creditor is able to fill the loan request.
      *
      * @returns {Promise<boolean>}
      */
-    public async isFillableBy(prospectiveCreditorAddress?: string): Promise<boolean> {
-        const creditorAddress = new EthereumAddress(
-            prospectiveCreditorAddress || (await this.getCurrentUser()),
-        ).toString();
+    public async isFillable(prospectiveCreditorAddress?: string): Promise<boolean> {
+        const creditor = await this.validAddressOrCurrentUser(prospectiveCreditorAddress);
 
-        return this.dharma.order.isFillableBy(this.data, creditorAddress, {
-            from: creditorAddress,
+        return this.dharma.order.isFillableBy(this.data, creditor, {
+            from: creditor,
+        });
+    }
+
+    /**
+     * Eventually throws if the prospective creditor is unable to fill the loan request.
+     *
+     * @returns {Promise<void>}
+     */
+    public async assertFillable(prospectiveCreditorAddress?: string): Promise<void> {
+        const creditor = await this.validAddressOrCurrentUser(prospectiveCreditorAddress);
+
+        return this.dharma.order.assertFillableBy(this.data, creditor, {
+            from: creditor,
         });
     }
 
