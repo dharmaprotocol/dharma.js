@@ -87,7 +87,7 @@ export const OrderAPIErrors = {
         singleLineString`Debtor has not granted sufficient allowance for collateral transfer.`,
 
     INSUFFICIENT_COLLATERALIZER_BALANCE: () =>
-        singleLineString`Debtor does not have sufficient allowance required for collateral transfer.`,
+        singleLineString`Debtor does not have sufficient balance required for collateral transfer.`,
 };
 
 export class OrderAPI {
@@ -406,6 +406,39 @@ export class OrderAPI {
             issuanceCommitment.salt,
             txOptions,
         );
+    }
+
+    /**
+     * Checks if this debt order is in a state that is ready to be filled by a
+     * particular creditor in that the creditor has sufficient balance and allowance.
+     *
+     * @param  debtOrderData
+     * @param  prospectiveCreditor
+     * @param  txOptions
+     * @return
+     */
+    public async isFillableBy(
+        debtOrderData: DebtOrderData,
+        prospectiveCreditor: string,
+        txOptions?: TxData,
+    ) {
+        try {
+            debtOrderData.creditor = prospectiveCreditor;
+            const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync(txOptions);
+
+            await Promise.all([
+                this.assertReadyToFill(debtOrderData, txOptions),
+                this.assertCreditorBalanceAndAllowanceInvariantsAsync(
+                    debtOrderData,
+                    tokenTransferProxy,
+                    txOptions,
+                ),
+            ]);
+
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 
     /**

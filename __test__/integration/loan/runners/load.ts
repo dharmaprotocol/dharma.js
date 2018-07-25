@@ -1,6 +1,8 @@
 // External libraries
 import * as Web3 from "web3";
 
+import { BigNumber } from "../../../../utils/bignumber";
+
 import { LoanRequest } from "../../../../src/loan";
 import { LoanData } from "../../../../src/loan/base_loan";
 
@@ -31,7 +33,9 @@ export async function testLoad(
         beforeAll(async () => {
             const dummyTokenRegistry = await TokenRegistryContract.deployed(web3, TX_DEFAULTS);
 
-            const wethAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(4);
+            const wethAddress = await dummyTokenRegistry.getTokenAddressByIndex.callAsync(
+                new BigNumber(4),
+            );
 
             const collateralizedTerms = await contracts.loadCollateralizedSimpleInterestTermsContract();
             const collateralizedTermsAddress = collateralizedTerms.address;
