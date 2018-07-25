@@ -372,12 +372,7 @@ export class LoanRequest extends BaseLoan {
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
     public async fill(creditorAddress?: string): Promise<string> {
-        if (creditorAddress) {
-            const validAddress = new EthereumAddress(creditorAddress);
-            this.data.creditor = validAddress.toString();
-        } else {
-            this.data.creditor = await this.getCurrentUser();
-        }
+        this.data.creditor = await this.validAddressOrCurrentUser(creditorAddress);
 
         await this.signAsCreditor();
 
