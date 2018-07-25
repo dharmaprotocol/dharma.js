@@ -17,7 +17,7 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
-export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams) {
+export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) {
     describe("for a loan request with valid parameters", () => {
         let currentSnapshotId: number;
         let loanRequest: LoanRequest;
@@ -48,7 +48,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                 await revokeBalanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
 
                 await loanRequest.allowCollateralTransfer();
-                const isFillable = await loanRequest.isFillableBy(CREDITOR);
+                const isFillable = await loanRequest.isFillable(CREDITOR);
 
                 expect(isFillable).toEqual(false);
             });
@@ -81,7 +81,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                 });
 
                 test("eventually returns false", async () => {
-                    const isFillable = await loanRequest.isFillableBy(CREDITOR);
+                    const isFillable = await loanRequest.isFillable(CREDITOR);
                     expect(isFillable).toEqual(false);
                 });
             });
@@ -91,7 +91,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                     await loanRequest.allowCollateralTransfer();
                     await revokeAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
 
-                    const isFillable = await loanRequest.isFillableBy(CREDITOR);
+                    const isFillable = await loanRequest.isFillable(CREDITOR);
                     expect(isFillable).toEqual(false);
                 });
             });
@@ -104,7 +104,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                 });
 
                 test("eventually returns false", async () => {
-                    const isFillable = await loanRequest.isFillableBy(CREDITOR);
+                    const isFillable = await loanRequest.isFillable(CREDITOR);
                     expect(isFillable).toEqual(false);
                 });
             });
@@ -122,7 +122,7 @@ export async function testIsFillableBy(dharma: Dharma, params: LoanRequestParams
                 });
 
                 test("eventually returns true", async () => {
-                    const isFillable = await loanRequest.isFillableBy(CREDITOR);
+                    const isFillable = await loanRequest.isFillable(CREDITOR);
                     expect(isFillable).toEqual(true);
                 });
             });
