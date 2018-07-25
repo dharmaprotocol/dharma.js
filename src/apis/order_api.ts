@@ -435,9 +435,7 @@ export class OrderAPI {
     }
 
     /**
-     * Determines if the debt order is in a state where it is ready to be filled by a particular
-     * creditor -- ensuring that the creditor has sufficient balance and allowance to
-     * fill the loan.
+     * Determines if the debt order is fillable by the prospective creditor.
      *
      * @param  debtOrderData
      * @param  prospectiveCreditor
