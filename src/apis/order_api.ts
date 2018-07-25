@@ -409,19 +409,20 @@ export class OrderAPI {
     }
 
     /**
-     * Checks if this debt order is in a state that is ready to be filled by a
-     * particular creditor in that the creditor has sufficient balance and allowance.
+     * Determines if the debt order is in a state where it is ready to be filled by a particular
+     * creditor -- ensuring that the creditor has sufficient balance and allowance to
+     * fill the loan.
      *
      * @param  debtOrderData
      * @param  prospectiveCreditor
      * @param  txOptions
-     * @return
+     * @returns {Promise<boolean>}
      */
     public async isFillableBy(
         debtOrderData: DebtOrderData,
         prospectiveCreditor: string,
         txOptions?: TxData,
-    ) {
+    ): Promise<boolean> {
         try {
             debtOrderData.creditor = prospectiveCreditor;
             const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync(txOptions);
