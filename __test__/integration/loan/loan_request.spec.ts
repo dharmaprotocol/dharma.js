@@ -17,7 +17,6 @@ import { testIsFillableBy } from "./runners/is_fillable_by";
 import { testIsSignedByDebtor } from "./runners/is_signed_by_debtor";
 import { testLoad } from "./runners/load";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
-import { testSpecifyCreditor } from "./runners/test_specify_creditor";
 
 const dharma = new Dharma("http://localhost:8545");
 
@@ -59,8 +58,5 @@ describe("Loan Request (Integration)", () => {
     describe("#isFillableBy", async () => {
         await testIsFillableBy(dharma, DEBT_ORDER_PARAMS_ONE);
     });
-
-    describe("#specifyCreditor", async () => {
-        await testSpecifyCreditor(dharma, DEBT_ORDER_PARAMS_ONE);
     });
 });
