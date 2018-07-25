@@ -1,11 +1,7 @@
 import { BaseLoan, BaseLoanConstructorParams, LoanData } from "./base_loan";
 
 import { BigNumber } from "../../utils/bignumber";
-import {
-    BLOCK_TIME_ESTIMATE_SECONDS,
-    NULL_ADDRESS,
-    NULL_ECDSA_SIGNATURE,
-} from "../../utils/constants";
+import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
@@ -367,19 +363,6 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually sets the creditor on the loan request.
-     *
-     * @returns {Promise<void>}
-     */
-    public async specifyCreditor(creditorAddress?: string): Promise<void> {
-        const creditor = creditorAddress || (await this.getCurrentUser());
-
-        const creditorAddressTyped = new EthereumAddress(creditor);
-
-        this.data.creditor = creditorAddressTyped.toString();
-    }
-
-    /**
      * Eventually fills the loan request, transferring the principal to the debtor.
      *
      * @example
@@ -389,17 +372,11 @@ export class LoanRequest extends BaseLoan {
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
     public async fill(creditorAddress?: string): Promise<string> {
-        /**
-         * There are two scenarios in which we might need to specify a creditor:
-         * 1 - when there is no existing creditor specified (i.e, NULL_ADDRESS)
-         * 2 - when the caller of `fill` is specifiying a creditor and that creditor is different
-         *     from the one already specified.
-         */
-        if (
-            this.data.creditor === NULL_ADDRESS ||
-            (creditorAddress && this.data.creditor !== creditorAddress)
-        ) {
-            await this.specifyCreditor(creditorAddress);
+        if (creditorAddress) {
+            const validAddress = new EthereumAddress(creditorAddress);
+            this.data.creditor = validAddress.toString();
+        } else {
+            this.data.creditor = await this.getCurrentUser();
         }
 
         await this.signAsCreditor();
