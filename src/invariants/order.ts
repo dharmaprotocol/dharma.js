@@ -5,7 +5,7 @@ import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
 import { NULL_ADDRESS } from "../../utils/constants";
 import { SignatureUtils } from "../../utils/signature_utils";
-import * as TransactionUtils from "../../utils/transaction_utils";
+import { applyNetworkDefaults } from "../../utils/transaction_utils";
 import { Web3Utils } from "../../utils/web3_utils";
 
 // APIs
@@ -23,13 +23,11 @@ import {
     TokenTransferProxyContract,
 } from "../wrappers";
 
-import applyNetworkDefaults = TransactionUtils.applyNetworkDefaults;
-
 const BLOCK_TIME_ESTIMATE_SECONDS = 14;
 
 export class OrderAssertions {
     private web3Utils: Web3Utils;
-    private contracts: ContractsAPI;
+    private readonly contracts: ContractsAPI;
 
     public constructor(web3: Web3, contracts: ContractsAPI) {
         this.web3Utils = new Web3Utils(web3);
