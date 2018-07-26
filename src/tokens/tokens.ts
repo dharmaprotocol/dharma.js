@@ -1,10 +1,8 @@
 import { Dharma } from "../dharma";
 
-import { TokenAPI } from "../apis";
-
 import { EthereumAddress, TokenAmount } from "../types";
 
-import { TokenAttributes } from "../apis/token_api";
+import { TokenAPI, TokenAttributes } from "../apis/token_api";
 
 export interface TokenData {
     symbol: string;

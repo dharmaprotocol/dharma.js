@@ -14,8 +14,7 @@ import { Web3Utils } from "../../utils/web3_utils";
 import { Assertions } from "../invariants";
 
 // types
-import { CollateralizedSimpleInterestLoanAdapter } from "../adapters/collateralized_simple_interest_loan_adapter";
-import { SimpleInterestLoanAdapter } from "../adapters/simple_interest_loan_adapter";
+import { CollateralizedSimpleInterestLoanAdapter, SimpleInterestLoanAdapter } from "../adapters";
 import { DebtRegistryEntry, TxData } from "../types";
 
 const REPAYMENT_GAS_MAXIMUM = 150000;
