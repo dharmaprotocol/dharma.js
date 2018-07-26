@@ -193,6 +193,14 @@ export class TokenAPI {
         const existingAllowance = await this.getProxyAllowanceAsync(tokenAddress, ownerAddress);
 
         return existingAllowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
+    /**
+     * Determines whether the allowance specified is the unlimited allowance.
+     *
+     * @param  allowance
+     * @returns {boolean}
+     */
+    public async isUnlimitedAllowance(allowance: BigNumber): boolean {
+        return allowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
     }
 
     /**
