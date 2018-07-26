@@ -232,7 +232,7 @@ export class LoanRequest extends BaseLoan {
      *
      * @returns {Promise<string | void>}
      */
-    public async allowCollateralTransfer(debtorAddress?: string): Promise<string> {
+    public async allowCollateralTransfer(debtorAddress?: string): Promise<string | void> {
         const debtor = debtorAddress || this.params.debtorAddress.toString();
 
         const ethereumAddress = new EthereumAddress(debtor);
@@ -252,7 +252,7 @@ export class LoanRequest extends BaseLoan {
      *
      * @returns {Promise<string | void>}
      */
-    public async allowPrincipalTransfer(creditorAddress?: string): Promise<string> {
+    public async allowPrincipalTransfer(creditorAddress?: string): Promise<string | void> {
         const creditor = creditorAddress || (await this.getCurrentUser());
 
         const ethereumAddress = new EthereumAddress(creditor);
