@@ -37,8 +37,18 @@ export const TokenAPIErrors = {
 };
 
 export class TokenAPI {
-    private web3: Web3;
-    private contracts: ContractsAPI;
+    /**
+     * Determines whether the allowance specified is the unlimited allowance.
+     *
+     * @param {BigNumber} allowance
+     * @returns {boolean}
+     */
+    public static isUnlimitedAllowance(allowance: BigNumber): boolean {
+        return allowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
+    }
+
+    private readonly web3: Web3;
+    private readonly contracts: ContractsAPI;
     private assert: Assertions;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
@@ -191,17 +201,8 @@ export class TokenAPI {
         ownerAddress: string,
     ): Promise<boolean> {
         const existingAllowance = await this.getProxyAllowanceAsync(tokenAddress, ownerAddress);
-        return this.isUnlimitedAllowance(existingAllowance);
-    }
 
-    /**
-     * Determines whether the allowance specified is the unlimited allowance.
-     *
-     * @param  allowance
-     * @returns {boolean}
-     */
-    public async isUnlimitedAllowance(allowance: BigNumber): boolean {
-        return allowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
+        return TokenAPI.isUnlimitedAllowance(existingAllowance);
     }
 
     /**

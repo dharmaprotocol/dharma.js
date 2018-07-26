@@ -1,6 +1,6 @@
 import { Dharma } from "../dharma";
 
-import { BigNumber } from "../../utils/bignumber";
+import { TokenAPI } from "../apis";
 
 import { EthereumAddress, TokenAmount } from "../types";
 
@@ -55,7 +55,7 @@ export class Tokens {
 
                 const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-                const hasUnlimitedAllowance = this.dharma.token.isUnlimitedAllowance(
+                const hasUnlimitedAllowance = TokenAPI.isUnlimitedAllowance(
                     allowanceAmount.rawAmount,
                 );
 
