@@ -13,8 +13,6 @@ export interface TokenData {
     hasUnlimitedAllowance: boolean;
 }
 
-const UNLIMITED_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
-
 export class Tokens {
     private readonly owner: EthereumAddress;
 
@@ -50,24 +48,27 @@ export class Tokens {
                 this.owner.toString(),
             );
 
-            Promise.all([balancePromise, allowancePromise]).then((values) => {
-                const [rawBalance, rawAllowance] = values;
+            const hasUnlimitedAllowancePromise = this.dharma.token.hasUnlimitedAllowance(
+                address,
+                this.owner.toString(),
+            );
 
-                const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
+            Promise.all([balancePromise, allowancePromise, hasUnlimitedAllowancePromise]).then(
+                (values) => {
+                    const [rawBalance, rawAllowance, hasUnlimitedAllowance] = values;
 
-                const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
+                    const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
 
-                const hasUnlimitedAllowance = allowanceAmount.rawAmount.greaterThan(
-                    UNLIMITED_ALLOWANCE,
-                );
+                    const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-                resolve({
-                    symbol,
-                    balance: balanceAmount.decimalAmount,
-                    allowance: allowanceAmount.decimalAmount,
-                    hasUnlimitedAllowance,
-                });
-            });
+                    resolve({
+                        symbol,
+                        balance: balanceAmount.decimalAmount,
+                        allowance: allowanceAmount.decimalAmount,
+                        hasUnlimitedAllowance,
+                    });
+                },
+            );
         });
     }
 }
