@@ -15,6 +15,9 @@ import { TxData } from "../types";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
+// We set an allowance to be "unlimited" by setting it to it's maximum possible value: 2^256 - 1.
+export const UNLIMITED_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
+
 export interface TokenAttributes {
     address: string;
     symbol: string;
@@ -34,8 +37,18 @@ export const TokenAPIErrors = {
 };
 
 export class TokenAPI {
-    private web3: Web3;
-    private contracts: ContractsAPI;
+    /**
+     * Determines whether the allowance specified is the unlimited allowance.
+     *
+     * @param {BigNumber} allowance
+     * @returns {boolean}
+     */
+    public static isUnlimitedAllowance(allowance: BigNumber): boolean {
+        return allowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
+    }
+
+    private readonly web3: Web3;
+    private readonly contracts: ContractsAPI;
     private assert: Assertions;
 
     constructor(web3: Web3, contracts: ContractsAPI) {
@@ -173,11 +186,23 @@ export class TokenAPI {
 
         await this.assert.token.implementsERC20(tokenContract);
 
-        // We set an allowance to be "unlimited" by setting it to
-        // it's maximum possible value -- namely, 2^256 - 1.
-        const unlimitedAllowance = new BigNumber(2).pow(256).sub(1);
+        return this.setProxyAllowanceAsync(tokenAddress, UNLIMITED_ALLOWANCE, options);
+    }
 
-        return this.setProxyAllowanceAsync(tokenAddress, unlimitedAllowance, options);
+    /**
+     * Eventually determines whether the allowance for the specified owner is unlimited.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the owner whose allowance is being queried.
+     * @returns {Promise<boolean>}
+     */
+    public async hasUnlimitedAllowance(
+        tokenAddress: string,
+        ownerAddress: string,
+    ): Promise<boolean> {
+        const existingAllowance = await this.getProxyAllowanceAsync(tokenAddress, ownerAddress);
+
+        return TokenAPI.isUnlimitedAllowance(existingAllowance);
     }
 
     /**

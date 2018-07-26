@@ -59,14 +59,21 @@ export abstract class BaseLoan {
     ) {}
 
     public async enableTokenTransfers(
-        address: EthereumAddress,
+        owner: EthereumAddress,
         tokenSymbol: string,
-    ): Promise<string> {
+    ): Promise<string | void> {
         const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
 
-        return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
-            from: address.toString(),
-        });
+        const hasUnlimitedAllowance = await this.dharma.token.hasUnlimitedAllowance(
+            tokenAddress,
+            owner.toString(),
+        );
+
+        if (!hasUnlimitedAllowance) {
+            return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
+                from: owner.toString(),
+            });
+        }
     }
 
     public getAgreementId(): string {

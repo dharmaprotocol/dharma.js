@@ -15,6 +15,8 @@ import { DummyTokenContract, TokenTransferProxyContract } from "../../../src/wra
 
 import { ContractsAPI } from "../../../src/apis";
 
+import { UNLIMITED_ALLOWANCE } from "../../../src/apis/token_api";
+
 jest.unmock("@dharmaprotocol/contracts");
 
 const dharma = new Dharma("http://localhost:8545");
@@ -30,8 +32,6 @@ const contractsApi = new ContractsAPI(web3);
 const TX_DEFAULTS = { from: OWNER, gas: 400000 };
 
 const DEFAULT_STARTING_BALANCE = ether(13);
-
-const UNLIMITED_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
 
 describe("Tokens (Integration)", () => {
     describe("#getTokenDataForSymbol", () => {

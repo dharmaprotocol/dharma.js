@@ -13,9 +13,9 @@ export class Loan extends BaseLoan {
      * await loan.allowRepayments();
      * => "0x000..."
      *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
+     * @returns {Promise<string | void>}
      */
-    public async allowRepayments(debtorAddress?: string): Promise<string> {
+    public async allowRepayments(debtorAddress?: string): Promise<string | void> {
         const debtor = debtorAddress || this.params.debtorAddress.toString();
 
         const ethereumAddress = new EthereumAddress(debtor);

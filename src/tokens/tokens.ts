@@ -1,6 +1,6 @@
 import { Dharma } from "../dharma";
 
-import { BigNumber } from "../../utils/bignumber";
+import { TokenAPI } from "../apis";
 
 import { EthereumAddress, TokenAmount } from "../types";
 
@@ -12,8 +12,6 @@ export interface TokenData {
     allowance: number;
     hasUnlimitedAllowance: boolean;
 }
-
-const UNLIMITED_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
 
 export class Tokens {
     private readonly owner: EthereumAddress;
@@ -57,8 +55,8 @@ export class Tokens {
 
                 const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-                const hasUnlimitedAllowance = allowanceAmount.rawAmount.greaterThan(
-                    UNLIMITED_ALLOWANCE,
+                const hasUnlimitedAllowance = TokenAPI.isUnlimitedAllowance(
+                    allowanceAmount.rawAmount,
                 );
 
                 resolve({
