@@ -191,8 +191,9 @@ export class TokenAPI {
         ownerAddress: string,
     ): Promise<boolean> {
         const existingAllowance = await this.getProxyAllowanceAsync(tokenAddress, ownerAddress);
+        return this.isUnlimitedAllowance(existingAllowance);
+    }
 
-        return existingAllowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
     /**
      * Determines whether the allowance specified is the unlimited allowance.
      *

@@ -48,27 +48,24 @@ export class Tokens {
                 this.owner.toString(),
             );
 
-            const hasUnlimitedAllowancePromise = this.dharma.token.hasUnlimitedAllowance(
-                address,
-                this.owner.toString(),
-            );
+            Promise.all([balancePromise, allowancePromise]).then((values) => {
+                const [rawBalance, rawAllowance] = values;
 
-            Promise.all([balancePromise, allowancePromise, hasUnlimitedAllowancePromise]).then(
-                (values) => {
-                    const [rawBalance, rawAllowance, hasUnlimitedAllowance] = values;
+                const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
 
-                    const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
+                const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-                    const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
+                const hasUnlimitedAllowance = this.dharma.token.isUnlimitedAllowance(
+                    allowanceAmount.rawAmount,
+                );
 
-                    resolve({
-                        symbol,
-                        balance: balanceAmount.decimalAmount,
-                        allowance: allowanceAmount.decimalAmount,
-                        hasUnlimitedAllowance,
-                    });
-                },
-            );
+                resolve({
+                    symbol,
+                    balance: balanceAmount.decimalAmount,
+                    allowance: allowanceAmount.decimalAmount,
+                    hasUnlimitedAllowance,
+                });
+            });
         });
     }
 }
