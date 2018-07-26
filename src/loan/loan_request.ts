@@ -230,7 +230,7 @@ export class LoanRequest extends BaseLoan {
      * await loanRequest.allowCollateralTransfer();
      * => "0x000..."
      *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
+     * @returns {Promise<string | void>}
      */
     public async allowCollateralTransfer(debtorAddress?: string): Promise<string> {
         const debtor = debtorAddress || this.params.debtorAddress.toString();
@@ -250,7 +250,7 @@ export class LoanRequest extends BaseLoan {
      * await loanRequest.allowPrincipalTransfer();
      * => "0x000..."
      *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to enable the token transfers
+     * @returns {Promise<string | void>}
      */
     public async allowPrincipalTransfer(creditorAddress?: string): Promise<string> {
         const creditor = creditorAddress || (await this.getCurrentUser());
