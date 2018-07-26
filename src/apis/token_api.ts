@@ -179,7 +179,20 @@ export class TokenAPI {
         return this.setProxyAllowanceAsync(tokenAddress, UNLIMITED_ALLOWANCE, options);
     }
 
-        return this.setProxyAllowanceAsync(tokenAddress, unlimitedAllowance, options);
+    /**
+     * Eventually determines whether the allowance for the specified owner is unlimited.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the owner whose allowance is being queried.
+     * @returns {Promise<boolean>}
+     */
+    public async hasUnlimitedAllowance(
+        tokenAddress: string,
+        ownerAddress: string,
+    ): Promise<boolean> {
+        const existingAllowance = await this.getProxyAllowanceAsync(tokenAddress, ownerAddress);
+
+        return existingAllowance.greaterThanOrEqualTo(UNLIMITED_ALLOWANCE);
     }
 
     /**
