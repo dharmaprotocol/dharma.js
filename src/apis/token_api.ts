@@ -15,6 +15,9 @@ import { TxData } from "../types";
 
 const TRANSFER_GAS_MAXIMUM = 70000;
 
+// We set an allowance to be "unlimited" by setting it to it's maximum possible value: 2^256 - 1.
+export const UNLIMITED_ALLOWANCE = new BigNumber(2).pow(256).sub(1);
+
 export interface TokenAttributes {
     address: string;
     symbol: string;
@@ -173,9 +176,8 @@ export class TokenAPI {
 
         await this.assert.token.implementsERC20(tokenContract);
 
-        // We set an allowance to be "unlimited" by setting it to
-        // it's maximum possible value -- namely, 2^256 - 1.
-        const unlimitedAllowance = new BigNumber(2).pow(256).sub(1);
+        return this.setProxyAllowanceAsync(tokenAddress, UNLIMITED_ALLOWANCE, options);
+    }
 
         return this.setProxyAllowanceAsync(tokenAddress, unlimitedAllowance, options);
     }
