@@ -97,8 +97,6 @@ export class LogsAPI {
 
                         resolve();
                     });
-
-                    eventsWatcher.stopWatching();
                 });
             }),
         );
