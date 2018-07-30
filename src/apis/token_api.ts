@@ -250,6 +250,14 @@ export class TokenAPI {
         };
     }
 
+    public async getTokenSymbolByIndexAsync(index: BigNumber): Promise<string> {
+        const tokenRegistryContract = await this.contracts.loadTokenRegistry();
+
+        // TODO: Throw here if index is out of bounds.
+
+        return tokenRegistryContract.getTokenSymbolByIndex.callAsync(index);
+    }
+
     /**
      * Returns an array of token attributes, including symbol and name, for tokens that are
      * listed in Dharma's token registry.

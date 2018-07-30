@@ -1,7 +1,12 @@
-import { BaseLoan, BaseLoanConstructorParams, LoanData } from "./base_loan";
-
 import { BigNumber } from "../../utils/bignumber";
-import { BLOCK_TIME_ESTIMATE_SECONDS, NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+
+import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
+
+import {
+    BLOCK_TIME_ESTIMATE_SECONDS,
+    NULL_ECDSA_SIGNATURE,
+    SALT_DECIMALS,
+} from "../../utils/constants";
 
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
@@ -42,7 +47,11 @@ export interface LoanRequestTerms {
     expiresAt: number;
 }
 
-export class LoanRequest extends BaseLoan {
+export class LoanRequest extends Agreement {
+    public static generateSalt(): BigNumber {
+        return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
+    }
+
     /**
      * Eventually returns an instance of a loan request signed by the debtor.
      *
@@ -223,55 +232,6 @@ export class LoanRequest extends BaseLoan {
     }
 
     /**
-     * Eventually enables the account at the default address to transfer the collateral token
-     * on Dharma Protocol.
-     *
-     * @example
-     * await loanRequest.allowCollateralTransfer();
-     * => "0x000..."
-     *
-     * @returns {Promise<string | void>}
-     */
-    public async allowCollateralTransfer(debtorAddress?: string): Promise<string | void> {
-        const debtor = debtorAddress || this.params.debtorAddress.toString();
-
-        const ethereumAddress = new EthereumAddress(debtor);
-
-        const tokenSymbol = this.params.collateral.tokenSymbol;
-
-        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
-    }
-
-    /**
-     * Eventually enables the account at the default address to transfer the principal token
-     * on Dharma Protocol.
-     *
-     * @example
-     * await loanRequest.allowPrincipalTransfer();
-     * => "0x000..."
-     *
-     * @returns {Promise<string | void>}
-     */
-    public async allowPrincipalTransfer(creditorAddress?: string): Promise<string | void> {
-        const creditor = creditorAddress || (await this.getCurrentUser());
-
-        const ethereumAddress = new EthereumAddress(creditor);
-
-        const networkId = await this.dharma.blockchain.getNetworkId();
-
-        if (
-            networkId === 1 &&
-            ethereumAddress.toString() === this.params.debtorAddress.toString()
-        ) {
-            throw new Error("The creditor's address cannot be the same as the debtor's address.");
-        }
-
-        const tokenSymbol = this.params.principal.tokenSymbol;
-
-        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
-    }
-
-    /**
      * Eventually returns true if the current loan request will be expired for the next block.
      *
      * @example
@@ -284,7 +244,7 @@ export class LoanRequest extends BaseLoan {
         // This timestamp comes from the blockchain.
         const expirationTimestamp: BigNumber = this.data.expirationTimestampInSec;
         // We compare this timestamp to the expected timestamp of the next block.
-        const latestBlockTime = await this.getCurrentBlocktime();
+        const latestBlockTime = await this.dharma.blockchain.getCurrentBlockTime();
         const approximateNextBlockTime = latestBlockTime + BLOCK_TIME_ESTIMATE_SECONDS;
 
         return expirationTimestamp.lt(approximateNextBlockTime);
@@ -352,7 +312,7 @@ export class LoanRequest extends BaseLoan {
      * @returns {Promise<boolean>}
      */
     public async isFillable(prospectiveCreditorAddress?: string): Promise<boolean> {
-        const creditor = await this.validAddressOrCurrentUser(prospectiveCreditorAddress);
+        const creditor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, prospectiveCreditorAddress);
 
         return this.dharma.order.isFillableBy(this.data, creditor, {
             from: creditor,
@@ -365,7 +325,7 @@ export class LoanRequest extends BaseLoan {
      * @returns {Promise<void>}
      */
     public async assertFillable(prospectiveCreditorAddress?: string): Promise<void> {
-        const creditor = await this.validAddressOrCurrentUser(prospectiveCreditorAddress);
+        const creditor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, prospectiveCreditorAddress);
 
         return this.dharma.order.assertFillableBy(this.data, creditor, {
             from: creditor,
@@ -382,7 +342,7 @@ export class LoanRequest extends BaseLoan {
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
     public async fill(creditorAddress?: string): Promise<string> {
-        this.data.creditor = await this.validAddressOrCurrentUser(creditorAddress);
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, creditorAddress);
 
         await this.signAsCreditor();
 

@@ -1,69 +1,58 @@
-import { BaseLoan } from "./base_loan";
-
 import { BigNumber } from "../../utils/bignumber";
 
-import { EthereumAddress, TokenAmount } from "../types";
+import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
 
-export class Loan extends BaseLoan {
-    /**
-     * Eventually enables the account at the default address to make repayments
-     * on Dharma Protocol.
-     *
-     * @example
-     * await loan.allowRepayments();
-     * => "0x000..."
-     *
-     * @returns {Promise<string | void>}
-     */
-    public async allowRepayments(debtorAddress?: string): Promise<string | void> {
-        const debtor = debtorAddress || this.params.debtorAddress.toString();
+import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
-        const ethereumAddress = new EthereumAddress(debtor);
+import { Dharma } from "../dharma";
 
-        const tokenSymbol = this.params.principal.tokenSymbol;
+export class Loan extends Agreement {
+    public static async load(dharma: Dharma, data: LoanData): Promise<Loan> {
+        const debtOrderData: DebtOrderData = {
+            ...data,
+            principalAmount: new BigNumber(data.principalAmount),
+            debtorFee: new BigNumber(data.debtorFee),
+            creditorFee: new BigNumber(data.creditorFee),
+            relayerFee: new BigNumber(data.relayerFee),
+            underwriterFee: new BigNumber(data.underwriterFee),
+            underwriterRiskRating: new BigNumber(data.underwriterRiskRating),
+            expirationTimestampInSec: new BigNumber(data.expirationTimestampInSec),
+            salt: new BigNumber(data.salt),
+        };
 
-        return this.enableTokenTransfers(ethereumAddress, tokenSymbol);
-    }
-
-    /**
-     * Eventually makes a repayment on the loan, with the default payment amount being the
-     * expected size of a single installment given the principal, interest rate,
-     * and terms.
-     *
-     * @example
-     * loan.makeRepayment();
-     * => Promise<string>
-     *
-     * const outstandingAmount = await loan.getOutstandingAmount();
-     * loan.makeRepayment(outstandingAmount);
-     * => Promise<string>
-     *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to make the repayment
-     */
-    public async makeRepayment(repaymentAmount?: number): Promise<string> {
-        const agreementId = this.getAgreementId();
-        const tokenSymbol = this.params.principal.tokenSymbol;
-        const principalTokenAddressString = await this.dharma.contracts.getTokenAddressBySymbolAsync(
-            tokenSymbol,
+        const loanOrder = await dharma.adapters.collateralizedSimpleInterestLoan.fromDebtOrder(
+            debtOrderData,
         );
 
-        // If repaymentAmount is not specified, we default to the expected amount per installment.
-        let rawRepaymentAmount: BigNumber;
-
-        if (repaymentAmount) {
-            const repaymentAmountType = new TokenAmount(repaymentAmount, tokenSymbol);
-            rawRepaymentAmount = repaymentAmountType.rawAmount;
-        } else {
-            rawRepaymentAmount = await this.dharma.servicing.getExpectedAmountPerRepayment(
-                agreementId,
-            );
-        }
-
-        return this.dharma.servicing.makeRepayment(
-            agreementId,
-            rawRepaymentAmount,
-            principalTokenAddressString,
+        const principal = TokenAmount.fromRaw(
+            loanOrder.principalAmount,
+            loanOrder.principalTokenSymbol,
         );
+
+        const collateral = TokenAmount.fromRaw(
+            loanOrder.collateralAmount,
+            loanOrder.collateralTokenSymbol,
+        );
+
+        const interestRate = InterestRate.fromRaw(loanOrder.interestRate);
+
+        const termLength = new TimeInterval(
+            loanOrder.termLength.toNumber(),
+            loanOrder.amortizationUnit,
+        );
+
+        const debtorAddress = new EthereumAddress(loanOrder.debtor!);
+
+        const loanParams: BaseLoanConstructorParams = {
+            principal,
+            collateral,
+            termLength,
+            interestRate,
+            expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
+            debtorAddress,
+        };
+
+        return new Loan(dharma, loanParams, debtOrderData);
     }
 
     /**
@@ -124,38 +113,6 @@ export class Loan extends BaseLoan {
      */
     public async isCollateralReturnable(): Promise<boolean> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.canReturnCollateral(
-            this.getAgreementId(),
-        );
-    }
-
-    /**
-     * Eventually returns the collateral and sends it to the debtor.
-     * This will fail if the collateral is not returnable.
-     *
-     * @example
-     * loan.returnCollateral();
-     * => Promise<string>
-     *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to return the collateral
-     */
-    public async returnCollateral(): Promise<string> {
-        return this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(
-            this.getAgreementId(),
-        );
-    }
-
-    /**
-     * Eventually seizes the collateral and sends it to the creditor.
-     * This will fail if the collateral is not seizable.
-     *
-     * @example
-     * loan.seizeCollateral();
-     * => Promise<string>
-     *
-     * @returns {Promise<string>} the hash of the Ethereum transaction to seize the collateral
-     */
-    public async seizeCollateral(): Promise<string> {
-        return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
             this.getAgreementId(),
         );
     }
