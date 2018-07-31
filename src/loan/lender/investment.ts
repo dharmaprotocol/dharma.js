@@ -25,6 +25,11 @@ export interface InvestmentData {
     creditorAddress: string;
 }
 
+export interface ExpandedInvestmentData extends InvestmentData {
+    repaidAmount: number;
+    totalExpectedRepaymentAmount: number;
+}
+
 /**
  * Describes a loan from a lender's perspective, includes functionality for seizing
  * collateral.
@@ -91,6 +96,68 @@ export class Investment {
             debtorAddress: debtor.toString(),
             creditorAddress: creditor.toString(),
         };
+    }
+
+    /**
+     *  Returns investment data as well as repaid amount and the total expected repayment amount.
+     *
+     * @example
+     * const expandedData = await investment.getExpandedData();
+     * => {
+     *      repaidAmount: 100,
+     *      totalExpectedRepaymentAmount: 250,
+     *      ...
+     *    }
+     *
+     * @returns {ExpandedInvestmentData}
+     */
+    public async getExpandedData(): Promise<ExpandedInvestmentData> {
+        const data = this.getData();
+
+        const repaidAmount = await this.getRepaidAmount();
+        const totalExpectedRepaymentAmount = await this.getTotalExpectedRepaymentAmount();
+
+        return {
+            ...data,
+            repaidAmount,
+            totalExpectedRepaymentAmount,
+        };
+    }
+
+    /**
+     * Eventually returns the total amount repaid so far.
+     *
+     * @example
+     * await investment.getRepaidAmount();
+     * => 10
+     *
+     * @returns {Promise<number>}
+     */
+    public async getRepaidAmount(): Promise<number> {
+        const repaidAmount = await this.dharma.servicing.getValueRepaid(this.data.id);
+
+        const tokenSymbol = this.data.principal.tokenSymbol;
+
+        return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
+    }
+
+    /**
+     * Eventually returns the total amount expected to be repaid.
+     *
+     * @example
+     * await investment.getTotalExpectedRepaymentAmount();
+     * => 13.5
+     *
+     * @returns {Promise<number>}
+     */
+    public async getTotalExpectedRepaymentAmount(): Promise<number> {
+        const totalExpectedRepaymentAmount = await this.dharma.servicing.getTotalExpectedRepayment(
+            this.data.id,
+        );
+
+        const tokenSymbol = this.data.principal.tokenSymbol;
+
+        return TokenAmount.fromRaw(totalExpectedRepaymentAmount, tokenSymbol).decimalAmount;
     }
 
     /**

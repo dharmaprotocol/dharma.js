@@ -113,6 +113,20 @@ export class BlockchainAPI {
     }
 
     /**
+     * Eventually returns the first account from available accounts.
+     *
+     * @example
+     * await dharma.blockchain.getCurrentAccount();
+     * => "0x..."
+     *
+     * @returns {Promise<string>}
+     */
+    public async getCurrentAccount(): Promise<string> {
+        const accounts = await this.getAccounts();
+        return accounts[0];
+    }
+
+    /**
      * Returns the current blocktime in seconds.
      *
      * @returns {Promise<number>}
