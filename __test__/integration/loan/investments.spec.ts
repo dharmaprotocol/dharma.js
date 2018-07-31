@@ -6,9 +6,7 @@ import { Dharma } from "../../../src/dharma";
 
 jest.unmock("@dharmaprotocol/contracts");
 
-import { Investments } from "../../../src/loan/lender/investments";
-
-import { LoanRequest } from "../../../src/loan/";
+import { Investments, LoanRequest } from "../../../src/loan/";
 
 import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 
