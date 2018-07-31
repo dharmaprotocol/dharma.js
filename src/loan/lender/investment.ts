@@ -99,11 +99,15 @@ export class Investment {
     }
 
     /**
-     *  Returns the investment's data -- as vanilla JS types -- along with the repaid amount and the
-     *  total expected repayment amount.
+     *  Returns investment data as well as repaid amount and the total expected repayment amount.
      *
      * @example
-     * const expandedData = investment.getExpandedData();
+     * const expandedData = await investment.getExpandedData();
+     * => {
+     *      repaidAmount: 100,
+     *      totalExpectedRepaymentAmount: 250,
+     *      ...
+     *    }
      *
      * @returns {ExpandedInvestmentData}
      */
