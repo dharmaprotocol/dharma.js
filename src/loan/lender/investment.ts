@@ -99,6 +99,25 @@ export class Investment {
     }
 
     /**
+     * Eventually returns the total amount expected to be repaid.
+     *
+     * @example
+     * await investment.getTotalExpectedRepaymentAmount();
+     * => 13.5
+     *
+     * @returns {Promise<number>}
+     */
+    public async getTotalExpectedRepaymentAmount(): Promise<number> {
+        const totalExpectedRepaymentAmount = await this.dharma.servicing.getTotalExpectedRepayment(
+            this.data.id,
+        );
+
+        const tokenSymbol = this.data.principal.tokenSymbol;
+
+        return TokenAmount.fromRaw(totalExpectedRepaymentAmount, tokenSymbol).decimalAmount;
+    }
+
+    /**
      * Eventually seizes the collateral and sends it to the creditor.
      *
      * This will fail if the collateral is not seizable.
