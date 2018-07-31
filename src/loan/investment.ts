@@ -1,6 +1,6 @@
-import { Dharma } from "../../dharma";
+import { Dharma } from "../dharma";
 
-import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../../types";
+import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 export interface InvestmentParams {
     id: string;

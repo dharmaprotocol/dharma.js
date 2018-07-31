@@ -1,8 +1,8 @@
-import { Loan } from "../loan";
+import { Loan } from "./loan";
 
-import { TokenAmount } from "../../types";
+import { TokenAmount } from "../types";
 
-import { BigNumber } from "../../../utils/bignumber";
+import { BigNumber } from "../../utils/bignumber";
 
 export class Debt extends Loan {
     /**

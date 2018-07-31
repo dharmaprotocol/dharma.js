@@ -1,6 +1,6 @@
 import { ExpandedInvestmentData, Investment } from "./investment";
 
-import { Dharma } from "../../dharma";
+import { Dharma } from "../dharma";
 
 /**
  * Describes a collection of investments and provides functionality for managing such a collection.
