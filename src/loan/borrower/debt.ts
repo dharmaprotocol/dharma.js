@@ -4,7 +4,7 @@ import { TokenAmount } from "../../types";
 
 import { BigNumber } from "../../../utils/bignumber";
 
-class Debt extends Loan {
+export class Debt extends Loan {
     /**
      * Eventually makes a repayment on the loan, with the default payment amount being the
      * expected size of a single installment given the principal, interest rate,
