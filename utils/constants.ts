@@ -7,6 +7,8 @@ export namespace ERC20TokenSymbol {
     export const MKR = "MKR";
 }
 
+export const SALT_DECIMALS = 20;
+
 /**
  * An estimate of Ethereum blocktime: The typical number of sections between each block.
  *

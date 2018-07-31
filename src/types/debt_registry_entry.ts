@@ -32,6 +32,10 @@ struct Entry {
 ```
  */
 export class DebtRegistryEntry {
+    public static fromData(data: DebtRegistryEntryData) {
+        return new this(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
+    }
+
     constructor(
         public version: string,
         public beneficiary: string,
@@ -48,9 +52,5 @@ export class DebtRegistryEntry {
         this.termsContract = termsContract;
         this.termsContractParameters = termsContractParameters;
         this.issuanceBlockTimestamp = issuanceBlockTimestamp;
-    }
-
-    static fromData(data: DebtRegistryEntryData) {
-        return new this(data[0], data[1], data[2], data[3], data[4], data[5], data[6]);
     }
 }

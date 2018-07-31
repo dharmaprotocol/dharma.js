@@ -43,6 +43,18 @@ export async function setBalanceForSymbol(
     return token.setBalance.sendTransactionAsync(recipient, amount.rawAmount);
 }
 
+export async function setUnlimitedAllowanceForSymbol(
+    dharma: Dharma,
+    tokenSymbol: string,
+    recipient: string,
+): Promise<string> {
+    const tokenRegistry = await dharma.contracts.loadTokenRegistry();
+
+    const tokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(tokenSymbol);
+
+    return dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, { from: recipient });
+}
+
 export async function revokeAllowanceForSymbol(
     dharma: Dharma,
     tokenSymbol: string,
@@ -52,13 +64,7 @@ export async function revokeAllowanceForSymbol(
 
     const tokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(tokenSymbol);
 
-    const tokenTransferProxy = await dharma.contracts.loadTokenTransferProxyAsync(TX_DEFAULTS);
-
-    const token = await DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
-
-    return token.approve.sendTransactionAsync(tokenTransferProxy.address, new BigNumber(0), {
-        from: recipient,
-    });
+    return dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), { from: recipient });
 }
 
 export async function revokeBalanceForSymbol(

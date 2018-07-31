@@ -1,6 +1,3 @@
-// External libraries
-import * as Web3 from "web3";
-
 // Utils
 import { BigNumber } from "../../../../utils/bignumber";
 
@@ -20,8 +17,6 @@ import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
 
 const CREDITOR = ACCOUNTS[3];
 
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
 export async function testGetTotalExpectedRepaymentAmount(
     dharma: Dharma,
     params: LoanRequestParams,
@@ -33,7 +28,7 @@ export async function testGetTotalExpectedRepaymentAmount(
         beforeAll(async () => {
             loanRequest = await LoanRequest.create(dharma, params);
 
-            await setBalancesAndAllowances(dharma, web3, params, CREDITOR.address);
+            await setBalancesAndAllowances(dharma, params, CREDITOR.address);
 
             await loanRequest.fill(CREDITOR.address);
 
