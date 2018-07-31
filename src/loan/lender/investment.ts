@@ -98,6 +98,27 @@ export class Investment {
         };
     }
 
+    /**
+     *  Returns the investment's data -- as vanilla JS types -- along with the repaid amount and the
+     *  total expected repayment amount.
+     *
+     * @example
+     * const expandedData = investment.getExpandedData();
+     *
+     * @returns {ExpandedInvestmentData}
+     */
+    public async getExpandedData(): Promise<ExpandedInvestmentData> {
+        const data = this.getData();
+
+        const repaidAmount = await this.getRepaidAmount();
+        const totalExpectedRepaymentAmount = await this.getTotalExpectedRepaymentAmount();
+
+        return {
+            ...data,
+            repaidAmount,
+            totalExpectedRepaymentAmount,
+        };
+    }
 
     /**
      * Eventually returns the total amount repaid so far.
