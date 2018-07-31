@@ -98,6 +98,24 @@ export class Investment {
         };
     }
 
+
+    /**
+     * Eventually returns the total amount repaid so far.
+     *
+     * @example
+     * await investment.getRepaidAmount();
+     * => 10
+     *
+     * @returns {Promise<number>}
+     */
+    public async getRepaidAmount(): Promise<number> {
+        const repaidAmount = await this.dharma.servicing.getValueRepaid(this.data.id);
+
+        const tokenSymbol = this.data.principal.tokenSymbol;
+
+        return TokenAmount.fromRaw(repaidAmount, tokenSymbol).decimalAmount;
+    }
+
     /**
      * Eventually returns the total amount expected to be repaid.
      *
