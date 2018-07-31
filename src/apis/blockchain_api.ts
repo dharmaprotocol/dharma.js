@@ -113,16 +113,15 @@ export class BlockchainAPI {
     }
 
     /**
-     * Eventually returns the first address from available accounts, which we assume to be the
-     * current user.
+     * Eventually returns the first account from available accounts.
      *
      * @example
-     * await dharma.blockchain.getCurrentUser();
+     * await dharma.blockchain.getCurrentAccount();
      * => "0x..."
      *
      * @returns {Promise<string>}
      */
-    public async getCurrentUser(): Promise<string> {
+    public async getCurrentAccount(): Promise<string> {
         const accounts = await this.getAccounts();
         return accounts[0];
     }

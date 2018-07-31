@@ -32,7 +32,7 @@ export class EthereumAddress {
             const validAddress = new EthereumAddress(address);
             return validAddress.toString();
         } else {
-            return dharma.blockchain.getCurrentUser();
+            return dharma.blockchain.getCurrentAccount();
         }
     }
 
