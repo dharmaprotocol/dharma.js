@@ -55,8 +55,8 @@
         }
     },
     "jest": {
-        "globalSetup": "./dist/es/scripts/testSetup.js",
-        "globalTeardown": "./dist/es/scripts/testTeardown.js",
+        "globalSetup": "./scripts/testSetup.js",
+        "globalTeardown": "./scripts/testTeardown.js",
         "transform": {
             ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
         },
