@@ -1,5 +1,6 @@
-export { LoanRequest, LoanRequestParams } from "./loan_request";
-export { Loan } from "./loan";
+export { Allowance } from "./Allowance";
+export { Debt } from "./Debt";
 export { Investment } from "./Investment";
 export { Investments } from "./Investments";
-export { Allowance } from "./Allowance";
+export { LoanRequest, LoanRequestParams } from "./loan_request";
+export { Loan } from "./loan";
