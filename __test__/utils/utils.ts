@@ -52,13 +52,7 @@ export async function revokeAllowanceForSymbol(
 
     const tokenAddress = await tokenRegistry.getTokenAddressBySymbol.callAsync(tokenSymbol);
 
-    const tokenTransferProxy = await dharma.contracts.loadTokenTransferProxyAsync(TX_DEFAULTS);
-
-    const token = await DummyTokenContract.at(tokenAddress, web3, TX_DEFAULTS);
-
-    return token.approve.sendTransactionAsync(tokenTransferProxy.address, new BigNumber(0), {
-        from: recipient,
-    });
+    return dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), { from: recipient });
 }
 
 export async function revokeBalanceForSymbol(
