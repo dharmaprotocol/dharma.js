@@ -25,6 +25,11 @@ export interface InvestmentData {
     creditorAddress: string;
 }
 
+export interface ExpandedInvestmentData extends InvestmentData {
+    repaidAmount: number;
+    totalExpectedRepaymentAmount: number;
+}
+
 /**
  * Describes a loan from a lender's perspective, includes functionality for seizing
  * collateral.
