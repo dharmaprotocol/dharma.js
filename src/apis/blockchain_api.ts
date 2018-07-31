@@ -113,6 +113,21 @@ export class BlockchainAPI {
     }
 
     /**
+     * Eventually returns the first address from available accounts, which we assume to be the
+     * current user.
+     *
+     * @example
+     * await dharma.blockchain.getCurrentUser();
+     * => "0x..."
+     *
+     * @returns {Promise<string>}
+     */
+    public async getCurrentUser(): Promise<string> {
+        const accounts = await this.getAccounts();
+        return accounts[0];
+    }
+
+    /**
      * Returns the current blocktime in seconds.
      *
      * @returns {Promise<number>}
