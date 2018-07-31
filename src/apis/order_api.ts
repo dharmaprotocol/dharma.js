@@ -302,18 +302,6 @@ export class OrderAPI {
         return debtOrderDataWrapped.getIssuanceCommitmentHash();
     }
 
-    /**
-     * Given an issuanceHash, returns a DebtOrder instance.
-     *
-     * @param {string} issuanceHash
-     * @returns {Promise<DebtOrderData>}
-     */
-    public async getDebtOrder(issuanceHash: string): Promise<DebtOrderData> {
-        const debtRegistry = await this.contracts.loadDebtRegistryAsync();
-
-        return debtRegistry.get.callAsync(issuanceHash);
-    }
-
     public deserialize(debtOrderDataAsString: string): DebtOrderData {
         const debtOrderData = JSON.parse(debtOrderDataAsString);
 
