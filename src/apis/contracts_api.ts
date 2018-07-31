@@ -480,6 +480,7 @@ export class ContractsAPI {
         return tokenRegistryContract.getTokenIndexBySymbol.callAsync(symbol);
     }
 
+    // TODO(kayvon): this function is duplicated in the token API and belongs there.
     public async getTokenSymbolByIndexAsync(index: BigNumber): Promise<string> {
         const tokenRegistryContract = await this.loadTokenRegistry();
 
