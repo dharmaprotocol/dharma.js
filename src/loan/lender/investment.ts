@@ -12,6 +12,19 @@ export interface InvestmentParams {
     debtor: EthereumAddress;
 }
 
+export interface InvestmentData {
+    id: string;
+    principalAmount: number;
+    principalTokenSymbol: string;
+    collateralAmount: number;
+    collateralTokenSymbol: string;
+    interestRate: number;
+    termDuration: number;
+    termUnit: string;
+    debtorAddress: string;
+    creditorAddress: string;
+}
+
 /**
  * Describes a loan from a lender's perspective, includes functionality for seizing
  * collateral.
@@ -54,6 +67,31 @@ export class Investment {
     }
 
     constructor(private readonly dharma: Dharma, private readonly data: InvestmentParams) {}
+
+    /**
+     *  Returns the investment's data as vanilla JS types.
+     *
+     * @example
+     * const data = investment.getData();
+     *
+     * @returns {InvestmentData}
+     */
+    public getData(): InvestmentData {
+        const { id, principal, collateral, interestRate, termLength, debtor, creditor } = this.data;
+
+        return {
+            id,
+            principalAmount: principal.decimalAmount,
+            principalTokenSymbol: principal.tokenSymbol,
+            collateralAmount: collateral.decimalAmount,
+            collateralTokenSymbol: collateral.tokenSymbol,
+            interestRate: interestRate.percent,
+            termDuration: termLength.amount,
+            termUnit: termLength.getAmortizationUnit(),
+            debtorAddress: debtor.toString(),
+            creditorAddress: creditor.toString(),
+        };
+    }
 
     /**
      * Eventually seizes the collateral and sends it to the creditor.
