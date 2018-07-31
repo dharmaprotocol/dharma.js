@@ -22,8 +22,8 @@ export class Allowance {
      * returns a transaction hash.
      *
      * @example
-     * const auth = new Authorization(dharma, ethAddress, "WETH");
-     * await auth.makeUnlimitedIfNecessary();
+     * const allowance = new Allowance(dharma, ethAddress, "WETH");
+     * await allowance.makeUnlimitedIfNecessary();
      * => "0x..."
      *
      * @returns {Promise<string | void>}
