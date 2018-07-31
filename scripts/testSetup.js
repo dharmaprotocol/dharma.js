@@ -14,8 +14,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -35,9 +35,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var _this = this;
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var Web3 = require("web3");
-var web3_utils_1 = require("../dist/es/utils/web3_utils");
+var web3_utils_1 = require("../utils/web3_utils");
 var provider = new Web3.providers.HttpProvider("http://localhost:8545");
 var web3 = new Web3(provider);
 var web3Utils = new web3_utils_1.Web3Utils(web3);
@@ -57,4 +57,3 @@ module.exports = function () { return __awaiter(_this, void 0, void 0, function 
         }
     });
 }); };
-//# sourceMappingURL=testSetup.js.map
