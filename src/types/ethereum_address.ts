@@ -24,12 +24,15 @@ export class EthereumAddress {
      * @param  address
      * @returns {Promise<string>} a validated user-specified address, or the current user.
      */
-    public static async validAddressOrCurrentUser(dharma: Dharma, address?: string): Promise<string> {
+    public static async validAddressOrCurrentUser(
+        dharma: Dharma,
+        address?: string,
+    ): Promise<string> {
         if (address) {
             const validAddress = new EthereumAddress(address);
             return validAddress.toString();
         } else {
-            return (await dharma.blockchain.getAccounts())[0];
+            return dharma.blockchain.getCurrentUser();
         }
     }
 
