@@ -1,4 +1,4 @@
-import { Investment } from "./investment";
+import { ExpandedInvestmentData, Investment } from "./investment";
 
 import { Dharma } from "../../dharma";
 
@@ -17,6 +17,19 @@ export class Investments {
         return Promise.all(
             agreementIds.map(async (agreementId) => {
                 return Investment.fetch(dharma, agreementId);
+            }),
+        );
+    }
+
+    public static async getExpandedData(
+        dharma: Dharma,
+        owner: string,
+    ): Promise<ExpandedInvestmentData[]> {
+        const investments = await Investments.get(dharma, owner);
+
+        return Promise.all(
+            investments.map(async (investment) => {
+                return investment.getExpandedData();
             }),
         );
     }
