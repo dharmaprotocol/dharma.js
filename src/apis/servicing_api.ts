@@ -301,19 +301,6 @@ export class ServicingAPI {
         return adapter.getRepaymentSchedule(debtRegistryEntry);
     }
 
-    public async adapterForTermsContract(termsContract: string): Promise<any> {
-        const termsContractType = await this.contracts.getTermsContractType(termsContract);
-
-        switch (termsContractType) {
-            case TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN:
-                return new CollateralizedSimpleInterestLoanAdapter(this.web3, this.contracts);
-            case TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN:
-                return new SimpleInterestLoanAdapter(this.web3, this.contracts);
-        }
-
-        throw new Error(ServicingAPIErrors.UNKNOWN_LOAN_ADAPTER(termsContract));
-    }
-
     private async getTxDefaultOptions(): Promise<TxData> {
         const web3Utils = new Web3Utils(this.web3);
 
@@ -325,5 +312,18 @@ export class ServicingAPI {
             from: accounts[0],
             gas: REPAYMENT_GAS_MAXIMUM,
         };
+    }
+
+    private async adapterForTermsContract(termsContract: string): Promise<any> {
+        const termsContractType = await this.contracts.getTermsContractType(termsContract);
+
+        switch (termsContractType) {
+            case TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN:
+                return new CollateralizedSimpleInterestLoanAdapter(this.web3, this.contracts);
+            case TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN:
+                return new SimpleInterestLoanAdapter(this.web3, this.contracts);
+        }
+
+        throw new Error(ServicingAPIErrors.UNKNOWN_LOAN_ADAPTER(termsContract));
     }
 }
