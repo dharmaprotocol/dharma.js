@@ -29,6 +29,7 @@ export interface LoanRequestParams {
     collateralAmount: number;
     collateralToken: string;
     interestRate: number;
+    relayerFee: number;
     termDuration: number;
     termUnit: DurationUnit;
     debtorAddress: string;
@@ -86,6 +87,7 @@ export class LoanRequest extends Agreement {
             relayerAddress,
             relayerFeeAmount,
             interestRate,
+            relayerFee,
             termDuration,
             termUnit,
             debtorAddress,
@@ -96,6 +98,7 @@ export class LoanRequest extends Agreement {
 
         const principal = new TokenAmount(principalAmount, principalToken);
         const collateral = new TokenAmount(collateralAmount, collateralToken);
+        const relayerFeeAmount = relayerFee || 0;
         const interestRateTyped = new InterestRate(interestRate);
         const termLength = new TimeInterval(termDuration, termUnit);
         const debtorAddressTyped = new EthereumAddress(debtorAddress);
@@ -109,6 +112,7 @@ export class LoanRequest extends Agreement {
             principal,
             collateral,
             interestRate: interestRateTyped,
+            relayerFee: new TokenAmount(relayerFeeAmount, principalToken),
             termLength,
             debtorAddress: debtorAddressTyped,
             expiresAt: expirationTimestampInSec.toNumber(),
