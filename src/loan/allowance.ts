@@ -56,9 +56,8 @@ export class Allowance {
             this.tokenSymbol,
         );
 
-        return this.dharma.token.setProxyAllowanceAsync(
-            tokenAddress,
-            new BigNumber(0), { from: this.owner.toString() },
-        );
+        return this.dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), {
+            from: this.owner.toString(),
+        });
     }
 }
