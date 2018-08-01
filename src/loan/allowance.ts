@@ -1,6 +1,7 @@
 import { EthereumAddress } from "../types";
 
 import { Dharma } from "../dharma";
+import { BigNumber } from "../../utils/bignumber";
 
 /**
  * Provides functionality for token transfer allowance.
@@ -43,5 +44,21 @@ export class Allowance {
                 from: this.owner.toString(),
             });
         }
+    }
+
+    /**
+     * Revokes the proxy's allowance for the current account.
+     *
+     * @returns {Promise<string | void>}
+     */
+    public async revoke(): Promise<string | void> {
+        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
+            this.tokenSymbol,
+        );
+
+        return this.dharma.token.setProxyAllowanceAsync(
+            tokenAddress,
+            new BigNumber(0), { from: this.owner.toString() },
+        );
     }
 }
