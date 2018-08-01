@@ -36,6 +36,7 @@ export interface LoanRequestParams {
     expiresInUnit: DurationUnit;
     relayerAddress?: string;
     relayerFeeAmount?: number;
+    creditorFeeAmount?: number;
 }
 
 export interface LoanRequestTerms {
@@ -90,6 +91,7 @@ export class LoanRequest extends Agreement {
             debtorAddress,
             expiresInDuration,
             expiresInUnit,
+            creditorFeeAmount,
         } = params;
 
         const principal = new TokenAmount(principalAmount, principalToken);
@@ -140,12 +142,17 @@ export class LoanRequest extends Agreement {
             data.relayerFee = new BigNumber(relayerFee.rawAmount);
         }
 
+        if (creditorFeeAmount && creditorFeeAmount > 0) {
+            const creditorFee = new TokenAmount(creditorFeeAmount, principalToken);
+
+            loanRequestConstructorParams.creditorFee = creditorFee;
+            data.creditorFee = creditorFee.rawAmount;
+        }
+
         data.debtor = debtorAddressTyped.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
-
-        console.log("constructor params", loanRequestConstructorParams);
 
         const loanRequest = new LoanRequest(dharma, loanRequestConstructorParams, data);
 
@@ -205,6 +212,10 @@ export class LoanRequest extends Agreement {
 
             loanRequestParams.relayer = relayer;
             loanRequestParams.relayerFee = relayerFee;
+        }
+
+        if (debtOrderData.creditorFee && debtOrderData.creditorFee.greaterThan(0)) {
+            loanRequestParams.creditorFee = TokenAmount.fromRaw(debtOrderData.creditorFee, principal.tokenSymbol);
         }
 
         return new LoanRequest(dharma, loanRequestParams, debtOrderData);

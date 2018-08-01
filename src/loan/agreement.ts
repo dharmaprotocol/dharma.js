@@ -20,6 +20,8 @@ export interface BaseLoanConstructorParams {
     expiresAt: number;
     relayer?: EthereumAddress;
     relayerFee?: TokenAmount;
+    creditorFee?: TokenAmount;
+    debtorFee?: TokenAmount;
 }
 
 export interface LoanData {
