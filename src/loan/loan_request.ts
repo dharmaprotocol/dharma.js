@@ -112,14 +112,6 @@ export class LoanRequest extends Agreement {
             expiresAt: expirationTimestampInSec.toNumber(),
         };
 
-        if (relayerAddress && relayerAddress !== NULL_ADDRESS) {
-            loanRequestConstructorParams.relayer = new EthereumAddress(relayerAddress);
-            loanRequestConstructorParams.relayerFee = new TokenAmount(
-                relayerFeeAmount,
-                principalToken,
-            );
-        }
-
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
             principalTokenSymbol: principal.tokenSymbol,
@@ -137,10 +129,23 @@ export class LoanRequest extends Agreement {
         const repaymentRouter = await dharma.contracts.loadRepaymentRouterAsync();
         const salt = this.generateSalt();
 
+        if (relayerAddress && relayerAddress !== NULL_ADDRESS) {
+            loanRequestConstructorParams.relayer = new EthereumAddress(relayerAddress);
+            loanRequestConstructorParams.relayerFee = new TokenAmount(
+                relayerFeeAmount,
+                principalToken,
+            );
+
+            data.relayer = relayerAddress;
+            data.relayerFee = new BigNumber(relayerFeeAmount);
+        }
+
         data.debtor = debtorAddressTyped.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
+
+        console.log("constructor params", loanRequestConstructorParams);
 
         const loanRequest = new LoanRequest(dharma, loanRequestConstructorParams, data);
 
