@@ -132,10 +132,7 @@ export class LoanRequest extends Agreement {
         if (relayerAddress && relayerAddress !== NULL_ADDRESS) {
             loanRequestConstructorParams.relayer = new EthereumAddress(relayerAddress);
 
-            const relayerFee = new TokenAmount(
-                relayerFeeAmount,
-                principalToken,
-            );
+            const relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
 
             loanRequestConstructorParams.relayerFee = relayerFee;
 
