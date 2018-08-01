@@ -28,6 +28,8 @@ export interface LoanRequestParams {
     collateralAmount: number;
     collateralToken: string;
     interestRate: number;
+    relayerAddress: string;
+    relayerFeeAmount: number;
     termDuration: number;
     termUnit: DurationUnit;
     debtorAddress: string;
@@ -61,6 +63,8 @@ export class LoanRequest extends Agreement {
      *      principalToken: "REP",
      *      collateralAmount: 10,
      *      collateralToken: "MKR",
+     *      relayerAddress: "0x000000000000000000000000000000",
+     *      relayerFeeAmount: 23.1,
      *      interestRate: 12.3,
      *      termDuration: 6,
      *      termUnit: "months",
@@ -77,6 +81,8 @@ export class LoanRequest extends Agreement {
             principalToken,
             collateralAmount,
             collateralToken,
+            relayerAddress,
+            relayerFeeAmount,
             interestRate,
             termDuration,
             termUnit,
@@ -91,6 +97,8 @@ export class LoanRequest extends Agreement {
         const termLength = new TimeInterval(termDuration, termUnit);
         const debtorAddressTyped = new EthereumAddress(debtorAddress);
         const expiresIn = new TimeInterval(expiresInDuration, expiresInUnit);
+        const relayer = new EthereumAddress(relayerAddress);
+        const relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
 
         const currentBlocktime = new BigNumber(await dharma.blockchain.getCurrentBlockTime());
 
@@ -99,6 +107,8 @@ export class LoanRequest extends Agreement {
         const loanRequestConstructorParams: BaseLoanConstructorParams = {
             principal,
             collateral,
+            relayer,
+            relayerFee,
             interestRate: interestRateTyped,
             termLength,
             debtorAddress: debtorAddressTyped,
@@ -168,6 +178,9 @@ export class LoanRequest extends Agreement {
             loanOrder.amortizationUnit,
         );
 
+        const relayer = new EthereumAddress(debtOrderData.relayer);
+        const relayerFee = TokenAmount.fromRaw(debtOrderData.relayerFee, debtOrderData.principalToken);
+
         const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
         const loanRequestParams = {
@@ -175,6 +188,8 @@ export class LoanRequest extends Agreement {
             collateral,
             termLength,
             interestRate,
+            relayer,
+            relayerFee,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
             debtorAddress,
         };
