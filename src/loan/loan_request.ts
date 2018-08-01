@@ -215,7 +215,10 @@ export class LoanRequest extends Agreement {
         }
 
         if (debtOrderData.creditorFee && debtOrderData.creditorFee.greaterThan(0)) {
-            loanRequestParams.creditorFee = TokenAmount.fromRaw(debtOrderData.creditorFee, principal.tokenSymbol);
+            loanRequestParams.creditorFee = TokenAmount.fromRaw(
+                debtOrderData.creditorFee,
+                principal.tokenSymbol,
+            );
         }
 
         return new LoanRequest(dharma, loanRequestParams, debtOrderData);
