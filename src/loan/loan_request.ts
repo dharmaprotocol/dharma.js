@@ -114,7 +114,10 @@ export class LoanRequest extends Agreement {
 
         if (relayerAddress && relayerAddress !== NULL_ADDRESS) {
             loanRequestConstructorParams.relayer = new EthereumAddress(relayerAddress);
-            loanRequestConstructorParams.relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
+            loanRequestConstructorParams.relayerFee = new TokenAmount(
+                relayerFeeAmount,
+                principalToken,
+            );
         }
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
@@ -182,7 +185,7 @@ export class LoanRequest extends Agreement {
 
         const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
-        let loanRequestParams: BaseLoanConstructorParams = {
+        const loanRequestParams: BaseLoanConstructorParams = {
             principal,
             collateral,
             termLength,
