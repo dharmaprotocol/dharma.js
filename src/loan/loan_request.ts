@@ -201,10 +201,7 @@ export class LoanRequest extends Agreement {
 
         if (debtOrderData.relayer && debtOrderData.relayer !== NULL_ADDRESS) {
             const relayer = new EthereumAddress(debtOrderData.relayer);
-            const relayerFee = TokenAmount.fromRaw(
-                debtOrderData.relayerFee,
-                principal.tokenSymbol,
-            );
+            const relayerFee = TokenAmount.fromRaw(debtOrderData.relayerFee, principal.tokenSymbol);
 
             loanRequestParams.relayer = relayer;
             loanRequestParams.relayerFee = relayerFee;
