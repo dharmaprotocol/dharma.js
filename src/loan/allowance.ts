@@ -1,6 +1,7 @@
 import { EthereumAddress } from "../types";
 
 import { Dharma } from "../dharma";
+
 import { BigNumber } from "../../utils/bignumber";
 
 /**
@@ -49,9 +50,9 @@ export class Allowance {
     /**
      * Revokes the proxy's allowance for the current account.
      *
-     * @returns {Promise<string | void>}
+     * @returns {Promise<string>}
      */
-    public async revoke(): Promise<string | void> {
+    public async revoke(): Promise<string> {
         const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
             this.tokenSymbol,
         );
