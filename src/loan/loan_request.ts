@@ -4,6 +4,7 @@ import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
 
 import {
     BLOCK_TIME_ESTIMATE_SECONDS,
+    NULL_ADDRESS,
     NULL_ECDSA_SIGNATURE,
     SALT_DECIMALS,
 } from "../../utils/constants";
@@ -28,13 +29,13 @@ export interface LoanRequestParams {
     collateralAmount: number;
     collateralToken: string;
     interestRate: number;
-    relayerAddress: string;
-    relayerFeeAmount: number;
     termDuration: number;
     termUnit: DurationUnit;
     debtorAddress: string;
     expiresInDuration: number;
     expiresInUnit: DurationUnit;
+    relayerAddress?: string;
+    relayerFeeAmount?: number;
 }
 
 export interface LoanRequestTerms {
@@ -97,8 +98,6 @@ export class LoanRequest extends Agreement {
         const termLength = new TimeInterval(termDuration, termUnit);
         const debtorAddressTyped = new EthereumAddress(debtorAddress);
         const expiresIn = new TimeInterval(expiresInDuration, expiresInUnit);
-        const relayer = new EthereumAddress(relayerAddress);
-        const relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
 
         const currentBlocktime = new BigNumber(await dharma.blockchain.getCurrentBlockTime());
 
@@ -107,13 +106,16 @@ export class LoanRequest extends Agreement {
         const loanRequestConstructorParams: BaseLoanConstructorParams = {
             principal,
             collateral,
-            relayer,
-            relayerFee,
             interestRate: interestRateTyped,
             termLength,
             debtorAddress: debtorAddressTyped,
             expiresAt: expirationTimestampInSec.toNumber(),
         };
+
+        if (relayerAddress && relayerAddress !== NULL_ADDRESS) {
+            loanRequestConstructorParams.relayer = new EthereumAddress(relayerAddress);
+            loanRequestConstructorParams.relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
+        }
 
         const loanOrder: CollateralizedSimpleInterestLoanOrder = {
             principalAmount: principal.rawAmount,
@@ -178,21 +180,27 @@ export class LoanRequest extends Agreement {
             loanOrder.amortizationUnit,
         );
 
-        const relayer = new EthereumAddress(debtOrderData.relayer);
-        const relayerFee = TokenAmount.fromRaw(debtOrderData.relayerFee, debtOrderData.principalToken);
-
         const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
 
-        const loanRequestParams = {
+        let loanRequestParams: BaseLoanConstructorParams = {
             principal,
             collateral,
             termLength,
             interestRate,
-            relayer,
-            relayerFee,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
             debtorAddress,
         };
+
+        if (debtOrderData.relayer && debtOrderData.relayer !== NULL_ADDRESS) {
+            const relayer = new EthereumAddress(debtOrderData.relayer);
+            const relayerFee = TokenAmount.fromRaw(
+                debtOrderData.relayerFee,
+                debtOrderData.principalToken,
+            );
+
+            loanRequestParams.relayer = relayer;
+            loanRequestParams.relayerFee = relayerFee;
+        }
 
         return new LoanRequest(dharma, loanRequestParams, debtOrderData);
     }
@@ -327,7 +335,10 @@ export class LoanRequest extends Agreement {
      * @returns {Promise<boolean>}
      */
     public async isFillable(prospectiveCreditorAddress?: string): Promise<boolean> {
-        const creditor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, prospectiveCreditorAddress);
+        const creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            prospectiveCreditorAddress,
+        );
 
         return this.dharma.order.isFillableBy(this.data, creditor, {
             from: creditor,
@@ -340,7 +351,10 @@ export class LoanRequest extends Agreement {
      * @returns {Promise<void>}
      */
     public async assertFillable(prospectiveCreditorAddress?: string): Promise<void> {
-        const creditor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, prospectiveCreditorAddress);
+        const creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            prospectiveCreditorAddress,
+        );
 
         return this.dharma.order.assertFillableBy(this.data, creditor, {
             from: creditor,
@@ -357,7 +371,10 @@ export class LoanRequest extends Agreement {
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
     public async fill(creditorAddress?: string): Promise<string> {
-        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, creditorAddress);
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
 
         await this.signAsCreditor();
 
