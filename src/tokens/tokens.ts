@@ -9,6 +9,9 @@ export interface TokenData {
     balance: number;
     allowance: number;
     hasUnlimitedAllowance: boolean;
+    name: string;
+    numDecimals: number;
+    address: string;
 }
 
 export class Tokens {
@@ -34,7 +37,7 @@ export class Tokens {
 
     private getDataPromise(tokenAttributes: TokenAttributes): Promise<TokenData> {
         return new Promise((resolve) => {
-            const { address, symbol } = tokenAttributes;
+            const { address, symbol, name, numDecimals } = tokenAttributes;
 
             const balancePromise = this.dharma.token.getBalanceAsync(
                 address,
@@ -59,6 +62,9 @@ export class Tokens {
 
                 resolve({
                     symbol,
+                    name,
+                    address,
+                    numDecimals: numDecimals.toNumber(),
                     balance: balanceAmount.decimalAmount,
                     allowance: allowanceAmount.decimalAmount,
                     hasUnlimitedAllowance,

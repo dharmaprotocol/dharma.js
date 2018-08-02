@@ -138,9 +138,9 @@
   dependencies:
     find-up "^2.1.0"
 
-"@dharmaprotocol/contracts@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.1.3.tgz#75c09cf3a00b1514c8475f967d510fd6dc0230a8"
+"@dharmaprotocol/contracts@0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@dharmaprotocol/contracts/-/contracts-0.1.4.tgz#5d2ec6e1658f9ae391cdd32bfe9e5c268b19a503"
   dependencies:
     zeppelin-solidity "1.8.0"
 
@@ -8641,16 +8641,6 @@ web3-utils@1.0.0-beta.29:
     underscore "1.8.3"
     utf8 "2.1.1"
 
-web3@0.20.7:
-  version "0.20.7"
-  resolved "https://registry.yarnpkg.com/web3/-/web3-0.20.7.tgz#1605e6d81399ed6f85a471a4f3da0c8be57df2f7"
-  dependencies:
-    bignumber.js "git+https://github.com/frozeman/bignumber.js-nolookahead.git"
-    crypto-js "^3.1.4"
-    utf8 "^2.1.1"
-    xhr2-cookies "^1.1.0"
-    xmlhttprequest "*"
-
 web3@^0.18.4:
   version "0.18.4"
   resolved "https://registry.yarnpkg.com/web3/-/web3-0.18.4.tgz#81ec1784145491f2eaa8955b31c06049e07c5e7d"
@@ -8659,6 +8649,16 @@ web3@^0.18.4:
     crypto-js "^3.1.4"
     utf8 "^2.1.1"
     xhr2 "*"
+    xmlhttprequest "*"
+
+web3@~0.20.7:
+  version "0.20.7"
+  resolved "https://registry.yarnpkg.com/web3/-/web3-0.20.7.tgz#1605e6d81399ed6f85a471a4f3da0c8be57df2f7"
+  dependencies:
+    bignumber.js "git+https://github.com/frozeman/bignumber.js-nolookahead.git"
+    crypto-js "^3.1.4"
+    utf8 "^2.1.1"
+    xhr2-cookies "^1.1.0"
     xmlhttprequest "*"
 
 webidl-conversions@^4.0.2:
