@@ -11,6 +11,7 @@ export interface TokenData {
     hasUnlimitedAllowance: boolean;
     name: string;
     numDecimals: number;
+    address: string;
 }
 
 export class Tokens {
@@ -62,6 +63,7 @@ export class Tokens {
                 resolve({
                     symbol,
                     name,
+                    address,
                     numDecimals: numDecimals.toNumber(),
                     balance: balanceAmount.decimalAmount,
                     allowance: allowanceAmount.decimalAmount,
