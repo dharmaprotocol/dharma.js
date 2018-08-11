@@ -43,7 +43,7 @@ export class SignatureUtils {
                 ethUtil.toBuffer(signature.s),
             );
             const retrievedAddress = ethUtil.bufferToHex(ethUtil.pubToAddress(pubKey));
-            return retrievedAddress === signerAddress;
+            return retrievedAddress.toLowerCase() === signerAddress.toLowerCase();
         } catch (err) {
             return false;
         }

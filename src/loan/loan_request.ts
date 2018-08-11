@@ -301,7 +301,9 @@ export class LoanRequest extends Agreement {
             return;
         }
 
-        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, false);
+        this.data.debtorSignature = this.dharma.web3.currentProvider.isMetaMask
+            ? await this.dharma.sign.asDebtor(this.data, true)
+            : await this.dharma.sign.asDebtor(this.data, false);
     }
 
     /**
@@ -409,6 +411,8 @@ export class LoanRequest extends Agreement {
             return;
         }
 
-        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, false);
+        this.data.creditorSignature = this.dharma.web3.currentProvider.isMetaMask
+            ? await this.dharma.sign.asCreditor(this.data, true)
+            : await this.dharma.sign.asCreditor(this.data, false);
     }
 }
