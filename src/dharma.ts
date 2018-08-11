@@ -25,7 +25,7 @@ class Dharma {
     public blockchain: BlockchainAPI;
     public logs: LogsAPI;
 
-    private readonly web3: Web3;
+    public readonly web3: Web3;
 
     constructor(blockchainHost?: string, addressBook: DharmaTypes.AddressBook = {}) {
         /**
