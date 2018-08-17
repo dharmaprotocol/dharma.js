@@ -35,41 +35,30 @@ export class Tokens {
         return this.getDataPromise(attributes);
     }
 
-    private getDataPromise(tokenAttributes: TokenAttributes): Promise<TokenData> {
-        return new Promise((resolve) => {
-            const { address, symbol, name, numDecimals } = tokenAttributes;
+    private async getDataPromise(tokenAttributes: TokenAttributes): Promise<TokenData> {
+        const { address, symbol, name, numDecimals } = tokenAttributes;
 
-            const balancePromise = this.dharma.token.getBalanceAsync(
-                address,
-                this.owner.toString(),
-            );
+        const rawBalance = await this.dharma.token.getBalanceAsync(address, this.owner.toString());
 
-            const allowancePromise = this.dharma.token.getProxyAllowanceAsync(
-                address,
-                this.owner.toString(),
-            );
+        const rawAllowance = await this.dharma.token.getProxyAllowanceAsync(
+            address,
+            this.owner.toString(),
+        );
 
-            Promise.all([balancePromise, allowancePromise]).then((values) => {
-                const [rawBalance, rawAllowance] = values;
+        const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
 
-                const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
+        const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
 
-                const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
+        const hasUnlimitedAllowance = TokenAPI.isUnlimitedAllowance(allowanceAmount.rawAmount);
 
-                const hasUnlimitedAllowance = TokenAPI.isUnlimitedAllowance(
-                    allowanceAmount.rawAmount,
-                );
-
-                resolve({
-                    symbol,
-                    name,
-                    address,
-                    numDecimals: numDecimals.toNumber(),
-                    balance: balanceAmount.decimalAmount,
-                    allowance: allowanceAmount.decimalAmount,
-                    hasUnlimitedAllowance,
-                });
-            });
-        });
+        return {
+            symbol,
+            name,
+            address,
+            numDecimals: numDecimals.toNumber(),
+            balance: balanceAmount.decimalAmount,
+            allowance: allowanceAmount.decimalAmount,
+            hasUnlimitedAllowance,
+        };
     }
 }
