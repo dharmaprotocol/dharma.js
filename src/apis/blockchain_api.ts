@@ -100,8 +100,8 @@ export class BlockchainAPI {
      *
      * @returns {promise<string[]>}
      */
-    public async getAccounts() {
-        return new Promise((resolve, reject) => {
+    public async getAccounts(): Promise<string[]> {
+        return new Promise<string[]>((resolve, reject) => {
             this.web3.eth.getAccounts((err, result) => {
                 if (err) {
                     reject(`Could not retrieve accounts from web3, error: ${err.message}`);
