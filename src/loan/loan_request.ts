@@ -270,6 +270,15 @@ export class LoanRequest extends Agreement {
         return expirationTimestamp.lt(approximateNextBlockTime);
     }
 
+    /**
+     * Returns whether the loan request has been signed by a debtor.
+     *
+     * @example
+     * loanRequest.isSignedByDebtor();
+     * => true
+     *
+     * @return {boolean}
+     */
     public isSignedByDebtor(): boolean {
         return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
