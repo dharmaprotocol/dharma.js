@@ -28,4 +28,8 @@ module.exports = {
             include: /\.min\.js$/,
         }),
     ],
+    externals: {
+        http: "http",
+        https: "https",
+    },
 };
