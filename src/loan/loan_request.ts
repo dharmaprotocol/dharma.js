@@ -400,6 +400,16 @@ export class LoanRequest extends Agreement {
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
+    /**
+     * Eventually returns true once the loan request has been signed by the creditor.
+     * Returns false if the loan request is already signed by a creditor.
+     *
+     * @example
+     * loanRequest.signAsCreditor();
+     * => Promise<boolean>
+     *
+     * @return {boolean}
+     */
     public async signAsCreditor(creditorAddress?: string): Promise<boolean> {
         if (this.isSignedByCreditor()) {
             return false;
