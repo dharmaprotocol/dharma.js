@@ -31,7 +31,6 @@ export interface LoanRequestParams {
     interestRate: number;
     termDuration: number;
     termUnit: DurationUnit;
-    debtorAddress: string;
     expiresInDuration: number;
     expiresInUnit: DurationUnit;
     relayerAddress?: string;
@@ -47,7 +46,6 @@ export interface LoanRequestTerms {
     interestRate: number;
     termDuration: number;
     termUnit: string;
-    debtorAddress: string;
     expiresAt: number;
 }
 
@@ -57,7 +55,7 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually returns an instance of a loan request signed by the debtor.
+     * Eventually returns an instance of a loan request object with the terms specified.
      *
      * @example
      * const loanRequest = await LoanRequest.create(dharma, {
@@ -70,7 +68,6 @@ export class LoanRequest extends Agreement {
      *      interestRate: 12.3,
      *      termDuration: 6,
      *      termUnit: "months",
-     *      debtorAddress: debtor.address,
      *      expiresInDuration: 5,
      *      expiresInUnit: "days",
      *  });
@@ -88,7 +85,6 @@ export class LoanRequest extends Agreement {
             interestRate,
             termDuration,
             termUnit,
-            debtorAddress,
             expiresInDuration,
             expiresInUnit,
             creditorFeeAmount,
@@ -98,7 +94,6 @@ export class LoanRequest extends Agreement {
         const collateral = new TokenAmount(collateralAmount, collateralToken);
         const interestRateTyped = new InterestRate(interestRate);
         const termLength = new TimeInterval(termDuration, termUnit);
-        const debtorAddressTyped = new EthereumAddress(debtorAddress);
         const expiresIn = new TimeInterval(expiresInDuration, expiresInUnit);
 
         const currentBlocktime = new BigNumber(await dharma.blockchain.getCurrentBlockTime());
@@ -110,7 +105,6 @@ export class LoanRequest extends Agreement {
             collateral,
             interestRate: interestRateTyped,
             termLength,
-            debtorAddress: debtorAddressTyped,
             expiresAt: expirationTimestampInSec.toNumber(),
         };
 
@@ -149,16 +143,11 @@ export class LoanRequest extends Agreement {
             data.creditorFee = creditorFee.rawAmount;
         }
 
-        data.debtor = debtorAddressTyped.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
 
-        const loanRequest = new LoanRequest(dharma, loanRequestConstructorParams, data);
-
-        await loanRequest.signAsDebtor();
-
-        return loanRequest;
+        return new LoanRequest(dharma, loanRequestConstructorParams, data);
     }
 
     public static async load(dharma: Dharma, data: LoanData): Promise<LoanRequest> {
@@ -195,15 +184,12 @@ export class LoanRequest extends Agreement {
             loanOrder.amortizationUnit,
         );
 
-        const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
-
         const loanRequestParams: BaseLoanConstructorParams = {
             principal,
             collateral,
             termLength,
             interestRate,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
-            debtorAddress,
         };
 
         if (debtOrderData.relayer && debtOrderData.relayer !== NULL_ADDRESS) {
@@ -225,7 +211,7 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     *  Returns the terms of the loan request as vanilla JS types.
+     *  Returns the terms of the loan request.
      *
      * @example
      * const terms = loanRequest.getTerms();
@@ -233,14 +219,7 @@ export class LoanRequest extends Agreement {
      * @returns {LoanRequestTerms}
      */
     public getTerms(): LoanRequestTerms {
-        const {
-            principal,
-            collateral,
-            interestRate,
-            termLength,
-            debtorAddress,
-            expiresAt,
-        } = this.params;
+        const { principal, collateral, interestRate, termLength, expiresAt } = this.params;
 
         return {
             principalAmount: principal.decimalAmount,
@@ -250,7 +229,6 @@ export class LoanRequest extends Agreement {
             interestRate: interestRate.percent,
             termDuration: termLength.amount,
             termUnit: termLength.getAmortizationUnit(),
-            debtorAddress: debtorAddress.toString(),
             expiresAt,
         };
     }
