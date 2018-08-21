@@ -391,13 +391,20 @@ export class LoanRequest extends Agreement {
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
-    private async signAsCreditor(): Promise<void> {
+    public async signAsCreditor(creditorAddress?: string): Promise<boolean> {
         if (this.isSignedByCreditor()) {
-            return;
+            return false;
         }
+
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
 
         this.data.creditorSignature = this.dharma.web3.currentProvider.isMetaMask
             ? await this.dharma.sign.asCreditor(this.data, true)
             : await this.dharma.sign.asCreditor(this.data, false);
+
+        return true;
     }
 }
