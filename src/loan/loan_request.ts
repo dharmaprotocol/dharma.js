@@ -387,7 +387,7 @@ export class LoanRequest extends Agreement {
         return this.dharma.order.fillAsync(this.data);
     }
 
-    private isSignedByCreditor(): boolean {
+    public isSignedByCreditor(): boolean {
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
