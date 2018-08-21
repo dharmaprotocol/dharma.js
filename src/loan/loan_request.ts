@@ -283,6 +283,16 @@ export class LoanRequest extends Agreement {
         return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
+    /**
+     * Eventually returns true once the loan request has been signed by the debtor.
+     * Returns false if the loan request is already signed by a debtor.
+     *
+     * @example
+     * loanRequest.signAsDebtor();
+     * => Promise<boolean>
+     *
+     * @return {boolean}
+     */
     public async signAsDebtor(debtorAddress?: string): Promise<boolean> {
         if (this.isSignedByDebtor()) {
             return false;
