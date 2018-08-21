@@ -274,14 +274,21 @@ export class LoanRequest extends Agreement {
         return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
-    public async signAsDebtor() {
+    public async signAsDebtor(debtorAddress?: string): Promise<boolean> {
         if (this.isSignedByDebtor()) {
-            return;
+            return false;
         }
+
+        this.data.debtor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            debtorAddress,
+        );
 
         this.data.debtorSignature = this.dharma.web3.currentProvider.isMetaMask
             ? await this.dharma.sign.asDebtor(this.data, true)
             : await this.dharma.sign.asDebtor(this.data, false);
+
+        return true;
     }
 
     /**
