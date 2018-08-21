@@ -387,6 +387,15 @@ export class LoanRequest extends Agreement {
         return this.dharma.order.fillAsync(this.data);
     }
 
+    /**
+     * Returns whether the loan request has been signed by a creditor.
+     *
+     * @example
+     * loanRequest.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
     public isSignedByCreditor(): boolean {
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
