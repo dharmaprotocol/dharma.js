@@ -1,19 +1,16 @@
 jest.unmock("@dharmaprotocol/contracts");
 
-import * as Web3 from "web3";
-import { Web3Utils } from "../../../utils/web3_utils";
-
 import { Dharma } from "../../../src/dharma";
 import { TokenData } from "../../../src/token/token";
 import { Token } from "../../../src/types";
 
 import { ACCOUNTS } from "../../accounts";
 
-import { setBalanceForSymbol, setUnlimitedAllowanceForSymbol } from "../../utils/utils";
-
-const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-const web3 = new Web3(provider);
-const web3Utils = new Web3Utils(web3);
+import {
+    revokeAllowanceForSymbol,
+    setBalanceForSymbol,
+    setUnlimitedAllowanceForSymbol,
+} from "../../utils/utils";
 
 const dharma = new Dharma("http://localhost:8545");
 const BALANCE = 10;
@@ -22,6 +19,46 @@ const TOKEN_SYMBOL = "MKR";
 const OWNER = ACCOUNTS[0].address;
 
 describe("Token (Integration)", () => {
+    describe("#makeAllowanceUnlimitedIfNecessary", () => {
+        describe("when the user does not have any allowance", () => {
+            let txHash: string | void;
+
+            beforeAll(async () => {
+                txHash = await Token.makeAllowanceUnlimitedIfNecessary(dharma, TOKEN_SYMBOL, OWNER);
+            });
+
+            test("returns a transaction hash", () => {
+                expect(typeof txHash).toEqual("string");
+            });
+
+            test("sets the allowance to unlimited", async () => {
+                const tokenData = await Token.getDataForSymbol(dharma, TOKEN_SYMBOL, OWNER);
+                expect(tokenData.hasUnlimitedAllowance).toEqual(true);
+            });
+        });
+
+        describe("when the user already has an unlimited allowance", () => {
+            let txHash: string | void;
+
+            beforeAll(async () => {
+                txHash = await Token.makeAllowanceUnlimitedIfNecessary(dharma, TOKEN_SYMBOL, OWNER);
+            });
+
+            afterAll(async () => {
+                await revokeAllowanceForSymbol(dharma, TOKEN_SYMBOL, OWNER);
+            });
+
+            test("does not return a transaction hash", () => {
+                expect(txHash).toBeUndefined();
+            });
+
+            test("the allowance remains unlimited", async () => {
+                const tokenData = await Token.getDataForSymbol(dharma, TOKEN_SYMBOL, OWNER);
+                expect(tokenData.hasUnlimitedAllowance).toEqual(true);
+            });
+        });
+    });
+
     describe("#getDataForSymbol", () => {
         beforeAll(async () => {
             await setBalanceForSymbol(dharma, BALANCE, TOKEN_SYMBOL, OWNER);
@@ -50,18 +87,13 @@ describe("Token (Integration)", () => {
             });
 
             describe("when the token owner has unlimited allowance set for the proxy", () => {
-                let currentSnapshotId: number;
-
                 beforeAll(async () => {
-                    currentSnapshotId = await web3Utils.saveTestSnapshot();
-
                     await setUnlimitedAllowanceForSymbol(dharma, TOKEN_SYMBOL, OWNER);
-
                     tokenData = await Token.getDataForSymbol(dharma, TOKEN_SYMBOL, OWNER);
                 });
 
-                afterEach(async () => {
-                    await web3Utils.revertToSnapshot(currentSnapshotId);
+                afterAll(async () => {
+                    await revokeAllowanceForSymbol(dharma, TOKEN_SYMBOL, OWNER);
                 });
 
                 test("it returns true for hasUnlimitedAllowance", () => {
