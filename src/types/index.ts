@@ -1,4 +1,4 @@
-export { Allowance, Debt, Investment, Investments, Loan, LoanRequest } from "../loan";
+export { Debt, Investment, Investments, Loan, LoanRequest } from "../loan";
 export { Token } from "../token";
 
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
