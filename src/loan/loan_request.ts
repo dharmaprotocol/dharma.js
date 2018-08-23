@@ -23,6 +23,12 @@ import {
     TokenAmount,
 } from "../types";
 
+export const LOAN_REQUEST_ERRORS = {
+    ALREADY_SIGNED_BY_DEBTOR: `The loan request has already been signed by the debtor.`,
+    ALREADY_SIGNED_BY_CREDITOR: `The loan request has already been signed by the creditor.`,
+    NOT_YET_FILLED: `The loan request has yet to be filled.`,
+};
+
 export interface LoanRequestParams {
     principalAmount: number;
     principalToken: string;
@@ -234,7 +240,9 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually returns an instance of the associated loan iff the loan is filled.
+     * Eventually returns an instance of the associated loan.
+     *
+     * @throws Throws if the loan request has yet to be filled.
      *
      * @example
      * const loan = await loanRequest.generateLoan();
@@ -245,7 +253,7 @@ export class LoanRequest extends Agreement {
         const isFilled = await this.isFilled();
 
         if (!isFilled) {
-            throw new Error("The loan request has yet to be filled on the blockchain.");
+            throw new Error(LOAN_REQUEST_ERRORS.NOT_YET_FILLED);
         }
 
         return new Loan(this.dharma, this.params, this.data);
@@ -284,18 +292,19 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually returns true once the loan request has been signed by the debtor.
-     * Returns false if the loan request is already signed by a debtor.
+     * Eventually signs the loan request as the debtor.
+     *
+     * @throws Throws if the loan request is already signed by a debtor.
      *
      * @example
      * loanRequest.signAsDebtor();
-     * => Promise<boolean>
+     * => Promise<void>
      *
-     * @return {boolean}
+     * @return {void}
      */
-    public async signAsDebtor(debtorAddress?: string): Promise<boolean> {
+    public async signAsDebtor(debtorAddress?: string): Promise<void> {
         if (this.isSignedByDebtor()) {
-            return false;
+            throw Error(LOAN_REQUEST_ERRORS.ALREADY_SIGNED_BY_DEBTOR);
         }
 
         this.data.debtor = await EthereumAddress.validAddressOrCurrentUser(
@@ -306,8 +315,6 @@ export class LoanRequest extends Agreement {
         this.data.debtorSignature = this.dharma.web3.currentProvider.isMetaMask
             ? await this.dharma.sign.asDebtor(this.data, true)
             : await this.dharma.sign.asDebtor(this.data, false);
-
-        return true;
     }
 
     /**
@@ -420,18 +427,19 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually returns true once the loan request has been signed by the creditor.
-     * Returns false if the loan request is already signed by a creditor.
+     * Eventually signs the loan request as the creditor.
+     *
+     * @throws Throws if the loan request is already signed by a creditor.
      *
      * @example
      * loanRequest.signAsCreditor();
-     * => Promise<boolean>
+     * => Promise<void>
      *
-     * @return {boolean}
+     * @return {Promise<void>}
      */
-    public async signAsCreditor(creditorAddress?: string): Promise<boolean> {
+    public async signAsCreditor(creditorAddress?: string): Promise<void> {
         if (this.isSignedByCreditor()) {
-            return false;
+            throw new Error(LOAN_REQUEST_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
         }
 
         this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
@@ -442,7 +450,5 @@ export class LoanRequest extends Agreement {
         this.data.creditorSignature = this.dharma.web3.currentProvider.isMetaMask
             ? await this.dharma.sign.asCreditor(this.data, true)
             : await this.dharma.sign.asCreditor(this.data, false);
-
-        return true;
     }
 }
