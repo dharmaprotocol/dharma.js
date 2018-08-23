@@ -14,7 +14,6 @@ export { EthereumAddress } from "./ethereum_address";
 export { DebtKernelError } from "./debt_kernel_error";
 export { RepaymentSchedule } from "./repayment_schedule";
 export { RepaymentRouterError } from "./repayment_router_error";
-export { Token } from "./token";
 export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";

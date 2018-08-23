@@ -1,13 +1,34 @@
 // Utils
 import { BigNumber } from "../../utils/bignumber";
 
-// Types
-import { Token } from "../types";
+import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../utils/constants";
+
+interface RegistryData {
+    symbol: string;
+    numDecimals: BigNumber;
+    name: string;
+}
+
+function registryDataForSymbol(symbol: string): RegistryData {
+    const registryData = TOKEN_REGISTRY_TRACKED_TOKENS.find(
+        (tokenObject) => tokenObject.symbol === symbol,
+    );
+
+    if (!registryData) {
+        throw new Error("Cannot find token with given symbol in token registry");
+    }
+
+    return {
+        symbol,
+        numDecimals: new BigNumber(registryData.decimals),
+        name: registryData.name,
+    };
+}
 
 export class TokenAmount {
     public static fromRaw(rawAmount: BigNumber, symbol: string) {
-        const token = new Token(symbol);
-        const decimalAmount = TokenAmount.convertToDecimal(rawAmount, token.numDecimals);
+        const { numDecimals } = registryDataForSymbol(symbol);
+        const decimalAmount = TokenAmount.convertToDecimal(rawAmount, numDecimals);
         return new TokenAmount(decimalAmount, symbol);
     }
 
@@ -20,33 +41,33 @@ export class TokenAmount {
     }
 
     public readonly rawAmount: BigNumber;
-    private readonly token: Token;
+    private readonly data: RegistryData;
 
     constructor(amount: number, symbol: string) {
-        this.token = new Token(symbol);
+        this.data = registryDataForSymbol(symbol);
         this.rawAmount = TokenAmount.convertToRaw(
             new BigNumber(amount.toString()),
-            this.token.numDecimals,
+            this.data.numDecimals,
         );
     }
 
     get tokenNumDecimals(): number {
-        return this.token.numDecimals.toNumber();
+        return this.data.numDecimals.toNumber();
     }
 
     get tokenName(): string {
-        return this.token.name;
+        return this.data.name;
     }
 
     get tokenSymbol(): string {
-        return this.token.symbol;
+        return this.data.symbol;
     }
 
     get decimalAmount(): number {
-        return TokenAmount.convertToDecimal(this.rawAmount, this.token.numDecimals);
+        return TokenAmount.convertToDecimal(this.rawAmount, this.data.numDecimals);
     }
 
     public toString(): string {
-        return `${this.decimalAmount} ${this.token.symbol}`;
+        return `${this.decimalAmount} ${this.data.symbol}`;
     }
 }
