@@ -5,60 +5,62 @@ import { Dharma } from "../dharma";
 import { BigNumber } from "../../utils/bignumber";
 
 /**
- * Provides functionality for token transfer allowance.
+ * Module that provides methods for setting token transfer allowances.
+ *
+ * Note: this class is never instantiated. It's a namespace that encapsulates allowance functionality.
  */
 export class Allowance {
-    private owner: EthereumAddress;
-
-    constructor(
-        private readonly dharma: Dharma,
-        owner: string,
-        private readonly tokenSymbol: string,
-    ) {
-        this.owner = new EthereumAddress(owner);
-    }
-
     /**
-     * Eventually sets the transfer allowance of the current token and user address pair
-     * on the token transfer proxy to unlimited if necessary. If an update occurs, this method
-     * returns a transaction hash.
+     * If necessary, eventually sets the transfer allowance for the specified token and user address
+     * pair to unlimited. If an update occurs, the method returns a transaction hash.
      *
      * @example
-     * const allowance = new Allowance(dharma, ethAddress, "WETH");
-     * await allowance.makeUnlimitedIfNecessary();
+     * await Allowance.makeUnlimitedIfNecessary(dharma, "0x...", "REP");
      * => "0x..."
      *
      * @returns {Promise<string | void>}
      */
-    public async makeUnlimitedIfNecessary(): Promise<string | void> {
-        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
-            this.tokenSymbol,
-        );
+    public static async makeUnlimitedIfNecessary(
+        dharma: Dharma,
+        owner: string,
+        tokenSymbol: string,
+    ): Promise<string | void> {
+        EthereumAddress.assertValid(owner);
 
-        const hasUnlimitedAllowance = await this.dharma.token.hasUnlimitedAllowance(
+        const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+
+        const hasUnlimitedAllowance = await dharma.token.hasUnlimitedAllowance(
             tokenAddress,
-            this.owner.toString(),
+            owner.toString(),
         );
 
         if (!hasUnlimitedAllowance) {
-            return this.dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
-                from: this.owner.toString(),
+            return dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
+                from: owner,
             });
         }
     }
 
     /**
-     * Revokes the proxy's allowance for the current account.
+     * Revokes the proxy's allowance for the specified token and user address pair
+     *
+     * * @example
+     * await Allowance.revoke(dharma, "0x...", "REP");
+     * => "0x..."
      *
      * @returns {Promise<string>}
      */
-    public async revoke(): Promise<string> {
-        const tokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
-            this.tokenSymbol,
-        );
+    public static async revoke(
+        dharma: Dharma,
+        owner: string,
+        tokenSymbol: string,
+    ): Promise<string> {
+        EthereumAddress.assertValid(owner);
 
-        return this.dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), {
-            from: this.owner.toString(),
+        const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+
+        return dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), {
+            from: owner,
         });
     }
 }
