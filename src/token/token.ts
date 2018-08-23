@@ -41,8 +41,9 @@ export async function getDataForSymbol(
 }
 
 /**
- * If necessary, eventually sets the transfer allowance for the specified token and user address
- * pair to unlimited. If an update occurs, the method returns a transaction hash.
+ * If necessary, eventually sets the proxy's allowance for the specified token and user address
+ * pair to unlimited. If an update occurs, the method returns a transaction hash. Otherwise, this is
+ * a no op.
  *
  * @example
  * await Token.makeAllowanceUnlimitedIfNecessary(dharma, "0x...", "REP");
@@ -69,7 +70,7 @@ export async function makeAllowanceUnlimitedIfNecessary(
 }
 
 /**
- * Revokes the proxy's allowance for the specified token and user address pair.
+ * Eventually revokes the proxy's allowance for the specified token and user address pair.
  *
  * * @example
  * await Token.revokeAllowance(dharma, "0x...", "REP");
