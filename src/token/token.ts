@@ -14,7 +14,7 @@ export interface TokenData {
     address: string;
 }
 
-export class Tokens {
+export class Token {
     private readonly owner: EthereumAddress;
 
     public constructor(private dharma: Dharma, owner: string) {
