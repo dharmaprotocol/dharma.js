@@ -4,6 +4,8 @@ import { EthereumAddress, TokenAmount } from "../types";
 
 import { TokenAPI, TokenAttributes } from "../apis/token_api";
 
+import { BigNumber } from "../../utils/bignumber";
+
 export interface TokenData {
     symbol: string;
     balance: number;
@@ -36,6 +38,57 @@ export async function getDataForSymbol(
     const attributes = await dharma.token.getTokenAttributesBySymbol(symbol);
 
     return getDataPromise(dharma, attributes, owner);
+}
+
+/**
+ * If necessary, eventually sets the transfer allowance for the specified token and user address
+ * pair to unlimited. If an update occurs, the method returns a transaction hash.
+ *
+ * @example
+ * await Token.makeAllowanceUnlimitedIfNecessary(dharma, "0x...", "REP");
+ * => "0x..."
+ *
+ * @returns {Promise<string | void>}
+ */
+export async function makeAllowanceUnlimitedIfNecessary(
+    dharma: Dharma,
+    tokenSymbol: string,
+    owner: string,
+): Promise<string | void> {
+    EthereumAddress.assertValid(owner);
+
+    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+
+    const hasUnlimitedAllowance = await dharma.token.hasUnlimitedAllowance(tokenAddress, owner);
+
+    if (!hasUnlimitedAllowance) {
+        return dharma.token.setUnlimitedProxyAllowanceAsync(tokenAddress, {
+            from: owner,
+        });
+    }
+}
+
+/**
+ * Revokes the proxy's allowance for the specified token and user address pair.
+ *
+ * * @example
+ * await Token.revokeAllowance(dharma, "0x...", "REP");
+ * => "0x..."
+ *
+ * @returns {Promise<string>}
+ */
+export async function revokeAllowance(
+    dharma: Dharma,
+    tokenSymbol: string,
+    owner: string,
+): Promise<string> {
+    EthereumAddress.assertValid(owner);
+
+    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+
+    return dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), {
+        from: owner,
+    });
 }
 
 function getDataPromise(
