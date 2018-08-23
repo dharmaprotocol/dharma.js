@@ -201,7 +201,7 @@ export class OrderAPI {
     }
 
     /**
-     * Asynchronously cancel a debt order if it has yet to be fulfilled.
+     * Asynchronously cancel a debt order if it has yet to be filled.
      *
      * @param  debtOrderData the debt order to be canceled.
      * @param  options   any params needed to modify the Ethereum transaction.
