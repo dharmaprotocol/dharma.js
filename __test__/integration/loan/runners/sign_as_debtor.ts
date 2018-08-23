@@ -5,19 +5,25 @@ import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 import { Dharma } from "../../../../src/dharma";
 
 export async function testSignAsDebtor(dharma: Dharma, params: LoanRequestParams) {
-    describe("when the order is already signed by the debtor during #create", () => {
+    describe("when the loan request is first created", () => {
         let loanRequest: LoanRequest;
 
         beforeAll(async () => {
             loanRequest = await LoanRequest.create(dharma, params);
         });
 
-        it("it does not call dharma.sign.byDebtor", async () => {
-            const spy = jest.spyOn(dharma.sign, "asDebtor");
+        it("is not signed by the debtor", () => {
+            expect(loanRequest.isSignedByDebtor()).toEqual(false);
+        });
 
-            await loanRequest.signAsDebtor();
+        describe("once the loan request has been signed by the debtor", () => {
+            beforeAll(async () => {
+                await loanRequest.signAsDebtor();
+            });
 
-            expect(spy).not.toHaveBeenCalled();
+            it("is signed by the debtor", () => {
+                expect(loanRequest.isSignedByDebtor()).toEqual(true);
+            });
         });
     });
 }

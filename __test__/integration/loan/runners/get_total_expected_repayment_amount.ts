@@ -11,7 +11,7 @@ import { Loan, LoanRequest, LoanRequestParams } from "../../../../src/loan";
 import { Dharma } from "../../../../src/dharma";
 
 // Types
-import { EthereumAddress, InterestRate, TokenAmount } from "../../../../src/types";
+import { InterestRate, TokenAmount } from "../../../../src/types";
 
 import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
 
