@@ -1,1 +1,3 @@
-export { Token } from "./token";
+import * as Token from "./token";
+
+export { Token };

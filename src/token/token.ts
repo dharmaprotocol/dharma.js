@@ -14,62 +14,60 @@ export interface TokenData {
     address: string;
 }
 
-export class Token {
-    private readonly owner: EthereumAddress;
+export async function all(dharma: Dharma, owner: string): Promise<TokenData[]> {
+    EthereumAddress.assertValid(owner);
 
-    public constructor(private dharma: Dharma, owner: string) {
-        this.owner = new EthereumAddress(owner);
+    const tokens = await dharma.token.getSupportedTokens();
 
-        this.getDataPromise = this.getDataPromise.bind(this);
-    }
+    return Promise.all(
+        tokens.map((attributes) => {
+            return getDataPromise(dharma, attributes, owner);
+        }),
+    );
+}
 
-    public async get(): Promise<TokenData[]> {
-        const tokens = await this.dharma.token.getSupportedTokens();
+export async function getDataForSymbol(
+    dharma: Dharma,
+    symbol: string,
+    owner: string,
+): Promise<TokenData> {
+    EthereumAddress.assertValid(owner);
 
-        return Promise.all(tokens.map(this.getDataPromise));
-    }
+    const attributes = await dharma.token.getTokenAttributesBySymbol(symbol);
 
-    public async getTokenDataForSymbol(symbol: string): Promise<TokenData> {
-        const attributes = await this.dharma.token.getTokenAttributesBySymbol(symbol);
+    return getDataPromise(dharma, attributes, owner);
+}
 
-        return this.getDataPromise(attributes);
-    }
+function getDataPromise(
+    dharma: Dharma,
+    tokenAttributes: TokenAttributes,
+    owner: string,
+): Promise<TokenData> {
+    return new Promise((resolve) => {
+        const { address, symbol, name, numDecimals } = tokenAttributes;
 
-    private getDataPromise(tokenAttributes: TokenAttributes): Promise<TokenData> {
-        return new Promise((resolve) => {
-            const { address, symbol, name, numDecimals } = tokenAttributes;
+        const balancePromise = dharma.token.getBalanceAsync(address, owner);
 
-            const balancePromise = this.dharma.token.getBalanceAsync(
+        const allowancePromise = dharma.token.getProxyAllowanceAsync(address, owner);
+
+        Promise.all([balancePromise, allowancePromise]).then((values) => {
+            const [rawBalance, rawAllowance] = values;
+
+            const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
+
+            const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
+
+            const hasUnlimitedAllowance = TokenAPI.isUnlimitedAllowance(allowanceAmount.rawAmount);
+
+            resolve({
+                symbol,
+                name,
                 address,
-                this.owner.toString(),
-            );
-
-            const allowancePromise = this.dharma.token.getProxyAllowanceAsync(
-                address,
-                this.owner.toString(),
-            );
-
-            Promise.all([balancePromise, allowancePromise]).then((values) => {
-                const [rawBalance, rawAllowance] = values;
-
-                const balanceAmount = TokenAmount.fromRaw(rawBalance, symbol);
-
-                const allowanceAmount = TokenAmount.fromRaw(rawAllowance, symbol);
-
-                const hasUnlimitedAllowance = TokenAPI.isUnlimitedAllowance(
-                    allowanceAmount.rawAmount,
-                );
-
-                resolve({
-                    symbol,
-                    name,
-                    address,
-                    numDecimals: numDecimals.toNumber(),
-                    balance: balanceAmount.decimalAmount,
-                    allowance: allowanceAmount.decimalAmount,
-                    hasUnlimitedAllowance,
-                });
+                numDecimals: numDecimals.toNumber(),
+                balance: balanceAmount.decimalAmount,
+                allowance: allowanceAmount.decimalAmount,
+                hasUnlimitedAllowance,
             });
         });
-    }
+    });
 }
