@@ -1,4 +1,3 @@
-export { Allowance } from "./allowance";
 export { Debt } from "./debt";
 export { Investment } from "./investment";
 export { Investments } from "./investments";

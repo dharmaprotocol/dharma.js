@@ -1,5 +1,5 @@
-export { Allowance, Debt, Investment, Investments, Loan, LoanRequest } from "../loan";
-export { Tokens } from "../tokens";
+export { Debt, Investment, Investments, Loan, LoanRequest } from "../loan";
+export { Token } from "../token";
 
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
 export { DurationUnit } from "./time_interval";
@@ -14,7 +14,6 @@ export { EthereumAddress } from "./ethereum_address";
 export { DebtKernelError } from "./debt_kernel_error";
 export { RepaymentSchedule } from "./repayment_schedule";
 export { RepaymentRouterError } from "./repayment_router_error";
-export { Token } from "./token";
 export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";
