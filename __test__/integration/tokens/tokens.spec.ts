@@ -19,12 +19,11 @@ import { UNLIMITED_ALLOWANCE } from "../../../src/apis/token_api";
 
 jest.unmock("@dharmaprotocol/contracts");
 
-const dharma = new Dharma("http://localhost:8545");
-
 const OWNER = ACCOUNTS[0].address;
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
+const dharma = new Dharma(web3);
 const web3Utils = new Web3Utils(web3);
 
 const contractsApi = new ContractsAPI(web3);
