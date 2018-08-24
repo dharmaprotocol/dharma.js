@@ -395,7 +395,7 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually fills the loan request, transferring the principal to the debtor.
+     * Eventually fills the loan request as creditor, transferring the principal to the debtor.
      *
      * @example
      * loanRequest.fill();
@@ -403,13 +403,11 @@ export class LoanRequest extends Agreement {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
-    public async fill(creditorAddress?: string): Promise<string> {
-        if (!this.isSignedByCreditor()) {
-            this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
-                this.dharma,
-                creditorAddress,
-            );
-        }
+    public async fillAsCreditor(creditorAddress?: string): Promise<string> {
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
 
         return this.dharma.order.fillAsync(this.data);
     }
