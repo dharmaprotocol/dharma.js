@@ -16,6 +16,19 @@ export interface TokenData {
     address: string;
 }
 
+/**
+ * Eventually returns token data for all tokens listed in the Dharma Token Registry.
+ *
+ * The balances and allowances are returned as specified by the owner param.
+ *
+ * @example
+ * await Token.all(dharma, "0x...");
+ * => {Promise<TokenData[]>}
+ *
+ * @param  dharma an instance of Dharma.js
+ * @param  owner  the address for whom token balances and allowances will be retrieved
+ * @returns {Promise<TokenData[]>}
+ */
 export async function all(dharma: Dharma, owner: string): Promise<TokenData[]> {
     EthereumAddress.assertValid(owner);
 
