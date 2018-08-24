@@ -20,7 +20,7 @@ const MAX_COLLATERAL_TOKEN_INDEX_HEX = (TOKEN_REGISTRY_TRACKED_TOKENS.length - 1
 const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
 const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
 
-export class CollateralizedLoanTerms {
+export class ERC721CollateralizedLoanTerms {
     private assert: Assertions;
 
     constructor(web3: Web3, contractsAPI: ContractsAPI) {
