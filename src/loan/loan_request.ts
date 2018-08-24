@@ -27,6 +27,7 @@ export const LOAN_REQUEST_ERRORS = {
     ALREADY_SIGNED_BY_DEBTOR: `The loan request has already been signed by the debtor.`,
     ALREADY_SIGNED_BY_CREDITOR: `The loan request has already been signed by the creditor.`,
     NOT_YET_FILLED: `The loan request has yet to be filled.`,
+    PROXY_FILL_DISALLOWED: `A loan request must be signed by both the creditor and debtor before it can be filled by proxy.`,
 };
 
 export interface LoanRequestParams {
@@ -411,6 +412,26 @@ export class LoanRequest extends Agreement {
         }
 
         return this.dharma.order.fillAsync(this.data);
+    }
+
+    /**
+     * Eventually fills the loan as proxy. Requires that the loan request be signed by both the
+     * creditor and debtor.
+     *
+     * @throws Throws if the loan request is not signed by both the creditor and debtor.
+     *
+     * @example
+     * loanRequest.fillAsProxy();
+     * => Promise<string>
+     *
+     * @return {Promise<string>}
+     */
+    public fillAsProxy(): Promise<string> {
+        if (this.isSignedByCreditor() && this.isSignedByDebtor()) {
+            return this.dharma.order.fillAsync(this.data);
+        } else {
+            throw new Error(LOAN_REQUEST_ERRORS.PROXY_FILL_DISALLOWED);
+        }
     }
 
     /**
