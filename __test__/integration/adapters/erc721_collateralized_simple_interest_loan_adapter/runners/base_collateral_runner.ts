@@ -15,7 +15,7 @@ import {
     DebtKernelContract,
     DummyTokenContract,
     RepaymentRouterContract,
-    TokenTransferProxyContract
+    TokenTransferProxyContract,
 } from "../../../../../src/wrappers";
 // APIs
 import { ContractsAPI, OrderAPI, ServicingAPI, SignerAPI, TokenAPI } from "../../../../../src/apis";
