@@ -69,156 +69,79 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
 
     const scenario1: Scenario = {
         unpackedParams: {
-            collateralTokenIndex: new BigNumber(0),
-            collateralAmount: new BigNumber(3.5 * 10 ** 18),
-            gracePeriodInDays: new BigNumber(5),
+            erc721ContractIndex: new BigNumber(0),
+            tokenReference: "0",
+            isEnumerable: new BigNumber(1),
         },
         packedParams: "0x000000000000000000000000000000000000000000000030927f74c9de000005",
     };
 
-    const scenario2: Scenario = {
-        unpackedParams: {
-            collateralTokenIndex: new BigNumber(1),
-            collateralAmount: new BigNumber(723489020 * 10 ** 18),
-            gracePeriodInDays: new BigNumber(30),
-        },
-        packedParams: "0x00000000000000000000000000000000000000125674c25cd7f81d067000001e",
-    };
-
-    const scenario3: Scenario = {
-        unpackedParams: {
-            collateralTokenIndex: new BigNumber(8),
-            collateralAmount: new BigNumber(1212234234 * 10 ** 18),
-            gracePeriodInDays: new BigNumber(90),
-        },
-        packedParams: "0x0000000000000000000000000000000000000083eabc9580d20c1abba800005a",
-    };
+    // const scenario2: Scenario = {
+    //     unpackedParams: {
+    //         collateralTokenIndex: new BigNumber(1),
+    //         collateralAmount: new BigNumber(723489020 * 10 ** 18),
+    //         gracePeriodInDays: new BigNumber(30),
+    //     },
+    //     packedParams: "0x00000000000000000000000000000000000000125674c25cd7f81d067000001e",
+    // };
+    //
+    // const scenario3: Scenario = {
+    //     unpackedParams: {
+    //         collateralTokenIndex: new BigNumber(8),
+    //         collateralAmount: new BigNumber(1212234234 * 10 ** 18),
+    //         gracePeriodInDays: new BigNumber(90),
+    //     },
+    //     packedParams: "0x0000000000000000000000000000000000000083eabc9580d20c1abba800005a",
+    // };
 
     describe("#packParameters", () => {
-        describe("...with invalid collateral token index", () => {
-            test("should throw INVALID_TOKEN_INDEX error", () => {
-                const invalidCollateralTokenIndex = new BigNumber(300);
-
-                expect(() => {
-                    collateralizedLoanTerms.packParameters({
-                        ...scenario1.unpackedParams,
-                        collateralTokenIndex: invalidCollateralTokenIndex,
-                    });
-                }).toThrow(
-                    ERC721CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(
-                        invalidCollateralTokenIndex,
-                    ),
-                );
-            });
-        });
         describe("...with collateral token index that is not tracked", () => {
             test("should throw INVALID_TOKEN_INDEX error", () => {
-                const invalidCollateralTokenIndex = new BigNumber(
+                const invalidERC721ContractIndex = new BigNumber(
                     TOKEN_REGISTRY_TRACKED_TOKENS.length,
                 );
 
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
-                        collateralTokenIndex: invalidCollateralTokenIndex,
+                        erc721ContractIndex: invalidERC721ContractIndex,
                     });
                 }).toThrow(
-                    ERC721CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(
-                        invalidCollateralTokenIndex,
+                    ERC721CollateralizerAdapterErrors.INVALID_CONTRACT_INDEX(
+                        invalidERC721ContractIndex,
                     ),
                 );
             });
         });
-        describe("...with collateral amount > 2^92 - 1", () => {
-            test("should throw COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM error", () => {
+
+        describe("...with invalid isEnumerable", () => {
+            test("should throw INVALID_IS_ENUMERABLE_FLAG error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
-                        collateralAmount: new BigNumber(3.5 * 10 ** 38),
+                        isEnumerable: new BigNumber(2),
                     });
-                }).toThrow(ERC721CollateralizerAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
+                }).toThrow(ERC721CollateralizerAdapterErrors.INVALID_IS_ENUMERABLE_FLAG());
             });
         });
-        describe("...with collateral amount < 0", () => {
-            test("should throw COLLATERAL_AMOUNT_MUST_BE_POSITIVE error", () => {
+
+        describe("...with invalid token reference", () => {
+            test("should throw INVALID_TOKEN_REFERENCE error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
-                        collateralAmount: new BigNumber(0),
+                        tokenReference: "-1",
                     });
-                }).toThrow(ERC721CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE());
+                }).toThrow(ERC721CollateralizerAdapterErrors.INVALID_TOKEN_REFERENCE());
             });
         });
-        describe("...with collateral amount = 0", () => {
-            test("should throw COLLATERAL_AMOUNT_MUST_BE_POSITIVE error", () => {
-                expect(() => {
-                    collateralizedLoanTerms.packParameters({
-                        ...scenario1.unpackedParams,
-                        collateralAmount: new BigNumber(-1),
-                    });
-                }).toThrow(ERC721CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE());
-            });
-        });
-        describe("...with collateral amount containing decimals", () => {
-            test("should throw INVALID_DECIMAL_VALUE error", () => {
-                expect(() => {
-                    collateralizedLoanTerms.packParameters({
-                        ...scenario1.unpackedParams,
-                        collateralAmount: new BigNumber(100.4567),
-                    });
-                }).toThrowError(ERC721CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
-            });
-        });
-        describe("...with grace period in days < 0", () => {
-            test("should throw GRACE_PERIOD_IS_NEGATIVE error", () => {
-                expect(() => {
-                    collateralizedLoanTerms.packParameters({
-                        ...scenario1.unpackedParams,
-                        gracePeriodInDays: new BigNumber(-1),
-                    });
-                }).toThrowError(ERC721CollateralizerAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
-            });
-        });
-        describe("...with grace period in days > 255", () => {
-            test("should throw GRACE_PERIOD_EXCEEDS_MAXIMUM error", () => {
-                expect(() => {
-                    collateralizedLoanTerms.packParameters({
-                        ...scenario1.unpackedParams,
-                        gracePeriodInDays: new BigNumber(256),
-                    });
-                }).toThrowError(ERC721CollateralizerAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
-            });
-        });
-        describe("...with grace period containing decimals", () => {
-            test("should throw INVALID_DECIMAL_VALUE error", () => {
-                expect(() => {
-                    collateralizedLoanTerms.packParameters({
-                        ...scenario1.unpackedParams,
-                        gracePeriodInDays: new BigNumber(1.567),
-                    });
-                }).toThrowError(ERC721CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
-            });
-        });
-        describe("...with valid collateral token index, collateral amount, and grace period in days", () => {
+
+        describe("...with valid ERC721 contract index, token reference, and isEnumerable", () => {
             describe("Scenario #1", () => {
                 test("should return correctly packed parameters", () => {
                     expect(
                         collateralizedLoanTerms.packParameters(scenario1.unpackedParams),
                     ).toEqual(scenario1.packedParams);
-                });
-            });
-            describe("Scenario #2", () => {
-                test("should return correctly packed parameters", () => {
-                    expect(
-                        collateralizedLoanTerms.packParameters(scenario2.unpackedParams),
-                    ).toEqual(scenario2.packedParams);
-                });
-            });
-            describe("Scenario #3", () => {
-                test("should return correctly packed parameters", () => {
-                    expect(
-                        collateralizedLoanTerms.packParameters(scenario3.unpackedParams),
-                    ).toEqual(scenario3.packedParams);
                 });
             });
         });
@@ -258,20 +181,6 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
             test("should return correctly unpacked parameters", () => {
                 expect(collateralizedLoanTerms.unpackParameters(scenario1.packedParams)).toEqual(
                     scenario1.unpackedParams,
-                );
-            });
-        });
-        describe("Scenario #2", () => {
-            test("should return correctly unpacked parameters", () => {
-                expect(collateralizedLoanTerms.unpackParameters(scenario2.packedParams)).toEqual(
-                    scenario2.unpackedParams,
-                );
-            });
-        });
-        describe("Scenario #3", () => {
-            test("should return correctly unpacked parameters", () => {
-                expect(collateralizedLoanTerms.unpackParameters(scenario3.packedParams)).toEqual(
-                    scenario3.unpackedParams,
                 );
             });
         });

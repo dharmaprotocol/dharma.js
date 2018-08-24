@@ -96,17 +96,7 @@ export abstract class BaseCollateralRunner {
     protected async setBalances(
         scenario: ReturnCollateralScenario | SeizeCollateralScenario,
     ): Promise<void> {
-        // 1. Set up Debtor balances.
-
-        // The debtor has the exact amount of the collateral token as
-        // they are going to set up as collateral.
-        await this.collateralToken.setBalance.sendTransactionAsync(
-            DEBTOR.address,
-            scenario.collateralTerms.collateralAmount,
-            {
-                from: CONTRACT_OWNER.address,
-            },
-        );
+        // TODO: Mint a new ERC721 token for the Debtor.
 
         // The debtor has more than enough of the principal token to repay debts.
         await this.principalToken.setBalance.sendTransactionAsync(
@@ -146,12 +136,7 @@ export abstract class BaseCollateralRunner {
     ): Promise<void> {
         const { debtor, creditor, principalAmount } = this.debtOrderData;
 
-        // The debtor grants the transfer proxy an allowance for moving the collateral.
-        await this.tokenApi.setProxyAllowanceAsync(
-            this.collateralToken.address,
-            scenario.collateralTerms.collateralAmount,
-            { from: debtor },
-        );
+        // TODO: Grant the collateralizer approval for moving the asset.
 
         // The debtor grants the transfer proxy some sufficient allowance for making repayments.
         await this.tokenApi.setProxyAllowanceAsync(
@@ -261,8 +246,9 @@ export abstract class BaseCollateralRunner {
         const principalTokenSymbol = await this.contractsApi.getTokenSymbolByIndexAsync(
             scenario.simpleTerms.principalTokenIndex,
         );
-        const collateralTokenSymbol = await this.contractsApi.getTokenSymbolByIndexAsync(
-            scenario.collateralTerms.collateralTokenIndex,
+
+        const erc721Symbol = await this.contractsApi.getERC721SymbolByIndexAsync(
+            scenario.collateralTerms.erc721ContractIndex,
         );
 
         this.principalToken = await DummyTokenContract.at(
@@ -272,7 +258,7 @@ export abstract class BaseCollateralRunner {
         );
 
         this.collateralToken = await DummyTokenContract.at(
-            (await this.contractsApi.loadTokenBySymbolAsync(collateralTokenSymbol)).address,
+            (await this.contractsApi.loadERC721BySymbolAsync(erc721Symbol)).address,
             this.web3,
             TX_DEFAULTS,
         );

@@ -6,7 +6,10 @@ import * as Units from "utils/units";
 
 // Adapters
 import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
-import { CollateralizedTermsContractParameters } from "src/adapters/collateralized_simple_interest_loan_adapter";
+import {
+    ERC721CollateralizedSimpleInterestTermsContractParameters,
+    ERC721CollateralizedTermsContractParameters
+} from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 
 export interface SeizeCollateralScenario {
     // The test's description.
@@ -14,7 +17,7 @@ export interface SeizeCollateralScenario {
     // True if the scenario succeeds in returning collateral.
     succeeds: boolean;
     simpleTerms: SimpleInterestTermsContractParameters;
-    collateralTerms: CollateralizedTermsContractParameters;
+    collateralTerms: ERC721CollateralizedSimpleInterestTermsContractParameters;
     // True if the debt order's term has lapsed.
     termLapsed: boolean;
     // True if the entire debt has been repaid to the creditor.
@@ -30,7 +33,7 @@ export interface SeizeCollateralScenario {
 export type ReturnCollateralScenario = SeizeCollateralScenario;
 
 let defaultSimpleTerms: SimpleInterestTermsContractParameters;
-let defaultCollateralTerms: CollateralizedTermsContractParameters;
+let defaultCollateralTerms: ERC721CollateralizedTermsContractParameters;
 
 defaultSimpleTerms = {
     amortizationUnit: "hours",
@@ -41,9 +44,9 @@ defaultSimpleTerms = {
 };
 
 defaultCollateralTerms = {
-    collateralTokenIndex: new BigNumber(2),
-    collateralAmount: Units.ether(0.1),
-    gracePeriodInDays: new BigNumber(30),
+    erc721ContractIndex: new BigNumber(0),
+    tokenReference: "0",
+    isEnumerable: new BigNumber(1),
 };
 
 export const defaultArgs = {

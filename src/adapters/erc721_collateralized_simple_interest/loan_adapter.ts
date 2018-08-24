@@ -4,22 +4,18 @@ import * as _ from "lodash";
 import * as omit from "lodash.omit";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
-
 // Utils
 import { BigNumber } from "../../../utils/bignumber";
 import { NULL_ADDRESS } from "../../../utils/constants";
 import * as TransactionUtils from "../../../utils/transaction_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
-
 // Apis
 import { ContractsAPI } from "../../apis";
-
 // Invariants
 import { Assertions } from "../../invariants";
-
 // Types
 import { DebtOrderData, DebtRegistryEntry, RepaymentSchedule, TxData } from "../../types";
-import { CollateralizedLoanTerms } from "../collateralized_simple_interest_loan_terms";
+import { ERC721CollateralizedLoanTerms } from "../erc721_collateralized_simple_interest/loan_terms";
 import {
     SimpleInterestLoanOrder,
     SimpleInterestTermsContractParameters,
@@ -28,81 +24,52 @@ import { SimpleInterestLoanTerms } from "../simple_interest_loan_terms";
 
 import { Adapter } from "../adapter";
 
-import { ERC20Contract } from "../../wrappers";
-
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
 const TRANSFER_GAS_MAXIMUM = 200000;
 
-// Extend order to include parameters necessary for a collateralized terms contract.
+// Extend order to include parameters necessary for an ERC721-collateralized terms contract.
 export interface ERC721CollateralizedSimpleInterestLoanOrder extends SimpleInterestLoanOrder {
-    collateralTokenSymbol: string;
-    collateralAmount: BigNumber;
-    gracePeriodInDays: BigNumber;
+    isEnumerable: boolean;
+    erc721Symbol: string;
+    // Can be an ID or an index.
+    tokenReference: string;
 }
 
 export interface ERC721CollateralizedTermsContractParameters {
-    collateralTokenIndex: BigNumber;
-    collateralAmount: BigNumber;
-    gracePeriodInDays: BigNumber;
+    isEnumerable: BigNumber;
+    erc721ContractIndex: BigNumber;
+    // Can be an ID or an index.
+    tokenReference: string;
 }
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {}
+        ERC721CollateralizedTermsContractParameters {
+}
 
 export const ERC721CollateralizerAdapterErrors = {
-    INVALID_TOKEN_INDEX: (tokenIndex: BigNumber) =>
-        singleLineString`Token Registry does not track a token at index
-                         ${tokenIndex.toString()}.`,
+    INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
+        singleLineString`ERC721 Token Registry does not track a contract at index 
+             ${tokenIndex.toString()}.`,
 
-    COLLATERAL_AMOUNT_MUST_BE_POSITIVE: () =>
-        singleLineString`Collateral amount must be greater than zero.`,
+    INVALID_IS_ENUMERABLE_FLAG: () =>
+        singleLineString`isEnumerable should be 0 (if false) or 1 (if true).`,
 
-    COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM: () =>
-        singleLineString`Collateral amount exceeds maximum value of 2^92 - 1.`,
-
-    INSUFFICIENT_COLLATERAL_TOKEN_ALLOWANCE: () =>
-        `Debtor has not granted sufficient allowance for collateral transfer.`,
-
-    INSUFFICIENT_COLLATERAL_TOKEN_BALANCE: () =>
-        `Debtor does not have sufficient balance required for collateral transfer.`,
-
-    GRACE_PERIOD_IS_NEGATIVE: () => singleLineString`The grace period cannot be negative.`,
-
-    GRACE_PERIOD_EXCEEDS_MAXIMUM: () =>
-        singleLineString`The grace period exceeds the maximum value of 2^8 - 1`,
-
-    INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
-
-    MISMATCHED_TOKEN_SYMBOL: (tokenAddress: string, symbol: string) =>
-        singleLineString`Terms contract parameters are invalid for the given debt order.
-                         Token at address ${tokenAddress} does not
-                         correspond to specified token with symbol ${symbol}`,
-
-    MISMATCHED_TERMS_CONTRACT: (termsContractAddress: string) =>
-        singleLineString`Terms contract at address ${termsContractAddress} is not
-                         a CollateralizedSimpleInterestTermsContract.  As such, this adapter will
-                         not interface with the terms contract as expected`,
+    INVALID_TOKEN_REFERENCE: () =>
+        singleLineString`Token Reference must be a valid token index or token ID.`,
 
     COLLATERAL_NOT_FOUND: (agreementId: string) =>
         singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure
                          that the agreement ID is correct, and that the collateral has not already
                          been withdrawn.`,
-
-    DEBT_NOT_YET_REPAID: (agreementId: string) =>
-        singleLineString`Debt has not been fully repaid for loan with agreement ID ${agreementId}`,
-
-    LOAN_NOT_IN_DEFAULT_FOR_GRACE_PERIOD: (agreementId: string) =>
-        singleLineString`Loan with agreement ID ${agreementId} is not currently in a state of
-                        default when adjusted for grace period`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     private assert: Assertions;
     private readonly contractsAPI: ContractsAPI;
     private simpleInterestLoanTerms: SimpleInterestLoanTerms;
-    private collateralizedLoanTerms: CollateralizedLoanTerms;
+    private collateralizedLoanTerms: ERC721CollateralizedLoanTerms;
     private web3Utils: Web3Utils;
     private web3: Web3;
 
@@ -114,7 +81,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         this.contractsAPI = contractsAPI;
 
         this.simpleInterestLoanTerms = new SimpleInterestLoanTerms(web3, contractsAPI);
-        this.collateralizedLoanTerms = new CollateralizedLoanTerms(web3, contractsAPI);
+        this.collateralizedLoanTerms = new ERC721CollateralizedLoanTerms(web3, contractsAPI);
     }
 
     public async toDebtOrder(
@@ -132,10 +99,10 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             interestRate,
             amortizationUnit,
             termLength,
-            // destructure collateralized loan order params.
-            collateralTokenSymbol,
-            collateralAmount,
-            gracePeriodInDays,
+            // destructure erc721-collateralized loan order params.
+            isEnumerable,
+            erc721Symbol,
+            tokenReference,
         } = collateralizedSimpleInterestLoanOrder;
 
         const principalToken = await this.contractsAPI.loadTokenBySymbolAsync(principalTokenSymbol);
@@ -144,8 +111,8 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             principalTokenSymbol,
         );
 
-        const collateralTokenIndex = await this.contractsAPI.getTokenIndexBySymbolAsync(
-            collateralTokenSymbol,
+        const erc721ContractIndex = await this.contractsAPI.getERC721IndexBySymbolAsync(
+            erc721Symbol,
         );
 
         const collateralizedContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
@@ -159,9 +126,8 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             "termLength",
             // omit the collateralized parameters that will be packed into
             // the `termsContractParameters`.
-            "collateralTokenSymbol",
-            "collateralAmount",
-            "gracePeriodInDays",
+            "erc721Symbol",
+            "tokenReference",
         ]);
 
         // Our final output is the perfect union of the packed simple interest params and the packed
@@ -175,9 +141,10 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
                 termLength,
             },
             {
-                collateralTokenIndex,
-                collateralAmount,
-                gracePeriodInDays,
+                // We convert the isEnumerable var from boolean to bit flag.
+                isEnumerable: isEnumerable ? new BigNumber(1) : new BigNumber(0),
+                erc721ContractIndex,
+                tokenReference,
             },
         );
 
@@ -219,7 +186,12 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     ): Promise<ERC721CollateralizedSimpleInterestLoanOrder> {
         this.assert.schema.debtOrderWithTermsSpecified("debtOrder", debtOrderData);
 
-        const { principalTokenIndex, collateralTokenIndex, ...params } = this.unpackParameters(
+        const {
+            principalTokenIndex,
+            erc721ContractIndex,
+            isEnumerable,
+            ...params
+        } = this.unpackParameters(
             debtOrderData.termsContractParameters,
         );
 
@@ -227,8 +199,8 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             principalTokenIndex,
         );
 
-        const collateralTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
-            collateralTokenIndex,
+        const erc721Symbol = await this.contractsAPI.getERC721SymbolByIndexAsync(
+            erc721ContractIndex,
         );
 
         // Assert that the principal token corresponds to the symbol we've unpacked.
@@ -240,7 +212,9 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         return {
             ...debtOrderData,
             principalTokenSymbol,
-            collateralTokenSymbol,
+            // We convert the bit flag into a boolean.
+            isEnumerable: isEnumerable.toString() === "1",
+            erc721Symbol,
             ...params,
         };
     }
@@ -256,7 +230,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     ): Promise<ERC721CollateralizedSimpleInterestLoanOrder> {
         await this.assertIsCollateralizedSimpleInterestTermsContract(entry.termsContract);
 
-        const { principalTokenIndex, collateralTokenIndex, ...params } = this.unpackParameters(
+        const { principalTokenIndex, erc721ContractIndex, isEnumerable, ...params } = this.unpackParameters(
             entry.termsContractParameters,
         );
 
@@ -264,13 +238,14 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             principalTokenIndex,
         );
 
-        const collateralTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
-            collateralTokenIndex,
+        const erc721Symbol = await this.contractsAPI.getERC721SymbolByIndexAsync(
+            erc721ContractIndex,
         );
 
         const loanOrder: ERC721CollateralizedSimpleInterestLoanOrder = {
             principalTokenSymbol,
-            collateralTokenSymbol,
+            erc721Symbol,
+            isEnumerable: isEnumerable.toString() === "1",
             ...params,
         };
 
@@ -664,31 +639,17 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         }
     }
 
-    private async assertCollateralBalanceAndAllowanceInvariantsAsync(
+    private async assertCollateralAllowanceInvariantsAsync(
         order: ERC721CollateralizedSimpleInterestLoanOrder,
     ) {
-        const { collateralAmount, collateralTokenSymbol } = order;
+        const { erc721Symbol, tokenReference } = order;
 
-        const collateralToken: ERC20Contract = await this.contractsAPI.loadTokenBySymbolAsync(
-            collateralTokenSymbol,
+        const erc721Token: ERC721Contract = await this.contractsAPI.loadERC721BySymbolAsync(
+            erc721Symbol,
         );
 
-        const tokenTransferProxy = await this.contractsAPI.loadTokenTransferProxyAsync();
-
-        await this.assert.order.sufficientCollateralizerAllowanceAsync(
-            order,
-            collateralToken,
-            collateralAmount,
-            tokenTransferProxy,
-            ERC721CollateralizerAdapterErrors.INSUFFICIENT_COLLATERAL_TOKEN_ALLOWANCE(),
-        );
-
-        await this.assert.order.sufficientCollateralizerBalanceAsync(
-            order,
-            collateralToken,
-            collateralAmount,
-            ERC721CollateralizerAdapterErrors.INSUFFICIENT_COLLATERAL_TOKEN_BALANCE(),
-        );
+        // STUB.
+        // TODO: Asset that the ERC721 Collateralizer has approvalfor transferring the asset.
     }
 
     private async debtRepaid(agreementId: string): Promise<boolean> {

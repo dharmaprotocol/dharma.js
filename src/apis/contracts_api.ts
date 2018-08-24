@@ -1,5 +1,4 @@
 // external
-import * as _ from "lodash";
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
@@ -285,6 +284,13 @@ export class ContractsAPI {
         return tokenTransferProxy;
     }
 
+    public async loadERC721ContractAsync(
+        contractAddress: string,
+        transactionOptions: object = {},
+    ): Promise<ERC721Contract> {
+        // STUB.
+    }
+
     public async loadERC20TokenAsync(
         tokenAddress: string,
         transactionOptions: object = {},
@@ -452,6 +458,23 @@ export class ContractsAPI {
     }
 
     /**
+     * Given the symbol for an ERC721 contract, returns the index of that contract in the
+     * ERC721 token registry.
+     *
+     * @param {string} symbol
+     * @returns {Promise<string>}
+     */
+    public async getERC721IndexBySymbolAsync(symbol: string): Promise<BigNumber> {
+        // STUB.
+        return new BigNumber(0);
+    }
+
+    public async getERC721SymbolByIndexAsync(index: BigNumber): Promise<string> {
+        // STUB.
+        return "";
+    }
+
+    /**
      * Given the index of a token in the Token Registry, returns the address of that
      * token's contract.
      *
@@ -500,6 +523,15 @@ export class ContractsAPI {
         const tokenAddress = await this.getTokenAddressBySymbolAsync(symbol);
 
         return this.loadERC20TokenAsync(tokenAddress, transactionOptions);
+    }
+
+    public async loadERC721BySymbolAsync(
+        symbol: string,
+        transactionOptions: object = {},
+    ): Promise<ERC721Contract> {
+        const erc721Address = await this.getERC721AddressBySymbolAsync(symbol);
+
+        return this.loadERC721ContractAsync(erc721Address, transactionOptions);
     }
 
     /**

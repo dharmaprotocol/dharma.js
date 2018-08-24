@@ -57,15 +57,8 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 });
 
                 it("transfers the collateral to the creditor", async () => {
-                    const currentCreditorCollateralTokenBalance = await this.collateralToken.balanceOf.callAsync(
-                        this.debtOrderData.creditor,
-                    );
-
-                    expect(
-                        currentCreditorCollateralTokenBalance.minus(
-                            initialCreditorCollateralTokenBalance,
-                        ),
-                    ).toEqual(scenario.collateralTerms.collateralAmount);
+                    // STUB.
+                    // TODO: Check that the owner of the ERC721 asset is the creditor.
                 });
 
                 describe("#isCollateralReturned", () => {
