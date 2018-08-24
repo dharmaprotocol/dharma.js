@@ -1,9 +1,8 @@
+jest.unmock("@dharmaprotocol/contracts");
+
 // Internal dependencies
 import { Dharma } from "../../../src/dharma";
 
-jest.unmock("@dharmaprotocol/contracts");
-
-import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
 import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
 
 // Test runners

@@ -37,7 +37,10 @@ class Dharma {
             // If a host is specified, instantiate web3 with it as the provider.
             const web3Provider = new Web3.providers.HttpProvider(blockchainHost);
             this.web3 = new Web3(web3Provider);
-        } else if (typeof (window as any).web3 !== "undefined") {
+        } else if (
+            typeof (window as any) !== "undefined" &&
+            typeof (window as any).web3 !== "undefined"
+        ) {
             // If web3 is available via the browser window, instantiate web3 via the current provider.
             this.web3 = new Web3((window as any).web3.currentProvider);
         } else {
