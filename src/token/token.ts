@@ -41,6 +41,20 @@ export async function all(dharma: Dharma, owner: string): Promise<TokenData[]> {
     );
 }
 
+/**
+ * Eventually returns token data for the symbol specified.
+ *
+ * Balances and allowances are returned as specified by the owner param.
+ *
+ * @example
+ * await Token.getDataForSymbol(dharma, "0x...", "ZRX");
+ * => {Promise<TokenData>}
+ *
+ * @param  dharma an instance of Dharma.js
+ * @param  symbol the symbol of the token whose data is being requested
+ * @param  owner  the address for whom token balances and allowances will be retrieved
+ * @returns {Promise<TokenData>}
+ */
 export async function getDataForSymbol(
     dharma: Dharma,
     symbol: string,
