@@ -8,7 +8,7 @@ import * as Units from "utils/units";
 import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
 import {
     ERC721CollateralizedSimpleInterestTermsContractParameters,
-    ERC721CollateralizedTermsContractParameters
+    ERC721CollateralizedTermsContractParameters,
 } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 
 export interface SeizeCollateralScenario {

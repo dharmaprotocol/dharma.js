@@ -45,8 +45,7 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {
-}
+        ERC721CollateralizedTermsContractParameters {}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
@@ -191,9 +190,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             erc721ContractIndex,
             isEnumerable,
             ...params
-        } = this.unpackParameters(
-            debtOrderData.termsContractParameters,
-        );
+        } = this.unpackParameters(debtOrderData.termsContractParameters);
 
         const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
             principalTokenIndex,
@@ -230,9 +227,12 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     ): Promise<ERC721CollateralizedSimpleInterestLoanOrder> {
         await this.assertIsCollateralizedSimpleInterestTermsContract(entry.termsContract);
 
-        const { principalTokenIndex, erc721ContractIndex, isEnumerable, ...params } = this.unpackParameters(
-            entry.termsContractParameters,
-        );
+        const {
+            principalTokenIndex,
+            erc721ContractIndex,
+            isEnumerable,
+            ...params
+        } = this.unpackParameters(entry.termsContractParameters);
 
         const principalTokenSymbol = await this.contractsAPI.getTokenSymbolByIndexAsync(
             principalTokenIndex,
