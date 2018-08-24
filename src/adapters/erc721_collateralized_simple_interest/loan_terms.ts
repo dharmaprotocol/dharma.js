@@ -75,7 +75,9 @@ export class CollateralizedLoanTerms {
         }
 
         if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
-            throw new Error(ERC721CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex));
+            throw new Error(
+                ERC721CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex),
+            );
         }
     }
 

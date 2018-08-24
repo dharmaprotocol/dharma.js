@@ -16,9 +16,7 @@ import { UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS } from "./scenarios/unsuccessfu
 // Runners
 import { ReturnCollateralRunner, SeizeCollateralRunner } from "./runners";
 
-import {
-    ERC721CollateralizedSimpleInterestLoanAdapter,
-} from "../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
+import { ERC721CollateralizedSimpleInterestLoanAdapter } from "../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 
 import { ServicingAPI } from "src/apis/servicing_api";
 

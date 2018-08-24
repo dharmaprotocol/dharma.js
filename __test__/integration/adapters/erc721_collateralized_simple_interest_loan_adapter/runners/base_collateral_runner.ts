@@ -10,22 +10,19 @@ import { ReturnCollateralScenario, SeizeCollateralScenario } from "../scenarios"
 // Adapters
 import { ERC721CollateralizedSimpleInterestLoanAdapter } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 // Wrappers
-import { CollateralizedSimpleInterestTermsContractContract } from "../../../../../src/wrappers/contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
-import { DebtKernelContract } from "../../../../../src/wrappers/contract_wrappers/debt_kernel_wrapper";
-import { DummyTokenContract } from "../../../../../src/wrappers/contract_wrappers/dummy_token_wrapper";
-import { RepaymentRouterContract } from "../../../../../src/wrappers/contract_wrappers/repayment_router_wrapper";
-import { TokenTransferProxyContract } from "../../../../../src/wrappers/contract_wrappers/token_transfer_proxy_wrapper";
+import {
+    CollateralizedSimpleInterestTermsContractContract,
+    DebtKernelContract,
+    DummyTokenContract,
+    RepaymentRouterContract,
+    TokenTransferProxyContract
+} from "../../../../../src/wrappers";
 // APIs
-import { OrderAPI } from "../../../../../src/apis";
-import { ServicingAPI } from "../../../../../src/apis/servicing_api";
-import { SignerAPI } from "../../../../../src/apis/signer_api";
+import { ContractsAPI, OrderAPI, ServicingAPI, SignerAPI, TokenAPI } from "../../../../../src/apis";
 // Types
-import { DebtOrderData } from "../../../../../src/types/debt_order_data";
+import { DebtOrderData } from "../../../../../src/types";
 // Accounts
-import { ACCOUNTS } from "../../../../../__test__/accounts";
-
-import { ContractsAPI } from "../../../../../src/apis/contracts_api";
-import { TokenAPI } from "../../../../../src/apis/token_api";
+import { ACCOUNTS } from "../../../../accounts";
 
 const CONTRACT_OWNER = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
