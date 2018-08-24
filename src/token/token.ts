@@ -80,12 +80,12 @@ export async function getDataForSymbol(
  */
 export async function makeAllowanceUnlimitedIfNecessary(
     dharma: Dharma,
-    tokenSymbol: string,
+    symbol: string,
     owner: string,
 ): Promise<string | void> {
     EthereumAddress.assertValid(owner);
 
-    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(symbol);
 
     const hasUnlimitedAllowance = await dharma.token.hasUnlimitedAllowance(tokenAddress, owner);
 
@@ -107,12 +107,12 @@ export async function makeAllowanceUnlimitedIfNecessary(
  */
 export async function revokeAllowance(
     dharma: Dharma,
-    tokenSymbol: string,
+    symbol: string,
     owner: string,
 ): Promise<string> {
     EthereumAddress.assertValid(owner);
 
-    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(tokenSymbol);
+    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(symbol);
 
     return dharma.token.setProxyAllowanceAsync(tokenAddress, new BigNumber(0), {
         from: owner,
