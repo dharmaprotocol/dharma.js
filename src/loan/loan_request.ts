@@ -1,3 +1,4 @@
+import * as singleLineString from "single-line-string";
 import { BigNumber } from "../../utils/bignumber";
 
 import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
@@ -27,7 +28,8 @@ export const LOAN_REQUEST_ERRORS = {
     ALREADY_SIGNED_BY_DEBTOR: `The loan request has already been signed by the debtor.`,
     ALREADY_SIGNED_BY_CREDITOR: `The loan request has already been signed by the creditor.`,
     NOT_YET_FILLED: `The loan request has yet to be filled.`,
-    PROXY_FILL_DISALLOWED: `A loan request must be signed by both the creditor and debtor before it can be filled by proxy.`,
+    PROXY_FILL_DISALLOWED: singleLineString`A loan request must be signed by both the creditor and
+    debtor before it can be filled by proxy.`,
 };
 
 export interface LoanRequestParams {
