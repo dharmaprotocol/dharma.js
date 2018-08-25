@@ -40,7 +40,7 @@ export interface ERC721CollateralizedTermsContractParameters {
     isEnumerable: BigNumber;
     erc721ContractIndex: BigNumber;
     // Can be an ID or an index.
-    tokenReference: string;
+    tokenReference: BigNumber;
 }
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
@@ -49,8 +49,8 @@ export interface ERC721CollateralizedSimpleInterestTermsContractParameters
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
-        singleLineString`ERC721 Token Registry does not track a contract at index 
-             ${tokenIndex.toString()}.`,
+        singleLineString`ERC721 Token Registry does not track a contract at index
+            ${tokenIndex.toString()}.`,
 
     INVALID_IS_ENUMERABLE_FLAG: () =>
         singleLineString`isEnumerable should be 0 (if false) or 1 (if true).`,
@@ -62,6 +62,11 @@ export const ERC721CollateralizerAdapterErrors = {
         singleLineString`Collateral was not found for given agreement ID ${agreementId}. Make sure
                          that the agreement ID is correct, and that the collateral has not already
                          been withdrawn.`,
+
+    INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
+
+    TOKEN_REFERENCE_EXCEEDS_MAXIMUM: () =>
+        singleLineString`Token reference exceeds maximum value.`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
@@ -168,8 +173,6 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         const unpackedParams = this.unpackParameters(loanOrder.termsContractParameters);
 
         this.collateralizedLoanTerms.assertValidParams(unpackedParams);
-
-        await this.assertCollateralBalanceAndAllowanceInvariantsAsync(loanOrder);
     }
 
     /**

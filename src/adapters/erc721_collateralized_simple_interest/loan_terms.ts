@@ -10,15 +10,17 @@ import { Assertions } from "../../invariants";
 import { TermsContractParameters } from "../terms_contract_parameters";
 
 // Constants
-import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 import {
     ERC721CollateralizedTermsContractParameters,
     ERC721CollateralizerAdapterErrors,
 } from "./loan_adapter";
 
-const MAX_COLLATERAL_TOKEN_INDEX_HEX = (TOKEN_REGISTRY_TRACKED_TOKENS.length - 1).toString(16);
-const MAX_COLLATERAL_AMOUNT_HEX = TermsContractParameters.generateHexValueOfLength(23);
-const MAX_GRACE_PERIOD_IN_DAYS_HEX = TermsContractParameters.generateHexValueOfLength(2);
+// STUB. TODO: Get number of contracts in registry.
+const maxContracts = 3;
+
+const MAX_ERC721_CONTRACT_INDEX_HEX = (maxContracts - 1).toString(16);
+// TODO: Get accurate number of maximum tokens here.
+const MAX_TOKEN_REFERENCE = 999999999999999;
 
 export class ERC721CollateralizedLoanTerms {
     private assert: Assertions;
@@ -30,18 +32,20 @@ export class ERC721CollateralizedLoanTerms {
     public packParameters(params: ERC721CollateralizedTermsContractParameters): string {
         this.assertValidParams(params);
 
-        const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
+        const { erc721ContractIndex, tokenReference, isEnumerable } = params;
 
-        const collateralTokenIndexShifted = TermsContractParameters.bitShiftLeft(
-            collateralTokenIndex,
-            100,
+        const erc721ContractIndexShifted = TermsContractParameters.bitShiftLeft(
+            erc721ContractIndex,
+            60,
         );
-        const collateralAmountShifted = TermsContractParameters.bitShiftLeft(collateralAmount, 8);
-        const gracePeriodInDaysShifted = TermsContractParameters.bitShiftLeft(gracePeriodInDays, 0);
+        const tokenReferenceShifted = TermsContractParameters.bitShiftLeft(tokenReference, 4);
+        const isEnumerableShifted = TermsContractParameters.bitShiftLeft(isEnumerable, 0);
 
-        const baseTenParameters = collateralTokenIndexShifted
-            .plus(collateralAmountShifted)
-            .plus(gracePeriodInDaysShifted);
+        const baseTenParameters = erc721ContractIndexShifted
+            .plus(tokenReferenceShifted)
+            .plus(isEnumerableShifted);
+
+        console.log("result", `0x${baseTenParameters.toString(16).padStart(64, "0")}`);
 
         return `0x${baseTenParameters.toString(16).padStart(64, "0")}`;
     }
@@ -49,67 +53,61 @@ export class ERC721CollateralizedLoanTerms {
     public unpackParameters(packedParams: string): ERC721CollateralizedTermsContractParameters {
         this.assert.schema.bytes32("packedParams", packedParams);
 
-        const collateralTokenIndexHex = `0x${packedParams.substr(39, 2)}`;
-        const collateralAmountHex = `0x${packedParams.substr(41, 23)}`;
-        const gracePeriodInDaysHex = `0x${packedParams.substr(64, 2)}`;
+        const erc721ContractIndexHex = `0x${packedParams.substr(39, 12)}`;
+        const tokenReferenceHex = `0x${packedParams.substr(51, 14)}`;
+        const isEnumerableHex = `0x${packedParams.substr(65, 1)}`;
 
         return {
-            collateralTokenIndex: new BigNumber(collateralTokenIndexHex),
-            collateralAmount: new BigNumber(collateralAmountHex),
-            gracePeriodInDays: new BigNumber(gracePeriodInDaysHex),
+            erc721ContractIndex: new BigNumber(erc721ContractIndexHex),
+            tokenReference: new BigNumber(tokenReferenceHex),
+            isEnumerable: new BigNumber(isEnumerableHex),
         };
     }
 
     public assertValidParams(params: ERC721CollateralizedTermsContractParameters) {
-        const { collateralTokenIndex, collateralAmount, gracePeriodInDays } = params;
+        const { erc721ContractIndex, tokenReference, isEnumerable } = params;
 
-        this.assertCollateralTokenIndexWithinBounds(collateralTokenIndex);
-        this.assertCollateralAmountWithinBounds(collateralAmount);
-        this.assertGracePeriodInDaysWithinBounds(gracePeriodInDays);
+        this.assertERC721ContractIndexWithinBounds(erc721ContractIndex);
+        this.assertValidIsEnumerable(isEnumerable);
+        this.assertValidTokenReference(tokenReference);
     }
 
-    private assertCollateralTokenIndexWithinBounds(collateralTokenIndex: BigNumber) {
+    private assertERC721ContractIndexWithinBounds(collateralTokenIndex: BigNumber) {
         // Collateral token index cannot be a decimal value.
         if (TermsContractParameters.isDecimalValue(collateralTokenIndex)) {
             throw new Error(ERC721CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
-        if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_COLLATERAL_TOKEN_INDEX_HEX)) {
+        if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_ERC721_CONTRACT_INDEX_HEX)) {
             throw new Error(
-                ERC721CollateralizerAdapterErrors.INVALID_TOKEN_INDEX(collateralTokenIndex),
+                ERC721CollateralizerAdapterErrors.INVALID_CONTRACT_INDEX(collateralTokenIndex),
             );
         }
     }
 
-    private assertCollateralAmountWithinBounds(collateralAmount: BigNumber) {
-        // Collateral amount cannot be a decimal value.
-        if (TermsContractParameters.isDecimalValue(collateralAmount)) {
-            throw new Error(ERC721CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
-        }
+    private assertValidIsEnumerable(isEnumerable: BigNumber) {
+        const flagAsNumber = isEnumerable.toNumber();
 
-        if (collateralAmount.isNegative() || collateralAmount.isZero()) {
-            throw new Error(ERC721CollateralizerAdapterErrors.COLLATERAL_AMOUNT_MUST_BE_POSITIVE());
-        }
-
-        if (collateralAmount.gt(MAX_COLLATERAL_AMOUNT_HEX)) {
-            throw new Error(ERC721CollateralizerAdapterErrors.COLLATERAL_AMOUNT_EXCEEDS_MAXIMUM());
+        // There are only two possible values for a bit flag!
+        if (flagAsNumber !== 0 && flagAsNumber !== 1) {
+            throw new Error(ERC721CollateralizerAdapterErrors.INVALID_IS_ENUMERABLE_FLAG());
         }
     }
 
-    private assertGracePeriodInDaysWithinBounds(gracePeriodInDays: BigNumber) {
-        // Grace period cannot be a decimal value.
-        if (TermsContractParameters.isDecimalValue(gracePeriodInDays)) {
+    private assertValidTokenReference(tokenReference: BigNumber) {
+        // Token reference cannot be a decimal value.
+        if (TermsContractParameters.isDecimalValue(tokenReference)) {
             throw new Error(ERC721CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
-        // Grace period can't be negative.
-        if (gracePeriodInDays.lt(0)) {
-            throw new Error(ERC721CollateralizerAdapterErrors.GRACE_PERIOD_IS_NEGATIVE());
+        // Token reference can't be negative.
+        if (tokenReference.lt(0)) {
+            throw new Error(ERC721CollateralizerAdapterErrors.INVALID_TOKEN_REFERENCE());
         }
 
-        // Grace period has a maximum value that cannot be exceeded due to how we pack params.
-        if (gracePeriodInDays.gt(MAX_GRACE_PERIOD_IN_DAYS_HEX)) {
-            throw new Error(ERC721CollateralizerAdapterErrors.GRACE_PERIOD_EXCEEDS_MAXIMUM());
+        // Token reference has a maximum value that cannot be exceeded due to how we pack params.
+        if (tokenReference.gt(MAX_TOKEN_REFERENCE)) {
+            throw new Error(ERC721CollateralizerAdapterErrors.TOKEN_REFERENCE_EXCEEDS_MAXIMUM());
         }
     }
 }

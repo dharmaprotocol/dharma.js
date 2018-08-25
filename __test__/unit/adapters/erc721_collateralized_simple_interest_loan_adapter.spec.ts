@@ -13,7 +13,6 @@ import * as moment from "moment";
 import * as Web3 from "web3";
 // Utils
 import { BigNumber } from "../../../utils/bignumber";
-import { TOKEN_REGISTRY_TRACKED_TOKENS } from "../../../utils/constants";
 import * as Units from "../../../utils/units";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { ACCOUNTS } from "../../accounts";
@@ -56,7 +55,7 @@ interface Scenario {
     packedParams: string;
 }
 
-describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
+describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
     let snapshotId: number;
 
     beforeEach(async () => {
@@ -70,10 +69,10 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
     const scenario1: Scenario = {
         unpackedParams: {
             erc721ContractIndex: new BigNumber(0),
-            tokenReference: "0",
+            tokenReference: new BigNumber(0),
             isEnumerable: new BigNumber(1),
         },
-        packedParams: "0x000000000000000000000000000000000000000000000030927f74c9de000005",
+        packedParams: "0x0000000000000000000000000000000000000000000000000000000000000001",
     };
 
     // const scenario2: Scenario = {
@@ -98,7 +97,15 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
         describe("...with collateral token index that is not tracked", () => {
             test("should throw INVALID_TOKEN_INDEX error", () => {
                 const invalidERC721ContractIndex = new BigNumber(
-                    TOKEN_REGISTRY_TRACKED_TOKENS.length,
+                    // TODO: Update this to pull number of tracked tokens from the contract.
+                    99,
+                );
+
+                console.log(
+                    {
+                        ...scenario1.unpackedParams,
+                        erc721ContractIndex: invalidERC721ContractIndex,
+                    }
                 );
 
                 expect(() => {
@@ -130,7 +137,7 @@ describe("Collateralized Terms Contract Interface (Unit Tests)", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
                         ...scenario1.unpackedParams,
-                        tokenReference: "-1",
+                        tokenReference: new BigNumber(-1),
                     });
                 }).toThrow(ERC721CollateralizerAdapterErrors.INVALID_TOKEN_REFERENCE());
             });
@@ -230,7 +237,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario1,
             principalToken: tokenAddresses[0],
             termsContractParameters:
-                "0x000000003635c9adc5dea000000003e8300020200000008ac7230489e800005a",
+                "0x000000003635c9adc5dea000000003e830002020000000000000000000000001",
         };
 
         const debtOrderDataForScenario2 = {
@@ -331,49 +338,49 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
 
     describe("#toDebtOrder", () => {
         describe("collateralized simple interest loan's required parameter is missing or malformed", () => {
-            describe("`collateralTokenSymbol` is missing", () => {
+            describe("`erc721Symbol` is missing", () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
                             ...scenario1.minimalLoanOrder,
-                            collateralTokenSymbol: undefined,
+                            erc721Symbol: undefined,
                         }),
-                    ).rejects.toThrow('instance requires property "collateralTokenSymbol"');
+                    ).rejects.toThrow('instance requires property "erc721Symbol"');
                 });
             });
-            describe("`collateralTokenSymbol` is not tracked by Token Registry", () => {
+            describe("`erc721Symbol` is not tracked by Token Registry", () => {
                 test("should throw CANNOT_FIND_TOKEN_WITH_SYMBOL", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
                             ...scenario1.minimalLoanOrder,
-                            collateralTokenSymbol: "XXX", // XXX is not tracked in our test env's registry
+                            erc721Symbol: "XXX", // XXX is not tracked in our test env's registry
                         }),
                     ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("XXX"));
                 });
             });
-            describe("`collateralAmount` is missing", async () => {
+            describe("`tokenReference` is missing", async () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
                             ...scenario1.minimalLoanOrder,
-                            collateralAmount: undefined,
+                            tokenReference: undefined,
                         }),
-                    ).rejects.toThrow('instance requires property "collateralAmount"');
+                    ).rejects.toThrow('instance requires property "tokenReference"');
                 });
             });
-            describe("`gracePeriodInDays` is missing", async () => {
+            describe("`isEnumerable` is missing", async () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
                         collateralizedSimpleInterestLoanAdapter.toDebtOrder({
                             ...scenario1.minimalLoanOrder,
-                            gracePeriodInDays: undefined,
+                            isEnumerable: undefined,
                         }),
-                    ).rejects.toThrow('instance requires property "gracePeriodInDays"');
+                    ).rejects.toThrow('instance requires property "isEnumerable"');
                 });
             });
         });
 
-        describe("collateralized simple interest loan's required parameters are present and well-formed ", () => {
+        describe("erc721 collateralized simple interest loan's required parameters are present and well-formed ", () => {
             describe("Scenario #1", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(

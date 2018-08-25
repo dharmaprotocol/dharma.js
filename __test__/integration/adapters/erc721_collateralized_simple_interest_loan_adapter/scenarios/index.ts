@@ -1,15 +1,10 @@
 // External Libraries
 import { BigNumber } from "utils/bignumber";
-
 // Utils
 import * as Units from "utils/units";
-
 // Adapters
 import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
-import {
-    ERC721CollateralizedSimpleInterestTermsContractParameters,
-    ERC721CollateralizedTermsContractParameters,
-} from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
+import { ERC721CollateralizedTermsContractParameters, } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 
 export interface SeizeCollateralScenario {
     // The test's description.
@@ -17,7 +12,7 @@ export interface SeizeCollateralScenario {
     // True if the scenario succeeds in returning collateral.
     succeeds: boolean;
     simpleTerms: SimpleInterestTermsContractParameters;
-    collateralTerms: ERC721CollateralizedSimpleInterestTermsContractParameters;
+    collateralTerms: ERC721CollateralizedTermsContractParameters;
     // True if the debt order's term has lapsed.
     termLapsed: boolean;
     // True if the entire debt has been repaid to the creditor.
@@ -45,7 +40,7 @@ defaultSimpleTerms = {
 
 defaultCollateralTerms = {
     erc721ContractIndex: new BigNumber(0),
-    tokenReference: "0",
+    tokenReference: new BigNumber(0),
     isEnumerable: new BigNumber(1),
 };
 
