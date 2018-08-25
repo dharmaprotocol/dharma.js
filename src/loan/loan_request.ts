@@ -218,6 +218,25 @@ export class LoanRequest extends Agreement {
     }
 
     /**
+     * Eventually creates and signs a loan request with the specified params.
+     *
+     * @example
+     * const loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, {...});
+     *
+     * @returns {Promise<LoanRequest>}
+     */
+    public static async createAndSignAsDebtor(
+        dharma: Dharma,
+        params: LoanRequestParams,
+    ): Promise<LoanRequest> {
+        const request = await LoanRequest.create(dharma, params);
+
+        await request.signAsDebtor();
+
+        return request;
+    }
+
+    /**
      *  Returns the terms of the loan request.
      *
      * @example
