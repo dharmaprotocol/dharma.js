@@ -4,10 +4,9 @@ export const erc721CollateralizedSimpleInterestLoanOrder = {
         { $ref: "/SimpleInterestLoanOrder" },
         {
             properties: {
-                erc721ContractIndex: { $ref: "/WholeNumber" },
                 tokenReference: { $ref: "/WholeNumber" },
             },
-            required: ["erc721ContractIndex", "tokenReference", "isEnumerable"],
+            required: ["erc721Symbol", "tokenReference", "isEnumerable"],
         },
     ],
 };

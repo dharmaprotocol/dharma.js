@@ -466,12 +466,18 @@ export class ContractsAPI {
      */
     public async getERC721IndexBySymbolAsync(symbol: string): Promise<BigNumber> {
         // STUB.
+        if (symbol !== "MET") {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));
+        }
+
+        // TODO: Call the contract for value.
         return new BigNumber(0);
     }
 
     public async getERC721SymbolByIndexAsync(index: BigNumber): Promise<string> {
         // STUB.
-        return "";
+        // TODO: Call the contract for value.
+        return "MET";
     }
 
     /**

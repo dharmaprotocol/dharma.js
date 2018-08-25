@@ -33,7 +33,7 @@ export interface ERC721CollateralizedSimpleInterestLoanOrder extends SimpleInter
     isEnumerable: boolean;
     erc721Symbol: string;
     // Can be an ID or an index.
-    tokenReference: string;
+    tokenReference: BigNumber;
 }
 
 export interface ERC721CollateralizedTermsContractParameters {
@@ -131,6 +131,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             // the `termsContractParameters`.
             "erc721Symbol",
             "tokenReference",
+            "isEnumerable",
         ]);
 
         // Our final output is the perfect union of the packed simple interest params and the packed
@@ -211,10 +212,10 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         return {
             ...debtOrderData,
             principalTokenSymbol,
+            ...params,
             // We convert the bit flag into a boolean.
             isEnumerable: isEnumerable.toString() === "1",
             erc721Symbol,
-            ...params,
         };
     }
 

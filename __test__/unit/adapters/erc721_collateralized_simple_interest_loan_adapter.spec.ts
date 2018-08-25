@@ -235,7 +235,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario1,
             principalToken: tokenAddresses[0],
             termsContractParameters:
-                "0x000000003635c9adc5dea000000003e830002020000000000000000000000001",
+                "0x000000003635c9adc5dea000000003e830002000000000000000000000000001",
         };
 
         const debtOrderDataForScenario2 = {
@@ -260,9 +260,10 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             interestRate: new BigNumber(0.1),
             amortizationUnit: SimpleInterestLoanAdapter.Installments.MONTHLY,
             termLength: new BigNumber(2),
-            collateralTokenSymbol: tokenSymbols[2],
-            collateralAmount: new BigNumber(10 * 10 ** 18),
-            gracePeriodInDays: new BigNumber(90),
+            // TODO: Pull this dynamically?
+            erc721Symbol: "MET",
+            tokenReference: new BigNumber(0),
+            isEnumerable: true,
         };
 
         const loanOrderParamsForScenario2 = {
