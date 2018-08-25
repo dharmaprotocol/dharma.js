@@ -4,7 +4,7 @@ import { BigNumber } from "utils/bignumber";
 import * as Units from "utils/units";
 // Adapters
 import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
-import { ERC721CollateralizedTermsContractParameters, } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
+import { ERC721CollateralizedTermsContractParameters } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 
 export interface SeizeCollateralScenario {
     // The test's description.

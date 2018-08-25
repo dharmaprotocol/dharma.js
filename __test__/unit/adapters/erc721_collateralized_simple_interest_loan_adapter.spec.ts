@@ -101,12 +101,10 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
                     99,
                 );
 
-                console.log(
-                    {
-                        ...scenario1.unpackedParams,
-                        erc721ContractIndex: invalidERC721ContractIndex,
-                    }
-                );
+                console.log({
+                    ...scenario1.unpackedParams,
+                    erc721ContractIndex: invalidERC721ContractIndex,
+                });
 
                 expect(() => {
                     collateralizedLoanTerms.packParameters({

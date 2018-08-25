@@ -65,8 +65,7 @@ export const ERC721CollateralizerAdapterErrors = {
 
     INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
 
-    TOKEN_REFERENCE_EXCEEDS_MAXIMUM: () =>
-        singleLineString`Token reference exceeds maximum value.`,
+    TOKEN_REFERENCE_EXCEEDS_MAXIMUM: () => singleLineString`Token reference exceeds maximum value.`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
@@ -91,8 +90,8 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async toDebtOrder(
         collateralizedSimpleInterestLoanOrder: ERC721CollateralizedSimpleInterestLoanOrder,
     ): Promise<DebtOrderData> {
-        this.assert.schema.collateralizedSimpleInterestLoanOrder(
-            "collateralizedSimpleInterestLoanOrder",
+        this.assert.schema.erc721CollateralizedSimpleInterestLoanOrder(
+            "erc721CollateralizedSimpleInterestLoanOrder",
             collateralizedSimpleInterestLoanOrder,
         );
 

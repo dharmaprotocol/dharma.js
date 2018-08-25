@@ -6,6 +6,7 @@ import {
     wholeNumberSchema,
 } from "./basic_type_schemas";
 import { collateralizedSimpleInterestLoanOrderSchema } from "./collateralized_simple_interest_loan_order_schema";
+import { erc721CollateralizedSimpleInterestLoanOrder } from "./erc721_collateralized_simple_interest_loan_order_schema";
 import {
     debtOrderSchema,
     debtOrderWithTermsAndDebtorSpecifiedSchema,
@@ -25,5 +26,6 @@ export const Schemas = {
     debtOrderWithTermsDebtorAndCreditorSpecifiedSchema,
     simpleInterestLoanOrderSchema,
     collateralizedSimpleInterestLoanOrderSchema,
+    erc721CollateralizedSimpleInterestLoanOrder,
     wholeNumberSchema,
 };
