@@ -45,7 +45,8 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {}
+        ERC721CollateralizedTermsContractParameters {
+}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
@@ -66,6 +67,11 @@ export const ERC721CollateralizerAdapterErrors = {
     INVALID_DECIMAL_VALUE: () => singleLineString`Values cannot be expressed as decimals.`,
 
     TOKEN_REFERENCE_EXCEEDS_MAXIMUM: () => singleLineString`Token reference exceeds maximum value.`,
+
+    MISMATCHED_TOKEN_SYMBOL: (tokenAddress: string, symbol: string) =>
+        singleLineString`Terms contract parameters are invalid for the given debt order.
+                         Token at address ${tokenAddress} does not
+                         correspond to specified token with symbol ${symbol}`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {

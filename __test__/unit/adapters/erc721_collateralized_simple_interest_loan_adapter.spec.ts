@@ -75,14 +75,14 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
         packedParams: "0x0000000000000000000000000000000000000000000000000000000000000001",
     };
 
-    // const scenario2: Scenario = {
-    //     unpackedParams: {
-    //         collateralTokenIndex: new BigNumber(1),
-    //         collateralAmount: new BigNumber(723489020 * 10 ** 18),
-    //         gracePeriodInDays: new BigNumber(30),
-    //     },
-    //     packedParams: "0x00000000000000000000000000000000000000125674c25cd7f81d067000001e",
-    // };
+    const scenario2: Scenario = {
+        unpackedParams: {
+            erc721ContractIndex: new BigNumber(0),
+            tokenReference: new BigNumber(0),
+            isEnumerable: new BigNumber(1),
+        },
+        packedParams: "0x0000000000000000000000000000000000000000000000000000000000000001",
+    };
     //
     // const scenario3: Scenario = {
     //     unpackedParams: {
@@ -243,7 +243,8 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario2,
             principalToken: tokenAddresses[1],
             termsContractParameters:
-                "0x0100000000a688906bd8b000000004b0400030000000004563918244f4000078",
+                // Token Reference is 1; isEnumerable is true.
+                "0x0100000000a688906bd8b000000004b040003000000000000000000000000011",
         };
 
         const debtOrderDataForScenario3 = {
@@ -251,7 +252,8 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario3,
             principalToken: tokenAddresses[2],
             termsContractParameters:
-                "0x0200000002b5e3af16b18800000007d02000a010000001bc16d674ec8000000a",
+                // Token Reference is 0; isEnumerable is false.
+                "0x0200000002b5e3af16b18800000007d02000a000000000000000000000000000",
         };
 
         const loanOrderParamsForScenario1 = {
@@ -266,26 +268,28 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             isEnumerable: true,
         };
 
+        // Token reference of 1
         const loanOrderParamsForScenario2 = {
             principalTokenSymbol: tokenSymbols[1],
             principalAmount: principalAmountForScenario2,
             interestRate: new BigNumber(0.12),
             amortizationUnit: SimpleInterestLoanAdapter.Installments.YEARLY,
             termLength: new BigNumber(3),
-            collateralTokenSymbol: tokenSymbols[0],
-            collateralAmount: new BigNumber(5 * 10 ** 18),
-            gracePeriodInDays: new BigNumber(120),
+            erc721Symbol: "MET",
+            tokenReference: new BigNumber(1),
+            isEnumerable: true,
         };
 
+        // isEnumerable is false
         const loanOrderParamsForScenario3 = {
             principalTokenSymbol: tokenSymbols[2],
             principalAmount: principalAmountForScenario3,
             interestRate: new BigNumber(0.2),
             amortizationUnit: SimpleInterestLoanAdapter.Installments.WEEKLY,
             termLength: new BigNumber(10),
-            collateralTokenSymbol: tokenSymbols[1],
-            collateralAmount: new BigNumber(32 * 10 ** 18),
-            gracePeriodInDays: new BigNumber(10),
+            erc721Symbol: "MET",
+            tokenReference: new BigNumber(0),
+            isEnumerable: false,
         };
 
         const debtRegistryEntryBase = {
@@ -470,7 +474,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
-        describe("terms contract does not match principal token's associated `CollateralizedSimpleInterestTermsContract`", () => {
+        describe("terms contract does not match principal token's associated `ERC721CollateralizedSimpleInterestTermsContract`", () => {
             test("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
                 const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
                     new BigNumber(1),
