@@ -45,8 +45,7 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {
-}
+        ERC721CollateralizedTermsContractParameters {}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
@@ -72,6 +71,11 @@ export const ERC721CollateralizerAdapterErrors = {
         singleLineString`Terms contract parameters are invalid for the given debt order.
                          Token at address ${tokenAddress} does not
                          correspond to specified token with symbol ${symbol}`,
+
+    MISMATCHED_TERMS_CONTRACT: (termsContractAddress: string) =>
+        singleLineString`Terms contract at address ${termsContractAddress} is not
+                         a ERC721CollateralizedSimpleInterestTermsContract. As such, this adapter 
+                         will not interface with the terms contract as expected`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
