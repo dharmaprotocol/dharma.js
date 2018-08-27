@@ -21,7 +21,7 @@ export async function testIsCancelled(dharma: Dharma, params: LoanRequestParams)
 
     describe("when an order has been cancelled", () => {
         beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, params);
+            loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, params);
             await loanRequest.cancel();
         });
 
