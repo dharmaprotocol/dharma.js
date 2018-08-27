@@ -5,19 +5,30 @@ import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 import { Dharma } from "../../../../src/dharma";
 
 export async function testCancel(dharma: Dharma, params: LoanRequestParams) {
-    describe("when the cancel function is called on an open order", () => {
+    describe("for an open loan request", () => {
         let loanRequest: LoanRequest;
 
         beforeAll(async () => {
             loanRequest = await LoanRequest.create(dharma, params);
         });
 
-        it(`calls dharma.order.cancelOrderAsync`, async () => {
-            const spy = jest.spyOn(dharma.order, "cancelOrderAsync");
+        describe("calling cancel before the request has been signed by the debtor", () => {
+            test(`throws`, async () => {
+                await expect(loanRequest.cancel()).rejects.toThrow();
+            });
+        });
 
-            await loanRequest.cancel();
+        describe("calling cancel once the request has been signed by the debtor", () => {
+            beforeAll(async () => {
+                await loanRequest.signAsDebtor();
+            });
 
-            expect(spy).toHaveBeenCalled();
+            test(`returns a tx hash`, async () => {
+                const txHash = await loanRequest.cancel();
+
+                expect(txHash).toBeDefined();
+                expect(typeof txHash).toEqual("string");
+            });
         });
     });
 }
