@@ -18,6 +18,7 @@ import {
 } from "../../../utils/utils";
 
 const CREDITOR = ACCOUNTS[5].address;
+const DEBTOR = ACCOUNTS[6].address;
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -31,7 +32,7 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
         beforeEach(async () => {
             currentSnapshotId = await web3Utils.saveTestSnapshot();
 
-            loanRequest = await LoanRequest.create(dharma, params);
+            loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, params, DEBTOR);
         });
 
         afterEach(async () => {
@@ -41,11 +42,7 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
         describe("when the debtor has insufficient balance", () => {
             beforeEach(async () => {
                 await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
-                await setUnlimitedAllowanceForSymbol(
-                    dharma,
-                    params.collateralToken,
-                    params.debtorAddress,
-                );
+                await setUnlimitedAllowanceForSymbol(dharma, params.collateralToken, DEBTOR);
 
                 await setBalanceForSymbol(
                     dharma,
@@ -53,7 +50,7 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
                     params.principalToken,
                     CREDITOR,
                 );
-                await revokeBalanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
+                await revokeBalanceForSymbol(dharma, params.collateralToken, DEBTOR);
             });
 
             test("eventually returns false", async () => {
@@ -68,17 +65,13 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
                     dharma,
                     params.collateralAmount,
                     params.collateralToken,
-                    params.debtorAddress,
+                    DEBTOR,
                 );
             });
 
             describe("when the debtor has not granted sufficient allowance", () => {
                 beforeEach(async () => {
-                    await revokeAllowanceForSymbol(
-                        dharma,
-                        params.collateralToken,
-                        params.debtorAddress,
-                    );
+                    await revokeAllowanceForSymbol(dharma, params.collateralToken, DEBTOR);
                     await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
                     await setBalanceForSymbol(
                         dharma,
@@ -96,11 +89,7 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
 
             describe("when the creditor has not granted sufficient allowance", () => {
                 test("eventually returns false", async () => {
-                    await setUnlimitedAllowanceForSymbol(
-                        dharma,
-                        params.collateralToken,
-                        params.debtorAddress,
-                    );
+                    await setUnlimitedAllowanceForSymbol(dharma, params.collateralToken, DEBTOR);
                     await revokeAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
 
                     const isFillable = await loanRequest.isFillable(CREDITOR);
@@ -111,11 +100,7 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
             describe("when the creditor has insufficient balance", () => {
                 beforeEach(async () => {
                     await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
-                    await setUnlimitedAllowanceForSymbol(
-                        dharma,
-                        params.collateralToken,
-                        params.debtorAddress,
-                    );
+                    await setUnlimitedAllowanceForSymbol(dharma, params.collateralToken, DEBTOR);
                     await revokeBalanceForSymbol(dharma, params.principalToken, CREDITOR);
                 });
 
@@ -128,11 +113,7 @@ export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) 
             describe("when the debtor and creditor have both granted sufficient allowances and balances", () => {
                 beforeEach(async () => {
                     await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, CREDITOR);
-                    await setUnlimitedAllowanceForSymbol(
-                        dharma,
-                        params.collateralToken,
-                        params.debtorAddress,
-                    );
+                    await setUnlimitedAllowanceForSymbol(dharma, params.collateralToken, DEBTOR);
                     await setBalanceForSymbol(
                         dharma,
                         params.principalAmount,
