@@ -230,10 +230,11 @@ export class LoanRequest extends Agreement {
     public static async createAndSignAsDebtor(
         dharma: Dharma,
         params: LoanRequestParams,
+        debtor?: string,
     ): Promise<LoanRequest> {
         const request = await LoanRequest.create(dharma, params);
 
-        await request.signAsDebtor();
+        await request.signAsDebtor(debtor);
 
         return request;
     }
