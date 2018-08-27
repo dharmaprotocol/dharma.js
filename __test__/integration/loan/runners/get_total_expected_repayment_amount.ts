@@ -15,7 +15,8 @@ import { InterestRate, TokenAmount } from "../../../../src/types";
 
 import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
 
-const CREDITOR = ACCOUNTS[3];
+const DEBTOR = ACCOUNTS[2].address;
+const CREDITOR = ACCOUNTS[3].address;
 
 export async function testGetTotalExpectedRepaymentAmount(
     dharma: Dharma,
@@ -28,9 +29,9 @@ export async function testGetTotalExpectedRepaymentAmount(
         beforeAll(async () => {
             loanRequest = await LoanRequest.create(dharma, params);
 
-            await setBalancesAndAllowances(dharma, params, CREDITOR.address);
+            await setBalancesAndAllowances(dharma, params, DEBTOR, CREDITOR);
 
-            await loanRequest.fill(CREDITOR.address);
+            await loanRequest.fill(CREDITOR);
 
             loan = await loanRequest.generateLoan();
         });
