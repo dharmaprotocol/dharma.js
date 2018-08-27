@@ -448,9 +448,16 @@ export class LoanRequest extends Agreement {
      *
      * @return {Promise<string>}
      */
-    public fillAsProxy(): Promise<string> {
+    public async fillAsProxy(proxyAddress?: string): Promise<string> {
         if (this.isSignedByCreditor() && this.isSignedByDebtor()) {
-            return this.dharma.order.fillAsync(this.data);
+            const sender = await EthereumAddress.validAddressOrCurrentUser(
+                this.dharma,
+                proxyAddress,
+            );
+
+            return this.dharma.order.fillAsync(this.data, {
+                from: sender,
+            });
         } else {
             throw new Error(LOAN_REQUEST_ERRORS.PROXY_FILL_DISALLOWED);
         }
