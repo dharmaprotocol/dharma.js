@@ -27,11 +27,11 @@ export async function testGetTotalExpectedRepaymentAmount(
         let loan: Loan;
 
         beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, params);
+            loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, params, DEBTOR);
 
             await setBalancesAndAllowances(dharma, params, DEBTOR, CREDITOR);
 
-            await loanRequest.fill(CREDITOR);
+            await loanRequest.fillAsCreditor(CREDITOR);
 
             loan = await loanRequest.generateLoan();
         });
