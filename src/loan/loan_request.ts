@@ -431,7 +431,9 @@ export class LoanRequest extends Agreement {
             creditorAddress,
         );
 
-        return this.dharma.order.fillAsync(this.data);
+        return this.dharma.order.fillAsync(this.data, {
+            from: this.data.creditor,
+        });
     }
 
     /**
