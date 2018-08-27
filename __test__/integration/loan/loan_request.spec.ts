@@ -8,7 +8,7 @@ import { generateLoanData } from "./scenarios/valid_loan_data";
 import { VALID_LOAN_REQUEST } from "./scenarios/VALID_LOAN_REQUEST";
 
 // Test runners
-import { testCancel } from "./runners/cancel_as_debtor";
+import { testCancel } from "./runners/cancel";
 import { testCreate } from "./runners/create";
 import { testGetTerms } from "./runners/get_terms";
 import { testIsCancelled } from "./runners/is_cancelled";
