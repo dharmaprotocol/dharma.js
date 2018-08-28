@@ -41,15 +41,12 @@ export class Loan extends Agreement {
             loanOrder.amortizationUnit,
         );
 
-        const debtorAddress = new EthereumAddress(loanOrder.debtor!);
-
         const loanParams: BaseLoanConstructorParams = {
             principal,
             collateral,
             termLength,
             interestRate,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
-            debtorAddress,
         };
 
         return new Loan(dharma, loanParams, debtOrderData);
