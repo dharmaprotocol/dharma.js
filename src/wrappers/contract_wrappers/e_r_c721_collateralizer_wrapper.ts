@@ -1,15 +1,12 @@
-/**
- * This file is auto-generated using abi-gen. Don't edit directly.
- * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
- */
-import * as promisify from "tiny-promisify";
-import * as Web3 from "web3";
-import { BigNumber } from "../../../utils/bignumber";
+// tslint:disable-next-line:no-unused-variable
 import { TxData } from "../../types";
-
-import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
-import { ERC721Collateralizer as ContractArtifacts } from "@dharmaprotocol/contracts";
+import * as promisify from "tiny-promisify";
+import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
+import { BigNumber } from "../../../utils/bignumber";
+import { ERC721Collateralizer as ContractArtifacts } from "@dharmaprotocol/contracts";
+import * as Web3 from "web3";
+import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
 export class ERC721CollateralizerContract extends BaseContract {
     public CONTEXT = {
@@ -423,10 +420,13 @@ export class ERC721CollateralizerContract extends BaseContract {
             );
         });
     }
-    public static async deployed(
-        web3: Web3,
-        defaults: Partial<TxData>,
-    ): Promise<ERC721CollateralizedSimpleInterestTermsContractContract> {
+
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults);
+        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
+    }
+
+    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<ERC721CollateralizerContract> {
         const web3Utils = new Web3Utils(web3);
 
         const currentNetwork = await web3Utils.getNetworkIdAsync();
@@ -439,14 +439,11 @@ export class ERC721CollateralizerContract extends BaseContract {
 
             if (contractExists) {
                 const web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
-                return new ERC721CollateralizedSimpleInterestTermsContractContract(
-                    web3ContractInstance,
-                    defaults,
-                );
+                return new ERC721CollateralizerContract(web3ContractInstance, defaults);
             } else {
                 throw new Error(
                     CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
-                        "ERC721CollateralizedSimpleInterestTermsContract",
+                        "ERC721Collateralizer",
                         currentNetwork,
                     ),
                 );
@@ -454,18 +451,18 @@ export class ERC721CollateralizerContract extends BaseContract {
         } else {
             throw new Error(
                 CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
-                    "ERC721CollateralizedSimpleInterestTermsContractContract",
+                    "ERC721Collateralizer",
                     currentNetwork,
                 ),
             );
         }
     }
 
-    public static async at(
+    static async at(
         address: string,
         web3: Web3,
         defaults: Partial<TxData>,
-    ): Promise<ERC721Collateralizer> {
+    ): Promise<ERC721CollateralizerContract> {
         const web3Utils = new Web3Utils(web3);
 
         const { abi }: { abi: any } = ContractArtifacts;
@@ -475,10 +472,7 @@ export class ERC721CollateralizerContract extends BaseContract {
         if (contractExists) {
             const web3ContractInstance = web3.eth.contract(abi).at(address);
 
-            return new ERC721Collateralizer(
-                web3ContractInstance,
-                defaults,
-            );
+            return new ERC721CollateralizerContract(web3ContractInstance, defaults);
         } else {
             throw new Error(
                 CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
