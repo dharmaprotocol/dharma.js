@@ -37,9 +37,9 @@ import {
 } from "../../utils/constants";
 // types
 import { AddressBook } from "../types";
-import { ERC721CollateralizedSimpleInterestTermsContractContract } from "../wrappers/contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract";
-import { ERC721TokenContract } from "../wrappers/contract_wrappers/e_r_c721_token";
-import { ERC721TokenRegistryContract } from "../wrappers/contract_wrappers/e_r_c721_token_registry";
+import { ERC721CollateralizedSimpleInterestTermsContractContract } from "../wrappers/contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract_wrapper";
+import { ERC721TokenContract } from "../wrappers/contract_wrappers/e_r_c721_token_wrapper";
+import { ERC721TokenRegistryContract } from "../wrappers/contract_wrappers/e_r_c721_token_registry_wrapper";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;

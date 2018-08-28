@@ -4,17 +4,12 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
-import { ERC721TokenContract as ContractArtifacts } from "@dharmaprotocol/contracts";
+import { ERC721Token as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
 export class ERC721TokenContract extends BaseContract {
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults);
-        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
-    }
-
     public name = {
         async callAsync(defaultBlock?: Web3.BlockParam): Promise<string> {
             const self = this as ERC721TokenContract;
@@ -401,6 +396,11 @@ export class ERC721TokenContract extends BaseContract {
         }
     }
 
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults);
+        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
+    }
+
     public static async at(
         address: string,
         web3: Web3,
@@ -418,33 +418,8 @@ export class ERC721TokenContract extends BaseContract {
             return new ERC721TokenContract(web3ContractInstance, defaults);
         } else {
             throw new Error(
-                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
-                    "ERC721Token",
-                    currentNetwork,
-                ),
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ERC721Token", currentNetwork),
             );
         }
-    }
-
-    async deploy(...args: any[]): Promise<any> {
-        const wrapper = this;
-        const rejected = false;
-
-        return new Promise((resolve, reject) => {
-            wrapper.web3ContractInstance.new(
-                wrapper.defaults,
-                (err: string, contract: Web3.ContractInstance) => {
-                    if (err) {
-                        reject(err);
-                    } else if (contract.address) {
-                        wrapper.web3ContractInstance = wrapper.web3ContractInstance.at(
-                            contract.address,
-                        );
-                        wrapper.address = contract.address;
-                        resolve();
-                    }
-                },
-            );
-        });
     }
 } // tslint:disable:max-file-line-count

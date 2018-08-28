@@ -3,7 +3,6 @@ import { Web3Utils } from "utils/web3_utils";
 import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
 import { ACCOUNTS } from "../../accounts";
 import * as Web3 from "web3";
-
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";
@@ -101,7 +100,7 @@ export class WrapperTestRunner {
 
                     test(`returns new ${
                         wrapper.name
-                    } wrapper w/ current address correctly set`, async () => {
+                        } wrapper w/ current address correctly set`, async () => {
                         const contractWrapper = await wrapper.contract.deployed(web3, TX_DEFAULTS);
 
                         expect(contractWrapper.address).toBe(contractAddress);
@@ -147,7 +146,7 @@ export class WrapperTestRunner {
 
                     test(`returns new ${
                         wrapper.name
-                    }Contract w/ current address correctly set`, async () => {
+                        }Contract w/ current address correctly set`, async () => {
                         const contractWrapper = await wrapper.contract.at(
                             contractAddress,
                             web3,
@@ -159,6 +158,6 @@ export class WrapperTestRunner {
                     });
                 });
             });
-        });
+        })
     }
 }
