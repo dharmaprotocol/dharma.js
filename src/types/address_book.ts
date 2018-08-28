@@ -8,5 +8,6 @@ export interface AddressBook {
     termsContractRegistry?: string;
     simpleInterestTermsContractAddress?: string;
     collateralizedSimpleInterestTermsContractAddress?: string;
+    erc721CollateralizedSimpleInterestTermsContract?: string;
     collateralizerAddress?: string;
 }

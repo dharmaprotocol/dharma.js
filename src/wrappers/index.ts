@@ -1,5 +1,6 @@
 import { BaseContract } from "./contract_wrappers/base_contract_wrapper";
 import { CollateralizedSimpleInterestTermsContractContract } from "./contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
+import { ERC721CollateralizedSimpleInterestTermsContractContract } from "./contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract";
 import { CollateralizerContract } from "./contract_wrappers/collateralizer_wrapper";
 import { ContractRegistryContract } from "./contract_wrappers/contract_registry_wrapper";
 import { DebtKernelContract } from "./contract_wrappers/debt_kernel_wrapper";
@@ -27,6 +28,7 @@ export type ContractWrapper =
     | RepaymentRouterContract
     | SimpleInterestTermsContractContract
     | CollateralizedSimpleInterestTermsContractContract
+    | ERC721CollateralizedSimpleInterestTermsContractContract
     | TermsContract
     | TokenRegistryContract
     | CollateralizerContract
@@ -47,6 +49,7 @@ export {
     TermsContract,
     SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
+    ERC721CollateralizedSimpleInterestTermsContractContract,
     RepaymentRouterContract,
     CollateralizerContract,
     ContractRegistryContract,

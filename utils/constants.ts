@@ -38,6 +38,8 @@ export const TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry
 export const COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
     "CollateralizedSimpleInterestTermsContract";
 export const COLLATERALIZER_CONTRACT_CACHE_KEY = "CollateralizerContract";
+export const ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
+    "ERC721CollateralizedSimpleInterestTermsContract";
 
 export const TERMS_CONTRACT_TYPES = {
     COLLATERALIZED_SIMPLE_INTEREST_LOAN: "CollateralizedSimpleInterestLoan",

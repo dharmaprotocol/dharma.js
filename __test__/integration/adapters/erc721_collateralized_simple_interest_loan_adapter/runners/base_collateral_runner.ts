@@ -11,9 +11,9 @@ import { ReturnCollateralScenario, SeizeCollateralScenario } from "../scenarios"
 import { ERC721CollateralizedSimpleInterestLoanAdapter } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 // Wrappers
 import {
-    CollateralizedSimpleInterestTermsContractContract,
     DebtKernelContract,
     DummyTokenContract,
+    ERC721CollateralizedSimpleInterestTermsContractContract,
     RepaymentRouterContract,
     TokenTransferProxyContract,
 } from "../../../../../src/wrappers";
@@ -47,7 +47,7 @@ export abstract class BaseCollateralRunner {
     protected repaymentRouter: RepaymentRouterContract;
     protected principalToken: DummyTokenContract;
     protected collateralToken: DummyTokenContract;
-    protected termsContract: CollateralizedSimpleInterestTermsContractContract;
+    protected termsContract: ERC721CollateralizedSimpleInterestTermsContractContract;
     protected orderApi: OrderAPI;
     protected signerApi: SignerAPI;
     protected tokenTransferProxy: TokenTransferProxyContract;
@@ -239,7 +239,7 @@ export abstract class BaseCollateralRunner {
 
         this.repaymentRouter = await RepaymentRouterContract.deployed(this.web3);
 
-        this.termsContract = await this.contractsApi.loadCollateralizedSimpleInterestTermsContract(
+        this.termsContract = await this.contractsApi.loadERC721CollateralizedSimpleInterestTermsContract(
             TX_DEFAULTS,
         );
 

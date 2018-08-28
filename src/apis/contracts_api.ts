@@ -23,6 +23,7 @@ import {
 // utils
 import {
     COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
+    ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     COLLATERALIZER_CONTRACT_CACHE_KEY,
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_REGISTRY_CONTRACT_CACHE_KEY,
@@ -38,6 +39,7 @@ import {
 
 // types
 import { AddressBook } from "../types";
+import { ERC721CollateralizedSimpleInterestTermsContractContract } from "../wrappers/contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -416,6 +418,37 @@ export class ContractsAPI {
         ] = collateralizedSimpleInterestTermsContract;
 
         return collateralizedSimpleInterestTermsContract;
+    }
+
+    public async loadERC721CollateralizedSimpleInterestTermsContract(
+        transactionOptions: object = {},
+    ): Promise<ERC721CollateralizedSimpleInterestTermsContractContract> {
+        if (ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[
+                ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
+            ] as ERC721CollateralizedSimpleInterestTermsContractContract;
+        }
+
+        let erc721CollateralizedSimpleInterestTermsContract: ERC721CollateralizedSimpleInterestTermsContractContract;
+
+        if (this.addressBook.erc721CollateralizedSimpleInterestTermsContract) {
+            erc721CollateralizedSimpleInterestTermsContract = await ERC721CollateralizedSimpleInterestTermsContractContract.at(
+                this.addressBook.erc721CollateralizedSimpleInterestTermsContract,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            erc721CollateralizedSimpleInterestTermsContract = await ERC721CollateralizedSimpleInterestTermsContractContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+        }
+
+        this.cache[
+            ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
+        ] = erc721CollateralizedSimpleInterestTermsContract;
+
+        return erc721CollateralizedSimpleInterestTermsContract;
     }
 
     public async loadTokenRegistry(
