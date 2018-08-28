@@ -1,6 +1,10 @@
 import { WrapperTestObject, WrapperTestRunner } from "./wrapper_test_runner";
 
-import { ERC721TokenRegistry, ERC721Collateralizer, ERC721CollateralizedSimpleInterestTermsContract } from "@dharmaprotocol/contracts";
+import {
+    ERC721TokenRegistry,
+    ERC721Collateralizer,
+    ERC721CollateralizedSimpleInterestTermsContract,
+} from "@dharmaprotocol/contracts";
 
 import { ERC721TokenRegistryContract } from "../../../src/wrappers/contract_wrappers/e_r_c721_token_registry_wrapper";
 import { ERC721CollateralizerContract } from "../../../src/wrappers/contract_wrappers/e_r_c721_collateralizer_wrapper";
