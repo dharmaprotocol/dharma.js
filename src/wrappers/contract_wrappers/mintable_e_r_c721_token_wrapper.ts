@@ -4,9 +4,11 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
+import { MintableERC721Token as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
+import { ERC721TokenContract } from "./e_r_c721_token_wrapper";
 
 export class MintableERC721TokenContract extends BaseContract {
     public supportsInterface = {
@@ -478,37 +480,69 @@ export class MintableERC721TokenContract extends BaseContract {
             );
         });
     }
-    static async deployed(
-        web3: Web3,
-        defaults: Partial<TxData>,
-    ): Promise<MintableERC721TokenContract> {
-        const currentNetwork = web3.version.network;
-        const { abi, networks } = await this.getArtifactsData(web3);
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address);
 
-        return new MintableERC721TokenContract(web3ContractInstance, defaults);
+    public static async deployed(
+        web3: Web3,
+        defaults?: Partial<TxData>,
+    ): Promise<MintableERC721TokenContract> {
+        const web3Utils = new Web3Utils(web3);
+
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
+        const { abi, networks }: { abi: any; networks: any } = ContractArtifacts;
+
+        if (networks[currentNetwork]) {
+            const { address: contractAddress } = networks[currentNetwork];
+
+            const contractExists = await web3Utils.doesContractExistAtAddressAsync(contractAddress);
+
+            if (contractExists) {
+                const web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
+                return new MintableERC721TokenContract(web3ContractInstance, defaults);
+            } else {
+                throw new Error(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "MintableERC721Token",
+                        currentNetwork,
+                    ),
+                );
+            }
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                    "MintableERC721Token",
+                    currentNetwork,
+                ),
+            );
+        }
     }
-    static async at(
+
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults);
+        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
+    }
+
+    public static async at(
         address: string,
         web3: Web3,
         defaults: Partial<TxData>,
     ): Promise<MintableERC721TokenContract> {
-        const { abi } = await this.getArtifactsData(web3);
-        const web3ContractInstance = web3.eth.contract(abi).at(address);
+        const web3Utils = new Web3Utils(web3);
 
-        return new MintableERC721TokenContract(web3ContractInstance, defaults);
-    }
-    private static async getArtifactsData(web3: Web3): Promise<any> {
-        try {
-            const artifact = await fs.readFile("build/contracts/MintableERC721Token.json", "utf8");
-            const { abi, networks } = JSON.parse(artifact);
-            return { abi, networks };
-        } catch (e) {
-            console.error("Artifacts malformed or nonexistent: " + e.toString());
+        const { abi }: { abi: any } = ContractArtifacts;
+        const contractExists = await web3Utils.doesContractExistAtAddressAsync(address);
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
+
+        if (contractExists) {
+            const web3ContractInstance = web3.eth.contract(abi).at(address);
+
+            return new MintableERC721TokenContract(web3ContractInstance, defaults);
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                    "MintableERC721Token",
+                    currentNetwork,
+                ),
+            );
         }
-    }
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults);
-        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
     }
 } // tslint:disable:max-file-line-count

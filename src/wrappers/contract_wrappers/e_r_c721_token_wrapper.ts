@@ -364,7 +364,7 @@ export class ERC721TokenContract extends BaseContract {
     public static async deployed(
         web3: Web3,
         defaults?: Partial<TxData>,
-    ): Promise<RepaymentRouterContract> {
+    ): Promise<ERC721TokenContract> {
         const web3Utils = new Web3Utils(web3);
 
         const currentNetwork = await web3Utils.getNetworkIdAsync();
@@ -418,7 +418,10 @@ export class ERC721TokenContract extends BaseContract {
             return new ERC721TokenContract(web3ContractInstance, defaults);
         } else {
             throw new Error(
-                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK("ERC721Token", currentNetwork),
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                    "ERC721Token",
+                    currentNetwork,
+                ),
             );
         }
     }
