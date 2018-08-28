@@ -12,7 +12,7 @@ export async function testSignAsDebtor(dharma: Dharma, params: LoanRequestParams
             loanRequest = await LoanRequest.create(dharma, params);
         });
 
-        it("is not signed by the debtor", () => {
+        test("returns false", () => {
             expect(loanRequest.isSignedByDebtor()).toEqual(false);
         });
 
@@ -21,7 +21,7 @@ export async function testSignAsDebtor(dharma: Dharma, params: LoanRequestParams
                 await loanRequest.signAsDebtor();
             });
 
-            it("is signed by the debtor", () => {
+            test("returns true", () => {
                 expect(loanRequest.isSignedByDebtor()).toEqual(true);
             });
         });

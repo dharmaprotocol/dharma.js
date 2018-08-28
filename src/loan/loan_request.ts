@@ -335,7 +335,9 @@ export class LoanRequest extends Agreement {
             debtorAddress,
         );
 
-        await this.dharma.sign.asDebtor(this.data, this.dharma.web3.currentProvider.isMetaMask);
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, isMetaMask);
     }
 
     /**
@@ -495,6 +497,8 @@ export class LoanRequest extends Agreement {
             creditorAddress,
         );
 
-        await this.dharma.sign.asCreditor(this.data, this.dharma.web3.currentProvider.isMetaMask);
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
     }
 }
