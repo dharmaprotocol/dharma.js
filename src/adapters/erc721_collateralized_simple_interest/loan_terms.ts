@@ -45,8 +45,6 @@ export class ERC721CollateralizedLoanTerms {
             .plus(tokenReferenceShifted)
             .plus(isEnumerableShifted);
 
-        console.log("result", `0x${baseTenParameters.toString(16).padStart(64, "0")}`);
-
         return `0x${baseTenParameters.toString(16).padStart(64, "0")}`;
     }
 

@@ -16,6 +16,8 @@ import { TermsContract } from "./contract_wrappers/terms_contract_wrapper";
 import { TokenRegistryContract } from "./contract_wrappers/token_registry_wrapper";
 import { TokenTransferProxyContract } from "./contract_wrappers/token_transfer_proxy_wrapper";
 import { DebtOrderDataWrapper } from "./debt_order_data_wrapper";
+import { ERC721TokenRegistryContract } from "./contract_wrappers/e_r_c721_token_registry";
+import { ERC721TokenContract } from "./contract_wrappers/e_r_c721_token";
 
 export type ContractWrapper =
     | DebtKernelContract
@@ -29,6 +31,8 @@ export type ContractWrapper =
     | SimpleInterestTermsContractContract
     | CollateralizedSimpleInterestTermsContractContract
     | ERC721CollateralizedSimpleInterestTermsContractContract
+    | ERC721TokenRegistryContract
+    | ERC721TokenContract
     | TermsContract
     | TokenRegistryContract
     | CollateralizerContract
@@ -53,4 +57,6 @@ export {
     RepaymentRouterContract,
     CollateralizerContract,
     ContractRegistryContract,
+    ERC721TokenRegistryContract,
+    ERC721TokenContract,
 };

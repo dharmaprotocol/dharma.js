@@ -1,7 +1,3 @@
-/**
- * This file is auto-generated using abi-gen. Don't edit directly.
- * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
- */
 // tslint:disable-next-line:no-unused-variable
 import { TokenRegistry as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as promisify from "tiny-promisify";

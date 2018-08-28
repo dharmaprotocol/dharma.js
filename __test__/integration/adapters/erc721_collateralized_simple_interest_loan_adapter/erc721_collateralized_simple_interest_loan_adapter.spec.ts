@@ -65,19 +65,19 @@ describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () =
         describe("Successful return of collateral", () => {
             SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
         });
-
-        describe("Unsuccessful attempt to return collateral", () => {
-            UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
-        });
-    });
-
-    describe("#seizeCollateral", () => {
-        describe("Successful seizure of collateral", () => {
-            SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
-        });
-
-        describe("Unsuccessful attempt to seize collateral", () => {
-            UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
-        });
+        //
+        //     describe("Unsuccessful attempt to return collateral", () => {
+        //         UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
+        //     });
+        // });
+        //
+        // describe("#seizeCollateral", () => {
+        //     describe("Successful seizure of collateral", () => {
+        //         SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
+        //     });
+        //
+        //     describe("Unsuccessful attempt to seize collateral", () => {
+        //         UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
+        //     });
     });
 });

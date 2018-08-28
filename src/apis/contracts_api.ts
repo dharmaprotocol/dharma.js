@@ -2,7 +2,6 @@
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
-
 // wrappers
 import {
     CollateralizedSimpleInterestTermsContractContract,
@@ -19,27 +18,28 @@ import {
     TokenRegistryContract,
     TokenTransferProxyContract,
 } from "../wrappers";
-
 // utils
 import {
     COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
-    ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     COLLATERALIZER_CONTRACT_CACHE_KEY,
+    CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_REGISTRY_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
+    ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
+    ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     TERMS_CONTRACT_TYPES,
     TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
     TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY,
-    CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
 } from "../../utils/constants";
-
 // types
 import { AddressBook } from "../types";
 import { ERC721CollateralizedSimpleInterestTermsContractContract } from "../wrappers/contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract";
+import { ERC721TokenContract } from "../wrappers/contract_wrappers/e_r_c721_token";
+import { ERC721TokenRegistryContract } from "../wrappers/contract_wrappers/e_r_c721_token_registry";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -263,7 +263,7 @@ export class ContractsAPI {
         if (TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY
-            ] as TokenTransferProxyContract;
+                ] as TokenTransferProxyContract;
         }
 
         let tokenTransferProxy: TokenTransferProxyContract;
@@ -289,8 +289,20 @@ export class ContractsAPI {
     public async loadERC721ContractAsync(
         contractAddress: string,
         transactionOptions: object = {},
-    ): Promise<ERC721Contract> {
-        // STUB.
+    ): Promise<ERC721TokenContract> {
+        const cacheKey = this.getERC721ContractCacheKey(contractAddress);
+
+        if (cacheKey in this.cache) {
+            return this.cache[cacheKey] as ERC721TokenContract;
+        } else {
+            const tokenContract = await ERC721TokenContract.at(
+                contractAddress,
+                this.web3,
+                transactionOptions,
+            );
+            this.cache[cacheKey] = tokenContract;
+            return tokenContract;
+        }
     }
 
     public async loadERC20TokenAsync(
@@ -347,7 +359,7 @@ export class ContractsAPI {
 
         const addressToContractType = {
             [collateralizedSimpleInterestTermsContract.address]:
-                TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
+            TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
             [simpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN,
         };
 
@@ -366,7 +378,7 @@ export class ContractsAPI {
         if (SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-            ] as SimpleInterestTermsContractContract;
+                ] as SimpleInterestTermsContractContract;
         }
 
         let simpleInterestTermsContract: SimpleInterestTermsContractContract;
@@ -395,7 +407,7 @@ export class ContractsAPI {
         if (COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-            ] as CollateralizedSimpleInterestTermsContractContract;
+                ] as CollateralizedSimpleInterestTermsContractContract;
         }
 
         let collateralizedSimpleInterestTermsContract: CollateralizedSimpleInterestTermsContractContract;
@@ -415,7 +427,7 @@ export class ContractsAPI {
 
         this.cache[
             COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-        ] = collateralizedSimpleInterestTermsContract;
+            ] = collateralizedSimpleInterestTermsContract;
 
         return collateralizedSimpleInterestTermsContract;
     }
@@ -426,7 +438,7 @@ export class ContractsAPI {
         if (ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-            ] as ERC721CollateralizedSimpleInterestTermsContractContract;
+                ] as ERC721CollateralizedSimpleInterestTermsContractContract;
         }
 
         let erc721CollateralizedSimpleInterestTermsContract: ERC721CollateralizedSimpleInterestTermsContractContract;
@@ -446,9 +458,40 @@ export class ContractsAPI {
 
         this.cache[
             ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-        ] = erc721CollateralizedSimpleInterestTermsContract;
+            ] = erc721CollateralizedSimpleInterestTermsContract;
 
         return erc721CollateralizedSimpleInterestTermsContract;
+    }
+
+    public async loadERC721TokenRegistryContract(
+        transactionOptions: object = {},
+    ): Promise<ERC721TokenRegistryContract> {
+        if (ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[
+                ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY
+                ] as ERC721TokenRegistryContract;
+        }
+
+        let erc721TokenRegistryContract: ERC721TokenRegistryContract;
+
+        if (this.addressBook.erc721TokenRegistryContract) {
+            erc721TokenRegistryContract = await ERC721TokenRegistryContract.at(
+                this.addressBook.erc721TokenRegistryContract,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            erc721TokenRegistryContract = await ERC721TokenRegistryContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+        }
+
+        this.cache[
+            ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY
+            ] = erc721TokenRegistryContract;
+
+        return erc721TokenRegistryContract;
     }
 
     public async loadTokenRegistry(
@@ -498,19 +541,37 @@ export class ContractsAPI {
      * @returns {Promise<string>}
      */
     public async getERC721IndexBySymbolAsync(symbol: string): Promise<BigNumber> {
-        // STUB.
-        if (symbol !== "MET") {
-            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));
-        }
+        const tokenRegistryContract = await this.loadERC721TokenRegistryContract();
 
-        // TODO: Call the contract for value.
-        return new BigNumber(0);
+        // We first confirm token exists with the given symbol. This call
+        // will throw if the token is not tracked by the registry.
+        await this.getERC721AddressBySymbolAsync(symbol);
+
+        return tokenRegistryContract.getTokenIndexBySymbol.callAsync(symbol);
     }
 
     public async getERC721SymbolByIndexAsync(index: BigNumber): Promise<string> {
-        // STUB.
-        // TODO: Call the contract for value.
-        return "MET";
+        const tokenRegistryContract = await this.loadERC721TokenRegistryContract({});
+
+        const tokenAddress = await tokenRegistryContract.getTokenSymbolByIndex.callAsync(index);
+
+        if (tokenAddress === NULL_ADDRESS) {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_INDEX(index.toNumber()));
+        }
+
+        return tokenAddress;
+    }
+
+    public async getERC721AddressBySymbolAsync(symbol: string): Promise<string> {
+        const tokenRegistryContract = await this.loadERC721TokenRegistryContract({});
+
+        const tokenAddress = await tokenRegistryContract.getTokenAddressBySymbol.callAsync(symbol);
+
+        if (tokenAddress === NULL_ADDRESS) {
+            throw new Error(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL(symbol));
+        }
+
+        return tokenAddress;
     }
 
     /**
@@ -567,7 +628,7 @@ export class ContractsAPI {
     public async loadERC721BySymbolAsync(
         symbol: string,
         transactionOptions: object = {},
-    ): Promise<ERC721Contract> {
+    ): Promise<ERC721TokenContract> {
         const erc721Address = await this.getERC721AddressBySymbolAsync(symbol);
 
         return this.loadERC721ContractAsync(erc721Address, transactionOptions);
@@ -600,6 +661,10 @@ export class ContractsAPI {
 
     private getERC20TokenCacheKey(tokenAddress: string): string {
         return `ERC20_${tokenAddress}`;
+    }
+
+    private getERC721ContractCacheKey(contractAddress: string): string {
+        return `ERC721_${contractAddress}`;
     }
 
     private getTermsContractCacheKey(termsContractAddress: string): string {

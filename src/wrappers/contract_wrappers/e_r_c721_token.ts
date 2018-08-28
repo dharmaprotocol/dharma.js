@@ -4,24 +4,20 @@ import * as promisify from "tiny-promisify";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
 import { BigNumber } from "../../../utils/bignumber";
+import { ERC721TokenContract as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
-export class MintableERC721TokenContract extends BaseContract {
-    public supportsInterface = {
-        async callAsync(interfaceID: string, defaultBlock?: Web3.BlockParam): Promise<boolean> {
-            const self = this as MintableERC721TokenContract;
-            const result = await promisify<boolean>(
-                self.web3ContractInstance.supportsInterface.call,
-                self.web3ContractInstance,
-            )(interfaceID);
-            return result;
-        },
-    };
+export class ERC721TokenContract extends BaseContract {
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults);
+        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
+    }
+
     public name = {
         async callAsync(defaultBlock?: Web3.BlockParam): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.name.call,
                 self.web3ContractInstance,
@@ -31,7 +27,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public getApproved = {
         async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.getApproved.call,
                 self.web3ContractInstance,
@@ -45,7 +41,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
                 txData,
                 self.approve.estimateGasAsync.bind(self, _to, _tokenId),
@@ -61,7 +57,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
                 self.web3ContractInstance.approve.estimateGas,
@@ -74,7 +70,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const abiEncodedTransactionData = await promisify<string>(
                 self.web3ContractInstance.approve.getData,
@@ -85,7 +81,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public totalSupply = {
         async callAsync(defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<BigNumber>(
                 self.web3ContractInstance.totalSupply.call,
                 self.web3ContractInstance,
@@ -100,7 +96,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
                 txData,
                 self.transferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId),
@@ -117,7 +113,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
                 self.web3ContractInstance.transferFrom.estimateGas,
@@ -131,7 +127,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const abiEncodedTransactionData = await promisify<string>(
                 self.web3ContractInstance.transferFrom.getData,
@@ -146,56 +142,12 @@ export class MintableERC721TokenContract extends BaseContract {
             _index: BigNumber,
             defaultBlock?: Web3.BlockParam,
         ): Promise<BigNumber> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<BigNumber>(
                 self.web3ContractInstance.tokenOfOwnerByIndex.call,
                 self.web3ContractInstance,
             )(_owner, _index);
             return result;
-        },
-    };
-    public mint = {
-        async sendTransactionAsync(
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
-                txData,
-                self.mint.estimateGasAsync.bind(self, _to, _tokenId),
-            );
-            const txHash = await promisify<string>(
-                self.web3ContractInstance.mint,
-                self.web3ContractInstance,
-            )(_to, _tokenId, txDataWithDefaults);
-            return txHash;
-        },
-        async estimateGasAsync(
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const gas = await promisify<number>(
-                self.web3ContractInstance.mint.estimateGas,
-                self.web3ContractInstance,
-            )(_to, _tokenId, txDataWithDefaults);
-            return gas;
-        },
-        async getABIEncodedTransactionData(
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const abiEncodedTransactionData = await promisify<string>(
-                self.web3ContractInstance.mint.getData,
-                self.web3ContractInstance,
-            )(_to, _tokenId, txDataWithDefaults);
-            return abiEncodedTransactionData;
         },
     };
     public safeTransferFrom = {
@@ -205,7 +157,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
                 txData,
                 self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId),
@@ -222,7 +174,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
                 self.web3ContractInstance.safeTransferFrom.estimateGas,
@@ -236,7 +188,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _tokenId: BigNumber,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const abiEncodedTransactionData = await promisify<string>(
                 self.web3ContractInstance.safeTransferFrom.getData,
@@ -247,7 +199,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public exists = {
         async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<boolean> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<boolean>(
                 self.web3ContractInstance.exists.call,
                 self.web3ContractInstance,
@@ -257,7 +209,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public tokenByIndex = {
         async callAsync(_index: BigNumber, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<BigNumber>(
                 self.web3ContractInstance.tokenByIndex.call,
                 self.web3ContractInstance,
@@ -267,7 +219,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public ownerOf = {
         async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.ownerOf.call,
                 self.web3ContractInstance,
@@ -277,7 +229,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public balanceOf = {
         async callAsync(_owner: string, defaultBlock?: Web3.BlockParam): Promise<BigNumber> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<BigNumber>(
                 self.web3ContractInstance.balanceOf.call,
                 self.web3ContractInstance,
@@ -287,7 +239,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public symbol = {
         async callAsync(defaultBlock?: Web3.BlockParam): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.symbol.call,
                 self.web3ContractInstance,
@@ -301,7 +253,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _approved: boolean,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
                 txData,
                 self.setApprovalForAll.estimateGasAsync.bind(self, _to, _approved),
@@ -317,7 +269,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _approved: boolean,
             txData: TxData = {},
         ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
                 self.web3ContractInstance.setApprovalForAll.estimateGas,
@@ -330,56 +282,12 @@ export class MintableERC721TokenContract extends BaseContract {
             _approved: boolean,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const abiEncodedTransactionData = await promisify<string>(
                 self.web3ContractInstance.setApprovalForAll.getData,
                 self.web3ContractInstance,
             )(_to, _approved, txDataWithDefaults);
-            return abiEncodedTransactionData;
-        },
-    };
-    public transfer = {
-        async sendTransactionAsync(
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
-                txData,
-                self.transfer.estimateGasAsync.bind(self, _to, _tokenId),
-            );
-            const txHash = await promisify<string>(
-                self.web3ContractInstance.transfer,
-                self.web3ContractInstance,
-            )(_to, _tokenId, txDataWithDefaults);
-            return txHash;
-        },
-        async estimateGasAsync(
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const gas = await promisify<number>(
-                self.web3ContractInstance.transfer.estimateGas,
-                self.web3ContractInstance,
-            )(_to, _tokenId, txDataWithDefaults);
-            return gas;
-        },
-        async getABIEncodedTransactionData(
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const abiEncodedTransactionData = await promisify<string>(
-                self.web3ContractInstance.transfer.getData,
-                self.web3ContractInstance,
-            )(_to, _tokenId, txDataWithDefaults);
             return abiEncodedTransactionData;
         },
     };
@@ -391,7 +299,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _data: string,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
                 txData,
                 self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId, _data),
@@ -409,7 +317,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _data: string,
             txData: TxData = {},
         ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const gas = await promisify<number>(
                 self.web3ContractInstance.safeTransferFrom.estimateGas,
@@ -424,7 +332,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _data: string,
             txData: TxData = {},
         ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
             const abiEncodedTransactionData = await promisify<string>(
                 self.web3ContractInstance.safeTransferFrom.getData,
@@ -435,7 +343,7 @@ export class MintableERC721TokenContract extends BaseContract {
     };
     public tokenURI = {
         async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<string>(
                 self.web3ContractInstance.tokenURI.call,
                 self.web3ContractInstance,
@@ -449,7 +357,7 @@ export class MintableERC721TokenContract extends BaseContract {
             _operator: string,
             defaultBlock?: Web3.BlockParam,
         ): Promise<boolean> {
-            const self = this as MintableERC721TokenContract;
+            const self = this as ERC721TokenContract;
             const result = await promisify<boolean>(
                 self.web3ContractInstance.isApprovedForAll.call,
                 self.web3ContractInstance,
@@ -457,6 +365,67 @@ export class MintableERC721TokenContract extends BaseContract {
             return result;
         },
     };
+
+    public static async deployed(
+        web3: Web3,
+        defaults?: Partial<TxData>,
+    ): Promise<RepaymentRouterContract> {
+        const web3Utils = new Web3Utils(web3);
+
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
+        const { abi, networks }: { abi: any; networks: any } = ContractArtifacts;
+
+        if (networks[currentNetwork]) {
+            const { address: contractAddress } = networks[currentNetwork];
+
+            const contractExists = await web3Utils.doesContractExistAtAddressAsync(contractAddress);
+
+            if (contractExists) {
+                const web3ContractInstance = web3.eth.contract(abi).at(contractAddress);
+                return new ERC721TokenContract(web3ContractInstance, defaults);
+            } else {
+                throw new Error(
+                    CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                        "ERC721Token",
+                        currentNetwork,
+                    ),
+                );
+            }
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                    "ERC721Token",
+                    currentNetwork,
+                ),
+            );
+        }
+    }
+
+    public static async at(
+        address: string,
+        web3: Web3,
+        defaults: Partial<TxData>,
+    ): Promise<ERC721TokenContract> {
+        const web3Utils = new Web3Utils(web3);
+
+        const { abi }: { abi: any } = ContractArtifacts;
+        const contractExists = await web3Utils.doesContractExistAtAddressAsync(address);
+        const currentNetwork = await web3Utils.getNetworkIdAsync();
+
+        if (contractExists) {
+            const web3ContractInstance = web3.eth.contract(abi).at(address);
+
+            return new ERC721TokenContract(web3ContractInstance, defaults);
+        } else {
+            throw new Error(
+                CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
+                    "ERC721Token",
+                    currentNetwork,
+                ),
+            );
+        }
+    }
+
     async deploy(...args: any[]): Promise<any> {
         const wrapper = this;
         const rejected = false;
@@ -477,38 +446,5 @@ export class MintableERC721TokenContract extends BaseContract {
                 },
             );
         });
-    }
-    static async deployed(
-        web3: Web3,
-        defaults: Partial<TxData>,
-    ): Promise<MintableERC721TokenContract> {
-        const currentNetwork = web3.version.network;
-        const { abi, networks } = await this.getArtifactsData(web3);
-        const web3ContractInstance = web3.eth.contract(abi).at(networks[currentNetwork].address);
-
-        return new MintableERC721TokenContract(web3ContractInstance, defaults);
-    }
-    static async at(
-        address: string,
-        web3: Web3,
-        defaults: Partial<TxData>,
-    ): Promise<MintableERC721TokenContract> {
-        const { abi } = await this.getArtifactsData(web3);
-        const web3ContractInstance = web3.eth.contract(abi).at(address);
-
-        return new MintableERC721TokenContract(web3ContractInstance, defaults);
-    }
-    private static async getArtifactsData(web3: Web3): Promise<any> {
-        try {
-            const artifact = await fs.readFile("build/contracts/MintableERC721Token.json", "utf8");
-            const { abi, networks } = JSON.parse(artifact);
-            return { abi, networks };
-        } catch (e) {
-            console.error("Artifacts malformed or nonexistent: " + e.toString());
-        }
-    }
-    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
-        super(web3ContractInstance, defaults);
-        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
     }
 } // tslint:disable:max-file-line-count

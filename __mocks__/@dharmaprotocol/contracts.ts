@@ -10,3 +10,4 @@ export class TermsContractRegistry extends MockContract {}
 export class TokenRegistry extends MockContract {}
 export class TokenTransferProxy extends MockContract {}
 export class ContractRegistry extends MockContract {}
+export class ERC721TokenRegistry extends MockContract {}

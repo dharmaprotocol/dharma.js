@@ -13,37 +13,39 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
             beforeAll(async () => {
                 await this.initializeWrappers(scenario);
 
-                this.snapshotId = await this.web3Utils.saveTestSnapshot();
+                // this.snapshotId = await this.web3Utils.saveTestSnapshot();
+
+                console.log("SNAPSHOT", this.snapshotId);
 
                 // We fill a generic collateralized loan order, against which
                 // we can test making repayments and returning collateral.
                 await this.generateAndFillOrder(scenario);
 
-                agreementId = await this.orderApi.getIssuanceHash(this.debtOrderData);
-
-                // The time, in seconds since unix epoch, at which the term will end.
-                const termEnd = await this.termsContract.getTermEndTimestamp.callAsync(agreementId);
-
-                if (scenario.debtRepaid) {
-                    // Repay the full debt, to test making the collateral returnable.
-                    await this.repayDebt(agreementId, termEnd);
-                }
-
-                if (scenario.termLapsed) {
-                    // Increase the EVM's time, such that the term has elapsed.
-                    await this.increaseTime(termEnd.toNumber() + 1);
-                }
-
-                if (scenario.collateralWithdrawn) {
-                    await this.adapter.returnCollateralAsync(agreementId);
-                }
-
-                collateralizer = await this.contractsApi.loadCollateralizerAsync();
+                // agreementId = await this.orderApi.getIssuanceHash(this.debtOrderData);
+                //
+                // // The time, in seconds since unix epoch, at which the term will end.
+                // const termEnd = await this.termsContract.getTermEndTimestamp.callAsync(agreementId);
+                //
+                // if (scenario.debtRepaid) {
+                //     // Repay the full debt, to test making the collateral returnable.
+                //     await this.repayDebt(agreementId, termEnd);
+                // }
+                //
+                // if (scenario.termLapsed) {
+                //     // Increase the EVM's time, such that the term has elapsed.
+                //     await this.increaseTime(termEnd.toNumber() + 1);
+                // }
+                //
+                // if (scenario.collateralWithdrawn) {
+                //     await this.adapter.returnCollateralAsync(agreementId);
+                // }
+                //
+                // collateralizer = await this.contractsApi.loadCollateralizerAsync();
             });
 
             afterAll(async () => {
                 // Once the test has run, revert to a clean EVM state.
-                await this.web3Utils.revertToSnapshot(this.snapshotId);
+                // await this.web3Utils.revertToSnapshot(this.snapshotId);
             });
 
             if (scenario.succeeds) {
