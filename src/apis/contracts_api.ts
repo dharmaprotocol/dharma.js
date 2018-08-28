@@ -263,7 +263,7 @@ export class ContractsAPI {
         if (TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY
-                ] as TokenTransferProxyContract;
+            ] as TokenTransferProxyContract;
         }
 
         let tokenTransferProxy: TokenTransferProxyContract;
@@ -359,7 +359,7 @@ export class ContractsAPI {
 
         const addressToContractType = {
             [collateralizedSimpleInterestTermsContract.address]:
-            TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
+                TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
             [simpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN,
         };
 
@@ -378,7 +378,7 @@ export class ContractsAPI {
         if (SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-                ] as SimpleInterestTermsContractContract;
+            ] as SimpleInterestTermsContractContract;
         }
 
         let simpleInterestTermsContract: SimpleInterestTermsContractContract;
@@ -407,7 +407,7 @@ export class ContractsAPI {
         if (COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-                ] as CollateralizedSimpleInterestTermsContractContract;
+            ] as CollateralizedSimpleInterestTermsContractContract;
         }
 
         let collateralizedSimpleInterestTermsContract: CollateralizedSimpleInterestTermsContractContract;
@@ -427,7 +427,7 @@ export class ContractsAPI {
 
         this.cache[
             COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-            ] = collateralizedSimpleInterestTermsContract;
+        ] = collateralizedSimpleInterestTermsContract;
 
         return collateralizedSimpleInterestTermsContract;
     }
@@ -438,7 +438,7 @@ export class ContractsAPI {
         if (ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-                ] as ERC721CollateralizedSimpleInterestTermsContractContract;
+            ] as ERC721CollateralizedSimpleInterestTermsContractContract;
         }
 
         let erc721CollateralizedSimpleInterestTermsContract: ERC721CollateralizedSimpleInterestTermsContractContract;
@@ -458,7 +458,7 @@ export class ContractsAPI {
 
         this.cache[
             ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-            ] = erc721CollateralizedSimpleInterestTermsContract;
+        ] = erc721CollateralizedSimpleInterestTermsContract;
 
         return erc721CollateralizedSimpleInterestTermsContract;
     }
@@ -469,7 +469,7 @@ export class ContractsAPI {
         if (ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY in this.cache) {
             return this.cache[
                 ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY
-                ] as ERC721TokenRegistryContract;
+            ] as ERC721TokenRegistryContract;
         }
 
         let erc721TokenRegistryContract: ERC721TokenRegistryContract;
@@ -487,9 +487,7 @@ export class ContractsAPI {
             );
         }
 
-        this.cache[
-            ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY
-            ] = erc721TokenRegistryContract;
+        this.cache[ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY] = erc721TokenRegistryContract;
 
         return erc721TokenRegistryContract;
     }

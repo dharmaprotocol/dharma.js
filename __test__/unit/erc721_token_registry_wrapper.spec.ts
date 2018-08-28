@@ -1,4 +1,4 @@
-import { ERC721TokenRegistryContract } from "../../src/wrappers/contract_wrappers/e_r_c721_token_registry";
+import { ERC721TokenRegistryContract } from "../../src/wrappers/contract_wrappers/e_r_c721_token_registry_wrapper";
 
 jest.mock("@dharmaprotocol/contracts");
 
