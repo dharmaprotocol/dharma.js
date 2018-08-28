@@ -11,11 +11,12 @@ import { Loan, LoanRequest, LoanRequestParams } from "../../../../src/loan";
 import { Dharma } from "../../../../src/dharma";
 
 // Types
-import { EthereumAddress, InterestRate, TokenAmount } from "../../../../src/types";
+import { InterestRate, TokenAmount } from "../../../../src/types";
 
 import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
 
-const CREDITOR = ACCOUNTS[3];
+const DEBTOR = ACCOUNTS[2].address;
+const CREDITOR = ACCOUNTS[3].address;
 
 export async function testGetTotalExpectedRepaymentAmount(
     dharma: Dharma,
@@ -26,11 +27,11 @@ export async function testGetTotalExpectedRepaymentAmount(
         let loan: Loan;
 
         beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, params);
+            loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, params, DEBTOR);
 
-            await setBalancesAndAllowances(dharma, params, CREDITOR.address);
+            await setBalancesAndAllowances(dharma, params, DEBTOR, CREDITOR);
 
-            await loanRequest.fill(CREDITOR.address);
+            await loanRequest.fillAsCreditor(CREDITOR);
 
             loan = await loanRequest.generateLoan();
         });
