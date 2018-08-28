@@ -92,7 +92,7 @@ describe("ERC721 Token Registry Contract Wrapper (Unit)", () => {
                 MockContractArtifacts.mock(tokenRegistryContractAbi, mockNetworks);
             });
 
-            test("returns new DebtKernelWrapper w/ current address correctly set", async () => {
+            test("returns new ERC721TokenRegistry wrapper w/ current address correctly set", async () => {
                 const contractWrapper = await ERC721TokenRegistryContract.deployed(
                     web3,
                     TX_DEFAULTS,
