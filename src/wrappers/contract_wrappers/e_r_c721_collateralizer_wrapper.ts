@@ -1,11 +1,12 @@
 // tslint:disable-next-line:no-unused-variable
-import { TxData } from "../../types";
+import { ERC721CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as promisify from "tiny-promisify";
+import * as Web3 from "web3";
+import { BigNumber } from "../../../utils/bignumber";
 import { classUtils } from "../../../utils/class_utils";
 import { Web3Utils } from "../../../utils/web3_utils";
-import { BigNumber } from "../../../utils/bignumber";
-import { ERC721Collateralizer as ContractArtifacts } from "@dharmaprotocol/contracts";
-import * as Web3 from "web3";
+import { TxData, TxDataPayable } from "../../types";
+
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 
 export class ERC721CollateralizerContract extends BaseContract {
@@ -426,7 +427,10 @@ export class ERC721CollateralizerContract extends BaseContract {
         classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
     }
 
-    static async deployed(web3: Web3, defaults: Partial<TxData>): Promise<ERC721CollateralizerContract> {
+    static async deployed(
+        web3: Web3,
+        defaults: Partial<TxData>,
+    ): Promise<ERC721CollateralizerContract> {
         const web3Utils = new Web3Utils(web3);
 
         const currentNetwork = await web3Utils.getNetworkIdAsync();

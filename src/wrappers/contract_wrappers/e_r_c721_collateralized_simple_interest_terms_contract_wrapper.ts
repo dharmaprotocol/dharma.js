@@ -1,7 +1,3 @@
-/**
- * This file is auto-generated using abi-gen. Don't edit directly.
- * Templates can be found at https://github.com/0xProject/0x.js/tree/development/packages/abi-gen-templates.
- */
 // tslint:disable-next-line:no-unused-variable
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
@@ -11,6 +7,8 @@ import { TxData } from "../../types";
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
 import { ERC721CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
 import { Web3Utils } from "../../../utils/web3_utils";
+import { CollateralizedSimpleInterestTermsContractContract } from "./collateralized_simple_interest_terms_contract_wrapper";
+import { classUtils } from "../../../utils/class_utils";
 
 export class ERC721CollateralizedSimpleInterestTermsContractContract extends BaseContract {
     public getValueRepaidToDate = {
@@ -295,6 +293,12 @@ export class ERC721CollateralizedSimpleInterestTermsContractContract extends Bas
             );
         });
     }
+
+    constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
+        super(web3ContractInstance, defaults);
+        classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
+    }
+
     public static async deployed(
         web3: Web3,
         defaults: Partial<TxData>,
@@ -326,7 +330,7 @@ export class ERC721CollateralizedSimpleInterestTermsContractContract extends Bas
         } else {
             throw new Error(
                 CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
-                    "ERC721CollateralizedSimpleInterestTermsContractContract",
+                    "ERC721CollateralizedSimpleInterestTermsContract",
                     currentNetwork,
                 ),
             );
@@ -354,7 +358,7 @@ export class ERC721CollateralizedSimpleInterestTermsContractContract extends Bas
         } else {
             throw new Error(
                 CONTRACT_WRAPPER_ERRORS.CONTRACT_NOT_FOUND_ON_NETWORK(
-                    "ERC721CollateralizedSimpleInterestTermsContractContract",
+                    "ERC721CollateralizedSimpleInterestTermsContract",
                     currentNetwork,
                 ),
             );
