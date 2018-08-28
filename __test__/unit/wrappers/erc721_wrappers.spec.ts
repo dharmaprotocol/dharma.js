@@ -8,10 +8,11 @@ const wrappers: WrapperTestObject[] = [
     {
         name: "ERC721TokenRegistry",
         displayName: "ERC 721 Token Registry Contract",
-        artifactPath: "node_modules/@dharmaprotocol/contracts/artifacts/json/ERC721TokenRegistry.json",
+        artifactPath:
+            "node_modules/@dharmaprotocol/contracts/artifacts/json/ERC721TokenRegistry.json",
         contract: ERC721TokenRegistryContract,
         artifact: ERC721TokenRegistry,
-    }
+    },
 ];
 
 const wrapperTestRunner = new WrapperTestRunner();
