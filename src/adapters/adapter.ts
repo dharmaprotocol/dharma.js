@@ -1,6 +1,7 @@
 import { DebtOrderData, DebtRegistryEntry } from "../types";
 import { CollateralizedSimpleInterestLoanOrder } from "./collateralized_simple_interest_loan_adapter";
 import { SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
+import { ERC721CollateralizedSimpleInterestLoanOrder } from "./erc721_collateralized_simple_interest/loan_adapter";
 
 export interface Adapter {
     fromDebtOrder: (
@@ -11,7 +12,7 @@ export interface Adapter {
     getRepaymentSchedule: (entry: DebtRegistryEntry) => number[];
     unpackParameters: (packedParams: string) => object;
     validateAsync: (
-        order: SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder,
+        order: SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder | ERC721CollateralizedSimpleInterestLoanOrder,
     ) => Promise<void>;
 }
 

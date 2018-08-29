@@ -5,6 +5,7 @@ import * as Units from "utils/units";
 // Adapters
 import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
 import { ERC721CollateralizedTermsContractParameters } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
+import { ERC721TokenContract } from "../../../../../src/wrappers";
 
 export interface SeizeCollateralScenario {
     // The test's description.
@@ -21,6 +22,7 @@ export interface SeizeCollateralScenario {
     collateralWithdrawn: boolean;
     // Returns the agreement id that should be provided to the function.
     givenAgreementId: (agreementId: string) => string;
+    tokenReference: (tokenContract: ERC721TokenContract) => BigNumber;
     // If there is an error in returning collateral, this defines the expected message.
     error?: RegExp | string;
 }
@@ -53,4 +55,6 @@ export const defaultArgs = {
     simpleTerms: defaultSimpleTerms,
     collateralWithdrawn: false,
     givenAgreementId: (agreementId: string) => agreementId,
+    // Overrides the default token reference.
+    tokenReference: (tokenContract) => tokenContract.totalSupply.callAsync(),
 };

@@ -12,11 +12,15 @@ import {
     DebtRegistryContract,
     DebtTokenContract,
     ERC20Contract,
+    ERC721TokenContract,
+    ERC721TokenRegistryContract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
     TermsContract,
     TokenRegistryContract,
     TokenTransferProxyContract,
+    ERC721CollateralizerContract,
+    ERC721CollateralizedSimpleInterestTermsContractContract,
 } from "../wrappers";
 // utils
 import {
@@ -28,6 +32,7 @@ import {
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
     ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
+    ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY,
     NULL_ADDRESS,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
@@ -37,9 +42,6 @@ import {
 } from "../../utils/constants";
 // types
 import { AddressBook } from "../types";
-import { ERC721CollateralizedSimpleInterestTermsContractContract } from "../wrappers/contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract_wrapper";
-import { ERC721TokenContract } from "../wrappers/contract_wrappers/e_r_c721_token_wrapper";
-import { ERC721TokenRegistryContract } from "../wrappers/contract_wrappers/e_r_c721_token_registry_wrapper";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -48,6 +50,7 @@ export interface DharmaContracts {
     repaymentRouter: RepaymentRouterContract;
     tokenTransferProxy: TokenTransferProxyContract;
     collateralizer: CollateralizerContract;
+    erc721Collateralizer: ERC721CollateralizerContract;
 }
 
 export const ContractsError = {
@@ -82,6 +85,7 @@ export class ContractsAPI {
         const repaymentRouter = await this.loadRepaymentRouterAsync(transactionOptions);
         const tokenTransferProxy = await this.loadTokenTransferProxyAsync(transactionOptions);
         const collateralizer = await this.loadCollateralizerAsync(transactionOptions);
+        const erc721Collateralizer = await this.loadERC721CollateralizerAsync(transactionOptions);
 
         return {
             debtKernel,
@@ -90,6 +94,7 @@ export class ContractsAPI {
             repaymentRouter,
             tokenTransferProxy,
             collateralizer,
+            erc721Collateralizer,
         };
     }
 
@@ -113,6 +118,30 @@ export class ContractsAPI {
         this.cache[DEBT_KERNEL_CONTRACT_CACHE_KEY] = debtKernel;
 
         return debtKernel;
+    }
+
+    public async loadERC721CollateralizerAsync(
+        transactionOptions: object = {},
+    ): Promise<ERC721CollateralizerContract> {
+        if (ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY] as ERC721CollateralizerContract;
+        }
+
+        let erc721Collateralizer: ERC721CollateralizerContract;
+
+        if (this.addressBook.erc721CollateralizerAddress) {
+            erc721Collateralizer = await ERC721CollateralizerContract.at(
+                this.addressBook.erc721CollateralizerAddress,
+                this.web3,
+                transactionOptions,
+            );
+        } else {
+            erc721Collateralizer = await ERC721CollateralizerContract.deployed(this.web3, transactionOptions);
+        }
+
+        this.cache[ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY] = erc721Collateralizer;
+
+        return erc721Collateralizer;
     }
 
     public async loadCollateralizerAsync(
@@ -350,17 +379,19 @@ export class ContractsAPI {
      *  getTermsContractType("0x069cb8891d9dbf02d89079a77169e0dc8bacda65")
      *  => "SimpleInterestLoan"
      *
-     * @param {string} tokenAddress
+     * @param {string} contractAddress
      * @returns {string}
      */
     public async getTermsContractType(contractAddress: string): Promise<string> {
         const simpleInterestTermsContract = await this.loadSimpleInterestTermsContract();
         const collateralizedSimpleInterestTermsContract = await this.loadCollateralizedSimpleInterestTermsContract();
+        const erc721CollateralizedSimpleInterestTermsContract = await this.loadERC721CollateralizedSimpleInterestTermsContract();
 
         const addressToContractType = {
             [collateralizedSimpleInterestTermsContract.address]:
                 TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
             [simpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN,
+            [erc721CollateralizedSimpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.ERC721_COLLATERALIZED_SIMPLE_INTEREST_LOAN,
         };
 
         const termsContractType = addressToContractType[contractAddress];

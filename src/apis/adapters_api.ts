@@ -10,6 +10,7 @@ import {
     Adapter,
     CollateralizedSimpleInterestLoanAdapter,
     SimpleInterestLoanAdapter,
+    ERC721CollateralizedSimpleInterestLoanAdapter
 } from "../adapters";
 
 // Constants
@@ -41,6 +42,7 @@ export class AdaptersAPI {
      */
     public simpleInterestLoan: SimpleInterestLoanAdapter;
     public collateralizedSimpleInterestLoan: CollateralizedSimpleInterestLoanAdapter;
+    public erc721CollateralizedSimpleInterestLoan: ERC721CollateralizedSimpleInterestLoanAdapter;
 
     private readonly contracts: ContractsAPI;
 
@@ -49,6 +51,10 @@ export class AdaptersAPI {
 
         this.simpleInterestLoan = new SimpleInterestLoanAdapter(web3, this.contracts);
         this.collateralizedSimpleInterestLoan = new CollateralizedSimpleInterestLoanAdapter(
+            web3,
+            this.contracts,
+        );
+        this.erc721CollateralizedSimpleInterestLoan = new ERC721CollateralizedSimpleInterestLoanAdapter(
             web3,
             this.contracts,
         );
@@ -62,6 +68,8 @@ export class AdaptersAPI {
                 return this.simpleInterestLoan;
             case TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN:
                 return this.collateralizedSimpleInterestLoan;
+            case TERMS_CONTRACT_TYPES.ERC721_COLLATERALIZED_SIMPLE_INTEREST_LOAN:
+                return this.erc721CollateralizedSimpleInterestLoan;
             default:
                 throw new Error(AdaptersErrors.NO_ADAPTER_FOR_TERMS_CONTRACT(termsContractAddress));
         }

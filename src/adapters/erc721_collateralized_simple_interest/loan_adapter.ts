@@ -23,6 +23,7 @@ import {
 import { SimpleInterestLoanTerms } from "../simple_interest_loan_terms";
 
 import { Adapter } from "../adapter";
+import { ERC721TokenContract } from "../../wrappers";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -76,6 +77,12 @@ export const ERC721CollateralizerAdapterErrors = {
         singleLineString`Terms contract at address ${termsContractAddress} is not
                          a ERC721CollateralizedSimpleInterestTermsContract. As such, this adapter 
                          will not interface with the terms contract as expected`,
+
+    TOKEN_REFERENCE_NOT_FOUND: (tokenReference: string) =>
+        singleLineString`Token not found with given reference: ${tokenReference}`,
+
+    COLLATERALIZER_APPROVAL_NOT_GRANTED: () =>
+        singleLineString`Collateralizer contract not granted approval for token transfer`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
@@ -128,7 +135,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
             erc721Symbol,
         );
 
-        const collateralizedContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const collateralizedContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
 
         let debtOrderData: DebtOrderData = omit(collateralizedSimpleInterestLoanOrder, [
             // omit the simple interest parameters that will be packed
@@ -182,7 +189,8 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async validateAsync(loanOrder: ERC721CollateralizedSimpleInterestLoanOrder) {
         const unpackedParams = this.unpackParameters(loanOrder.termsContractParameters);
 
-        this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+        await this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+        await this.assertCollateralApprovalInvariantsAsync(loanOrder);
     }
 
     /**
@@ -304,7 +312,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         await this.assertDebtAgreementExists(agreementId);
         await this.assertCollateralSeizeable(agreementId);
 
-        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+        const collateralizerContract = await this.contractsAPI.loadERC721CollateralizerAsync();
 
         return collateralizerContract.seizeCollateral.sendTransactionAsync(
             agreementId,
@@ -324,14 +332,14 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async returnCollateralAsync(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
-        await this.assertDebtAgreementExists(agreementId);
+        // await this.assertDebtAgreementExists(agreementId);
         await this.assertCollateralReturnable(agreementId);
 
         const defaultOptions = await this.getTxDefaultOptions();
 
         const transactionOptions = _.assign(defaultOptions, options);
 
-        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+        const collateralizerContract = await this.contractsAPI.loadERC721CollateralizerAsync();
 
         return collateralizerContract.returnCollateral.sendTransactionAsync(
             agreementId,
@@ -436,9 +444,9 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * @returns {Promise<boolean>}
      */
     public async isCollateralWithdrawn(agreementId: string): Promise<boolean> {
-        const collateralizerContract = await this.contractsAPI.loadCollateralizerAsync();
+        const collateralizerContract = await this.contractsAPI.loadERC721CollateralizerAsync();
 
-        const collateralizerAddress = await collateralizerContract.agreementToCollateralizer.callAsync(
+        const collateralizerAddress = await collateralizerContract.agreementToDebtor.callAsync(
             agreementId,
         );
 
@@ -479,12 +487,10 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         eventName: string,
         agreementId: string,
     ): Promise<boolean> {
-        // We use the contract registry to get the address of the collateralizer contract.
-        const contractRegistry = await this.contractsAPI.loadContractRegistryAsync();
         // Collateralizer contract is required for decoding logs.
-        const collateralizer = await this.contractsAPI.loadCollateralizerAsync();
+        const collateralizer = await this.contractsAPI.loadERC721CollateralizerAsync();
 
-        const collateralizerAddress = await contractRegistry.collateralizer.callAsync();
+        const collateralizerAddress = collateralizer.address;
 
         return new Promise<boolean>((resolve, reject) => {
             this.web3.eth
@@ -537,7 +543,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     private async assertIsCollateralizedSimpleInterestTermsContract(
         termsContractAddress: string,
     ): Promise<void> {
-        const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
 
         if (termsContractAddress !== collateralizedSimpleInterestTermsContract.address) {
             throw new Error(
@@ -595,7 +601,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
         const unpackedParams = this.unpackParameters(termsContractParameters);
 
-        this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+        await this.collateralizedLoanTerms.assertValidParams(unpackedParams);
 
         await this.assertCollateralNotWithdrawn(agreementId);
 
@@ -627,7 +633,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         agreementId: string,
         gracePeriod: BigNumber,
     ): Promise<boolean> {
-        const termsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const termsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
         const repaymentToDate = await termsContract.getValueRepaidToDate.callAsync(agreementId);
 
         const currentTime = await this.web3Utils.getCurrentBlockTime();
@@ -652,21 +658,30 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         }
     }
 
-    private async assertCollateralAllowanceInvariantsAsync(
+    private async assertCollateralApprovalInvariantsAsync(
         order: ERC721CollateralizedSimpleInterestLoanOrder,
     ) {
         const { erc721Symbol, tokenReference } = order;
 
-        const erc721Token: ERC721Contract = await this.contractsAPI.loadERC721BySymbolAsync(
+        console.log("erc721 token symbol", erc721Symbol);
+
+        const erc721Token: ERC721TokenContract = await this.contractsAPI.loadERC721BySymbolAsync(
             erc721Symbol,
         );
 
-        // STUB.
-        // TODO: Asset that the ERC721 Collateralizer has approvalfor transferring the asset.
+        // Assert that the ERC721 Collateralizer has approval for transferring the asset.
+        const approved = await erc721Token.getApproved.callAsync(tokenReference);
+        const collateralizerContract = await this.contractsAPI.loadERC721CollateralizerAsync();
+
+        if (approved !== collateralizerContract.address) {
+            throw new Error(
+                ERC721CollateralizerAdapterErrors.COLLATERALIZER_APPROVAL_NOT_GRANTED(),
+            );
+        }
     }
 
     private async debtRepaid(agreementId: string): Promise<boolean> {
-        const termsContract = await this.contractsAPI.loadCollateralizedSimpleInterestTermsContract();
+        const termsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
         const repaymentToDate = await termsContract.getValueRepaidToDate.callAsync(agreementId);
 
         const termEnd = await termsContract.getTermEndTimestamp.callAsync(agreementId);

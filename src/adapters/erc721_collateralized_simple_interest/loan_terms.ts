@@ -25,7 +25,7 @@ const MAX_TOKEN_REFERENCE = 999999999999999;
 export class ERC721CollateralizedLoanTerms {
     private assert: Assertions;
 
-    constructor(web3: Web3, contractsAPI: ContractsAPI) {
+    constructor(web3: Web3, private contractsAPI: ContractsAPI) {
         this.assert = new Assertions(web3, contractsAPI);
     }
 
@@ -62,12 +62,14 @@ export class ERC721CollateralizedLoanTerms {
         };
     }
 
-    public assertValidParams(params: ERC721CollateralizedTermsContractParameters) {
+    public async assertValidParams(params: ERC721CollateralizedTermsContractParameters) {
         const { erc721ContractIndex, tokenReference, isEnumerable } = params;
 
         this.assertERC721ContractIndexWithinBounds(erc721ContractIndex);
         this.assertValidIsEnumerable(isEnumerable);
         this.assertValidTokenReference(tokenReference);
+
+        await this.assertTokenExists(erc721ContractIndex, tokenReference);
     }
 
     private assertERC721ContractIndexWithinBounds(collateralTokenIndex: BigNumber) {
@@ -80,6 +82,22 @@ export class ERC721CollateralizedLoanTerms {
             throw new Error(
                 ERC721CollateralizerAdapterErrors.INVALID_CONTRACT_INDEX(collateralTokenIndex),
             );
+        }
+    }
+
+    // Looks up the given token contract using the contract index, and asserts that a token exists
+    // with the given reference id for that contract.
+    private async assertTokenExists(erc721ContractIndex: BigNumber, tokenReference: BigNumber) {
+        const tokenRegistry = await this.contractsAPI.loadERC721TokenRegistryContract();
+
+        const expectedTokenSymbol = await tokenRegistry.getTokenSymbolByIndex.callAsync(erc721ContractIndex);
+        const tokenContract = await this.contractsAPI.loadERC721BySymbolAsync(expectedTokenSymbol);
+        const tokenExists = await tokenContract.exists.callAsync(tokenReference);
+
+        if (!tokenExists) {
+            throw new Error(
+                ERC721CollateralizerAdapterErrors.TOKEN_REFERENCE_NOT_FOUND(tokenReference),
+            )
         }
     }
 

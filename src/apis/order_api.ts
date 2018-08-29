@@ -3,13 +3,10 @@ import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 import { BigNumber } from "../../utils/bignumber";
-
 // APIs
 import { AdaptersAPI, ContractsAPI } from ".";
-
 // Adapters
 import { Adapter } from "../adapters";
-
 // Wrappers
 import {
     DebtKernelContract,
@@ -17,10 +14,8 @@ import {
     DebtTokenContract,
     TokenTransferProxyContract,
 } from "../wrappers";
-
 // Types
 import { DebtOrderData, IssuanceCommitment, TxData } from "../types";
-
 // Utils
 import { NULL_ADDRESS } from "../../utils/constants";
 import { applyNetworkDefaults, generateTxOptions } from "../../utils/transaction_utils";
@@ -91,9 +86,9 @@ export const OrderAPIErrors = {
 };
 
 export class OrderAPI {
-    private web3: Web3;
+    protected web3: Web3;
     private assert: Assertions;
-    private contracts: ContractsAPI;
+    protected contracts: ContractsAPI;
     private adapters: AdaptersAPI;
 
     public constructor(web3: Web3, contracts: ContractsAPI, adapters: AdaptersAPI) {
@@ -168,6 +163,15 @@ export class OrderAPI {
         );
 
         await this.assertValidLoanTerms(debtOrderData);
+    }
+
+    public async assertValidERC721Collateral(
+        debtOrderData: DebtOrderData,
+        txOptions?: TxData,
+    ): Promise<void> {
+        const { termsContractParameters } = debtOrderData;
+
+
     }
 
     /**

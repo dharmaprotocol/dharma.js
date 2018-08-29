@@ -1,5 +1,5 @@
 // tslint:disable-next-line:no-unused-variable
-import { ERC721CollateralizedSimpleInterestTermsContract as ContractArtifacts } from "@dharmaprotocol/contracts";
+import { ERC721Collateralizer as ContractArtifacts } from "@dharmaprotocol/contracts";
 import * as promisify from "tiny-promisify";
 import * as Web3 from "web3";
 import { BigNumber } from "../../../utils/bignumber";

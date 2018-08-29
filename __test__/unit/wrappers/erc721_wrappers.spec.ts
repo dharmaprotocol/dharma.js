@@ -49,7 +49,8 @@ const wrappers: WrapperTestObject[] = [
     {
         name: "MintableERC721Token",
         displayName: "Mintable ERC 721 Token",
-        artifactPath: "node_modules/@dharmaprotocol/contracts/artifacts/json/MintableERC721Token.json",
+        artifactPath:
+            "node_modules/@dharmaprotocol/contracts/artifacts/json/MintableERC721Token.json",
         contract: MintableERC721TokenContract,
         artifact: MintableERC721Token,
     },
