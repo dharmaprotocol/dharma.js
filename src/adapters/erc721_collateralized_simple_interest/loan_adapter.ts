@@ -15,18 +15,21 @@ import { ContractsAPI } from "../../apis";
 import { Assertions } from "../../invariants";
 // Types
 import { DebtOrderData, DebtRegistryEntry, RepaymentSchedule, TxData } from "../../types";
-import { ERC721CollateralizedLoanTerms } from "../erc721_collateralized_simple_interest/loan_terms";
+
+import { ERC721CollateralizedLoanTerms } from "./loan_terms";
+
+import { SimpleInterestLoanTerms } from "../simple_interest_loan_terms";
+
 import {
     SimpleInterestLoanOrder,
     SimpleInterestTermsContractParameters,
 } from "../simple_interest_loan_adapter";
-import { SimpleInterestLoanTerms } from "../simple_interest_loan_terms";
-
+// Adapter
 import { Adapter } from "../adapter";
+// Wrappers
 import { ERC721TokenContract } from "../../wrappers";
+// Schema
 import { erc721CollateralizedSimpleInterestLoanOrder } from "../../schemas/erc721_collateralized_simple_interest_loan_order_schema";
-
-const SECONDS_IN_DAY = 60 * 60 * 24;
 
 const TRANSFER_GAS_MAXIMUM = 200000;
 
@@ -47,7 +50,8 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {}
+        ERC721CollateralizedTermsContractParameters {
+}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
@@ -229,7 +233,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         );
 
         // Assert that the principal token corresponds to the symbol we've unpacked.
-        await this.assertTokenCorrespondsToSymbol(
+        await this.assertERC20TokenCorrespondsToSymbol(
             debtOrderData.principalToken,
             principalTokenSymbol,
         );
@@ -253,7 +257,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async fromDebtRegistryEntry(
         entry: DebtRegistryEntry,
     ): Promise<ERC721CollateralizedSimpleInterestLoanOrder> {
-        await this.assertIsCollateralizedSimpleInterestTermsContract(entry.termsContract);
+        await this.assertIsERC721CollateralizedSimpleInterestTermsContract(entry.termsContract);
 
         const {
             principalTokenIndex,
@@ -416,7 +420,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
      * Given an agreement ID for a valid collateralized debt agreement, returns true if the
      * collateral can be seized by the creditor, according to the terms of the agreement. Collateral
      * is seizable if the collateral has not been withdrawn yet, and the loan has been in a state
-     * of default for a duration of time greater than the grace period.
+     * of default.
      *
      * @example
      *  await adapter.canSeizeCollateral(
@@ -529,7 +533,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         });
     }
 
-    private async assertTokenCorrespondsToSymbol(
+    private async assertERC20TokenCorrespondsToSymbol(
         tokenAddress: string,
         symbol: string,
     ): Promise<void> {
@@ -545,12 +549,12 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         }
     }
 
-    private async assertIsCollateralizedSimpleInterestTermsContract(
+    private async assertIsERC721CollateralizedSimpleInterestTermsContract(
         termsContractAddress: string,
     ): Promise<void> {
-        const collateralizedSimpleInterestTermsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
+        const termsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
 
-        if (termsContractAddress !== collateralizedSimpleInterestTermsContract.address) {
+        if (termsContractAddress !== termsContract.address) {
             throw new Error(
                 ERC721CollateralizerAdapterErrors.MISMATCHED_TERMS_CONTRACT(termsContractAddress),
             );
@@ -569,7 +573,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
     /**
      * Collateral is seizable if the collateral has not been withdrawn yet, and the
-     * loan has been in a state of default for a duration of time greater than the grace period.
+     * loan is in a state of default.
      *
      * @param {string} agreementId
      * @returns {Promise<void>}

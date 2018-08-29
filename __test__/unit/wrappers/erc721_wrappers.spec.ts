@@ -1,19 +1,35 @@
+// Test runner
 import { WrapperTestObject, WrapperTestRunner } from "./wrapper_test_runner";
 
+// Artifacts
 import {
-    ERC721TokenRegistry,
-    ERC721Collateralizer,
     ERC721CollateralizedSimpleInterestTermsContract,
+    ERC721Collateralizer,
     ERC721Token,
+    ERC721TokenRegistry,
     MintableERC721Token,
 } from "@dharmaprotocol/contracts";
 
-import { ERC721TokenRegistryContract } from "../../../src/wrappers/contract_wrappers/e_r_c721_token_registry_wrapper";
-import { ERC721CollateralizerContract } from "../../../src/wrappers/contract_wrappers/e_r_c721_collateralizer_wrapper";
-import { ERC721CollateralizedSimpleInterestTermsContractContract } from "../../../src/wrappers/contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract_wrapper";
-import { ERC721TokenContract } from "../../../src/wrappers/contract_wrappers/e_r_c721_token_wrapper";
-import { MintableERC721TokenContract } from "../../../src/wrappers/contract_wrappers/mintable_e_r_c721_token_wrapper";
+// Wrappers
+import {
+    ERC721CollateralizedSimpleInterestTermsContractContract,
+    ERC721CollateralizerContract,
+    ERC721TokenContract,
+    ERC721TokenRegistryContract,
+    MintableERC721TokenContract,
+} from "../../../src/wrappers";
 
+/**
+ * A class that contains methods for testing the basics of a contract wrapper.
+ *
+ * @type {WrapperTestRunner}
+ */
+const wrapperTestRunner = new WrapperTestRunner();
+
+/**
+ * Using the test runner defined above, we will test basic functionality for each of the wrappers
+ * defined below.
+ */
 const wrappers: WrapperTestObject[] = [
     {
         name: "ERC721TokenRegistry",
@@ -55,7 +71,5 @@ const wrappers: WrapperTestObject[] = [
         artifact: MintableERC721Token,
     },
 ];
-
-const wrapperTestRunner = new WrapperTestRunner();
 
 wrappers.forEach(wrapperTestRunner.testWrapper);

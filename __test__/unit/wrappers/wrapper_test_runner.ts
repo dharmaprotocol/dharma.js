@@ -1,11 +1,14 @@
+// Extenal libraries
 import * as promisify from "tiny-promisify";
 import { Web3Utils } from "utils/web3_utils";
-import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
-import { ACCOUNTS } from "../../accounts";
 import * as Web3 from "web3";
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";
+// Wrapper errors
+import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
+// Accounts
+import { ACCOUNTS } from "../../accounts";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -13,6 +16,9 @@ const web3Utils = new Web3Utils(web3);
 
 const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 4712388 };
 
+/**
+ * An interface describing a contract wrapper that we would like to test.
+ */
 export interface WrapperTestObject {
     // E.g. ERC721TokenRegistry
     name: string;
@@ -26,6 +32,13 @@ export interface WrapperTestObject {
     artifact: any;
 }
 
+/**
+ * A class that contains methods for testing the basics of a contract wrapper.
+ *
+ * @example
+ * const runner = new WrapperTestRunner();
+ * runner.testWrapper(wrapper);
+ */
 export class WrapperTestRunner {
     testWrapper(wrapper: WrapperTestObject) {
         describe(`${wrapper.displayName} Wrapper (Unit)`, () => {
@@ -66,7 +79,7 @@ export class WrapperTestRunner {
 
                 describe("contract address associated w/ current network id does not point to contract", () => {
                     beforeAll(async () => {
-                        let mockNetworks = {};
+                        const mockNetworks = {};
 
                         mockNetworks[networkId] = {
                             address: ACCOUNTS[0].address,
@@ -100,7 +113,7 @@ export class WrapperTestRunner {
 
                     test(`returns new ${
                         wrapper.name
-                    } wrapper w/ current address correctly set`, async () => {
+                        } wrapper w/ current address correctly set`, async () => {
                         const contractWrapper = await wrapper.contract.deployed(web3, TX_DEFAULTS);
 
                         expect(contractWrapper.address).toBe(contractAddress);
@@ -144,18 +157,18 @@ export class WrapperTestRunner {
                         wrapper.artifact.mock(wrapperAbi, mockNetworks);
                     });
 
-                    test(`returns new ${
-                        wrapper.name
-                    }Contract w/ current address correctly set`, async () => {
-                        const contractWrapper = await wrapper.contract.at(
-                            contractAddress,
-                            web3,
-                            TX_DEFAULTS,
-                        );
+                    test(
+                        `returns new ${wrapper.name}Contract w/ current address correctly set`,
+                        async () => {
+                            const contractWrapper = await wrapper.contract.at(
+                                contractAddress,
+                                web3,
+                                TX_DEFAULTS,
+                            );
 
-                        expect(contractWrapper.address).toBe(contractAddress);
-                        expect(contractWrapper.abi).toEqual(wrapperAbi);
-                    });
+                            expect(contractWrapper.address).toBe(contractAddress);
+                            expect(contractWrapper.abi).toEqual(wrapperAbi);
+                        });
                 });
             });
         });

@@ -62,14 +62,12 @@ export class ERC721CollateralizedLoanTerms {
         };
     }
 
-    public async assertValidParams(params: ERC721CollateralizedTermsContractParameters) {
+    public assertValidParams(params: ERC721CollateralizedTermsContractParameters): void {
         const { erc721ContractIndex, tokenReference, isEnumerable } = params;
 
         this.assertERC721ContractIndexWithinBounds(erc721ContractIndex);
         this.assertValidIsEnumerable(isEnumerable);
         this.assertValidTokenReference(tokenReference);
-
-        await this.assertTokenExists(erc721ContractIndex, tokenReference);
     }
 
     private assertERC721ContractIndexWithinBounds(collateralTokenIndex: BigNumber) {
