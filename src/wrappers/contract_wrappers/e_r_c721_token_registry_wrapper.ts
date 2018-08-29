@@ -306,16 +306,6 @@ export class ERC721TokenRegistryContract extends BaseContract {
         }
     }
 
-    private static async getArtifactsData(web3: Web3): Promise<any> {
-        try {
-            const artifact = await fs.readFile("build/contracts/ERC721TokenRegistry.json", "utf8");
-            const { abi, networks } = JSON.parse(artifact);
-            return { abi, networks };
-        } catch (e) {
-            console.error("Artifacts malformed or nonexistent: " + e.toString());
-        }
-    }
-
     constructor(web3ContractInstance: Web3.ContractInstance, defaults: Partial<TxData>) {
         super(web3ContractInstance, defaults);
         classUtils.bindAll(this, ["web3ContractInstance", "defaults"]);
