@@ -100,8 +100,6 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                             scenario.collateralTerms.tokenReference,
                         );
 
-                        const collateralizer = await this.contractsApi.loadERC721CollateralizerAsync();
-
                         expect(owner).toEqual(collateralizer.address);
                     });
 
