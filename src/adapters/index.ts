@@ -8,5 +8,5 @@ export {
     conformsToAdapterInterface,
     SimpleInterestLoanAdapter,
     CollateralizedSimpleInterestLoanAdapter,
-    ERC721CollateralizedSimpleInterestLoanAdapter
+    ERC721CollateralizedSimpleInterestLoanAdapter,
 };

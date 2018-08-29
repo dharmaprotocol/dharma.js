@@ -124,7 +124,9 @@ export class ContractsAPI {
         transactionOptions: object = {},
     ): Promise<ERC721CollateralizerContract> {
         if (ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY in this.cache) {
-            return this.cache[ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY] as ERC721CollateralizerContract;
+            return this.cache[
+                ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY
+            ] as ERC721CollateralizerContract;
         }
 
         let erc721Collateralizer: ERC721CollateralizerContract;
@@ -136,7 +138,10 @@ export class ContractsAPI {
                 transactionOptions,
             );
         } else {
-            erc721Collateralizer = await ERC721CollateralizerContract.deployed(this.web3, transactionOptions);
+            erc721Collateralizer = await ERC721CollateralizerContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
         }
 
         this.cache[ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY] = erc721Collateralizer;
@@ -391,7 +396,8 @@ export class ContractsAPI {
             [collateralizedSimpleInterestTermsContract.address]:
                 TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN,
             [simpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.SIMPLE_INTEREST_LOAN,
-            [erc721CollateralizedSimpleInterestTermsContract.address]: TERMS_CONTRACT_TYPES.ERC721_COLLATERALIZED_SIMPLE_INTEREST_LOAN,
+            [erc721CollateralizedSimpleInterestTermsContract.address]:
+                TERMS_CONTRACT_TYPES.ERC721_COLLATERALIZED_SIMPLE_INTEREST_LOAN,
         };
 
         const termsContractType = addressToContractType[contractAddress];

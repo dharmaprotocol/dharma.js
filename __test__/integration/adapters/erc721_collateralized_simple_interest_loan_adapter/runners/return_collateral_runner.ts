@@ -1,13 +1,15 @@
 // Scenarios
-import * as ABIDecoder from "abi-decoder";
 import { ReturnCollateralScenario } from "../scenarios";
 
 import { BaseCollateralRunner } from "./base_collateral_runner";
+import { ERC721CollateralizerContract } from "../../../../../src/wrappers";
+
+const TX_MAX_GAS = 600000;
 
 export class ReturnCollateralRunner extends BaseCollateralRunner {
     public testScenario(scenario: ReturnCollateralScenario) {
         let agreementId;
-        let collateralizer;
+        let collateralizer: ERC721CollateralizerContract;
 
         describe(scenario.description, () => {
             beforeAll(async () => {
@@ -20,9 +22,6 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 await this.generateAndFillOrder(scenario, tokenId);
 
                 agreementId = await this.orderApi.getIssuanceHash(this.debtOrderData);
-
-                console.log("agreement Id", agreementId);
-                console.log("terms contract", await this.termsContract.getTermEndTimestamp.callAsync(agreementId));
 
                 // The time, in seconds since unix epoch, at which the term will end.
                 const termEnd = await this.termsContract.getTermEndTimestamp.callAsync(agreementId);
@@ -38,10 +37,12 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 }
 
                 if (scenario.collateralWithdrawn) {
-                    await this.adapter.returnCollateralAsync(agreementId);
+                    await this.adapter.returnCollateralAsync(agreementId, {
+                        gas: TX_MAX_GAS,
+                    });
                 }
 
-                collateralizer = await this.contractsApi.loadCollateralizerAsync();
+                collateralizer = await this.contractsApi.loadERC721CollateralizerAsync();
             });
 
             afterAll(async () => {
@@ -53,13 +54,20 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
                 it("returns a valid transaction hash", async () => {
                     const txHash = await this.adapter.returnCollateralAsync(
                         scenario.givenAgreementId(agreementId),
+                        {
+                            gas: TX_MAX_GAS,
+                        },
                     );
 
                     expect(txHash.length).toEqual(66);
                 });
 
                 it("transfers collateral back to the debtor", async () => {
-                    // STUB.
+                    const owner = await this.collateralToken.ownerOf.callAsync(
+                        scenario.collateralTerms.tokenReference,
+                    );
+
+                    expect(owner).toEqual(this.debtOrderData.debtor);
                 });
 
                 describe("#isCollateralReturned", () => {
@@ -80,17 +88,21 @@ export class ReturnCollateralRunner extends BaseCollateralRunner {
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
-                        this.adapter.returnCollateralAsync(scenario.givenAgreementId(agreementId)),
+                        this.adapter.returnCollateralAsync(scenario.givenAgreementId(agreementId), {
+                            gas: TX_MAX_GAS,
+                        }),
                     ).rejects.toThrow(scenario.error);
                 });
 
                 if (!scenario.collateralWithdrawn) {
                     it("does not transfer collateral back to the debtor", async () => {
-                        const collateralAmount = await this.collateralToken.balanceOf.callAsync(
-                            this.debtOrderData.debtor,
+                        const owner = await this.collateralToken.ownerOf.callAsync(
+                            scenario.collateralTerms.tokenReference,
                         );
 
-                        expect(collateralAmount.toNumber()).toEqual(0);
+                        const collateralizer = await this.contractsApi.loadERC721CollateralizerAsync();
+
+                        expect(owner).toEqual(collateralizer.address);
                     });
 
                     describe("#isCollateralReturned", () => {

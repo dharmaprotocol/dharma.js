@@ -10,7 +10,7 @@ import { ReturnCollateralScenario, SeizeCollateralScenario } from "../scenarios"
 // Adapters
 import {
     ERC721CollateralizedSimpleInterestLoanAdapter,
-    ERC721CollateralizedTermsContractParameters
+    ERC721CollateralizedTermsContractParameters,
 } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 // Wrappers
 import {
@@ -224,8 +224,6 @@ export abstract class BaseCollateralRunner {
     ): Promise<void> {
         scenario.collateralTerms = collateralTerms;
 
-        console.log("collateral terms", scenario.collateralTerms);
-
         this.debtOrderData = this.generateDebtOrderData(scenario);
 
         await this.signOrder();
@@ -233,28 +231,6 @@ export abstract class BaseCollateralRunner {
         await this.setBalances(scenario);
 
         await this.setApprovals(scenario);
-
-        console.log("debt order data", this.debtOrderData);
-        const unpackedParams = await this.adapter.unpackParameters(this.debtOrderData.termsContractParameters);
-        console.log(
-            "parameters unpacked",
-            unpackedParams,
-        );
-
-
-
-        const registry = await this.contractsApi.loadERC721TokenRegistryContract();
-        const collateralizer = await this.contractsApi.loadERC721CollateralizerAsync();
-        const tokenSymbol = await registry.getTokenSymbolByIndex.callAsync(unpackedParams.erc721ContractIndex);
-        const tokenAddress = await registry.getTokenAddressBySymbol.callAsync(tokenSymbol);
-        console.log("token address", tokenAddress);
-        console.log("token symbol right before", tokenSymbol);
-        const tokenId = unpackedParams.tokenReference;
-        console.log("token id", tokenId.toString());
-        const token = await this.contractsApi.loadERC721ContractAsync(tokenAddress);
-        const permissions = await token.getApproved.callAsync(tokenId);
-        console.log("permissions", permissions);
-        console.log("collateralizer", collateralizer.address);
 
         await this.orderApi.fillAsync(this.debtOrderData, {
             from: CREDITOR.address,
@@ -275,23 +251,13 @@ export abstract class BaseCollateralRunner {
             TX_DEFAULTS,
         );
 
-        console.log("terms contract", this.termsContract.address);
-
         const principalTokenSymbol = await this.contractsApi.getTokenSymbolByIndexAsync(
             scenario.simpleTerms.principalTokenIndex,
         );
 
         const erc721Symbol = "MET";
 
-        const erc721TokenIndex = await this.contractsApi.getERC721IndexBySymbolAsync(
-            erc721Symbol,
-        );
-
-        const erc721Address = await this.contractsApi.getERC721AddressBySymbolAsync(
-            erc721Symbol,
-        );
-
-        console.log("ERC721 SYMBOL!", erc721Symbol);
+        const erc721TokenIndex = await this.contractsApi.getERC721IndexBySymbolAsync(erc721Symbol);
 
         this.principalToken = await DummyTokenContract.at(
             (await this.contractsApi.loadTokenBySymbolAsync(principalTokenSymbol)).address,
@@ -301,33 +267,18 @@ export abstract class BaseCollateralRunner {
 
         this.collateralToken = await this.contractsApi.loadERC721BySymbolAsync(erc721Symbol);
 
-        const contractRegistry = await this.contractsApi.loadERC721TokenRegistryContract();
-        const expectedIndex = await contractRegistry.getTokenIndexBySymbol.callAsync(erc721Symbol);
-        console.log("collateral token index", expectedIndex.toString());
-
-        console.log("SYMBOL FROM LOADED CONTRACT!", await this.collateralToken.symbol.callAsync());
-
         // Mint a collateral token for the debtor. We can do this because we assume that the
         // collateral token is a Mintable ER721 Token.
-        const mintableERC721Contract = await MintableERC721TokenContract.deployed(this.web3, TX_DEFAULTS);
-        console.log("collateral token ADDRESS", this.collateralToken.address);
-        console.log("mintable token ADDRESS", mintableERC721Contract.address);
-        console.log("debtor address", DEBTOR.address);
+        const mintableERC721Contract = await MintableERC721TokenContract.deployed(
+            this.web3,
+            TX_DEFAULTS,
+        );
 
         const tokenId = await mintableERC721Contract.totalSupply.callAsync();
 
-        console.log("total supply before", tokenId.toString());
-
         await mintableERC721Contract.mint.sendTransactionAsync(DEBTOR.address, tokenId);
 
-        console.log(
-            "total supply after",
-            (await mintableERC721Contract.totalSupply.callAsync()).toString(),
-        );
-
         const collateralizerContract = await this.contractsApi.loadERC721CollateralizerAsync();
-        console.log("collateralizer", collateralizerContract.address);
-        console.log("approved", await mintableERC721Contract.getApproved.callAsync(tokenId));
 
         // Grant permission to the collateralizer.
         await mintableERC721Contract.approve.sendTransactionAsync(
@@ -336,15 +287,12 @@ export abstract class BaseCollateralRunner {
             { ...TX_DEFAULTS, from: DEBTOR.address },
         );
 
-        console.log("collateralizer", collateralizerContract.address);
-        console.log("approved", await mintableERC721Contract.getApproved.callAsync(tokenId));
-
         this.tokenTransferProxy = await this.contractsApi.loadTokenTransferProxyAsync();
 
         return {
             tokenReference: tokenId,
             erc721ContractIndex: erc721TokenIndex,
-            isEnumerable: new BigNumber(1)
+            isEnumerable: new BigNumber(1),
         };
     }
 }

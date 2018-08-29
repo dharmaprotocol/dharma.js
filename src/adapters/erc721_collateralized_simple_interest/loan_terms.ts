@@ -90,14 +90,16 @@ export class ERC721CollateralizedLoanTerms {
     private async assertTokenExists(erc721ContractIndex: BigNumber, tokenReference: BigNumber) {
         const tokenRegistry = await this.contractsAPI.loadERC721TokenRegistryContract();
 
-        const expectedTokenSymbol = await tokenRegistry.getTokenSymbolByIndex.callAsync(erc721ContractIndex);
+        const expectedTokenSymbol = await tokenRegistry.getTokenSymbolByIndex.callAsync(
+            erc721ContractIndex,
+        );
         const tokenContract = await this.contractsAPI.loadERC721BySymbolAsync(expectedTokenSymbol);
         const tokenExists = await tokenContract.exists.callAsync(tokenReference);
 
         if (!tokenExists) {
             throw new Error(
                 ERC721CollateralizerAdapterErrors.TOKEN_REFERENCE_NOT_FOUND(tokenReference),
-            )
+            );
         }
     }
 

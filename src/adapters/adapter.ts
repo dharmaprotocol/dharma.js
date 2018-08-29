@@ -12,7 +12,10 @@ export interface Adapter {
     getRepaymentSchedule: (entry: DebtRegistryEntry) => number[];
     unpackParameters: (packedParams: string) => object;
     validateAsync: (
-        order: SimpleInterestLoanOrder | CollateralizedSimpleInterestLoanOrder | ERC721CollateralizedSimpleInterestLoanOrder,
+        order:
+            | SimpleInterestLoanOrder
+            | CollateralizedSimpleInterestLoanOrder
+            | ERC721CollateralizedSimpleInterestLoanOrder,
     ) => Promise<void>;
 }
 

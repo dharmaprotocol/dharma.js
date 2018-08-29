@@ -3,6 +3,8 @@ import { SeizeCollateralScenario } from "../scenarios";
 
 import { BaseCollateralRunner } from "./base_collateral_runner";
 
+const TX_MAX_GAS = 600000;
+
 export class SeizeCollateralRunner extends BaseCollateralRunner {
     public testScenario(scenario: SeizeCollateralScenario) {
         let agreementId;
@@ -10,13 +12,13 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
 
         describe(scenario.description, () => {
             beforeAll(async () => {
-                await this.initializeWrappers(scenario);
+                const tokenId = await this.initializeWrappers(scenario);
 
                 this.snapshotId = await this.web3Utils.saveTestSnapshot();
 
                 // We fill a generic collateralized loan order, against which
                 // we can test making repayments and returning collateral.
-                await this.generateAndFillOrder(scenario);
+                await this.generateAndFillOrder(scenario, tokenId);
 
                 initialCreditorCollateralTokenBalance = await this.collateralToken.balanceOf.callAsync(
                     this.debtOrderData.creditor,
@@ -38,7 +40,12 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 }
 
                 if (scenario.collateralWithdrawn) {
-                    await this.adapter.returnCollateralAsync(agreementId);
+                    await this.adapter.returnCollateralAsync(
+                        agreementId,
+                        {
+                            gas: TX_MAX_GAS,
+                        }
+                    );
                 }
             });
 
@@ -51,14 +58,20 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 it("returns a valid transaction hash", async () => {
                     const txHash = await this.adapter.seizeCollateralAsync(
                         scenario.givenAgreementId(agreementId),
+                        {
+                            gas: TX_MAX_GAS,
+                        }
                     );
 
                     expect(txHash.length).toEqual(66);
                 });
 
                 it("transfers the collateral to the creditor", async () => {
-                    // STUB.
-                    // TODO: Check that the owner of the ERC721 asset is the creditor.
+                    const owner = await this.collateralToken.ownerOf.callAsync(
+                        scenario.collateralTerms.tokenReference,
+                    );
+
+                    expect(owner).toEqual(this.debtOrderData.creditor);
                 });
 
                 describe("#isCollateralReturned", () => {
@@ -79,7 +92,13 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
-                        this.adapter.seizeCollateralAsync(scenario.givenAgreementId(agreementId)),
+                        this.adapter.seizeCollateralAsync(
+                            scenario.givenAgreementId(agreementId),
+                            {
+                                gas: TX_MAX_GAS,
+                            }
+
+                        ),
                     ).rejects.toThrow(scenario.error);
                 });
 

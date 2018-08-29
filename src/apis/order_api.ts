@@ -170,8 +170,6 @@ export class OrderAPI {
         txOptions?: TxData,
     ): Promise<void> {
         const { termsContractParameters } = debtOrderData;
-
-
     }
 
     /**

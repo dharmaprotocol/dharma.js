@@ -38,6 +38,7 @@ export const TERMS_CONTRACT_REGISTRY_CONTRACT_CACHE_KEY = "TermsContractRegistry
 export const COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
     "CollateralizedSimpleInterestTermsContract";
 export const COLLATERALIZER_CONTRACT_CACHE_KEY = "CollateralizerContract";
+export const ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY = "ERC721CollateralizerContract";
 export const ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
     "ERC721CollateralizedSimpleInterestTermsContract";
 export const ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "ERC721TokenRegistryContract";
@@ -45,6 +46,7 @@ export const ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "ERC721TokenRegistryCont
 export const TERMS_CONTRACT_TYPES = {
     COLLATERALIZED_SIMPLE_INTEREST_LOAN: "CollateralizedSimpleInterestLoan",
     SIMPLE_INTEREST_LOAN: "SimpleInterestLoan",
+    ERC721_COLLATERALIZED_SIMPLE_INTEREST_LOAN: "ERC721CollateralizedSimpleInterestLoan",
 };
 
 export const TOKEN_REGISTRY_TRACKED_TOKENS = [

@@ -10,20 +10,20 @@ export const UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS: SeizeCollateralScenario[] 
     {
         ...failArgs,
         description: "when the debt's term has lapsed and the debt has been paid",
-        error: /not currently in a state of default when adjusted for grace period/,
+        error: /not currently in a state of default/,
     },
     {
         ...failArgs,
         description: "when the debt's term has not yet lapsed and the debt has been paid",
         termLapsed: false,
-        error: /not currently in a state of default when adjusted for grace period/,
+        error: /not currently in a state of default/,
     },
     {
         ...failArgs,
         description: "when the grace period not yet lapsed and the debt has not been paid",
         debtRepaid: false,
         termLapsed: false,
-        error: /not currently in a state of default when adjusted for grace period/,
+        error: /not currently in a state of default/,
     },
     {
         ...failArgs,

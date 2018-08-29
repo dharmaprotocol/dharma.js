@@ -24,6 +24,7 @@ import { SimpleInterestLoanTerms } from "../simple_interest_loan_terms";
 
 import { Adapter } from "../adapter";
 import { ERC721TokenContract } from "../../wrappers";
+import { erc721CollateralizedSimpleInterestLoanOrder } from "../../schemas/erc721_collateralized_simple_interest_loan_order_schema";
 
 const SECONDS_IN_DAY = 60 * 60 * 24;
 
@@ -46,7 +47,8 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {}
+        ERC721CollateralizedTermsContractParameters {
+}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
@@ -83,6 +85,12 @@ export const ERC721CollateralizerAdapterErrors = {
 
     COLLATERALIZER_APPROVAL_NOT_GRANTED: () =>
         singleLineString`Collateralizer contract not granted approval for token transfer`,
+
+    DEBT_NOT_YET_REPAID: (agreementId: string) =>
+        singleLineString`Debt has not been fully repaid for loan with agreement ID ${agreementId}`,
+
+    LOAN_NOT_IN_DEFAULT: (agreementId: string) =>
+        singleLineString`Loan with agreement ID ${agreementId} is not currently in a state of default`,
 };
 
 export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
@@ -332,7 +340,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async returnCollateralAsync(agreementId: string, options?: TxData): Promise<string> {
         this.assert.schema.bytes32("agreementId", agreementId);
 
-        // await this.assertDebtAgreementExists(agreementId);
+        await this.assertDebtAgreementExists(agreementId);
         await this.assertCollateralReturnable(agreementId);
 
         const defaultOptions = await this.getTxDefaultOptions();
@@ -446,11 +454,9 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
     public async isCollateralWithdrawn(agreementId: string): Promise<boolean> {
         const collateralizerContract = await this.contractsAPI.loadERC721CollateralizerAsync();
 
-        const collateralizerAddress = await collateralizerContract.agreementToDebtor.callAsync(
-            agreementId,
-        );
+        const debtorAddress = await collateralizerContract.agreementToDebtor.callAsync(agreementId);
 
-        return collateralizerAddress === NULL_ADDRESS;
+        return debtorAddress === NULL_ADDRESS;
     }
 
     /**
@@ -578,11 +584,35 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
         const unpackedParams = this.unpackParameters(termsContractParameters);
 
-        this.collateralizedLoanTerms.assertValidParams(unpackedParams);
+        await this.collateralizedLoanTerms.assertValidParams(unpackedParams);
 
         await this.assertCollateralNotWithdrawn(agreementId);
 
-        await this.assertDefaultedForGracePeriod(agreementId, unpackedParams.gracePeriodInDays);
+        await this.assertDefaulted(agreementId);
+    }
+
+    private async assertDefaulted(agreementId: string): Promise<void> {
+        const defaulted = await this.defaulted(agreementId);
+
+        if (!defaulted) {
+            throw new Error(
+                ERC721CollateralizerAdapterErrors.LOAN_NOT_IN_DEFAULT(agreementId),
+            );
+        }
+    }
+
+    private async defaulted(agreementId: string): Promise<boolean> {
+        const termsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
+        const repaymentToDate = await termsContract.getValueRepaidToDate.callAsync(agreementId);
+
+        const currentTime = await this.web3Utils.getCurrentBlockTime();
+
+        const minimumRepayment = await termsContract.getExpectedRepaymentValue.callAsync(
+            agreementId,
+            new BigNumber(currentTime),
+        );
+
+        return repaymentToDate.lt(minimumRepayment);
     }
 
     /**
@@ -616,40 +646,6 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         }
     }
 
-    private async assertDefaultedForGracePeriod(agreementId: string, gracePeriod: BigNumber) {
-        const defaultedForGracePeriod = await this.defaultedForGracePeriod(
-            agreementId,
-            gracePeriod,
-        );
-
-        if (!defaultedForGracePeriod) {
-            throw new Error(
-                ERC721CollateralizerAdapterErrors.LOAN_NOT_IN_DEFAULT_FOR_GRACE_PERIOD(agreementId),
-            );
-        }
-    }
-
-    private async defaultedForGracePeriod(
-        agreementId: string,
-        gracePeriod: BigNumber,
-    ): Promise<boolean> {
-        const termsContract = await this.contractsAPI.loadERC721CollateralizedSimpleInterestTermsContract();
-        const repaymentToDate = await termsContract.getValueRepaidToDate.callAsync(agreementId);
-
-        const currentTime = await this.web3Utils.getCurrentBlockTime();
-
-        const timeAdjustedForGracePeriod = new BigNumber(currentTime).sub(
-            gracePeriod.mul(SECONDS_IN_DAY),
-        );
-
-        const minimumRepayment = await termsContract.getExpectedRepaymentValue.callAsync(
-            agreementId,
-            timeAdjustedForGracePeriod,
-        );
-
-        return repaymentToDate.lt(minimumRepayment);
-    }
-
     private async assertCollateralNotWithdrawn(agreementId) {
         const collateralWithdrawn = await this.isCollateralWithdrawn(agreementId);
 
@@ -662,8 +658,6 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         order: ERC721CollateralizedSimpleInterestLoanOrder,
     ) {
         const { erc721Symbol, tokenReference } = order;
-
-        console.log("erc721 token symbol", erc721Symbol);
 
         const erc721Token: ERC721TokenContract = await this.contractsAPI.loadERC721BySymbolAsync(
             erc721Symbol,
@@ -696,8 +690,6 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
     private async getTxDefaultOptions(): Promise<object> {
         const accounts = await this.web3Utils.getAvailableAddressesAsync();
-
-        // TODO: Add fault tolerance to scenario in which not addresses are available
 
         return {
             from: accounts[0],

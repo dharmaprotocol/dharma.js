@@ -10,7 +10,7 @@ import {
     Adapter,
     CollateralizedSimpleInterestLoanAdapter,
     SimpleInterestLoanAdapter,
-    ERC721CollateralizedSimpleInterestLoanAdapter
+    ERC721CollateralizedSimpleInterestLoanAdapter,
 } from "../adapters";
 
 // Constants
