@@ -269,7 +269,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario2,
             principalToken: tokenAddresses[1],
             termsContractParameters:
-            // Token Reference is 1; isEnumerable is true.
+                // Token Reference is 1; isEnumerable is true.
                 "0x0100000000a688906bd8b000000004b040003000000000000000000000000011",
         };
 
@@ -278,7 +278,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario3,
             principalToken: tokenAddresses[2],
             termsContractParameters:
-            // Token Reference is 0; isEnumerable is false.
+                // Token Reference is 0; isEnumerable is false.
                 "0x0200000002b5e3af16b18800000007d02000a000000000000000000000000000",
         };
 
@@ -409,38 +409,41 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
-        describe("erc721 collateralized simple interest loan's " +
-            "required parameters are present and well-formed ", () => {
-            describe("Scenario #1", () => {
-                test("should return debt order with correctly packed values", async () => {
-                    await expect(
-                        collateralizedSimpleInterestLoanAdapter.toDebtOrder(
-                            scenario1.minimalLoanOrder,
-                        ),
-                    ).resolves.toEqual(scenario1.debtOrderData);
+        describe(
+            "erc721 collateralized simple interest loan's " +
+                "required parameters are present and well-formed ",
+            () => {
+                describe("Scenario #1", () => {
+                    test("should return debt order with correctly packed values", async () => {
+                        await expect(
+                            collateralizedSimpleInterestLoanAdapter.toDebtOrder(
+                                scenario1.minimalLoanOrder,
+                            ),
+                        ).resolves.toEqual(scenario1.debtOrderData);
+                    });
                 });
-            });
 
-            describe("Scenario #2", () => {
-                test("should return debt order with correctly packed values", async () => {
-                    await expect(
-                        collateralizedSimpleInterestLoanAdapter.toDebtOrder(
-                            scenario2.minimalLoanOrder,
-                        ),
-                    ).resolves.toEqual(scenario2.debtOrderData);
+                describe("Scenario #2", () => {
+                    test("should return debt order with correctly packed values", async () => {
+                        await expect(
+                            collateralizedSimpleInterestLoanAdapter.toDebtOrder(
+                                scenario2.minimalLoanOrder,
+                            ),
+                        ).resolves.toEqual(scenario2.debtOrderData);
+                    });
                 });
-            });
 
-            describe("Scenario #3", () => {
-                test("should return debt order with correctly packed values", async () => {
-                    await expect(
-                        collateralizedSimpleInterestLoanAdapter.toDebtOrder(
-                            scenario3.minimalLoanOrder,
-                        ),
-                    ).resolves.toEqual(scenario3.debtOrderData);
+                describe("Scenario #3", () => {
+                    test("should return debt order with correctly packed values", async () => {
+                        await expect(
+                            collateralizedSimpleInterestLoanAdapter.toDebtOrder(
+                                scenario3.minimalLoanOrder,
+                            ),
+                        ).resolves.toEqual(scenario3.debtOrderData);
+                    });
                 });
-            });
-        });
+            },
+        );
     });
 
     describe("#fromDebtOrder()", () => {
@@ -501,28 +504,31 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
-        describe("terms contract does not match principal token's " +
-            "associated `ERC721CollateralizedSimpleInterestTermsContract`", () => {
-            test("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
-                const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
-                    new BigNumber(1),
-                );
+        describe(
+            "terms contract does not match principal token's " +
+                "associated `ERC721CollateralizedSimpleInterestTermsContract`",
+            () => {
+                test("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
+                    const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
+                        new BigNumber(1),
+                    );
 
-                await expect(
-                    collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
-                        ...scenario1.debtOrderData,
-                        // // the principal token index is encoded as 1 instead of 0.
-                        termsContractParameters:
-                            "0x010000003635c9adc5dea000000003e830002000000000000000000000000001",
-                    }),
-                ).rejects.toThrow(
-                    ERC721CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
-                        scenario1.debtOrderData.principalToken,
-                        principalTokenSymbol,
-                    ),
-                );
-            });
-        });
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
+                            ...scenario1.debtOrderData,
+                            // // the principal token index is encoded as 1 instead of 0.
+                            termsContractParameters:
+                                "0x010000003635c9adc5dea000000003e830002000000000000000000000000001",
+                        }),
+                    ).rejects.toThrow(
+                        ERC721CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
+                            scenario1.debtOrderData.principalToken,
+                            principalTokenSymbol,
+                        ),
+                    );
+                });
+            },
+        );
 
         describe("terms contract params contains token index out of bounds", () => {
             test("should throw CANNOT_FIND_TOKEN_WITH_INDEX", async () => {
