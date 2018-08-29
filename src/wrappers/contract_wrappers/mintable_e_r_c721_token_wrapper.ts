@@ -385,56 +385,6 @@ export class MintableERC721TokenContract extends BaseContract {
             return abiEncodedTransactionData;
         },
     };
-    public safeTransferFrom = {
-        async sendTransactionAsync(
-            _from: string,
-            _to: string,
-            _tokenId: BigNumber,
-            _data: string,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
-                txData,
-                self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId, _data),
-            );
-            const txHash = await promisify<string>(
-                self.web3ContractInstance.safeTransferFrom,
-                self.web3ContractInstance,
-            )(_from, _to, _tokenId, _data, txDataWithDefaults);
-            return txHash;
-        },
-        async estimateGasAsync(
-            _from: string,
-            _to: string,
-            _tokenId: BigNumber,
-            _data: string,
-            txData: TxData = {},
-        ): Promise<number> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const gas = await promisify<number>(
-                self.web3ContractInstance.safeTransferFrom.estimateGas,
-                self.web3ContractInstance,
-            )(_from, _to, _tokenId, _data, txDataWithDefaults);
-            return gas;
-        },
-        async getABIEncodedTransactionData(
-            _from: string,
-            _to: string,
-            _tokenId: BigNumber,
-            _data: string,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as MintableERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const abiEncodedTransactionData = await promisify<string>(
-                self.web3ContractInstance.safeTransferFrom.getData,
-                self.web3ContractInstance,
-            )(_from, _to, _tokenId, _data, txDataWithDefaults);
-            return abiEncodedTransactionData;
-        },
-    };
     public tokenURI = {
         async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<string> {
             const self = this as MintableERC721TokenContract;
