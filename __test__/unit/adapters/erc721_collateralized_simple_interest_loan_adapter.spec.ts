@@ -236,7 +236,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario2,
             principalToken: tokenAddresses[1],
             termsContractParameters:
-                // Token Reference is 1; isEnumerable is true.
+            // Token Reference is 1; isEnumerable is true.
                 "0x0100000000a688906bd8b000000004b040003000000000000000000000000011",
         };
 
@@ -245,7 +245,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario3,
             principalToken: tokenAddresses[2],
             termsContractParameters:
-                // Token Reference is 0; isEnumerable is false.
+            // Token Reference is 0; isEnumerable is false.
                 "0x0200000002b5e3af16b18800000007d02000a000000000000000000000000000",
         };
 

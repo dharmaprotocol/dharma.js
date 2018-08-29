@@ -1,10 +1,10 @@
-// External Libraries
-import { BigNumber } from "utils/bignumber";
 // Utils
-import * as Units from "utils/units";
+import { BigNumber } from "../../../../../utils/bignumber";
+import * as Units from "../../../../../utils/units";
 // Adapters
-import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
 import { ERC721CollateralizedTermsContractParameters } from "../../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
+import { SimpleInterestTermsContractParameters } from "src/adapters/simple_interest_loan_adapter";
+// Wrappers
 import { ERC721TokenContract } from "../../../../../src/wrappers";
 
 export interface SeizeCollateralScenario {
