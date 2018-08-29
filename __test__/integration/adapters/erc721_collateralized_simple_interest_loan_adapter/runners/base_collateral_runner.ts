@@ -101,8 +101,6 @@ export abstract class BaseCollateralRunner {
     protected async setBalances(
         scenario: ReturnCollateralScenario | SeizeCollateralScenario,
     ): Promise<void> {
-        // TODO: Mint a new ERC721 token for the Debtor.
-
         // The debtor has more than enough of the principal token to repay debts.
         await this.principalToken.setBalance.sendTransactionAsync(
             DEBTOR.address,
@@ -140,8 +138,6 @@ export abstract class BaseCollateralRunner {
         scenario: ReturnCollateralScenario | SeizeCollateralScenario,
     ): Promise<void> {
         const { debtor, creditor, principalAmount } = this.debtOrderData;
-
-        // TODO: Grant the collateralizer approval for moving the asset.
 
         // The debtor grants the transfer proxy some sufficient allowance for making repayments.
         await this.tokenApi.setProxyAllowanceAsync(

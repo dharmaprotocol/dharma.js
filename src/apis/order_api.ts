@@ -165,13 +165,6 @@ export class OrderAPI {
         await this.assertValidLoanTerms(debtOrderData);
     }
 
-    public async assertValidERC721Collateral(
-        debtOrderData: DebtOrderData,
-        txOptions?: TxData,
-    ): Promise<void> {
-        const { termsContractParameters } = debtOrderData;
-    }
-
     /**
      * Asserts that a debt order is ready to be filled by any creditor, by validating
      * invariants except for those pertaining to the creditor.

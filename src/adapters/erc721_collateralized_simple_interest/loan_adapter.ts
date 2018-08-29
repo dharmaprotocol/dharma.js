@@ -161,7 +161,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         ]);
 
         // Our final output is the perfect union of the packed simple interest params and the packed
-        // collateralized params.
+        // erc721-collateralized params.
         const packedParams = this.packParameters(
             {
                 principalTokenIndex,
@@ -190,9 +190,9 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
 
     /**
      * Validates that the basic invariants have been met for a given
-     * CollateralizedSimpleInterestLoanOrder.
+     * ERC721CollateralizedSimpleInterestLoanOrder.
      *
-     * @param {CollateralizedSimpleInterestLoanOrder} loanOrder
+     * @param {ERC721CollateralizedSimpleInterestLoanOrder} loanOrder
      * @returns {Promise<void>}
      */
     public async validateAsync(loanOrder: ERC721CollateralizedSimpleInterestLoanOrder) {
@@ -386,7 +386,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         );
 
         // Our final output is the perfect union of the packed simple interest params and the packed
-        // collateralized params.
+        // erc-721 collateralized params.
         return packedSimpleInterestParams.substr(0, 39) + packedCollateralizedParams.substr(39, 27);
     }
 

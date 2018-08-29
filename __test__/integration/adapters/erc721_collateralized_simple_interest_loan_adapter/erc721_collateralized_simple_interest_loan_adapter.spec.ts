@@ -15,9 +15,7 @@ import { ReturnCollateralRunner, SeizeCollateralRunner } from "./runners";
 
 import { ERC721CollateralizedSimpleInterestLoanAdapter } from "../../../../src/adapters/erc721_collateralized_simple_interest/loan_adapter";
 
-import { ServicingAPI } from "src/apis/servicing_api";
-
-import { TokenAPI } from "../../../../src/apis";
+import { ServicingAPI, TokenAPI } from "../../../../src/apis";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
@@ -27,7 +25,7 @@ const web3 = new Web3(provider);
 // deployed contracts on the current network.
 jest.unmock("@dharmaprotocol/contracts");
 
-describe("Collateralized Simple Interest Loan Adapter (Integration Tests)", () => {
+describe("ERC721 Collateralized Simple Interest Loan Adapter (Integration Tests)", () => {
     const contractsApi = new ContractsAPI(web3);
 
     const adaptersApi = new AdaptersAPI(web3, contractsApi);
