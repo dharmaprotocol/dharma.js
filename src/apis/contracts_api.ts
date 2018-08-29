@@ -493,9 +493,7 @@ export class ContractsAPI {
             );
         }
 
-        this.cache[
-            ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-        ] = termsContract;
+        this.cache[ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY] = termsContract;
 
         return termsContract;
     }
