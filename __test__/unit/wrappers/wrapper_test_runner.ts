@@ -113,7 +113,7 @@ export class WrapperTestRunner {
 
                     test(`returns new ${
                         wrapper.name
-                        } wrapper w/ current address correctly set`, async () => {
+                    } wrapper w/ current address correctly set`, async () => {
                         const contractWrapper = await wrapper.contract.deployed(web3, TX_DEFAULTS);
 
                         expect(contractWrapper.address).toBe(contractAddress);
@@ -157,18 +157,18 @@ export class WrapperTestRunner {
                         wrapper.artifact.mock(wrapperAbi, mockNetworks);
                     });
 
-                    test(
-                        `returns new ${wrapper.name}Contract w/ current address correctly set`,
-                        async () => {
-                            const contractWrapper = await wrapper.contract.at(
-                                contractAddress,
-                                web3,
-                                TX_DEFAULTS,
-                            );
+                    test(`returns new ${
+                        wrapper.name
+                    }Contract w/ current address correctly set`, async () => {
+                        const contractWrapper = await wrapper.contract.at(
+                            contractAddress,
+                            web3,
+                            TX_DEFAULTS,
+                        );
 
-                            expect(contractWrapper.address).toBe(contractAddress);
-                            expect(contractWrapper.abi).toEqual(wrapperAbi);
-                        });
+                        expect(contractWrapper.address).toBe(contractAddress);
+                        expect(contractWrapper.abi).toEqual(wrapperAbi);
+                    });
                 });
             });
         });

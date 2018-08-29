@@ -50,13 +50,11 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {
-}
+        ERC721CollateralizedTermsContractParameters {}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
-        singleLineString`ERC721 Token Registry does not track a contract at index
-            ${tokenIndex.toString()}.`,
+        singleLineString`Invalid index for ERC721 Token Registry: ${tokenIndex.toString()}.`,
 
     INVALID_IS_ENUMERABLE_FLAG: () =>
         singleLineString`isEnumerable should be 0 (if false) or 1 (if true).`,
@@ -83,8 +81,8 @@ export const ERC721CollateralizerAdapterErrors = {
                          a ERC721CollateralizedSimpleInterestTermsContract. As such, this adapter 
                          will not interface with the terms contract as expected`,
 
-    TOKEN_REFERENCE_NOT_FOUND: (tokenReference: string) =>
-        singleLineString`Token not found with given reference: ${tokenReference}`,
+    TOKEN_REFERENCE_NOT_FOUND: (tokenReference: BigNumber) =>
+        singleLineString`Token not found with given reference: ${tokenReference.toString()}`,
 
     COLLATERALIZER_APPROVAL_NOT_GRANTED: () =>
         singleLineString`Collateralizer contract not granted approval for token transfer`,

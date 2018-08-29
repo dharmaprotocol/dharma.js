@@ -15,11 +15,6 @@ import {
     ERC721CollateralizerAdapterErrors,
 } from "./loan_adapter";
 
-// STUB. TODO: Get number of contracts in registry.
-const maxContracts = 3;
-
-const MAX_ERC721_CONTRACT_INDEX_HEX = (maxContracts - 1).toString(16);
-// TODO: Get accurate number of maximum tokens here.
 const MAX_TOKEN_REFERENCE = 999999999999999;
 
 export class ERC721CollateralizedLoanTerms {
@@ -76,7 +71,7 @@ export class ERC721CollateralizedLoanTerms {
             throw new Error(ERC721CollateralizerAdapterErrors.INVALID_DECIMAL_VALUE());
         }
 
-        if (collateralTokenIndex.lt(0) || collateralTokenIndex.gt(MAX_ERC721_CONTRACT_INDEX_HEX)) {
+        if (collateralTokenIndex.lt(0)) {
             throw new Error(
                 ERC721CollateralizerAdapterErrors.INVALID_CONTRACT_INDEX(collateralTokenIndex),
             );

@@ -94,13 +94,10 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
     // };
 
     describe("#packParameters", () => {
-        describe("...with collateral token index that is not tracked", () => {
+        describe("with an invalid contract index", () => {
             test("should throw INVALID_TOKEN_INDEX error", async () => {
-                const tokenRegistry = await contracts.loadERC721TokenRegistryContract();
-                const numContracts = await tokenRegistry.tokenSymbolListLength.callAsync();
-
                 // If there is 1 token contract in the registry, its index will be 0, and so on.
-                const invalidERC721ContractIndex = numContracts;
+                const invalidERC721ContractIndex = new BigNumber(-1);
 
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
@@ -115,7 +112,7 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
 
-        describe("...with invalid isEnumerable", () => {
+        describe("with an invalid isEnumerable", () => {
             test("should throw INVALID_IS_ENUMERABLE_FLAG error", () => {
                 expect(() => {
                     collateralizedLoanTerms.packParameters({
@@ -186,8 +183,7 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
             });
         });
     });
-})
-;
+});
 
 describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
     interface AdapterScenario {
@@ -240,7 +236,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario2,
             principalToken: tokenAddresses[1],
             termsContractParameters:
-            // Token Reference is 1; isEnumerable is true.
+                // Token Reference is 1; isEnumerable is true.
                 "0x0100000000a688906bd8b000000004b040003000000000000000000000000011",
         };
 
@@ -249,7 +245,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             principalAmount: principalAmountForScenario3,
             principalToken: tokenAddresses[2],
             termsContractParameters:
-            // Token Reference is 0; isEnumerable is false.
+                // Token Reference is 0; isEnumerable is false.
                 "0x0200000002b5e3af16b18800000007d02000a000000000000000000000000000",
         };
 
@@ -481,7 +477,8 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     collateralizedSimpleInterestLoanAdapter.fromDebtOrder({
                         ...scenario1.debtOrderData,
                         // // the principal token index is encoded as 1 instead of 0.
-                        termsContractParameters: "0x010000003635c9adc5dea000000003e830002000000000000000000000000001",
+                        termsContractParameters:
+                            "0x010000003635c9adc5dea000000003e830002000000000000000000000000001",
                     }),
                 ).rejects.toThrow(
                     ERC721CollateralizerAdapterErrors.MISMATCHED_TOKEN_SYMBOL(
