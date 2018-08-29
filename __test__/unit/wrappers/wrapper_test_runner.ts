@@ -1,12 +1,13 @@
-// Extenal libraries
-import * as promisify from "tiny-promisify";
-import { Web3Utils } from "utils/web3_utils";
-import * as Web3 from "web3";
+// External libraries
 // We use an unmocked version of "fs" in order to pull the correct
 // contract address from our artifacts for testing purposes
 import * as fs from "fs";
+import * as promisify from "tiny-promisify";
+import * as Web3 from "web3";
+// Utils
+import { Web3Utils } from "../../../utils/web3_utils";
 // Wrapper errors
-import { CONTRACT_WRAPPER_ERRORS } from "src/wrappers/contract_wrappers/base_contract_wrapper";
+import { CONTRACT_WRAPPER_ERRORS } from "../../../src/wrappers/contract_wrappers/base_contract_wrapper";
 // Accounts
 import { ACCOUNTS } from "../../accounts";
 
@@ -40,7 +41,7 @@ export interface WrapperTestObject {
  * runner.testWrapper(wrapper);
  */
 export class WrapperTestRunner {
-    testWrapper(wrapper: WrapperTestObject) {
+    public testWrapper(wrapper: WrapperTestObject) {
         describe(`${wrapper.displayName} Wrapper (Unit)`, () => {
             let networkId: number;
             let contractAddress: string;
@@ -65,7 +66,6 @@ export class WrapperTestRunner {
                     });
 
                     test("throws CONTRACT_NOT_FOUND_ON_NETWORK error", async () => {
-                        const networkId = await web3Utils.getNetworkIdAsync();
                         await expect(
                             wrapper.contract.deployed(web3, TX_DEFAULTS),
                         ).rejects.toThrowError(
@@ -102,7 +102,7 @@ export class WrapperTestRunner {
 
                 describe("local artifacts readable and contract address associated w/ network id is valid", () => {
                     beforeAll(async () => {
-                        let mockNetworks = {};
+                        const mockNetworks = {};
 
                         mockNetworks[networkId] = {
                             address: contractAddress,
@@ -125,7 +125,7 @@ export class WrapperTestRunner {
             describe("#at()", () => {
                 describe("contract address does not point to contract", () => {
                     beforeAll(async () => {
-                        let mockNetworks = {};
+                        const mockNetworks = {};
 
                         mockNetworks[networkId] = {
                             address: ACCOUNTS[0].address,
@@ -148,7 +148,7 @@ export class WrapperTestRunner {
 
                 describe("local artifacts readable and contract address associated w/ network id is valid", () => {
                     beforeAll(async () => {
-                        let mockNetworks = {};
+                        const mockNetworks = {};
 
                         mockNetworks[networkId] = {
                             address: ACCOUNTS[0].address,
