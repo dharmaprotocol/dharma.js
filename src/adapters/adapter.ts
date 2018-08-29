@@ -1,7 +1,9 @@
+// Loan Orders
 import { CollateralizedSimpleInterestLoanOrder } from "./collateralized_simple_interest_loan_adapter";
-import { DebtOrderData, DebtRegistryEntry } from "../types";
 import { ERC721CollateralizedSimpleInterestLoanOrder } from "./erc721_collateralized_simple_interest/loan_adapter";
 import { SimpleInterestLoanOrder } from "./simple_interest_loan_adapter";
+// Types
+import { DebtOrderData, DebtRegistryEntry } from "../types";
 
 export interface Adapter {
     fromDebtOrder: (

@@ -64,10 +64,10 @@ export const ContractsError = {
 };
 
 export class ContractsAPI {
-    private web3: Web3;
+    private readonly web3: Web3;
     private addressBook: AddressBook;
 
-    private cache: { [contractName: string]: ContractWrapper };
+    private readonly cache: { [contractName: string]: ContractWrapper };
 
     public constructor(web3: Web3, addressBook: AddressBook = {}) {
         this.web3 = web3;
@@ -478,16 +478,16 @@ export class ContractsAPI {
             ] as ERC721CollateralizedSimpleInterestTermsContractContract;
         }
 
-        let erc721CollateralizedSimpleInterestTermsContract: ERC721CollateralizedSimpleInterestTermsContractContract;
+        let termsContract: ERC721CollateralizedSimpleInterestTermsContractContract;
 
         if (this.addressBook.erc721CollateralizedSimpleInterestTermsContract) {
-            erc721CollateralizedSimpleInterestTermsContract = await ERC721CollateralizedSimpleInterestTermsContractContract.at(
+            termsContract = await ERC721CollateralizedSimpleInterestTermsContractContract.at(
                 this.addressBook.erc721CollateralizedSimpleInterestTermsContract,
                 this.web3,
                 transactionOptions,
             );
         } else {
-            erc721CollateralizedSimpleInterestTermsContract = await ERC721CollateralizedSimpleInterestTermsContractContract.deployed(
+            termsContract = await ERC721CollateralizedSimpleInterestTermsContractContract.deployed(
                 this.web3,
                 transactionOptions,
             );
@@ -495,9 +495,9 @@ export class ContractsAPI {
 
         this.cache[
             ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY
-        ] = erc721CollateralizedSimpleInterestTermsContract;
+        ] = termsContract;
 
-        return erc721CollateralizedSimpleInterestTermsContract;
+        return termsContract;
     }
 
     public async loadERC721TokenRegistryContract(
