@@ -47,8 +47,7 @@ export interface ERC721CollateralizedTermsContractParameters {
 
 export interface ERC721CollateralizedSimpleInterestTermsContractParameters
     extends SimpleInterestTermsContractParameters,
-        ERC721CollateralizedTermsContractParameters {
-}
+        ERC721CollateralizedTermsContractParameters {}
 
 export const ERC721CollateralizerAdapterErrors = {
     INVALID_CONTRACT_INDEX: (tokenIndex: BigNumber) =>
@@ -595,9 +594,7 @@ export class ERC721CollateralizedSimpleInterestLoanAdapter implements Adapter {
         const defaulted = await this.defaulted(agreementId);
 
         if (!defaulted) {
-            throw new Error(
-                ERC721CollateralizerAdapterErrors.LOAN_NOT_IN_DEFAULT(agreementId),
-            );
+            throw new Error(ERC721CollateralizerAdapterErrors.LOAN_NOT_IN_DEFAULT(agreementId));
         }
     }
 

@@ -40,12 +40,9 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                 }
 
                 if (scenario.collateralWithdrawn) {
-                    await this.adapter.returnCollateralAsync(
-                        agreementId,
-                        {
-                            gas: TX_MAX_GAS,
-                        }
-                    );
+                    await this.adapter.returnCollateralAsync(agreementId, {
+                        gas: TX_MAX_GAS,
+                    });
                 }
             });
 
@@ -60,7 +57,7 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
                         scenario.givenAgreementId(agreementId),
                         {
                             gas: TX_MAX_GAS,
-                        }
+                        },
                     );
 
                     expect(txHash.length).toEqual(66);
@@ -92,13 +89,9 @@ export class SeizeCollateralRunner extends BaseCollateralRunner {
             } else {
                 it(`throws with message: ${scenario.error}`, async () => {
                     await expect(
-                        this.adapter.seizeCollateralAsync(
-                            scenario.givenAgreementId(agreementId),
-                            {
-                                gas: TX_MAX_GAS,
-                            }
-
-                        ),
+                        this.adapter.seizeCollateralAsync(scenario.givenAgreementId(agreementId), {
+                            gas: TX_MAX_GAS,
+                        }),
                     ).rejects.toThrow(scenario.error);
                 });
 
