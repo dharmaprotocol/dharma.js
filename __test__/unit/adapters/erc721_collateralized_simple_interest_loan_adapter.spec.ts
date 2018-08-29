@@ -79,19 +79,28 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
         unpackedParams: {
             erc721ContractIndex: new BigNumber(0),
             tokenReference: new BigNumber(0),
+            isEnumerable: new BigNumber(0),
+        },
+        packedParams: "0x0000000000000000000000000000000000000000000000000000000000000000",
+    };
+
+    const scenario3: Scenario = {
+        unpackedParams: {
+            erc721ContractIndex: new BigNumber(0),
+            tokenReference: new BigNumber(1),
+            isEnumerable: new BigNumber(0),
+        },
+        packedParams: "0x0000000000000000000000000000000000000000000000000000000000000010",
+    };
+
+    const scenario4: Scenario = {
+        unpackedParams: {
+            erc721ContractIndex: new BigNumber(0),
+            tokenReference: new BigNumber(1),
             isEnumerable: new BigNumber(1),
         },
-        packedParams: "0x0000000000000000000000000000000000000000000000000000000000000001",
+        packedParams: "0x0000000000000000000000000000000000000000000000000000000000000011",
     };
-    //
-    // const scenario3: Scenario = {
-    //     unpackedParams: {
-    //         collateralTokenIndex: new BigNumber(8),
-    //         collateralAmount: new BigNumber(1212234234 * 10 ** 18),
-    //         gracePeriodInDays: new BigNumber(90),
-    //     },
-    //     packedParams: "0x0000000000000000000000000000000000000083eabc9580d20c1abba800005a",
-    // };
 
     describe("#packParameters", () => {
         describe("with an invalid contract index", () => {
@@ -140,6 +149,30 @@ describe("ERC721 Collateralized Terms Contract Interface (Unit Tests)", () => {
                     expect(
                         collateralizedLoanTerms.packParameters(scenario1.unpackedParams),
                     ).toEqual(scenario1.packedParams);
+                });
+            });
+
+            describe("Scenario #2", () => {
+                test("should return correctly packed parameters", () => {
+                    expect(
+                        collateralizedLoanTerms.packParameters(scenario2.unpackedParams),
+                    ).toEqual(scenario2.packedParams);
+                });
+            });
+
+            describe("Scenario #3", () => {
+                test("should return correctly packed parameters", () => {
+                    expect(
+                        collateralizedLoanTerms.packParameters(scenario3.unpackedParams),
+                    ).toEqual(scenario3.packedParams);
+                });
+            });
+
+            describe("Scenario #4", () => {
+                test("should return correctly packed parameters", () => {
+                    expect(
+                        collateralizedLoanTerms.packParameters(scenario4.unpackedParams),
+                    ).toEqual(scenario4.packedParams);
                 });
             });
         });
@@ -376,7 +409,8 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
-        describe("erc721 collateralized simple interest loan's required parameters are present and well-formed ", () => {
+        describe("erc721 collateralized simple interest loan's " +
+            "required parameters are present and well-formed ", () => {
             describe("Scenario #1", () => {
                 test("should return debt order with correctly packed values", async () => {
                     await expect(
@@ -467,7 +501,8 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
             });
         });
 
-        describe("terms contract does not match principal token's associated `ERC721CollateralizedSimpleInterestTermsContract`", () => {
+        describe("terms contract does not match principal token's " +
+            "associated `ERC721CollateralizedSimpleInterestTermsContract`", () => {
             test("should throw MISMATCHED_TOKEN_SYMBOL", async () => {
                 const principalTokenSymbol = await contracts.getTokenSymbolByIndexAsync(
                     new BigNumber(1),
