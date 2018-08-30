@@ -377,6 +377,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     ).rejects.toThrow('instance requires property "erc721Symbol"');
                 });
             });
+
             describe("`erc721Symbol` is not tracked by Token Registry", () => {
                 test("should throw CANNOT_FIND_TOKEN_WITH_SYMBOL", async () => {
                     await expect(
@@ -387,6 +388,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     ).rejects.toThrow(ContractsError.CANNOT_FIND_TOKEN_WITH_SYMBOL("XXX"));
                 });
             });
+
             describe("`tokenReference` is missing", async () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
@@ -397,6 +399,7 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                     ).rejects.toThrow('instance requires property "tokenReference"');
                 });
             });
+
             describe("`isEnumerable` is missing", async () => {
                 test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
                     await expect(
@@ -405,6 +408,17 @@ describe("Collateralized Simple Interest Loan Adapter (Unit Tests)", () => {
                             isEnumerable: undefined,
                         }),
                     ).rejects.toThrow('instance requires property "isEnumerable"');
+                });
+            });
+
+            describe("`isEnumerable` is a BigNumber instead of a boolean", async () => {
+                test("should throw DOES_NOT_CONFORM_TO_SCHEMA", async () => {
+                    await expect(
+                        collateralizedSimpleInterestLoanAdapter.toDebtOrder({
+                            ...scenario1.minimalLoanOrder,
+                            isEnumerable: new BigNumber(0),
+                        }),
+                    ).rejects.toThrow("instance.isEnumerable is not of a type(s) boolean");
                 });
             });
         });
