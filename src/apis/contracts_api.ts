@@ -16,6 +16,7 @@ import {
     ERC721CollateralizerContract,
     ERC721TokenContract,
     ERC721TokenRegistryContract,
+    MintableERC721TokenContract,
     RepaymentRouterContract,
     SimpleInterestTermsContractContract,
     TermsContract,
@@ -318,6 +319,28 @@ export class ContractsAPI {
         this.cache[TOKEN_TRANSFER_PROXY_CONTRACT_CACHE_KEY] = tokenTransferProxy;
 
         return tokenTransferProxy;
+    }
+
+    /**
+     * Loads the Mintable ERC721 Token Contract that is deployed for testing purposes.
+     *
+     * @returns {Promise<MintableERC721TokenContract>}
+     */
+    public async loadMintableERC721ContractAsync(
+        transactionOptions: object = {},
+    ): Promise<MintableERC721TokenContract> {
+        const cacheKey = "MintableERC721TokenContract";
+
+        if (cacheKey in this.cache) {
+            return this.cache[cacheKey] as MintableERC721TokenContract;
+        } else {
+            const tokenContract = await MintableERC721TokenContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
+            this.cache[cacheKey] = tokenContract;
+            return tokenContract;
+        }
     }
 
     public async loadERC721ContractAsync(

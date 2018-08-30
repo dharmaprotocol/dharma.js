@@ -8,7 +8,6 @@ import { Web3Utils } from "../../../utils/web3_utils";
 import { TxData, TxDataPayable } from "../../types";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
-import { TokenRegistryContract } from "./token_registry_wrapper";
 
 export class ERC721TokenRegistryContract extends BaseContract {
     public getTokenAttributesByIndex = {

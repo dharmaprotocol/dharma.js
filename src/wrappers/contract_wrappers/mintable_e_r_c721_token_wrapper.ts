@@ -8,7 +8,6 @@ import { MintableERC721Token as ContractArtifacts } from "@dharmaprotocol/contra
 import * as Web3 from "web3";
 
 import { BaseContract, CONTRACT_WRAPPER_ERRORS } from "./base_contract_wrapper";
-import { ERC721TokenContract } from "./e_r_c721_token_wrapper";
 
 export class MintableERC721TokenContract extends BaseContract {
     public supportsInterface = {
