@@ -12,4 +12,5 @@ export interface AddressBook {
     erc721TokenRegistryContract?: string;
     erc721CollateralizerAddress?: string;
     collateralizerAddress?: string;
+    mintableERC721Address?: string;
 }
