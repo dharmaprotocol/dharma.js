@@ -16,6 +16,20 @@ import * as DharmaTypes from "./types";
 class Dharma {
     public static Types = DharmaTypes;
 
+    public static withBlockchainNode(blockchainNode: string) {
+        const web3Provider = new Web3.providers.HttpProvider(blockchainNode);
+        const web3 = new Web3(web3Provider);
+
+        // Verify that the node is reachable
+        web3.version.getNode((error, result) => {
+            if (error) {
+                throw error;
+            }
+        });
+
+        return new Dharma(web3);
+    }
+
     public sign: SignerAPI;
     public order: OrderAPI;
     public contracts: ContractsAPI;
@@ -25,34 +39,28 @@ class Dharma {
     public blockchain: BlockchainAPI;
     public logs: LogsAPI;
 
-    // tslint:disable-next-line
-    private _web3: Web3;
+    public readonly web3: Web3;
 
-    constructor(blockchainInformation?: Web3 | string, addressBook: DharmaTypes.AddressBook = {}) {
+    constructor(web3?: Web3, addressBook: DharmaTypes.AddressBook = {}) {
         /**
-         * There are three ways we can access a Web3 instance:
+         * There are two ways we can access a Web3 instance:
          * 1. We pass in Web3
-         * 2. We pass in the blockchain host
          * 3. Web3 has been injected into the browser window (e.g. via Metamask.)
          */
+        if (web3) {
+            this.verifyWeb3Version(web3);
 
-        if (blockchainInformation) {
-            if (blockchainInformation instanceof Web3) {
-                this.setWeb3WithWeb3Instance(blockchainInformation);
-            } else if (typeof blockchainInformation === "string") {
-                this.setWeb3WithBlockchainHost(blockchainInformation);
-            }
+            this.web3 = web3;
         } else if (
             typeof (window as any) !== "undefined" &&
             typeof (window as any).web3 !== "undefined"
         ) {
             // If Web3 is available via the browser window, instantiate Web3 via the current provider.
-            this._web3 = new Web3((window as any).web3.currentProvider);
+            this.web3 = new Web3((window as any).web3.currentProvider);
         } else {
             // Otherwise throw...
             throw new Error(
-                "Neither a blockchain host nor a Web3 instance was specified as a parameter," +
-                    " and Web3 was not found on the window.",
+                "A Web3 instance was not specified as a parameter and Web3 was not found on the window.",
             );
         }
 
@@ -67,11 +75,7 @@ class Dharma {
         this.logs = new LogsAPI(this.web3, this.contracts);
     }
 
-    get web3(): Web3 {
-        return this._web3;
-    }
-
-    private setWeb3WithWeb3Instance(web3: Web3) {
+    private verifyWeb3Version(web3: Web3) {
         // TODO: figure out a cleaner way to get the Web3 version used by Dharma
         const temporaryWeb3 = new Web3();
 
@@ -87,22 +91,6 @@ class Dharma {
                 `Dharma.js must be instantiated with a Web3 instance of version ${dharmaWeb3Version}`,
             );
         }
-
-        this._web3 = web3;
-    }
-
-    private setWeb3WithBlockchainHost(blockchainHost: string) {
-        const web3Provider = new Web3.providers.HttpProvider(blockchainHost);
-        const web3 = new Web3(web3Provider);
-
-        // Verify that the node is reachable
-        web3.version.getNode((error, result) => {
-            if (error) {
-                throw error;
-            }
-        });
-
-        this._web3 = web3;
     }
 }
 
