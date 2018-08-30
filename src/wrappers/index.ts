@@ -35,6 +35,7 @@ export type ContractWrapper =
     | ERC721CollateralizedSimpleInterestTermsContractContract
     | ERC721CollateralizerContract
     | ERC721TokenRegistryContract
+    | MintableERC721TokenContract
     | ERC721TokenContract
     | TermsContract
     | TokenRegistryContract

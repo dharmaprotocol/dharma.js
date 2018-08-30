@@ -265,8 +265,7 @@ export abstract class BaseCollateralRunner {
 
         // Mint a collateral token for the debtor. We can do this because we assume that the
         // collateral token is a Mintable ER721 Token.
-        const mintableERC721Contract = await MintableERC721TokenContract.deployed(
-            this.web3,
+        const mintableERC721Contract: MintableERC721TokenContract = await this.contractsApi.loadMintableERC721ContractAsync(
             TX_DEFAULTS,
         );
 
