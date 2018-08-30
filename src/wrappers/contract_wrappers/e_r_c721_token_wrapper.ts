@@ -145,53 +145,6 @@ export class ERC721TokenContract extends BaseContract {
             return result;
         },
     };
-    public safeTransferFrom = {
-        async sendTransactionAsync(
-            _from: string,
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as ERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(
-                txData,
-                self.safeTransferFrom.estimateGasAsync.bind(self, _from, _to, _tokenId),
-            );
-            const txHash = await promisify<string>(
-                self.web3ContractInstance.safeTransferFrom,
-                self.web3ContractInstance,
-            )(_from, _to, _tokenId, txDataWithDefaults);
-            return txHash;
-        },
-        async estimateGasAsync(
-            _from: string,
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<number> {
-            const self = this as ERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const gas = await promisify<number>(
-                self.web3ContractInstance.safeTransferFrom.estimateGas,
-                self.web3ContractInstance,
-            )(_from, _to, _tokenId, txDataWithDefaults);
-            return gas;
-        },
-        async getABIEncodedTransactionData(
-            _from: string,
-            _to: string,
-            _tokenId: BigNumber,
-            txData: TxData = {},
-        ): Promise<string> {
-            const self = this as ERC721TokenContract;
-            const txDataWithDefaults = await self.applyDefaultsToTxDataAsync(txData);
-            const abiEncodedTransactionData = await promisify<string>(
-                self.web3ContractInstance.safeTransferFrom.getData,
-                self.web3ContractInstance,
-            )(_from, _to, _tokenId, txDataWithDefaults);
-            return abiEncodedTransactionData;
-        },
-    };
     public exists = {
         async callAsync(_tokenId: BigNumber, defaultBlock?: Web3.BlockParam): Promise<boolean> {
             const self = this as ERC721TokenContract;
