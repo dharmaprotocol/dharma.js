@@ -1,3 +1,4 @@
+import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 
 import {
@@ -13,19 +14,39 @@ import {
 
 import * as DharmaTypes from "./types";
 
+export const MAXIMUM_MAJOR_VERSION = 0;
+
+export const DharmaInstantiationErrors = {
+    WEB3_NOT_FOUND_ON_WINDOW: singleLineString`Web3 was not found on the window.
+        Ensure it is present on the window or use a different constructor for Dharma.js`,
+    WEB3_VERSION_INCOMPATIBLE: singleLineString`Dharma.js must be instantiated with
+        a Web3 instance of version lower than ${MAXIMUM_MAJOR_VERSION}`,
+};
+
 class Dharma {
     public static Types = DharmaTypes;
 
-    public static withBlockchainNode(blockchainNode: string) {
+    public static initialize(): Dharma {
+        // If Web3 is available via the browser window, instantiate Web3 via the current provider.
+        if (
+            typeof window !== "undefined" &&
+            typeof (window as any).web3 !== "undefined" &&
+            (window as any).web3 !== null
+        ) {
+            const web3Provider = (window as any).web3.currentProvider;
+            const web3 = new Web3(web3Provider);
+            return new Dharma(web3);
+        } else {
+            throw new Error(DharmaInstantiationErrors.WEB3_NOT_FOUND_ON_WINDOW);
+        }
+    }
+
+    public static initializeWithBlockchainNode(blockchainNode: string): Dharma {
         const web3Provider = new Web3.providers.HttpProvider(blockchainNode);
         const web3 = new Web3(web3Provider);
 
-        // Verify that the node is reachable
-        web3.version.getNode((error, result) => {
-            if (error) {
-                throw error;
-            }
-        });
+        // Verify that the node is reachable; if not, the line below will throw an error.
+        const node = web3.version.node;
 
         return new Dharma(web3);
     }
@@ -41,28 +62,10 @@ class Dharma {
 
     public readonly web3: Web3;
 
-    constructor(web3?: Web3, addressBook: DharmaTypes.AddressBook = {}) {
-        /**
-         * There are two ways we can access a Web3 instance:
-         * 1. We pass in Web3
-         * 3. Web3 has been injected into the browser window (e.g. via Metamask.)
-         */
-        if (web3) {
-            this.verifyWeb3Version(web3);
+    constructor(web3: Web3, addressBook: DharmaTypes.AddressBook = {}) {
+        this.verifyWeb3Version(web3);
 
-            this.web3 = web3;
-        } else if (
-            typeof (window as any) !== "undefined" &&
-            typeof (window as any).web3 !== "undefined"
-        ) {
-            // If Web3 is available via the browser window, instantiate Web3 via the current provider.
-            this.web3 = new Web3((window as any).web3.currentProvider);
-        } else {
-            // Otherwise throw...
-            throw new Error(
-                "A Web3 instance was not specified as a parameter and Web3 was not found on the window.",
-            );
-        }
+        this.web3 = web3;
 
         this.contracts = new ContractsAPI(this.web3, addressBook);
 
@@ -76,21 +79,17 @@ class Dharma {
     }
 
     private verifyWeb3Version(web3: Web3) {
-        // TODO: figure out a cleaner way to get the Web3 version used by Dharma
-        const temporaryWeb3 = new Web3();
-
-        const dharmaWeb3Version = temporaryWeb3.version.api;
-
         // A hacky way of detecting Web3 version 1.0.0, as it has breaking API changes
         if (
-            (typeof web3.version === "string" &&
-                web3.version.match(/^(\d+)\.?(\d+)\.?(\*|\d+)$/)[0] === "1") ||
-            web3.version.api !== dharmaWeb3Version
+            typeof web3.version === "string" &&
+            this.getMajorVersion(web3.version) > MAXIMUM_MAJOR_VERSION
         ) {
-            throw new Error(
-                `Dharma.js must be instantiated with a Web3 instance of version ${dharmaWeb3Version}`,
-            );
+            throw new Error(DharmaInstantiationErrors.WEB3_VERSION_INCOMPATIBLE);
         }
+    }
+
+    private getMajorVersion(version: string): number {
+        return Number.parseInt(version.match(/^(\d+)\.?(\d+)\.?(\*|\d+)$/)[0]);
     }
 }
 

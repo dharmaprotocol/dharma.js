@@ -1,6 +1,6 @@
 import * as Web3 from "web3";
 
-import { Dharma } from "../../src/dharma";
+import { Dharma, DharmaInstantiationErrors, MAXIMUM_MAJOR_VERSION } from "../../src/dharma";
 
 describe("Dharma (Unit)", () => {
     describe("instantiation", () => {
@@ -16,23 +16,15 @@ describe("Dharma (Unit)", () => {
                 });
             });
 
-            describe("when web3 instance of an incorrect version is passed in with the 1.x.x structure", () => {
+            describe(`when web3 instance of major version > ${MAXIMUM_MAJOR_VERSION} is passed in`, () => {
                 test("throws", () => {
                     const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
 
                     web3.version = "1.0.0";
 
-                    expect(() => new Dharma(web3)).toThrow();
-                });
-            });
-
-            describe("when web3 instance of an incorrect version is passed in with the 0.x.x structure", () => {
-                test("throws", () => {
-                    const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-
-                    web3.version.api = `${web3.version.api}0`;
-
-                    expect(() => new Dharma(web3)).toThrow();
+                    expect(() => new Dharma(web3)).toThrow(
+                        DharmaInstantiationErrors.WEB3_VERSION_INCOMPATIBLE,
+                    );
                 });
             });
         });
@@ -40,7 +32,7 @@ describe("Dharma (Unit)", () => {
         describe("when blockchain host is passed in", () => {
             describe("when correctly formatted blockchain host is passed in", () => {
                 test("successfully instantiates Dharma.js", () => {
-                    const dharma = Dharma.withBlockchainHost("http://localhost:8545");
+                    const dharma = Dharma.initializeWithBlockchainNode("http://localhost:8545");
 
                     expect(dharma).toBeInstanceOf(Dharma);
                 });
@@ -48,7 +40,7 @@ describe("Dharma (Unit)", () => {
 
             describe("when incorrectly formatted blockchain host is passed in", () => {
                 test("throws", () => {
-                    expect(() => Dharma.withBlockchainHost("a random string")).toThrow();
+                    expect(() => Dharma.initializeWithBlockchainNode("a random string")).toThrow();
                 });
             });
         });
@@ -68,16 +60,18 @@ describe("Dharma (Unit)", () => {
                 });
 
                 test("successfully instantiates Dharma.js", () => {
-                    const dharma = new Dharma();
+                    const dharma = Dharma.initialize();
 
                     expect(dharma).toBeInstanceOf(Dharma);
-                    expect(dharma.web3).toBeInstanceOf(Web3);
+                    expect(dharma.web3).toBe(Web3);
                 });
             });
 
             describe("when a web3 instance is not present on the window", () => {
                 test("throws", () => {
-                    expect(() => new Dharma()).toThrow();
+                    expect(() => Dharma.initialize()).toThrow(
+                        DharmaInstantiationErrors.WEB3_NOT_FOUND_ON_WINDOW,
+                    );
                 });
             });
         });
