@@ -12,7 +12,7 @@ import {
     setUnlimitedAllowanceForSymbol,
 } from "../../utils/utils";
 
-const dharma = new Dharma("http://localhost:8545");
+const dharma = Dharma.initializeWithNode("http://localhost:8545");
 const BALANCE = 10;
 const TOKEN_SYMBOL = "MKR";
 
