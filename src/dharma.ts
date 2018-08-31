@@ -45,9 +45,6 @@ class Dharma {
         const web3Provider = new Web3.providers.HttpProvider(blockchainHost);
         const web3 = new Web3(web3Provider);
 
-        // Verify that the node is reachable; if not, the line below will throw an error.
-        const node = web3.version.node;
-
         return new Dharma(web3);
     }
 

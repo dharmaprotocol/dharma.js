@@ -37,12 +37,6 @@ describe("Dharma (Unit)", () => {
                     expect(dharma).toBeInstanceOf(Dharma);
                 });
             });
-
-            describe("when incorrectly formatted blockchain host is passed in", () => {
-                test("throws", () => {
-                    expect(() => Dharma.initializeWithNode("a random string")).toThrow();
-                });
-            });
         });
 
         describe("when no parameter is passed in", () => {
@@ -63,7 +57,7 @@ describe("Dharma (Unit)", () => {
                     const dharma = Dharma.initialize();
 
                     expect(dharma).toBeInstanceOf(Dharma);
-                    expect(dharma.web3).toBe(Web3);
+                    expect(dharma.web3).toBeInstanceOf(Web3);
                 });
             });
 
