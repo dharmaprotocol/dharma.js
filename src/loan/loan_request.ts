@@ -1,3 +1,4 @@
+import * as singleLineString from "single-line-string";
 import { BigNumber } from "../../utils/bignumber";
 
 import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
@@ -23,6 +24,14 @@ import {
     TokenAmount,
 } from "../types";
 
+export const LOAN_REQUEST_ERRORS = {
+    ALREADY_SIGNED_BY_DEBTOR: `The loan request has already been signed by the debtor.`,
+    ALREADY_SIGNED_BY_CREDITOR: `The loan request has already been signed by the creditor.`,
+    NOT_YET_FILLED: `The loan request has yet to be filled.`,
+    PROXY_FILL_DISALLOWED: singleLineString`A loan request must be signed by both the creditor and
+    debtor before it can be filled by proxy.`,
+};
+
 export interface LoanRequestParams {
     principalAmount: number;
     principalToken: string;
@@ -31,7 +40,6 @@ export interface LoanRequestParams {
     interestRate: number;
     termDuration: number;
     termUnit: DurationUnit;
-    debtorAddress: string;
     expiresInDuration: number;
     expiresInUnit: DurationUnit;
     relayerAddress?: string;
@@ -47,7 +55,6 @@ export interface LoanRequestTerms {
     interestRate: number;
     termDuration: number;
     termUnit: string;
-    debtorAddress: string;
     expiresAt: number;
 }
 
@@ -57,7 +64,7 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually returns an instance of a loan request signed by the debtor.
+     * Eventually returns an instance of a loan request object with the terms specified.
      *
      * @example
      * const loanRequest = await LoanRequest.create(dharma, {
@@ -70,7 +77,6 @@ export class LoanRequest extends Agreement {
      *      interestRate: 12.3,
      *      termDuration: 6,
      *      termUnit: "months",
-     *      debtorAddress: debtor.address,
      *      expiresInDuration: 5,
      *      expiresInUnit: "days",
      *  });
@@ -88,7 +94,6 @@ export class LoanRequest extends Agreement {
             interestRate,
             termDuration,
             termUnit,
-            debtorAddress,
             expiresInDuration,
             expiresInUnit,
             creditorFeeAmount,
@@ -98,7 +103,6 @@ export class LoanRequest extends Agreement {
         const collateral = new TokenAmount(collateralAmount, collateralToken);
         const interestRateTyped = new InterestRate(interestRate);
         const termLength = new TimeInterval(termDuration, termUnit);
-        const debtorAddressTyped = new EthereumAddress(debtorAddress);
         const expiresIn = new TimeInterval(expiresInDuration, expiresInUnit);
 
         const currentBlocktime = new BigNumber(await dharma.blockchain.getCurrentBlockTime());
@@ -110,7 +114,6 @@ export class LoanRequest extends Agreement {
             collateral,
             interestRate: interestRateTyped,
             termLength,
-            debtorAddress: debtorAddressTyped,
             expiresAt: expirationTimestampInSec.toNumber(),
         };
 
@@ -149,16 +152,11 @@ export class LoanRequest extends Agreement {
             data.creditorFee = creditorFee.rawAmount;
         }
 
-        data.debtor = debtorAddressTyped.toString();
         data.kernelVersion = debtKernel.address;
         data.issuanceVersion = repaymentRouter.address;
         data.salt = salt;
 
-        const loanRequest = new LoanRequest(dharma, loanRequestConstructorParams, data);
-
-        await loanRequest.signAsDebtor();
-
-        return loanRequest;
+        return new LoanRequest(dharma, loanRequestConstructorParams, data);
     }
 
     public static async load(dharma: Dharma, data: LoanData): Promise<LoanRequest> {
@@ -195,15 +193,12 @@ export class LoanRequest extends Agreement {
             loanOrder.amortizationUnit,
         );
 
-        const debtorAddress = new EthereumAddress(loanOrder.debtor!); // TODO(kayvon): this could throw.
-
         const loanRequestParams: BaseLoanConstructorParams = {
             principal,
             collateral,
             termLength,
             interestRate,
             expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
-            debtorAddress,
         };
 
         if (debtOrderData.relayer && debtOrderData.relayer !== NULL_ADDRESS) {
@@ -225,7 +220,27 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     *  Returns the terms of the loan request as vanilla JS types.
+     * Eventually creates and signs a loan request with the specified params.
+     *
+     * @example
+     * const loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, {...});
+     *
+     * @returns {Promise<LoanRequest>}
+     */
+    public static async createAndSignAsDebtor(
+        dharma: Dharma,
+        params: LoanRequestParams,
+        debtor?: string,
+    ): Promise<LoanRequest> {
+        const request = await LoanRequest.create(dharma, params);
+
+        await request.signAsDebtor(debtor);
+
+        return request;
+    }
+
+    /**
+     *  Returns the terms of the loan request.
      *
      * @example
      * const terms = loanRequest.getTerms();
@@ -233,14 +248,7 @@ export class LoanRequest extends Agreement {
      * @returns {LoanRequestTerms}
      */
     public getTerms(): LoanRequestTerms {
-        const {
-            principal,
-            collateral,
-            interestRate,
-            termLength,
-            debtorAddress,
-            expiresAt,
-        } = this.params;
+        const { principal, collateral, interestRate, termLength, expiresAt } = this.params;
 
         return {
             principalAmount: principal.decimalAmount,
@@ -250,13 +258,14 @@ export class LoanRequest extends Agreement {
             interestRate: interestRate.percent,
             termDuration: termLength.amount,
             termUnit: termLength.getAmortizationUnit(),
-            debtorAddress: debtorAddress.toString(),
             expiresAt,
         };
     }
 
     /**
-     * Eventually returns an instance of the associated loan iff the loan is filled.
+     * Eventually returns an instance of the associated loan.
+     *
+     * @throws Throws if the loan request has yet to be filled.
      *
      * @example
      * const loan = await loanRequest.generateLoan();
@@ -267,7 +276,7 @@ export class LoanRequest extends Agreement {
         const isFilled = await this.isFilled();
 
         if (!isFilled) {
-            throw new Error("The loan request has yet to be filled on the blockchain.");
+            throw new Error(LOAN_REQUEST_ERRORS.NOT_YET_FILLED);
         }
 
         return new Loan(this.dharma, this.params, this.data);
@@ -292,18 +301,43 @@ export class LoanRequest extends Agreement {
         return expirationTimestamp.lt(approximateNextBlockTime);
     }
 
+    /**
+     * Returns whether the loan request has been signed by a debtor.
+     *
+     * @example
+     * loanRequest.isSignedByDebtor();
+     * => true
+     *
+     * @return {boolean}
+     */
     public isSignedByDebtor(): boolean {
         return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
-    public async signAsDebtor() {
+    /**
+     * Eventually signs the loan request as the debtor.
+     *
+     * @throws Throws if the loan request is already signed by a debtor.
+     *
+     * @example
+     * loanRequest.signAsDebtor();
+     * => Promise<void>
+     *
+     * @return {void}
+     */
+    public async signAsDebtor(debtorAddress?: string): Promise<void> {
         if (this.isSignedByDebtor()) {
-            return;
+            throw Error(LOAN_REQUEST_ERRORS.ALREADY_SIGNED_BY_DEBTOR);
         }
 
-        this.data.debtorSignature = this.dharma.web3.currentProvider.isMetaMask
-            ? await this.dharma.sign.asDebtor(this.data, true)
-            : await this.dharma.sign.asDebtor(this.data, false);
+        this.data.debtor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            debtorAddress,
+        );
+
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.debtorSignature = await this.dharma.sign.asDebtor(this.data, isMetaMask);
     }
 
     /**
@@ -383,36 +417,88 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     * Eventually fills the loan request, transferring the principal to the debtor.
+     * Eventually fills the loan request as creditor, transferring the principal to the debtor.
      *
      * @example
-     * order.fill();
+     * loanRequest.fill();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
-    public async fill(creditorAddress?: string): Promise<string> {
+    public async fillAsCreditor(creditorAddress?: string): Promise<string> {
         this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
             this.dharma,
             creditorAddress,
         );
 
-        await this.signAsCreditor();
-
-        return this.dharma.order.fillAsync(this.data, { from: this.data.creditor });
+        return this.dharma.order.fillAsync(this.data, {
+            from: this.data.creditor,
+        });
     }
 
-    private isSignedByCreditor(): boolean {
+    /**
+     * Eventually fills the loan as proxy. Requires that the loan request be signed by both the
+     * creditor and debtor.
+     *
+     * @throws Throws if the loan request is not signed by both the creditor and debtor.
+     *
+     * @example
+     * loanRequest.fillAsProxy();
+     * => Promise<string>
+     *
+     * @return {Promise<string>}
+     */
+    public async fillAsProxy(proxyAddress?: string): Promise<string> {
+        if (this.isSignedByCreditor() && this.isSignedByDebtor()) {
+            const sender = await EthereumAddress.validAddressOrCurrentUser(
+                this.dharma,
+                proxyAddress,
+            );
+
+            return this.dharma.order.fillAsync(this.data, {
+                from: sender,
+            });
+        } else {
+            throw new Error(LOAN_REQUEST_ERRORS.PROXY_FILL_DISALLOWED);
+        }
+    }
+
+    /**
+     * Returns whether the loan request has been signed by a creditor.
+     *
+     * @example
+     * loanRequest.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByCreditor(): boolean {
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
-    private async signAsCreditor(): Promise<void> {
+    /**
+     * Eventually signs the loan request as the creditor.
+     *
+     * @throws Throws if the loan request is already signed by a creditor.
+     *
+     * @example
+     * loanRequest.signAsCreditor();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
+    public async signAsCreditor(creditorAddress?: string): Promise<void> {
         if (this.isSignedByCreditor()) {
-            return;
+            throw new Error(LOAN_REQUEST_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
         }
 
-        this.data.creditorSignature = this.dharma.web3.currentProvider.isMetaMask
-            ? await this.dharma.sign.asCreditor(this.data, true)
-            : await this.dharma.sign.asCreditor(this.data, false);
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
+
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
     }
 }

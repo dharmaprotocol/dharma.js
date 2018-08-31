@@ -1,12 +1,6 @@
-// Debt Order
 import { LoanRequestParams } from "../../../../src/loan";
 
-// Test utils
-import { ACCOUNTS } from "../../../accounts";
-
-const debtor = ACCOUNTS[1];
-
-export const DEBT_ORDER_PARAMS_ONE: LoanRequestParams = {
+export const VALID_LOAN_REQUEST: LoanRequestParams = {
     principalAmount: 5,
     principalToken: "REP",
     collateralAmount: 10,
@@ -14,7 +8,6 @@ export const DEBT_ORDER_PARAMS_ONE: LoanRequestParams = {
     interestRate: 12.3,
     termDuration: 6,
     termUnit: "months",
-    debtorAddress: debtor.address,
     expiresInDuration: 5,
     expiresInUnit: "days",
 };

@@ -8,7 +8,7 @@ jest.unmock("@dharmaprotocol/contracts");
 
 import { Investments, LoanRequest } from "../../../src/loan/";
 
-import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
+import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
 
 import { setBalancesAndAllowances } from "./utils/set_balances_and_allowances";
 
@@ -20,7 +20,8 @@ const web3 = new Web3(provider);
 const dharma = new Dharma(web3);
 const web3Utils = new Web3Utils(web3);
 
-const OWNER = ACCOUNTS[8].address;
+const DEBTOR = ACCOUNTS[7].address;
+const CREDITOR = ACCOUNTS[8].address;
 
 describe("Investments (Integration)", () => {
     let currentSnapshotId: number;
@@ -29,20 +30,25 @@ describe("Investments (Integration)", () => {
         currentSnapshotId = await web3Utils.saveTestSnapshot();
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
         await web3Utils.revertToSnapshot(currentSnapshotId);
     });
 
     describe("#get", () => {
         describe("querying for an owner with 1 investment", () => {
             beforeAll(async () => {
-                await setBalancesAndAllowances(dharma, DEBT_ORDER_PARAMS_ONE, OWNER);
-                const loanRequest = await LoanRequest.create(dharma, DEBT_ORDER_PARAMS_ONE);
-                await loanRequest.fill(OWNER);
+                await setBalancesAndAllowances(dharma, VALID_LOAN_REQUEST, DEBTOR, CREDITOR);
+                const loanRequest = await LoanRequest.createAndSignAsDebtor(
+                    dharma,
+                    VALID_LOAN_REQUEST,
+                    DEBTOR,
+                );
+                const txhash = await loanRequest.fillAsCreditor(CREDITOR);
+                expect(txhash).toBeDefined();
             });
 
             test("returns the correct number of investments ", async () => {
-                const investments = await Investments.get(dharma, OWNER);
+                const investments = await Investments.get(dharma, CREDITOR);
                 expect(investments.length).toEqual(1);
             });
         });

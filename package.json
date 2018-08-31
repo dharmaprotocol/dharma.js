@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.1.55",
+    "version": "0.1.58",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -58,6 +58,7 @@
         "transform": {
             ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
         },
+        "testURL": "http://localhost",
         "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
         "moduleFileExtensions": [
             "ts",
@@ -124,7 +125,7 @@
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.1.4",
+        "@dharmaprotocol/contracts": "0.1.8",
         "@types/lodash": "^4.14.104",
         "abi-decoder": "https://github.com/dharmaprotocol/abi-decoder",
         "bignumber.js": "^5.0.0",

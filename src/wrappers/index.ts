@@ -1,5 +1,6 @@
 import { BaseContract } from "./contract_wrappers/base_contract_wrapper";
 import { CollateralizedSimpleInterestTermsContractContract } from "./contract_wrappers/collateralized_simple_interest_terms_contract_wrapper";
+import { ERC721CollateralizedSimpleInterestTermsContractContract } from "./contract_wrappers/e_r_c721_collateralized_simple_interest_terms_contract_wrapper";
 import { CollateralizerContract } from "./contract_wrappers/collateralizer_wrapper";
 import { ContractRegistryContract } from "./contract_wrappers/contract_registry_wrapper";
 import { DebtKernelContract } from "./contract_wrappers/debt_kernel_wrapper";
@@ -15,6 +16,10 @@ import { TermsContract } from "./contract_wrappers/terms_contract_wrapper";
 import { TokenRegistryContract } from "./contract_wrappers/token_registry_wrapper";
 import { TokenTransferProxyContract } from "./contract_wrappers/token_transfer_proxy_wrapper";
 import { DebtOrderDataWrapper } from "./debt_order_data_wrapper";
+import { ERC721TokenRegistryContract } from "./contract_wrappers/e_r_c721_token_registry_wrapper";
+import { ERC721TokenContract } from "./contract_wrappers/e_r_c721_token_wrapper";
+import { ERC721CollateralizerContract } from "./contract_wrappers/e_r_c721_collateralizer_wrapper";
+import { MintableERC721TokenContract } from "./contract_wrappers/mintable_e_r_c721_token_wrapper";
 
 export type ContractWrapper =
     | DebtKernelContract
@@ -27,6 +32,11 @@ export type ContractWrapper =
     | RepaymentRouterContract
     | SimpleInterestTermsContractContract
     | CollateralizedSimpleInterestTermsContractContract
+    | ERC721CollateralizedSimpleInterestTermsContractContract
+    | ERC721CollateralizerContract
+    | ERC721TokenRegistryContract
+    | MintableERC721TokenContract
+    | ERC721TokenContract
     | TermsContract
     | TokenRegistryContract
     | CollateralizerContract
@@ -47,7 +57,12 @@ export {
     TermsContract,
     SimpleInterestTermsContractContract,
     CollateralizedSimpleInterestTermsContractContract,
+    ERC721CollateralizedSimpleInterestTermsContractContract,
     RepaymentRouterContract,
     CollateralizerContract,
     ContractRegistryContract,
+    ERC721TokenRegistryContract,
+    ERC721TokenContract,
+    ERC721CollateralizerContract,
+    MintableERC721TokenContract,
 };

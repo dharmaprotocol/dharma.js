@@ -1,5 +1,5 @@
 // Debt Order
-import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
+import { LoanRequest } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/dharma";

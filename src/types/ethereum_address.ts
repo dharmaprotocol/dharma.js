@@ -17,6 +17,12 @@ export class EthereumAddress {
         return value.match(addressRegex) !== null;
     }
 
+    public static assertValid(value: string): void {
+        if (!EthereumAddress.isValid(value)) {
+            throw new Error(ETHEREUM_ADDRESS_ERRORS.INVALID_ADDRESS(value));
+        }
+    }
+
     /**
      * Validates the user-specified address if present. Otherwise, retrieves the current user from
      * web3. This function will throw is the address specified is invalid.
@@ -39,9 +45,7 @@ export class EthereumAddress {
     private readonly raw: string;
 
     constructor(value: string) {
-        if (!EthereumAddress.isValid(value)) {
-            throw Error(ETHEREUM_ADDRESS_ERRORS.INVALID_ADDRESS(value));
-        }
+        EthereumAddress.assertValid(value);
 
         this.raw = value.toLowerCase();
     }

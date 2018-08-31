@@ -6,22 +6,14 @@ import { LoanRequestParams } from "../../../../src/loan";
 export async function setBalancesAndAllowances(
     dharma: Dharma,
     params: LoanRequestParams,
-    creditorAddress: string,
+    debtor: string,
+    creditor: string,
 ): Promise<void> {
-    await setBalanceForSymbol(
-        dharma,
-        params.collateralAmount,
-        params.collateralToken,
-        params.debtorAddress,
-    );
+    // Configure balances and allowances for debtor.
+    await setBalanceForSymbol(dharma, params.collateralAmount, params.collateralToken, debtor);
+    await setUnlimitedAllowanceForSymbol(dharma, params.collateralToken, debtor);
 
-    await setBalanceForSymbol(
-        dharma,
-        params.principalAmount,
-        params.principalToken,
-        creditorAddress,
-    );
-
-    await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, creditorAddress);
-    await setUnlimitedAllowanceForSymbol(dharma, params.collateralToken, params.debtorAddress);
+    // Configure balances and allowances for creditor.
+    await setBalanceForSymbol(dharma, params.principalAmount, params.principalToken, creditor);
+    await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, creditor);
 }

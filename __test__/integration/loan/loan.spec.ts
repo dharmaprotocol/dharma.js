@@ -1,12 +1,10 @@
 import * as Web3 from "web3";
+jest.unmock("@dharmaprotocol/contracts");
 
 // Internal dependencies
 import { Dharma } from "../../../src/dharma";
 
-jest.unmock("@dharmaprotocol/contracts");
-
-import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
-import { DEBT_ORDER_PARAMS_ONE } from "./scenarios/valid_debt_order_params";
+import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
 
 // Test runners
 import { testGetTotalExpectedRepaymentAmount } from "./runners/get_total_expected_repayment_amount";
@@ -18,6 +16,6 @@ const dharma = new Dharma(web3);
 
 describe("Loan (Integration)", () => {
     describe("#getTotalExpectedRepaymentAmount", async () => {
-        await testGetTotalExpectedRepaymentAmount(dharma, DEBT_ORDER_PARAMS_ONE);
+        await testGetTotalExpectedRepaymentAmount(dharma, VALID_LOAN_REQUEST);
     });
 });

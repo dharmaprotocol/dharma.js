@@ -55,6 +55,14 @@ export class SchemaAssertions {
         );
     }
 
+    public erc721CollateralizedSimpleInterestLoanOrder(variableName: string, value: any) {
+        this.assertConformsToSchema(
+            variableName,
+            value,
+            Schemas.erc721CollateralizedSimpleInterestLoanOrder,
+        );
+    }
+
     public debtOrder(variableName: string, value: any) {
         this.assertConformsToSchema(variableName, value, Schemas.debtOrderSchema);
     }
