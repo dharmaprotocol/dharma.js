@@ -32,7 +32,7 @@ describe("Dharma (Unit)", () => {
         describe("when blockchain host is passed in", () => {
             describe("when correctly formatted blockchain host is passed in", () => {
                 test("successfully instantiates Dharma.js", () => {
-                    const dharma = Dharma.initializeWithBlockchainNode("http://localhost:8545");
+                    const dharma = Dharma.initializeWithNode("http://localhost:8545");
 
                     expect(dharma).toBeInstanceOf(Dharma);
                 });
@@ -40,7 +40,7 @@ describe("Dharma (Unit)", () => {
 
             describe("when incorrectly formatted blockchain host is passed in", () => {
                 test("throws", () => {
-                    expect(() => Dharma.initializeWithBlockchainNode("a random string")).toThrow();
+                    expect(() => Dharma.initializeWithNode("a random string")).toThrow();
                 });
             });
         });

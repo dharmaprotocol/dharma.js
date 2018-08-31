@@ -41,8 +41,8 @@ class Dharma {
         }
     }
 
-    public static initializeWithBlockchainNode(blockchainNode: string): Dharma {
-        const web3Provider = new Web3.providers.HttpProvider(blockchainNode);
+    public static initializeWithNode(blockchainHost: string): Dharma {
+        const web3Provider = new Web3.providers.HttpProvider(blockchainHost);
         const web3 = new Web3(web3Provider);
 
         // Verify that the node is reachable; if not, the line below will throw an error.
