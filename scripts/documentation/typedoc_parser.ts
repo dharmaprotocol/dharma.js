@@ -217,7 +217,7 @@ class TypedocParser {
         // Recursively:
         return _.flatten(_.map(obj, (v) => {
             return typeof v === "object" ? this.deepFilter(v, predicate) : [];
-        }), true);
+        }));
     }
 
     private static interfacesInSignature(signature): string[] {
