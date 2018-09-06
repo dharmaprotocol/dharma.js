@@ -13,11 +13,7 @@ import {
 
 import * as DharmaTypes from "./types";
 
-// Allows the user to instantiate the correct version of BigNumber.js without
-// needing to add version 5.0.0 to their project.
-export { BigNumber } from "../utils/bignumber";
-
-class Dharma {
+export class Dharma {
     public static Types = DharmaTypes;
 
     public sign: SignerAPI;
@@ -63,5 +59,3 @@ class Dharma {
         this.logs = new LogsAPI(this.web3, this.contracts);
     }
 }
-
-export { Dharma };
