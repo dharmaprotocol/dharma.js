@@ -13,6 +13,10 @@ import {
 
 import * as DharmaTypes from "./types";
 
+// Allows the user to instantiate the correct version of BigNumber.js without
+// needing to add version 5.0.0 to their project.
+export { BigNumber } from "../utils/bignumber";
+
 class Dharma {
     public static Types = DharmaTypes;
 
