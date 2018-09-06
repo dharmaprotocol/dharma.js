@@ -31,6 +31,28 @@ module.exports = {
             },
         }),
     ],
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: [
+                    {
+                        loader: 'awesome-typescript-loader',
+                        query: {
+                            declaration: false,
+                            declarationMap: false,
+                            composite: false,
+                        },
+                    },
+                ],
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader',
+            },
+        ],
+    },
     externals: {
         http: "http",
         https: "https",
