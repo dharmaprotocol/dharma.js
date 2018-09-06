@@ -13,9 +13,9 @@ import { setBalancesAndAllowances } from "./utils/set_balances_and_allowances";
 import { Web3Utils } from "../../../utils/web3_utils";
 
 const host = "http://localhost:8545";
-const dharma = new Dharma(new Web3.Provider(host));
 const provider = new Web3.providers.HttpProvider(host);
 const web3 = new Web3(provider);
+const dharma = new Dharma(web3.currentProvider);
 const web3Utils = new Web3Utils(web3);
 
 const DEBTOR = ACCOUNTS[7].address;
