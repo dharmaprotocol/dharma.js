@@ -1,9 +1,7 @@
 jest.unmock("@dharmaprotocol/contracts");
 
 // For testing regular web3 instantiation.
-import { Web3 } from "../../../src";
-
-import { Dharma } from "../../../src";
+import { Dharma, Web3 } from "../../../src";
 
 const NETWORK_URL = "http://localhost:8545";
 
