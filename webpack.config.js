@@ -1,15 +1,13 @@
 /**
  * This is to generate the umd bundle only
  */
-const webpack = require("webpack");
 const path = require("path");
-
-let entry = {
-    index: "./dist/lib/src/index.js",
-};
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
-    entry,
+    entry: {
+        index: "./dist/lib/src/index.js",
+    },
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "dharma.umd.js",
@@ -22,12 +20,39 @@ module.exports = {
     },
     devtool: "source-map",
     plugins: [
-        new webpack.optimize.UglifyJsPlugin({
+        new UglifyJsPlugin({
             minimize: true,
             sourceMap: true,
             include: /\.min\.js$/,
+            uglifyOptions: {
+                mangle: {
+                    reserved: ['BigNumber'],
+                },
+            },
         }),
     ],
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: [
+                    {
+                        loader: 'awesome-typescript-loader',
+                        query: {
+                            declaration: false,
+                            declarationMap: false,
+                            composite: false,
+                        },
+                    },
+                ],
+                exclude: /node_modules/,
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader',
+            },
+        ],
+    },
     externals: {
         http: "http",
         https: "https",

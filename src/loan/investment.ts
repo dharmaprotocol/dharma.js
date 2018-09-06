@@ -1,4 +1,4 @@
-import { Dharma } from "../dharma";
+import { Dharma } from "../types/dharma";
 
 import { EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 

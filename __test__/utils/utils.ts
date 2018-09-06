@@ -2,7 +2,7 @@ import * as Web3 from "web3";
 
 import { ACCOUNTS } from "../accounts";
 
-import { Dharma } from "../../src/dharma";
+import { Dharma } from "../../src/types/dharma";
 import { TokenAmount } from "../../src/types";
 import { DummyTokenContract } from "../../src/wrappers";
 import { BigNumber } from "../../utils/bignumber";
