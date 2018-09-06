@@ -40,6 +40,8 @@ describe("Dharma Instantiation (Integration)", () => {
             const currentAccount = await dharma.blockchain.getCurrentAccount();
 
             expect(currentAccount).toEqual(CURRENT_ACCOUNT);
+
+            providerEngine.stop();
         });
     });
 });
