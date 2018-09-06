@@ -1,7 +1,6 @@
 /**
  * This is to generate the umd bundle only
  */
-const webpack = require("webpack");
 const path = require("path");
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
