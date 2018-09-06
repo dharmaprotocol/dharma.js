@@ -3,6 +3,7 @@
  */
 const webpack = require("webpack");
 const path = require("path");
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -20,7 +21,7 @@ module.exports = {
     },
     devtool: "source-map",
     plugins: [
-        new webpack.optimize.UglifyJsPlugin({
+        new UglifyJsPlugin({
             minimize: true,
             sourceMap: true,
             include: /\.min\.js$/,
