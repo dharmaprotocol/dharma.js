@@ -10,4 +10,4 @@ export { BigNumber } from "../utils/bignumber";
  *  Types  *
  ***********/
 
-export { Dharma } from "./dharma";
+export { Dharma } from "./types/dharma";

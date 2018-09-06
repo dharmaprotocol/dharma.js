@@ -1,7 +1,7 @@
 jest.unmock("@dharmaprotocol/contracts");
 
 // Internal dependencies
-import { Dharma } from "../../../src/dharma";
+import { Dharma } from "../../../src/types/dharma";
 
 import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
 

@@ -9,7 +9,7 @@ import {
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
-import { Dharma } from "../dharma";
+import { Dharma } from "../types/dharma";
 
 export interface BaseLoanConstructorParams {
     principal: TokenAmount;

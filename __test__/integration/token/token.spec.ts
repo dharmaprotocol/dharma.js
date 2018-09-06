@@ -1,6 +1,6 @@
 jest.unmock("@dharmaprotocol/contracts");
 
-import { Dharma } from "../../../src/dharma";
+import { Dharma } from "../../../src/types/dharma";
 import { TokenData } from "../../../src/token/token";
 import { Token } from "../../../src/types";
 

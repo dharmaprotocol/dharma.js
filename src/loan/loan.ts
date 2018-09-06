@@ -4,7 +4,7 @@ import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
 
 import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
-import { Dharma } from "../dharma";
+import { Dharma } from "../types/dharma";
 
 export class Loan extends Agreement {
     public static async load(dharma: Dharma, data: LoanData): Promise<Loan> {

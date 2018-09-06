@@ -9,9 +9,9 @@ import {
     ServicingAPI,
     SignerAPI,
     TokenAPI,
-} from "./apis";
+} from "../apis/index";
 
-import * as DharmaTypes from "./types";
+import * as DharmaTypes from "./index";
 
 class Dharma {
     public static Types = DharmaTypes;
