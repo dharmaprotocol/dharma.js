@@ -1,6 +1,6 @@
 import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 
 export async function testCreate(dharma: Dharma, params: LoanRequestParams) {
     describe("passing valid params", () => {

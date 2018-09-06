@@ -2,7 +2,7 @@
 import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 
 export async function testSignAsDebtor(dharma: Dharma, params: LoanRequestParams) {
     describe("when the loan request is first created", () => {

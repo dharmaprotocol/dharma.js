@@ -1,4 +1,4 @@
-import { Dharma } from "../dharma";
+import { Dharma } from "./dharma";
 
 export const ETHEREUM_ADDRESS_ERRORS = {
     INVALID_ADDRESS: (value: string) => `${value} is not a valid Ethereum address.`,

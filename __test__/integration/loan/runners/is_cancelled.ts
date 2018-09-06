@@ -2,7 +2,7 @@
 import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 
 export async function testIsCancelled(dharma: Dharma, params: LoanRequestParams) {
     let loanRequest: LoanRequest;
