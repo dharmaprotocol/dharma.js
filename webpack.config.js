@@ -24,6 +24,11 @@ module.exports = {
             minimize: true,
             sourceMap: true,
             include: /\.min\.js$/,
+            uglifyOptions: {
+                mangle: {
+                    reserved: ['BigNumber'],
+                },
+            },
         }),
     ],
     externals: {
