@@ -4,12 +4,10 @@
 const webpack = require("webpack");
 const path = require("path");
 
-let entry = {
-    index: "./dist/lib/src/index.js",
-};
-
 module.exports = {
-    entry,
+    entry: {
+        index: "./dist/lib/src/index.js",
+    },
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "dharma.umd.js",

@@ -13,7 +13,7 @@ import {
 
 import * as DharmaTypes from "./types";
 
-export class Dharma {
+class Dharma {
     public static Types = DharmaTypes;
 
     public sign: SignerAPI;
@@ -59,3 +59,5 @@ export class Dharma {
         this.logs = new LogsAPI(this.web3, this.contracts);
     }
 }
+
+export { Dharma };
