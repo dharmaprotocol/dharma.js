@@ -1,8 +1,6 @@
-import * as Web3 from "web3";
-
 import { ACCOUNTS } from "../../accounts";
 
-import { Dharma } from "../../../src/types/dharma";
+import { Dharma, Web3 } from "../../../src";
 
 jest.unmock("@dharmaprotocol/contracts");
 
@@ -14,9 +12,11 @@ import { setBalancesAndAllowances } from "./utils/set_balances_and_allowances";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
-const host = "http://localhost:8545";
-const dharma = new Dharma(host);
-const provider = new Web3.providers.HttpProvider(host);
+const NETWORK_URL = "http://localhost:8545";
+
+const provider = new Web3.providers.HttpProvider(NETWORK_URL);
+const dharma = new Dharma(provider);
+
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 

@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.1.63",
+    "version": "0.1.64",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -122,6 +122,7 @@
         "typedoc": "^0.10.0",
         "typescript": "^2.6.2",
         "web3-fake-provider": "^0.1.0",
+        "web3-provider-engine": "^14.0.6",
         "webpack": "^3.11.0"
     },
     "dependencies": {
@@ -141,10 +142,10 @@
         "lodash.pickby": "^4.6.0",
         "lodash.values": "^4.3.0",
         "moment": "^2.20.1",
-        "web3": "~0.20.7",
         "single-line-string": "^0.0.2",
         "tiny-promisify": "^1.0.0",
         "typedoc-plugin-markdown": "^1.0.14",
+        "web3": "~0.20.7",
         "web3-typescript-typings": "https://github.com/graemecode/web3-typescript-typings",
         "web3-utils": "1.0.0-beta.29"
     }
