@@ -1,3 +1,5 @@
+import * as Web3 from "web3";
+
 // Internal dependencies
 import { Dharma } from "../../../src/dharma";
 
@@ -17,7 +19,10 @@ import { testIsFillable } from "./runners/is_fillable";
 import { testLoad } from "./runners/load";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
 
-const dharma = new Dharma("http://localhost:8545");
+const host = "http://localhost:8545";
+const provider = new Web3.providers.HttpProvider(host);
+const web3 = new Web3(provider);
+const dharma = new Dharma(web3);
 
 describe("Loan Request (Integration)", () => {
     describe("#create", async () => {
