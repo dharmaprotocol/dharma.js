@@ -145,7 +145,6 @@
         "tiny-promisify": "^1.0.0",
         "typedoc-plugin-markdown": "^1.0.14",
         "web3": "~0.20.7",
-        "web3-provider-engine": "^14.0.6",
         "web3-typescript-typings": "https://github.com/graemecode/web3-typescript-typings",
         "web3-utils": "1.0.0-beta.29"
     }
