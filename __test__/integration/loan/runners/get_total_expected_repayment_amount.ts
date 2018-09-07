@@ -8,7 +8,7 @@ import { ACCOUNTS } from "../../../accounts";
 import { Loan, LoanRequest, LoanRequestParams } from "../../../../src/loan";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 
 // Types
 import { InterestRate, TokenAmount } from "../../../../src/types";

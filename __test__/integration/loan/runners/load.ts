@@ -7,7 +7,7 @@ import { LoanRequest } from "../../../../src/loan";
 import { LoanData } from "../../../../src/loan/agreement";
 
 // Import Dharma for typing-checking.
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 
 // Wrappers
 import { TokenRegistryContract } from "../../../../src/wrappers";
