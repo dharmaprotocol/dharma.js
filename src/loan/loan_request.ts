@@ -240,7 +240,7 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     *  Returns the terms of the loan request.
+     * Returns the terms of the loan request.
      *
      * @example
      * const terms = loanRequest.getTerms();
