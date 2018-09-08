@@ -1,6 +1,6 @@
 import { setBalanceForSymbol, setUnlimitedAllowanceForSymbol } from "../../../utils/utils";
 
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 import { LoanRequestParams } from "../../../../src/loan";
 
 export async function setBalancesAndAllowances(

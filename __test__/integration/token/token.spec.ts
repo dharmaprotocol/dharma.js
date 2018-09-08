@@ -1,6 +1,8 @@
 jest.unmock("@dharmaprotocol/contracts");
 
-import { Dharma } from "../../../src/dharma";
+import { Web3 } from "../../../src";
+
+import { Dharma } from "../../../src/types/dharma";
 import { TokenData } from "../../../src/token/token";
 import { Token } from "../../../src/types";
 
@@ -12,7 +14,10 @@ import {
     setUnlimitedAllowanceForSymbol,
 } from "../../utils/utils";
 
-const dharma = new Dharma("http://localhost:8545");
+const NETWORK_URL = "http://localhost:8545";
+
+const provider = new Web3.providers.HttpProvider(NETWORK_URL);
+const dharma = new Dharma(provider);
 const BALANCE = 10;
 const TOKEN_SYMBOL = "MKR";
 

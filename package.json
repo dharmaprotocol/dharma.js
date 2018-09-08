@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.1.59",
+    "version": "0.1.66",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -122,10 +122,11 @@
         "typedoc": "^0.10.0",
         "typescript": "^2.6.2",
         "web3-fake-provider": "^0.1.0",
+        "web3-provider-engine": "^14.0.6",
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.1.8",
+        "@dharmaprotocol/contracts": "0.1.13",
         "@types/lodash": "^4.14.104",
         "abi-decoder": "https://github.com/dharmaprotocol/abi-decoder",
         "bignumber.js": "^5.0.0",
@@ -141,10 +142,10 @@
         "lodash.pickby": "^4.6.0",
         "lodash.values": "^4.3.0",
         "moment": "^2.20.1",
-        "web3": "~0.20.7",
         "single-line-string": "^0.0.2",
         "tiny-promisify": "^1.0.0",
         "typedoc-plugin-markdown": "^1.0.14",
+        "web3": "~0.20.7",
         "web3-typescript-typings": "https://github.com/graemecode/web3-typescript-typings",
         "web3-utils": "1.0.0-beta.29"
     }

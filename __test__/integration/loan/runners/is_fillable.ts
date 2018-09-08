@@ -2,7 +2,7 @@ import * as Web3 from "web3";
 
 import { Web3Utils } from "../../../../utils/web3_utils";
 
-import { Dharma } from "../../../../src/dharma";
+import { Dharma } from "../../../../src/types/dharma";
 
 import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
 

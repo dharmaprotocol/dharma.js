@@ -12,7 +12,7 @@ import {
 
 import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralized_simple_interest_loan_adapter";
 
-import { Dharma } from "../dharma";
+import { Dharma } from "../types/dharma";
 
 import {
     DebtOrderData,
@@ -240,7 +240,7 @@ export class LoanRequest extends Agreement {
     }
 
     /**
-     *  Returns the terms of the loan request.
+     * Returns the terms of the loan request.
      *
      * @example
      * const terms = loanRequest.getTerms();

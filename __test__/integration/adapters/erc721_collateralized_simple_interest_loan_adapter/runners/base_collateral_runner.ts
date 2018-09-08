@@ -27,7 +27,6 @@ import { ContractsAPI, OrderAPI, ServicingAPI, SignerAPI, TokenAPI } from "../..
 import { DebtOrderData } from "../../../../../src/types";
 // Accounts
 import { ACCOUNTS } from "../../../../accounts";
-import { MintableERC721TokenContract } from "../../../../../src/wrappers/contract_wrappers/mintable_e_r_c721_token_wrapper";
 
 const CONTRACT_OWNER = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
