@@ -7,7 +7,7 @@
 
 This repository contains the `dharma.js` client application development libraries.  `dharma.js` makes it easy for developers who may not be deeply familiar with smart contract development to interact with the various components of Dharma protocol and build hyper-flexible lending applications.
 
-For more information, please check out the [Dharma Developer Portal](developer.dharma.io).
+For more information, please check out the [Dharma Developer Portal](https://developer.dharma.io).
 
 ## Getting Started with Dharma.js
 
