@@ -51,7 +51,7 @@ export interface DharmaContracts {
     repaymentRouter: RepaymentRouterContract;
     tokenTransferProxy: TokenTransferProxyContract;
     collateralizer: CollateralizerContract;
-    erc721Collateralizer: ERC721CollateralizerContract;
+    erc721Collateralizer?: ERC721CollateralizerContract;
 }
 
 export const ContractsError = {
@@ -86,7 +86,8 @@ export class ContractsAPI {
         const repaymentRouter = await this.loadRepaymentRouterAsync(transactionOptions);
         const tokenTransferProxy = await this.loadTokenTransferProxyAsync(transactionOptions);
         const collateralizer = await this.loadCollateralizerAsync(transactionOptions);
-        const erc721Collateralizer = await this.loadERC721CollateralizerAsync(transactionOptions);
+        // TODO: Include erc721Collateralizer once deployed on mainnet.
+        // const erc721Collateralizer = await this.loadERC721CollateralizerAsync(transactionOptions);
 
         return {
             debtKernel,
@@ -95,7 +96,7 @@ export class ContractsAPI {
             repaymentRouter,
             tokenTransferProxy,
             collateralizer,
-            erc721Collateralizer,
+            // erc721Collateralizer,
         };
     }
 
