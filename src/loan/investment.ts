@@ -1,7 +1,5 @@
 import { Loan } from "./loan";
 
-import { Dharma } from "../types/dharma";
-
 /**
  * Describes a loan from a creditor's perspective.
  *
