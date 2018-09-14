@@ -3,9 +3,10 @@ import { Loan } from "./loan";
 import { Dharma } from "../types/dharma";
 
 /**
- * Describes a loan from a lender's perspective.
+ * Describes a loan from a creditor's perspective.
  *
- * - includes functionality for seizing collateral.
+ * Includes functionality for:
+ * - seizing collateral.
  */
 export class Investment extends Loan {
     /**
