@@ -28,7 +28,6 @@ export class Debt extends Loan {
      * @returns {Promise<string>} the hash of the Ethereum transaction to make the repayment
      */
     public async makeRepayment(repaymentAmount?: number): Promise<string> {
-        const agreementId = this.getAgreementId();
         const tokenSymbol = this.params.principal.tokenSymbol;
         const principalTokenAddressString = await this.dharma.contracts.getTokenAddressBySymbolAsync(
             tokenSymbol,
@@ -42,12 +41,12 @@ export class Debt extends Loan {
             rawRepaymentAmount = repaymentAmountType.rawAmount;
         } else {
             rawRepaymentAmount = await this.dharma.servicing.getExpectedAmountPerRepayment(
-                agreementId,
+                this.params.id,
             );
         }
 
         return this.dharma.servicing.makeRepayment(
-            agreementId,
+            this.params.id,
             rawRepaymentAmount,
             principalTokenAddressString,
         );
@@ -65,7 +64,7 @@ export class Debt extends Loan {
      */
     public async returnCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.returnCollateralAsync(
-            this.getAgreementId(),
+            this.params.id,
         );
     }
 }
