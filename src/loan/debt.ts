@@ -5,7 +5,7 @@ import { TokenAmount } from "../types";
 import { BigNumber } from "../../utils/bignumber";
 
 /**
- * Describes a loan from a debtor's perspective.
+ * Describes a debt -- aka a loan from a debtor's perspective.
  *
  * Includes functionality for:
  * - returning collateral
@@ -13,16 +13,16 @@ import { BigNumber } from "../../utils/bignumber";
  */
 export class Debt extends Loan {
     /**
-     * Eventually makes a repayment on the loan, with the default payment amount being the
+     * Eventually makes a repayment on the debt, with the default payment amount being the
      * expected size of a single installment given the principal, interest rate,
      * and terms.
      *
      * @example
-     * loan.makeRepayment();
+     * debt.makeRepayment();
      * => Promise<string>
      *
-     * const outstandingAmount = await loan.getOutstandingAmount();
-     * loan.makeRepayment(outstandingAmount);
+     * const outstandingAmount = await debt.getOutstandingAmount();
+     * debt.makeRepayment(outstandingAmount);
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to make the repayment
@@ -53,11 +53,12 @@ export class Debt extends Loan {
     }
 
     /**
-     * Eventually returns the collateral and sends it to the debtor.
-     * This will fail if the collateral is not returnable.
+     * Eventually returns the collateral to the debtor.
+     *
+     * This call will throw if the collateral is not returnable.
      *
      * @example
-     * loan.returnCollateral();
+     * debt.returnCollateral();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to return the collateral
