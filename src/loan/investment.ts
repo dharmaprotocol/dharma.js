@@ -1,18 +1,16 @@
 import { Loan } from "./loan";
 
-import { Dharma } from "../types/dharma";
-
 /**
- * Describes a loan from a creditor's perspective.
+ * Describes an investment -- aka a loan from a creditor's perspective.
  *
  * Includes functionality for:
- * - seizing collateral.
+ * - seizing collateral
  */
 export class Investment extends Loan {
     /**
-     * Eventually seizes the collateral and sends it to the creditor.
+     * Eventually seizes the collateral on behalf of the creditor.
      *
-     * This will fail if the collateral is not seizable.
+     * This call will throw if the collateral is not seizable.
      *
      * @example
      * investment.seizeCollateral();
@@ -22,7 +20,7 @@ export class Investment extends Loan {
      */
     public async seizeCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
-            this.data.id,
+            this.params.id,
         );
     }
 }
