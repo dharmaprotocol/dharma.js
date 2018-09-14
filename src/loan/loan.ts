@@ -30,10 +30,6 @@ export interface ExpandedLoanData extends LoanData {
     totalExpectedRepaymentAmount: number;
 }
 
-/**
- * Describes a loan from a lender's perspective, includes functionality for seizing
- * collateral.
- */
 export class Loan {
     public static async fetch<T extends Loan>(dharma: Dharma, id: string): Promise<T> {
         const entry = await dharma.servicing.getDebtRegistryEntry(id);
