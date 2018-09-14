@@ -1,7 +1,6 @@
 import * as singleLineString from "single-line-string";
-import { BigNumber } from "../../utils/bignumber";
 
-import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
+import { BigNumber } from "../../utils/bignumber";
 
 import {
     BLOCK_TIME_ESTIMATE_SECONDS,
@@ -14,9 +13,12 @@ import { CollateralizedSimpleInterestLoanOrder } from "../adapters/collateralize
 
 import { Dharma } from "../types/dharma";
 
+import { DebtOrderDataWrapper } from "../wrappers";
+
 import {
     DebtOrderData,
     DurationUnit,
+    ECDSASignature,
     EthereumAddress,
     InterestRate,
     Loan,
@@ -31,6 +33,41 @@ export const LOAN_REQUEST_ERRORS = {
     PROXY_FILL_DISALLOWED: singleLineString`A loan request must be signed by both the creditor and
     debtor before it can be filled by proxy.`,
 };
+
+export interface LoanRequestConstructorParams {
+    principal: TokenAmount;
+    collateral: TokenAmount;
+    interestRate: InterestRate;
+    termLength: TimeInterval;
+    expiresAt: number;
+    relayer?: EthereumAddress;
+    relayerFee?: TokenAmount;
+    creditorFee?: TokenAmount;
+    debtorFee?: TokenAmount;
+}
+
+export interface LoanRequestData {
+    kernelVersion: string;
+    issuanceVersion: string;
+    principalAmount: string;
+    principalToken: string;
+    debtor: string;
+    debtorFee: string;
+    creditor: string;
+    creditorFee: string;
+    relayer: string;
+    relayerFee: string;
+    underwriter: string;
+    underwriterFee: string;
+    underwriterRiskRating: string;
+    termsContract: string;
+    termsContractParameters: string;
+    expirationTimestampInSec: string;
+    salt: string;
+    debtorSignature: ECDSASignature;
+    creditorSignature: ECDSASignature;
+    underwriterSignature: ECDSASignature;
+}
 
 export interface LoanRequestParams {
     principalAmount: number;
@@ -58,7 +95,7 @@ export interface LoanRequestTerms {
     expiresAt: number;
 }
 
-export class LoanRequest extends Agreement {
+export class LoanRequest {
     public static generateSalt(): BigNumber {
         return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
     }
@@ -109,7 +146,7 @@ export class LoanRequest extends Agreement {
 
         const expirationTimestampInSec = expiresIn.fromTimestamp(currentBlocktime);
 
-        const loanRequestConstructorParams: BaseLoanConstructorParams = {
+        const loanRequestConstructorParams: LoanRequestConstructorParams = {
             principal,
             collateral,
             interestRate: interestRateTyped,
@@ -159,7 +196,7 @@ export class LoanRequest extends Agreement {
         return new LoanRequest(dharma, loanRequestConstructorParams, data);
     }
 
-    public static async load(dharma: Dharma, data: LoanData): Promise<LoanRequest> {
+    public static async load(dharma: Dharma, data: LoanRequestData): Promise<LoanRequest> {
         const debtOrderData: DebtOrderData = {
             ...data,
             principalAmount: new BigNumber(data.principalAmount),
@@ -193,7 +230,7 @@ export class LoanRequest extends Agreement {
             loanOrder.amortizationUnit,
         );
 
-        const loanRequestParams: BaseLoanConstructorParams = {
+        const loanRequestParams: LoanRequestConstructorParams = {
             principal,
             collateral,
             termLength,
@@ -239,6 +276,12 @@ export class LoanRequest extends Agreement {
         return request;
     }
 
+    private constructor(
+        private readonly dharma: Dharma,
+        private readonly params: LoanRequestConstructorParams,
+        private data: DebtOrderData,
+    ) {}
+
     /**
      * Returns the terms of the loan request.
      *
@@ -260,26 +303,6 @@ export class LoanRequest extends Agreement {
             termUnit: termLength.getAmortizationUnit(),
             expiresAt,
         };
-    }
-
-    /**
-     * Eventually returns an instance of the associated loan.
-     *
-     * @throws Throws if the loan request has yet to be filled.
-     *
-     * @example
-     * const loan = await loanRequest.generateLoan();
-     *
-     * @returns {Promise<Loan>}
-     */
-    public async generateLoan(): Promise<Loan> {
-        const isFilled = await this.isFilled();
-
-        if (!isFilled) {
-            throw new Error(LOAN_REQUEST_ERRORS.NOT_YET_FILLED);
-        }
-
-        return new Loan(this.dharma, this.params, this.data);
     }
 
     /**
@@ -500,5 +523,53 @@ export class LoanRequest extends Agreement {
         const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
 
         this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
+    }
+
+    /**
+     * Returns the loan request's unique identifier.
+     *
+     * @example
+     * const id = loanRequest.getAgreementId();
+     *
+     * @return {string}
+     */
+    public getAgreementId(): string {
+        return new DebtOrderDataWrapper(this.data).getIssuanceCommitmentHash();
+    }
+
+    /**
+     * Returns the loan request's underlying data as JSON.
+     *
+     * Converting the loan request to JSON allows the resulting data to be written to disk,
+     * or transmitted over the wire.
+     *
+     * @example
+     * const data = loanRequest.toJSON();
+     *
+     * @return {LoanRequestData}
+     */
+    public toJSON(): LoanRequestData {
+        return {
+            kernelVersion: this.data.kernelVersion!,
+            issuanceVersion: this.data.issuanceVersion!,
+            principalAmount: this.data.principalAmount.toString(),
+            principalToken: this.data.principalToken!,
+            debtor: this.data.debtor!,
+            debtorFee: this.data.debtorFee.toString(),
+            creditor: this.data.creditor!,
+            creditorFee: this.data.creditorFee.toString(),
+            relayer: this.data.relayer!,
+            relayerFee: this.data.relayerFee.toString(),
+            underwriter: this.data.underwriter!,
+            underwriterFee: this.data.underwriterFee.toString(),
+            underwriterRiskRating: this.data.underwriterRiskRating.toString(),
+            termsContract: this.data.termsContract!,
+            termsContractParameters: this.data.termsContractParameters!,
+            expirationTimestampInSec: this.data.expirationTimestampInSec.toString(),
+            salt: this.data.salt.toString(),
+            debtorSignature: this.data.debtorSignature!,
+            creditorSignature: this.data.creditorSignature!,
+            underwriterSignature: this.data.underwriterSignature!,
+        };
     }
 }

@@ -1,5 +1,5 @@
 export { Debt } from "./debt";
+export { Debts } from "./debts";
 export { Investment } from "./investment";
 export { Investments } from "./investments";
-export { LoanRequest, LoanRequestParams } from "./loan_request";
-export { Loan } from "./loan";
+export { LoanRequest } from "./loan_request";

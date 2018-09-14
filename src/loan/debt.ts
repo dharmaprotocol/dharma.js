@@ -4,6 +4,13 @@ import { TokenAmount } from "../types";
 
 import { BigNumber } from "../../utils/bignumber";
 
+/**
+ * Describes a loan from a debtor's perspective.
+ *
+ * Includes functionality for:
+ * - returning collateral
+ * - making repayments
+ */
 export class Debt extends Loan {
     /**
      * Eventually makes a repayment on the loan, with the default payment amount being the

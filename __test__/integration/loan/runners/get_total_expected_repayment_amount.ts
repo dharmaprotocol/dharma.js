@@ -4,8 +4,8 @@ import { BigNumber } from "../../../../utils/bignumber";
 // Accounts
 import { ACCOUNTS } from "../../../accounts";
 
-// Debt Order
-import { Loan, LoanRequest, LoanRequestParams } from "../../../../src/loan";
+import { Loan } from "../../../../src/loan/loan";
+import { LoanRequest, LoanRequestParams } from "../../../../src/loan/loan_request";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/types/dharma";
@@ -33,7 +33,9 @@ export async function testGetTotalExpectedRepaymentAmount(
 
             await loanRequest.fillAsCreditor(CREDITOR);
 
-            loan = await loanRequest.generateLoan();
+            const id = loanRequest.getAgreementId();
+
+            loan = await Loan.fetch(dharma, id);
         });
 
         test(`eventually returns the open order's principal plus interest`, async () => {

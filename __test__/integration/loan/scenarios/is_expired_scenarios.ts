@@ -14,7 +14,7 @@ export interface IsExpiredScenario {
     isExpired: boolean;
 }
 
-const defaultParams = {
+const DEFAULT: LoanRequestParams = {
     principalAmount: 5,
     principalToken: "REP",
     collateralAmount: 10,
@@ -22,7 +22,6 @@ const defaultParams = {
     interestRate: 12.3,
     termDuration: 6,
     termUnit: "months" as DurationUnit,
-    debtorAddress: debtor.address,
     expiresInDuration: 5,
     expiresInUnit: "days" as DurationUnit,
 };
@@ -31,14 +30,14 @@ export const IS_EXPIRED_SCENARIOS: IsExpiredScenario[] = [
     {
         description: "when given valid params and the expiration is 5 days in the future",
         params: {
-            ...defaultParams,
+            ...DEFAULT,
         },
         isExpired: false,
     },
     {
         description: "when given valid params and the expiration is 5 days in the past",
         params: {
-            ...defaultParams,
+            ...DEFAULT,
             expiresInDuration: -5,
         },
         isExpired: true,
@@ -46,7 +45,7 @@ export const IS_EXPIRED_SCENARIOS: IsExpiredScenario[] = [
     {
         description: "when given valid params and the expiration is 1 day in the past",
         params: {
-            ...defaultParams,
+            ...DEFAULT,
             expiresInDuration: -1,
         },
         isExpired: true,

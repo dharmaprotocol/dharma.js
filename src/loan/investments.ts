@@ -1,4 +1,6 @@
-import { ExpandedInvestmentData, Investment } from "./investment";
+import { Investment } from "./investment";
+
+import { ExpandedLoanData } from "./loan";
 
 import { Dharma } from "../";
 
@@ -24,7 +26,7 @@ export class Investments {
     public static async getExpandedData(
         dharma: Dharma,
         owner: string,
-    ): Promise<ExpandedInvestmentData[]> {
+    ): Promise<ExpandedLoanData[]> {
         const investments = await Investments.get(dharma, owner);
 
         return Promise.all(
