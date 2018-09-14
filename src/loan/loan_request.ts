@@ -306,26 +306,6 @@ export class LoanRequest {
     }
 
     /**
-     * Eventually returns an instance of the associated loan.
-     *
-     * @throws Throws if the loan request has yet to be filled.
-     *
-     * @example
-     * const loan = await loanRequest.generateLoan();
-     *
-     * @returns {Promise<Loan>}
-     */
-    public async generateLoan(): Promise<Loan> {
-        const isFilled = await this.isFilled();
-
-        if (!isFilled) {
-            throw new Error(LOAN_REQUEST_ERRORS.NOT_YET_FILLED);
-        }
-
-        return new Loan(this.dharma, this.params, this.data);
-    }
-
-    /**
      * Eventually returns true if the current loan request will be expired for the next block.
      *
      * @example
