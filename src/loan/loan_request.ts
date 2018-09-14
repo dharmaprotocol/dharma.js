@@ -545,10 +545,29 @@ export class LoanRequest {
         this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
     }
 
+    /**
+     * Returns the loan request's unique identifier.
+     *
+     * @example
+     * const id = loanRequest.getAgreementId();
+     *
+     * @return {string}
+     */
     public getAgreementId(): string {
         return new DebtOrderDataWrapper(this.data).getIssuanceCommitmentHash();
     }
 
+    /**
+     * Returns the loan request's underlying data as JSON.
+     *
+     * Converting the loan request to JSON allows the resulting data to be written to disk,
+     * or transmitted over the wire.
+     *
+     * @example
+     * const data = loanRequest.toJSON();
+     *
+     * @return {LoanRequestData}
+     */
     public toJSON(): LoanRequestData {
         return {
             kernelVersion: this.data.kernelVersion!,
