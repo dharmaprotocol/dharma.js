@@ -22,7 +22,7 @@ export class Investment extends Loan {
      */
     public async seizeCollateral(): Promise<string> {
         return this.dharma.adapters.collateralizedSimpleInterestLoan.seizeCollateralAsync(
-            this.data.id,
+            this.params.id,
         );
     }
 }
