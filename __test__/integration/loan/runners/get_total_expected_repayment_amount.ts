@@ -33,7 +33,9 @@ export async function testGetTotalExpectedRepaymentAmount(
 
             await loanRequest.fillAsCreditor(CREDITOR);
 
-            loan = await loanRequest.generateLoan();
+            const id = loanRequest.getAgreementId();
+
+            loan = await Loan.fetch(dharma, id);
         });
 
         test(`eventually returns the open order's principal plus interest`, async () => {
