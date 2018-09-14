@@ -71,7 +71,7 @@ export class Loan {
         return new this(dharma, params) as T;
     }
 
-    constructor(protected readonly dharma: Dharma, protected readonly params: LoanParams) {}
+    private constructor(protected readonly dharma: Dharma, protected readonly params: LoanParams) {}
 
     /**
      *  Returns the loan's data as vanilla JS types.
