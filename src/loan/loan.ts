@@ -1,57 +1,8 @@
-import { BigNumber } from "../../utils/bignumber";
-
-import { Agreement, BaseLoanConstructorParams, LoanData } from "./agreement";
-
 import { DebtOrderData, EthereumAddress, InterestRate, TimeInterval, TokenAmount } from "../types";
 
 import { Dharma } from "../types/dharma";
 
-export class Loan extends Agreement {
-    public static async load(dharma: Dharma, data: LoanData): Promise<Loan> {
-        const debtOrderData: DebtOrderData = {
-            ...data,
-            principalAmount: new BigNumber(data.principalAmount),
-            debtorFee: new BigNumber(data.debtorFee),
-            creditorFee: new BigNumber(data.creditorFee),
-            relayerFee: new BigNumber(data.relayerFee),
-            underwriterFee: new BigNumber(data.underwriterFee),
-            underwriterRiskRating: new BigNumber(data.underwriterRiskRating),
-            expirationTimestampInSec: new BigNumber(data.expirationTimestampInSec),
-            salt: new BigNumber(data.salt),
-        };
-
-        const loanOrder = await dharma.adapters.collateralizedSimpleInterestLoan.fromDebtOrder(
-            debtOrderData,
-        );
-
-        const principal = TokenAmount.fromRaw(
-            loanOrder.principalAmount,
-            loanOrder.principalTokenSymbol,
-        );
-
-        const collateral = TokenAmount.fromRaw(
-            loanOrder.collateralAmount,
-            loanOrder.collateralTokenSymbol,
-        );
-
-        const interestRate = InterestRate.fromRaw(loanOrder.interestRate);
-
-        const termLength = new TimeInterval(
-            loanOrder.termLength.toNumber(),
-            loanOrder.amortizationUnit,
-        );
-
-        const loanParams: BaseLoanConstructorParams = {
-            principal,
-            collateral,
-            termLength,
-            interestRate,
-            expiresAt: loanOrder.expirationTimestampInSec.toNumber(),
-        };
-
-        return new Loan(dharma, loanParams, debtOrderData);
-    }
-
+export class Loan {
     /**
      * Eventually returns true if the loan's collateral has been either seized
      * by the creditor or returned to the debtor.
