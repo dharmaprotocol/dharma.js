@@ -18,7 +18,7 @@ export class Debts {
 
         return Promise.all(
             agreementIds.map(async (agreementId) => {
-                return Debt.fetch(dharma, agreementId);
+                return Debt.fetch<Debt>(dharma, agreementId);
             }),
         );
     }

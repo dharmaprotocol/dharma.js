@@ -18,7 +18,7 @@ export class Investments {
 
         return Promise.all(
             agreementIds.map(async (agreementId) => {
-                return Investment.fetch(dharma, agreementId);
+                return Investment.fetch<Investment>(dharma, agreementId);
             }),
         );
     }
