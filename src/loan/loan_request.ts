@@ -21,7 +21,6 @@ import {
     ECDSASignature,
     EthereumAddress,
     InterestRate,
-    Loan,
     TimeInterval,
     TokenAmount,
 } from "../types";
