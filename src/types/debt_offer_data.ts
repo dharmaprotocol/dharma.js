@@ -3,7 +3,8 @@ import { BigNumber } from "../../utils/bignumber";
 import { ECDSASignature } from "./ecdsa_signature";
 
 /**
- * Contains the terms for which creditor would be willing to enter into a debt agreement.
+ * Contains the terms, using types compatible for sending to a blockchain contract, for which a
+ * creditor would be willing to enter into a debt agreement.
  */
 export interface DebtOfferData {
     // The amount that the creditor is willing to lend.
