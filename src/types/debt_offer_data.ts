@@ -7,7 +7,7 @@ import { ECDSASignature } from "./ecdsa_signature";
  */
 export interface DebtOfferData {
     // The amount that the creditor is willing to lend.
-    principalAmount: BigNumber,
+    principalAmount: BigNumber;
     // The symbol of acceptance collateral, e.g. "REP".
     collateralTokenSymbol: string;
     // The maximum loan-to-value ratio acceptable to this creditor, e.g. 50%.
