@@ -63,7 +63,7 @@ export interface LoanRequestData {
     underwriterSignature: ECDSASignature;
 }
 
-export interface LoanRequestParams {
+export interface DebtOrderParams {
     principalAmount: number;
     principalToken: string;
     collateralAmount: number;
@@ -116,7 +116,7 @@ export class DebtOrder {
      */
     public static async create<T extends DebtOrder>(
         dharma: Dharma,
-        params: LoanRequestParams,
+        params: DebtOrderParams,
     ): Promise<T> {
         const {
             principalAmount,
