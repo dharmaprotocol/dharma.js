@@ -1,7 +1,8 @@
 import { Dharma } from "../dharma";
 
-import { DebtOrder, DebtOrderParams } from "../../loan/debt_order";
+import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
+import { EthereumAddress } from "../../types";
 import { CreditorProxyContract, DebtOrderDataWrapper } from "../../wrappers";
 import { ECDSASignature } from "../ecdsa_signature";
 
@@ -17,21 +18,39 @@ export class LoanOffer extends DebtOrder {
     ): Promise<LoanOffer> {
         const offer = await LoanOffer.create<LoanOffer>(dharma, params);
 
-        offer.data.creditor = creditor;
-
         await offer.signAsCreditor(creditor);
 
         return offer;
     }
 
-    public async signAsCreditor(creditor?: string): Promise<void> {
+    /**
+     * Eventually signs the loan offer as the creditor.
+     *
+     * @throws Throws if the loan offer is already signed by a creditor.
+     *
+     * @example
+     * loanOffer.signAsCreditor();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
+    public async signAsCreditor(creditorAddress?: string): Promise<void> {
+        if (this.isSignedByCreditor()) {
+            throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
+        }
+
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
+
         const loanOfferHash = this.getLoanOfferHash();
 
         const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
 
         this.data.creditorSignature = await this.dharma.sign.signPayloadWithAddress(
             loanOfferHash,
-            creditor,
+            this.data.creditor,
             isMetaMask,
         );
     }
