@@ -15,7 +15,7 @@ export interface DebtOfferData {
     // The maximum loan-to-value ratio acceptable to this creditor, expressed as a percent, e.g. 50%.
     maxLoanToValuePercent: BigNumber;
     // The maximum time at which the offer will still be valid, as a Unix timestamp.
-    expirationTimestampInSec?: BigNumber;
+    expirationTimestampInSec: BigNumber;
     // The address of the decision engine that will validate the terms of the offer.
     decisionEngineAddress: string;
     // The creditor signs this offer data.
