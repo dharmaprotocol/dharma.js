@@ -3,6 +3,7 @@ import { WrapperTestObject, WrapperTestRunner } from "./wrapper_test_runner";
 
 // Artifacts
 import {
+    CreditorProxy,
     ERC721CollateralizedSimpleInterestTermsContract,
     ERC721Collateralizer,
     ERC721Token,
@@ -18,6 +19,7 @@ import {
     ERC721TokenRegistryContract,
     MintableERC721TokenContract,
 } from "../../../src/wrappers";
+import { CreditorProxyContract } from "../../../src/wrappers/contract_wrappers/creditor_proxy_wrapper";
 
 /**
  * A class that contains methods for testing the basics of a contract wrapper.
@@ -69,6 +71,14 @@ const wrappers: WrapperTestObject[] = [
             "node_modules/@dharmaprotocol/contracts/artifacts/json/MintableERC721Token.json",
         contract: MintableERC721TokenContract,
         artifact: MintableERC721Token,
+    },
+    {
+        name: "CreditorProxy",
+        displayName: "Creditor Proxy",
+        artifactPath:
+            "node_modules/@dharmaprotocol/contracts/artifacts/json/CreditorProxy.json",
+        contract: CreditorProxyContract,
+        artifact: CreditorProxy,
     },
 ];
 
