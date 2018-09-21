@@ -6,11 +6,6 @@ import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
-export const LOAN_REQUEST_ERRORS = {
-    PROXY_FILL_DISALLOWED: singleLineString`A loan request must be signed by both the creditor and
-    debtor before it can be filled by proxy.`,
-};
-
 export class LoanRequest extends DebtOrder {
     /**
      * Eventually returns an instance of a LoanRequest object with the terms specified, signed by
@@ -159,7 +154,7 @@ export class LoanRequest extends DebtOrder {
                 from: sender,
             });
         } else {
-            throw new Error(LOAN_REQUEST_ERRORS.PROXY_FILL_DISALLOWED);
+            throw new Error(DEBT_ORDER_ERRORS.PROXY_FILL_DISALLOWED("loan request"));
         }
     }
 }
