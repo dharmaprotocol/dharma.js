@@ -1,4 +1,4 @@
-import { Dharma } from "../types/dharma";
+import { Dharma } from "../dharma";
 
 export class LoanOffer {
     public static async create(dharma: Dharma): Promise<LoanOffer> {

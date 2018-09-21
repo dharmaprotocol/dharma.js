@@ -1,6 +1,6 @@
-import { BigNumber } from "../../utils/bignumber";
+import { BigNumber } from "../../../utils/bignumber";
 
-import { ECDSASignature } from "./ecdsa_signature";
+import { ECDSASignature } from "../ecdsa_signature";
 
 /**
  * A price that has been signed by some price feed.

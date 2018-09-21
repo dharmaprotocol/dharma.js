@@ -1,4 +1,8 @@
-import { DebtOfferData, DebtOrderData, SignedPrice } from "./index";
+import { DebtOfferData} from "./debt_offer_data";
+
+import { SignedPrice} from "./signed_price";
+
+import { DebtOrderData } from "../";
 
 export interface LoanOfferData {
     // Signed by debtor.
