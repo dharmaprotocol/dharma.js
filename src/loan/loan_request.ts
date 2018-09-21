@@ -2,7 +2,7 @@ import * as singleLineString from "single-line-string";
 
 import { Dharma } from "../types/dharma";
 
-import { DebtOrder, LoanRequestParams } from "./debt_order";
+import { DebtOrder, DebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
@@ -13,16 +13,29 @@ export const LOAN_REQUEST_ERRORS = {
 
 export class LoanRequest extends DebtOrder {
     /**
-     * Eventually creates and signs a loan request with the specified params.
+     * Eventually returns an instance of a LoanRequest object with the terms specified, signed by
+     * the debtor as well.
      *
      * @example
-     * const loanRequest = await LoanRequest.createAndSignAsDebtor(dharma, {...});
+     * const loanRequest = await LoanRequest.create(dharma, {
+     *      principalAmount: 5,
+     *      principalToken: "REP",
+     *      collateralAmount: 10,
+     *      collateralToken: "MKR",
+     *      relayerAddress: "0x000000000000000000000000000000",
+     *      relayerFeeAmount: 23.1,
+     *      interestRate: 12.3,
+     *      termDuration: 6,
+     *      termUnit: "months",
+     *      expiresInDuration: 5,
+     *      expiresInUnit: "days",
+     *  }, debtor);
      *
      * @returns {Promise<LoanRequest>}
      */
     public static async createAndSignAsDebtor(
         dharma: Dharma,
-        params: LoanRequestParams,
+        params: DebtOrderParams,
         debtor?: string,
     ): Promise<LoanRequest> {
         const request = await LoanRequest.create<LoanRequest>(dharma, params);

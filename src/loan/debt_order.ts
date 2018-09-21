@@ -94,26 +94,6 @@ export class DebtOrder {
         return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
     }
 
-    /**
-     * Eventually returns an instance of a loan request object with the terms specified.
-     *
-     * @example
-     * const loanRequest = await LoanRequest.create(dharma, {
-     *      principalAmount: 5,
-     *      principalToken: "REP",
-     *      collateralAmount: 10,
-     *      collateralToken: "MKR",
-     *      relayerAddress: "0x000000000000000000000000000000",
-     *      relayerFeeAmount: 23.1,
-     *      interestRate: 12.3,
-     *      termDuration: 6,
-     *      termUnit: "months",
-     *      expiresInDuration: 5,
-     *      expiresInUnit: "days",
-     *  });
-     *
-     * @returns {Promise<LoanRequest>}
-     */
     public static async create<T extends DebtOrder>(
         dharma: Dharma,
         params: DebtOrderParams,
