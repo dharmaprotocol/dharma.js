@@ -40,7 +40,7 @@ export interface DebtOrderConstructorParams {
     debtorFee?: TokenAmount;
 }
 
-export interface LoanRequestData {
+export interface OrderData {
     kernelVersion: string;
     issuanceVersion: string;
     principalAmount: string;
@@ -193,10 +193,7 @@ export class DebtOrder {
         return new this(dharma, loanRequestConstructorParams, data) as T;
     }
 
-    public static async load<T extends DebtOrder>(
-        dharma: Dharma,
-        data: LoanRequestData,
-    ): Promise<T> {
+    public static async load<T extends DebtOrder>(dharma: Dharma, data: OrderData): Promise<T> {
         const debtOrderData: DebtOrderData = {
             ...data,
             principalAmount: new BigNumber(data.principalAmount),
@@ -434,9 +431,9 @@ export class DebtOrder {
      * @example
      * const data = loanRequest.toJSON();
      *
-     * @return {LoanRequestData}
+     * @return {OrderData}
      */
-    public toJSON(): LoanRequestData {
+    public toJSON(): OrderData {
         return {
             kernelVersion: this.data.kernelVersion!,
             issuanceVersion: this.data.issuanceVersion!,
