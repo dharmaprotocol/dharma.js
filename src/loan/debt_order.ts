@@ -78,7 +78,7 @@ export interface DebtOrderParams {
     creditorFeeAmount?: number;
 }
 
-export interface LoanRequestTerms {
+export interface DebtOrderTerms {
     principalAmount: number;
     principalTokenSymbol: string;
     collateralAmount: number;
@@ -268,9 +268,9 @@ export class DebtOrder {
      * @example
      * const terms = loanRequest.getTerms();
      *
-     * @returns {LoanRequestTerms}
+     * @returns {DebtOrderTerms}
      */
-    public getTerms(): LoanRequestTerms {
+    public getTerms(): DebtOrderTerms {
         const { principal, collateral, interestRate, termLength, expiresAt } = this.params;
 
         return {
