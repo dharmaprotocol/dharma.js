@@ -1,29 +1,17 @@
 import { Dharma } from "../dharma";
 
-export class LoanOffer {
-    public static async create(dharma: Dharma): Promise<LoanOffer> {
-        return new LoanOffer(dharma);
-    }
+import { DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
-    public static async load(dharma: Dharma): Promise<LoanOffer> {
-        return new LoanOffer(dharma);
-    }
+export class LoanOffer extends DebtOrder {
+    public static async createAndSignAsCreditor(
+        dharma: Dharma,
+        params: DebtOrderParams,
+        creditor?: string,
+    ): Promise<LoanOffer> {
+        const offer = await LoanOffer.create<LoanOffer>(dharma, params);
 
-    private constructor(private readonly dharma: Dharma) {}
+        await offer.signAsCreditor(creditor);
 
-    public async accept(): Promise<string> {
-        return "test";
-    }
-
-    public async signAsCreditor(): Promise<void> {
-        return;
-    }
-
-    public async signAsDebtor(): Promise<void> {
-        return;
-    }
-
-    public toJSON(): string {
-        return "json";
+        return offer;
     }
 }
