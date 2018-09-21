@@ -2,7 +2,7 @@ import * as singleLineString from "single-line-string";
 
 import { Dharma } from "../types/dharma";
 
-import { DebtOrder, DebtOrderParams } from "./debt_order";
+import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
@@ -43,6 +43,32 @@ export class LoanRequest extends DebtOrder {
         await request.signAsDebtor(debtor);
 
         return request;
+    }
+
+    /**
+     * Eventually signs the loan request as the creditor.
+     *
+     * @throws Throws if the loan request is already signed by a creditor.
+     *
+     * @example
+     * loanRequest.signAsCreditor();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
+    public async signAsCreditor(creditorAddress?: string): Promise<void> {
+        if (this.isSignedByCreditor()) {
+            throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
+        }
+
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
+
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
     }
 
     /**
@@ -94,7 +120,7 @@ export class LoanRequest extends DebtOrder {
      * Eventually fills the loan request as creditor, transferring the principal to the debtor.
      *
      * @example
-     * loanRequest.fill();
+     * loanRequest.fillAsCreditor();
      * => Promise<string>
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request

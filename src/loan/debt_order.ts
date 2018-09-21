@@ -365,32 +365,6 @@ export class DebtOrder {
     }
 
     /**
-     * Eventually signs the loan request as the creditor.
-     *
-     * @throws Throws if the loan request is already signed by a creditor.
-     *
-     * @example
-     * loanRequest.signAsCreditor();
-     * => Promise<void>
-     *
-     * @return {Promise<void>}
-     */
-    public async signAsCreditor(creditorAddress?: string): Promise<void> {
-        if (this.isSignedByCreditor()) {
-            throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
-        }
-
-        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
-            this.dharma,
-            creditorAddress,
-        );
-
-        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
-
-        this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
-    }
-
-    /**
      * Returns the loan request's unique identifier.
      *
      * @example
