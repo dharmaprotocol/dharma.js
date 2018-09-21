@@ -7,7 +7,7 @@ export async function testCreate(dharma: Dharma, params: any) {
         let loanOffer: LoanOffer;
 
         beforeAll(async () => {
-            loanOffer = await LoanOffer.create(dharma, params) as LoanOffer;
+            loanOffer = await LoanOffer.create<LoanOffer>(dharma, params);
         });
 
         test("not signed by the debtor", async () => {
