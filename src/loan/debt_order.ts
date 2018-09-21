@@ -28,7 +28,7 @@ export const DEBT_ORDER_ERRORS = {
     ALREADY_SIGNED_BY_CREDITOR: `The creditor has already signed this debt order.`,
 };
 
-export interface LoanRequestConstructorParams {
+export interface DebtOrderConstructorParams {
     principal: TokenAmount;
     collateral: TokenAmount;
     interestRate: InterestRate;
@@ -143,7 +143,7 @@ export class DebtOrder {
 
         const expirationTimestampInSec = expiresIn.fromTimestamp(currentBlocktime);
 
-        const loanRequestConstructorParams: LoanRequestConstructorParams = {
+        const loanRequestConstructorParams: DebtOrderConstructorParams = {
             principal,
             collateral,
             interestRate: interestRateTyped,
@@ -230,7 +230,7 @@ export class DebtOrder {
             loanOrder.amortizationUnit,
         );
 
-        const loanRequestParams: LoanRequestConstructorParams = {
+        const loanRequestParams: DebtOrderConstructorParams = {
             principal,
             collateral,
             termLength,
@@ -258,7 +258,7 @@ export class DebtOrder {
 
     protected constructor(
         protected readonly dharma: Dharma,
-        protected readonly params: LoanRequestConstructorParams,
+        protected readonly params: DebtOrderConstructorParams,
         protected data: DebtOrderData,
     ) {}
 
