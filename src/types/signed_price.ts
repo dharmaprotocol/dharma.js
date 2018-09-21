@@ -6,8 +6,8 @@ import { ECDSASignature } from "./ecdsa_signature";
  * A price that has been signed by some price feed.
  */
 export interface SignedPrice {
-    // The symbol of the token being priced, e.g. "REP".
-    tokenSymbol: string;
+    // The address of the token being priced.
+    tokenAddress: string;
     // The price given by the price feed operator.
     tokenPrice: BigNumber;
     // A Unix timestamp for the time at which this price was generated.
