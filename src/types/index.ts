@@ -17,3 +17,6 @@ export { RepaymentRouterError } from "./repayment_router_error";
 export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";
+// Types for Creditor-Driven Lending.
+export { DebtOfferData } from "./debt_offer_data";
+export { SignedPrice } from "./signed_price";
