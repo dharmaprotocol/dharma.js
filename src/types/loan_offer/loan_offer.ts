@@ -2,8 +2,7 @@ import { Dharma } from "../dharma";
 
 import { DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
-import { CreditorProxyContract, DebtOrderDataWrapper } from "../../wrappers";
-import { ECDSASignature } from "../ecdsa_signature";
+import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
