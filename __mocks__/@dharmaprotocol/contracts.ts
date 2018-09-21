@@ -15,3 +15,4 @@ export class ERC721Collateralizer extends MockContract {}
 export class ERC721CollateralizedSimpleInterestTermsContract extends MockContract {}
 export class ERC721Token extends MockContract {}
 export class MintableERC721Token extends MockContract {}
+export class CreditorProxy extends MockContract {}
