@@ -1,3 +1,4 @@
+import * as singleLineString from "single-line-string";
 import { BigNumber } from "../../utils/bignumber";
 
 import {
@@ -26,6 +27,9 @@ import {
 export const DEBT_ORDER_ERRORS = {
     ALREADY_SIGNED_BY_DEBTOR: `The debtor has already signed this debt order.`,
     ALREADY_SIGNED_BY_CREDITOR: `The creditor has already signed this debt order.`,
+    PROXY_FILL_DISALLOWED: (className: string) =>
+        singleLineString`A ${className} must be signed by both the creditor and
+                         debtor before it can be filled by proxy.`,
 };
 
 export interface DebtOrderConstructorParams {
