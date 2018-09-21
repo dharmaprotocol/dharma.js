@@ -67,5 +67,5 @@ export {
     ERC721TokenContract,
     ERC721CollateralizerContract,
     MintableERC721TokenContract,
-    CreditorProxyContract
+    CreditorProxyContract,
 };
