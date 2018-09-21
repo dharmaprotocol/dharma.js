@@ -15,5 +15,11 @@ export async function testCreate(dharma: Dharma, params: any) {
 
             expect(isSignedByDebtor).toEqual(false);
         });
+
+        test("not signed by the creditor", async () => {
+            const isSignedByCreditor = await loanOffer.isSignedByCreditor();
+
+            expect(isSignedByCreditor).toEqual(false);
+        });
     });
 }
