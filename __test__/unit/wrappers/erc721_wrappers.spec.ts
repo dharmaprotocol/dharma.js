@@ -75,8 +75,7 @@ const wrappers: WrapperTestObject[] = [
     {
         name: "CreditorProxy",
         displayName: "Creditor Proxy",
-        artifactPath:
-            "node_modules/@dharmaprotocol/contracts/artifacts/json/CreditorProxy.json",
+        artifactPath: "node_modules/@dharmaprotocol/contracts/artifacts/json/CreditorProxy.json",
         contract: CreditorProxyContract,
         artifact: CreditorProxy,
     },
