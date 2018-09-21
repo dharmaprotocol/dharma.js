@@ -13,13 +13,13 @@ import {
 
 // Wrappers
 import {
+    CreditorProxyContract,
     ERC721CollateralizedSimpleInterestTermsContractContract,
     ERC721CollateralizerContract,
     ERC721TokenContract,
     ERC721TokenRegistryContract,
     MintableERC721TokenContract,
 } from "../../../src/wrappers";
-import { CreditorProxyContract } from "../../../src/wrappers/contract_wrappers/creditor_proxy_wrapper";
 
 /**
  * A class that contains methods for testing the basics of a contract wrapper.
