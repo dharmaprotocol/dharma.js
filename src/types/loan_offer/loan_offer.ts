@@ -4,7 +4,6 @@ import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_o
 
 import { EthereumAddress } from "../../types";
 import { CreditorProxyContract, DebtOrderDataWrapper } from "../../wrappers";
-import { ECDSASignature } from "../ecdsa_signature";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
