@@ -99,7 +99,7 @@ export class LoanOffer extends DebtOrder {
         }
     }
 
-    private async accept(transactionSender: string) {
+    private async accept(sender: string) {
         const creditorProxy = await this.dharma.contracts.loadCreditorProxyContract();
 
         const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
@@ -112,7 +112,7 @@ export class LoanOffer extends DebtOrder {
             debtOrderDataWrapper.getSignaturesV(),
             debtOrderDataWrapper.getSignaturesR(),
             debtOrderDataWrapper.getSignaturesS(),
-            { from: transactionSender },
+            { from: sender },
         );
     }
 
