@@ -34,6 +34,7 @@ import {
     ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY,
     ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY,
+    MINTABLE_ERC721_CACHE_KEY,
     NULL_ADDRESS,
     REPAYMENT_ROUTER_CONTRACT_CACHE_KEY,
     SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
@@ -330,18 +331,28 @@ export class ContractsAPI {
     public async loadMintableERC721ContractAsync(
         transactionOptions: object = {},
     ): Promise<MintableERC721TokenContract> {
-        const cacheKey = "MintableERC721TokenContract";
+        if (MINTABLE_ERC721_CACHE_KEY in this.cache) {
+            return this.cache[MINTABLE_ERC721_CACHE_KEY] as MintableERC721TokenContract;
+        }
 
-        if (cacheKey in this.cache) {
-            return this.cache[cacheKey] as MintableERC721TokenContract;
-        } else {
-            const tokenContract = await MintableERC721TokenContract.deployed(
+        let mintableERC721: MintableERC721TokenContract;
+
+        if (this.addressBook.mintableERC721Address) {
+            mintableERC721 = await MintableERC721TokenContract.at(
+                this.addressBook.mintableERC721Address,
                 this.web3,
                 transactionOptions,
             );
-            this.cache[cacheKey] = tokenContract;
-            return tokenContract;
+        } else {
+            mintableERC721 = await MintableERC721TokenContract.deployed(
+                this.web3,
+                transactionOptions,
+            );
         }
+
+        this.cache[MINTABLE_ERC721_CACHE_KEY] = mintableERC721;
+
+        return mintableERC721;
     }
 
     public async loadERC721ContractAsync(
