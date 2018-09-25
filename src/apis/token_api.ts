@@ -144,6 +144,34 @@ export class TokenAPI {
     }
 
     /**
+     * Asynchronously set an allowance to the `creditorProxy`.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  allowance    the size of the allowance.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
+    public async setCreditorProxyAllowanceAsync(
+        tokenAddress: string,
+        allowance: BigNumber,
+        options?: TxData,
+    ): Promise<string> {
+        const txOptions = await generateTxOptions(this.web3, TRANSFER_GAS_MAXIMUM, options);
+
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
+        const creditorProxyContract = await this.contracts.loadCreditorProxyContract();
+
+        return tokenContract.approve.sendTransactionAsync(
+            creditorProxyContract.address,
+            allowance,
+            txOptions,
+        );
+    }
+
+    /**
      * Asynchronously set an allowance to the `tokenTransferProxy`.
      *
      * @param  tokenAddress address of the ERC20 token.
