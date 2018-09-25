@@ -117,8 +117,15 @@ export class LoanOffer extends DebtOrder {
 
     private getLoanOfferHash(): string {
         return Web3Utils.soliditySHA3(
-            new DebtOrderDataWrapper(this.data).getHash(),
-            DECISION_ENGINE_ADDRESS,
+            this.data.creditor,
+            this.data.issuanceVersion,
+            this.data.creditorFee,
+            this.data.underwriter,
+            this.data.underwriterRiskRating,
+            this.data.termsContract,
+            this.data.termsContractParameters,
+            this.data.expirationTimestampInSec,
+            this.data.salt,
         );
     }
 }
