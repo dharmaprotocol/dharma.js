@@ -67,9 +67,7 @@ export class Web3Utils {
      * @returns {Promise<Web3.BlockWithoutTransactionData>}
      */
     public async getCurrentBlock(): Promise<Web3.BlockWithoutTransactionData> {
-        return promisify(
-            this.web3.eth.getBlock,
-        )("latest");
+        return promisify(this.web3.eth.getBlock)("latest");
     }
 
     /**
@@ -80,15 +78,14 @@ export class Web3Utils {
      * @returns {Promise<boolean>}
      */
     public async increaseTime(seconds: number): Promise<boolean> {
-        const increaseTimeResponse = await this.sendJsonRpcRequestAsync(
-            "evm_increaseTime",
-            [seconds],
-        );
+        const increaseTimeResponse = await this.sendJsonRpcRequestAsync("evm_increaseTime", [
+            seconds,
+        ]);
 
         // A new block must be mined to make this effective.
         const blockMineResponse = await this.mineBlock();
 
-        return !increaseTimeResponse["error"] && !blockMineResponse["error"];
+        return !increaseTimeResponse.error && !blockMineResponse.error;
     }
 
     /**
@@ -96,8 +93,30 @@ export class Web3Utils {
      *
      * @returns {Promise<"web3".Web3.JSONRPCResponsePayload>}
      */
-    public async mineBlock(): Promise<Web3.JSONRPCResponsePayload>  {
+    public async mineBlock(): Promise<Web3.JSONRPCResponsePayload> {
         return this.sendJsonRpcRequestAsync("evm_mine", []);
+    }
+
+    /**
+     * Returns the latest blocktime in seconds.
+     *
+     * @returns {Promise<number>}
+     */
+    public async getLatestBlockTime(): Promise<number> {
+        // Ganache has a bug in which, if ....
+        //   1. `evm_increaseTime` has been used at some point in the chain's history
+        //   2. `evm_revert` has *just* been used to revert to a previous snapshot
+        //   3. A block has not yet been mined
+        // ...the timestamp returned by `web3.eth.getBlock("latest")`
+        // will not account for the time differential applied by `evm_increaseTime`.
+        //
+        // We force a block to mine in order to avoid the edge case issues
+        // that this bug engenders.
+        await this.mineBlock();
+
+        const latestBlock = await promisify(this.web3.eth.getBlock)("latest");
+
+        return latestBlock.timestamp;
     }
 
     private async sendJsonRpcRequestAsync(

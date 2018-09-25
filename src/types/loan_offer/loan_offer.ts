@@ -98,6 +98,19 @@ export class LoanOffer extends DebtOrder {
         }
     }
 
+    /**
+     * Eventually returns true if the current loan offer has been filled by a debtor.
+     *
+     * @example
+     * await loanOffer.isFilled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isFilled(): Promise<boolean> {
+        return this.dharma.order.checkOrderFilledAsync(this.data);
+    }
+
     private async accept(sender: string) {
         const creditorProxy = await this.dharma.contracts.loadCreditorProxyContract();
 
@@ -115,23 +128,10 @@ export class LoanOffer extends DebtOrder {
         );
     }
 
-    /**
-     * Eventually returns true if the current loan offer has been filled by a debtor.
-     *
-     * @example
-     * await loanOffer.isFilled();
-     * => true
-     *
-     * @returns {Promise<boolean>}
-     */
-    public async isFilled(): Promise<boolean> {
-        return this.dharma.order.checkOrderFilledAsync(this.data);
-    }
-
     private getLoanOfferHash(): string {
         return Web3Utils.soliditySHA3(
             this.data.creditor,
-            this.data.issuanceVersion, // check
+            this.data.issuanceVersion,
             this.data.creditorFee,
             this.data.underwriter,
             this.data.underwriterRiskRating,
@@ -140,10 +140,5 @@ export class LoanOffer extends DebtOrder {
             this.data.expirationTimestampInSec,
             this.data.salt,
         );
-
-        // return Web3Utils.soliditySHA3(
-        //     new DebtOrderDataWrapper(this.data).getHash(),
-        //     DECISION_ENGINE_ADDRESS,
-        // );
     }
 }

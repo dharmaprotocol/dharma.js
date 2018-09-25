@@ -1,24 +1,26 @@
 import * as Web3 from "web3";
 
-import { Dharma, BigNumber } from "../../../../src";
+import { BigNumber, Dharma } from "../../../../src";
 
 import { LoanOffer } from "../../../../src/types";
 
 import {
-    OrderAPI,
-    ContractsAPI,
     AdaptersAPI,
-    TokenAPI,
     BlockchainAPI,
+    ContractsAPI,
+    DebtTokenAPI,
+    OrderAPI,
+    TokenAPI,
 } from "../../../../src/apis/";
 
-import * as compact from "lodash.compact";
 import * as ABIDecoder from "abi-decoder";
+import * as compact from "lodash.compact";
 import {
     CreditorProxyContract,
+    DebtKernelContract,
+    DebtTokenContract,
     DummyTokenContract,
     TokenTransferProxyContract,
-    DebtKernelContract,
 } from "src/wrappers";
 
 import { Web3Utils } from "../../../../utils/web3_utils";
@@ -41,8 +43,10 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
         let blockchainApi: BlockchainAPI;
         let creditorProxy: CreditorProxyContract;
         let contractsApi: ContractsAPI;
+        let debtTokenApi: DebtTokenAPI;
         let tokenTransferProxy: TokenTransferProxyContract;
         let debtKernel: DebtKernelContract;
+        let debtToken: DebtTokenContract;
 
         let principalToken: DummyTokenContract;
         let collateralToken: DummyTokenContract;
@@ -56,6 +60,7 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
             creditorProxy = await contractsApi.loadCreditorProxyContract();
             tokenTransferProxy = await contractsApi.loadTokenTransferProxyAsync();
             debtKernel = await contractsApi.loadDebtKernelAsync();
+            debtToken = await contractsApi.loadDebtTokenAsync();
 
             ABIDecoder.addABI(creditorProxy.abi);
             ABIDecoder.addABI(debtKernel.abi);
@@ -64,6 +69,7 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
             orderApi = new OrderAPI(web3, contractsApi, adaptersApi);
             tokenApi = new TokenAPI(web3, contractsApi);
             blockchainApi = new BlockchainAPI(web3, contractsApi);
+            debtTokenApi = new DebtTokenAPI(web3, contractsApi);
         });
 
         beforeEach(async () => {
@@ -108,6 +114,13 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
                 { from: DEBTOR.address },
             );
 
+            // TODO:remove, temp!
+            await principalToken.setBalance.sendTransactionAsync(
+                creditorProxy.address,
+                new BigNumber(10000000000).times(new BigNumber(10).pow(18)),
+                TX_DEFAULTS,
+            );
+
             console.log("beforeEach done");
         });
 
@@ -117,13 +130,19 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
         });
 
         test("is accepted by debtor", async () => {
-            // // get TokenTransferProxy's authorized agents
-            // const authorizedAgents = await tokenTransferProxy.getAuthorizedTransferAgents.callAsync();
+            // check expirationTimestampInSec
+            const latestBlockTime = await web3Utils.getLatestBlockTime();
+            console.log("latestBlockTime", latestBlockTime);
 
-            // console.log(authorizedAgents);
+            console.log("expiration", loanOffer.data.expirationTimestampInSec);
 
-            // // get CreditorProxy's address
-            // console.log(creditorProxy.address);
+            // get TokenTransferProxy's authorized agents
+            const authorizedAgents = await tokenTransferProxy.getAuthorizedTransferAgents.callAsync();
+
+            console.log(authorizedAgents);
+
+            // get CreditorProxy's address
+            console.log(creditorProxy.address);
 
             const creditorPrincipalAllowance = await tokenApi.getProxyAllowanceAsync(
                 principalToken.address,
@@ -134,8 +153,7 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
                 DEBTOR.address,
             );
 
-            console.log(creditorPrincipalAllowance);
-            console.log(debtorCollateralAllowance);
+            console.log(creditorPrincipalAllowance.toString());
 
             let isFilled = await loanOffer.isFilled();
             expect(isFilled).toEqual(false);
@@ -150,8 +168,22 @@ export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
             await loanOffer.signAsDebtor(debtorAddress);
 
             console.log(loanOffer.data);
+            console.log(loanOffer.getAgreementId());
+
+            // // check debtToken already minted
+            // const issuanceHash = await orderApi.getIssuanceHash(loanOffer.data);
+            // const minted = await debtTokenApi.exists(new BigNumber(issuanceHash));
+            //
+            // console.log("debt token exists:", issuanceHash, minted);
+
+            // check debt token set properly
+            const debtTokenAddress = debtToken.address;
+            const debtTokenAddressInKernel = await debtKernel.debtToken.callAsync();
+            console.log("debtTokenAddress", debtTokenAddress);
+            console.log("debtTokenAddressInKernel", debtTokenAddressInKernel);
 
             const txHash = await loanOffer.acceptAsDebtor(debtorAddress);
+
             const receipt = await web3Utils.getTransactionReceiptAsync(txHash);
 
             const [one, two, three, four] = compact(ABIDecoder.decodeLogs(receipt.logs));
