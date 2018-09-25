@@ -144,6 +144,24 @@ export class TokenAPI {
     }
 
     /**
+     * Asynchronously set an unlimited proxy allowance to the `creditorProxy`.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
+    public async setUnlimitedCreditorProxyAllowanceAsync(
+        tokenAddress: string,
+        options?: TxData,
+    ): Promise<string> {
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
+        return this.setCreditorProxyAllowanceAsync(tokenAddress, UNLIMITED_ALLOWANCE, options);
+    }
+
+    /**
      * Asynchronously set an allowance to the `creditorProxy`.
      *
      * @param  tokenAddress address of the ERC20 token.
