@@ -3,7 +3,7 @@ import { Dharma } from "../dharma";
 import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
 import { EthereumAddress } from "../../types";
-import { CreditorProxyContract, DebtOrderDataWrapper } from "../../wrappers";
+import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
