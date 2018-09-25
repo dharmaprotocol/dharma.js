@@ -308,6 +308,7 @@ export class DebtOrder {
      * @return {boolean}
      */
     public isSignedByDebtor(): boolean {
+        // TODO: check validity of signature
         return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
@@ -378,6 +379,7 @@ export class DebtOrder {
      * @return {boolean}
      */
     public isSignedByCreditor(): boolean {
+        // TODO: check validity of signature
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
