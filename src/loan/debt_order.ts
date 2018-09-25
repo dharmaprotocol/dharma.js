@@ -365,6 +365,7 @@ export class DebtOrder {
      * @return {boolean}
      */
     public isSignedByCreditor(): boolean {
+        // TODO: actually check signature
         return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
