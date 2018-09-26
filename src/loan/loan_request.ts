@@ -6,6 +6,9 @@ import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
+import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+import { SignatureUtils } from "../../utils/signature_utils";
+
 export class LoanRequest extends DebtOrder {
     /**
      * Eventually returns an instance of a LoanRequest object with the terms specified, signed by
@@ -67,6 +70,32 @@ export class LoanRequest extends DebtOrder {
     }
 
     /**
+     * Returns whether the loan request has been signed by a creditor.
+     *
+     * @example
+     * loanRequest.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByCreditor(): boolean {
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
+
+        if (
+            this.data.creditorSignature === NULL_ECDSA_SIGNATURE ||
+            !SignatureUtils.isValidSignature(
+                debtOrderDataWrapper.getCreditorCommitmentHash(),
+                this.data.creditorSignature,
+                this.data.creditor,
+            )
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Eventually determines if the prospective creditor is able to fill the loan request.
      *
      * @returns {Promise<boolean>}
@@ -80,6 +109,19 @@ export class LoanRequest extends DebtOrder {
         return this.dharma.order.isFillableBy(this.data, creditor, {
             from: creditor,
         });
+    }
+
+    /**
+     * Eventually returns true if the current loan request has been filled on the blockchain.
+     *
+     * @example
+     * await loanRequest.isFilled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isFilled(): Promise<boolean> {
+        return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
     /**

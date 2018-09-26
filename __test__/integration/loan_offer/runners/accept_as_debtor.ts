@@ -4,11 +4,11 @@ import { LoanOffer } from "../../../../src/types";
 
 import { testAccept } from "./accept";
 
-export async function testAcceptAsDebtor(dharma: Dharma, params: any) {
-    async function signAndAccept(loanOffer: LoanOffer, address: string) {
-        await loanOffer.signAsDebtor(address);
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
-        await loanOffer.acceptAsDebtor(address, { gas: 4712388 });
+export async function testAcceptAsDebtor(dharma: Dharma, params: DebtOrderParams) {
+    async function signAndAccept(loanOffer: LoanOffer, debtorAddress: string) {
+        await loanOffer.acceptAsDebtor(debtorAddress);
     }
 
     await testAccept(dharma, params, signAndAccept);

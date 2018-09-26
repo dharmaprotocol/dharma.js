@@ -2,10 +2,15 @@ import { Dharma } from "../dharma";
 
 import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
-import { EthereumAddress, TxData } from "../../types";
+import { EthereumAddress } from "../../types";
 import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
+
+import { NULL_ECDSA_SIGNATURE } from "../../../utils/constants";
+import { SignatureUtils } from "../../../utils/signature_utils";
+
+const GAS = 800000;
 
 export class LoanOffer extends DebtOrder {
     public static async createAndSignAsCreditor(
@@ -53,6 +58,30 @@ export class LoanOffer extends DebtOrder {
     }
 
     /**
+     * Returns whether the loan request has been signed by a creditor.
+     *
+     * @example
+     * loanRequest.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByCreditor(): boolean {
+        if (
+            this.data.creditorSignature === NULL_ECDSA_SIGNATURE ||
+            !SignatureUtils.isValidSignature(
+                this.getLoanOfferHash(),
+                this.data.creditorSignature,
+                this.data.creditor,
+            )
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Eventually accepts the loan offer as debtor, transferring the principal to the debtor and
      * the collateral to the creditor.
      *
@@ -62,16 +91,15 @@ export class LoanOffer extends DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
-    public async acceptAsDebtor(
-        debtorAddress?: string,
-        transactionOptions?: TxData,
-    ): Promise<string> {
+    public async acceptAsDebtor(debtorAddress?: string): Promise<string> {
         this.data.debtor = await EthereumAddress.validAddressOrCurrentUser(
             this.dharma,
             debtorAddress,
         );
 
-        return this.accept(this.data.debtor, transactionOptions);
+        await this.signAsDebtor(this.data.debtor);
+
+        return this.accept(this.data.debtor);
     }
 
     /**
@@ -86,23 +114,33 @@ export class LoanOffer extends DebtOrder {
      *
      * @return {Promise<string>}
      */
-    public async acceptAsProxy(
-        proxyAddress?: string,
-        transactionOptions?: TxData,
-    ): Promise<string> {
+    public async acceptAsProxy(proxyAddress?: string): Promise<string> {
         if (this.isSignedByCreditor() && this.isSignedByDebtor()) {
             const proxySender = await EthereumAddress.validAddressOrCurrentUser(
                 this.dharma,
                 proxyAddress,
             );
 
-            return this.accept(proxySender, transactionOptions);
+            return this.accept(proxySender);
         } else {
             throw new Error(DEBT_ORDER_ERRORS.PROXY_FILL_DISALLOWED("loan offer"));
         }
     }
 
-    private async accept(sender: string, transactionOptions?: TxData) {
+    /**
+     * Eventually returns true if the current loan offer has been accepted on the blockchain.
+     *
+     * @example
+     * await loanOffer.isAccepted();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isAccepted(): Promise<boolean> {
+        return this.dharma.order.checkOrderFilledAsync(this.data);
+    }
+
+    private async accept(sender: string) {
         const creditorProxy = await this.dharma.contracts.loadCreditorProxyContract();
 
         const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
@@ -115,7 +153,7 @@ export class LoanOffer extends DebtOrder {
             debtOrderDataWrapper.getSignaturesV(),
             debtOrderDataWrapper.getSignaturesR(),
             debtOrderDataWrapper.getSignaturesS(),
-            { ...transactionOptions, from: sender },
+            { from: sender, gas: GAS },
         );
     }
 

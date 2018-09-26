@@ -4,11 +4,15 @@ import { LoanOffer } from "../../../../src/types";
 
 import { testAccept } from "./accept";
 
-export async function testAcceptAsProxy(dharma: Dharma, params: any) {
-    async function signAndAccept(loanOffer: LoanOffer, address: string) {
-        await loanOffer.signAsDebtor(address);
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
-        await loanOffer.acceptAsProxy(address, { gas: 4712388 });
+import { ACCOUNTS } from "../../../accounts";
+
+export async function testAcceptAsProxy(dharma: Dharma, params: DebtOrderParams) {
+    async function signAndAccept(loanOffer: LoanOffer, debtorAddress: string) {
+        await loanOffer.signAsDebtor(debtorAddress);
+
+        await loanOffer.acceptAsProxy(ACCOUNTS[3].address);
     }
 
     await testAccept(dharma, params, signAndAccept);

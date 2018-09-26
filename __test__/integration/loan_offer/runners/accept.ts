@@ -1,12 +1,12 @@
-import * as Web3 from "web3";
-
-import { BigNumber, Dharma } from "../../../../src";
+import { BigNumber, Dharma, Web3 } from "../../../../src";
 
 import { LoanOffer } from "../../../../src/types";
 
-import { ContractsAPI } from "../../../../src/apis/";
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
-import { DummyTokenContract } from "../../../../src/wrappers";
+import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
+
+import { Web3Utils } from "../../../../utils/web3_utils";
 
 // Accounts
 import { ACCOUNTS } from "../../../accounts";
@@ -16,80 +16,42 @@ const { Token } = Dharma.Types;
 const CREDITOR = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
 
-const TX_DEFAULTS = { from: CREDITOR.address, gas: 4712388 };
+const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+const web3 = new Web3(provider);
+const web3Utils = new Web3Utils(web3);
 
 export async function testAccept(
     dharma: Dharma,
-    params: any,
-    signAndAccept: (loanOffer: LoanOffer, address: string) => void,
+    params: DebtOrderParams,
+    signAndAccept: (loanOffer: LoanOffer, debtorAddress: string) => void,
 ) {
     describe("passing valid params", () => {
         let loanOffer: LoanOffer;
 
-        let web3: Web3;
-
-        let contractsApi: ContractsAPI;
-
-        let principalToken: DummyTokenContract;
-        let collateralToken: DummyTokenContract;
+        let currentSnapshotId: number;
 
         beforeAll(async () => {
-            loanOffer = await LoanOffer.createAndSignAsCreditor(dharma, params);
-
-            const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-            web3 = new Web3(provider);
-
-            contractsApi = new ContractsAPI(web3);
-
-            principalToken = await DummyTokenContract.at(
-                (await contractsApi.loadTokenBySymbolAsync(params.principalToken)).address,
-                web3,
-                TX_DEFAULTS,
-            );
-
-            collateralToken = await DummyTokenContract.at(
-                (await contractsApi.loadTokenBySymbolAsync(params.collateralToken)).address,
-                web3,
-                TX_DEFAULTS,
-            );
+            currentSnapshotId = await web3Utils.saveTestSnapshot();
         });
 
         beforeEach(async () => {
-            // set balances
-            await principalToken.setBalance.sendTransactionAsync(
-                CREDITOR.address,
-                new BigNumber(10000000000).times(new BigNumber(10).pow(18)),
-                TX_DEFAULTS,
-            );
+            loanOffer = await LoanOffer.createAndSignAsCreditor(dharma, params);
 
-            await collateralToken.setBalance.sendTransactionAsync(
-                DEBTOR.address,
-                new BigNumber(10000000000).times(new BigNumber(10).pow(18)),
-                TX_DEFAULTS,
-            );
+            await setBalancesAndAllowances(dharma, params, DEBTOR.address, CREDITOR.address);
+        });
 
-            // set allowances
-            await Token.setCreditorProxyAllowanceToUnlimited(
-                dharma,
-                params.principalToken,
-                CREDITOR.address,
-            );
-
-            await Token.makeAllowanceUnlimitedIfNecessary(
-                dharma,
-                params.collateralToken,
-                DEBTOR.address,
-            );
+        afterEach(async () => {
+            await web3Utils.revertToSnapshot(currentSnapshotId);
         });
 
         test("is accepted by debtor", async () => {
-            const isFilledBefore = await loanOffer.isFilled();
-            expect(isFilledBefore).toEqual(false);
+            const isAcceptedBefore = await loanOffer.isAccepted();
+            expect(isAcceptedBefore).toEqual(false);
 
             await signAndAccept(loanOffer, DEBTOR.address);
 
-            const isFilledAfter = await loanOffer.isFilled();
-            expect(isFilledAfter).toEqual(true);
+            const isAcceptedAfter = await loanOffer.isAccepted();
+            expect(isAcceptedAfter).toEqual(true);
         });
     });
 }

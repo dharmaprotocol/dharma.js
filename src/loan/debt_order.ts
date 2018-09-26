@@ -14,6 +14,8 @@ import { Dharma } from "../types/dharma";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
+import { SignatureUtils } from "../../utils/signature_utils";
+
 import {
     DebtOrderData,
     DurationUnit,
@@ -286,19 +288,6 @@ export class DebtOrder {
     }
 
     /**
-     * Eventually returns true if the current debt order has been filled on the blockchain.
-     *
-     * @example
-     * await loanRequest.isFilled();
-     * => true
-     *
-     * @returns {Promise<boolean>}
-     */
-    public async isFilled(): Promise<boolean> {
-        return this.dharma.order.checkOrderFilledAsync(this.data);
-    }
-
-    /**
      * Returns whether the loan request has been signed by a debtor.
      *
      * @example
@@ -308,8 +297,20 @@ export class DebtOrder {
      * @return {boolean}
      */
     public isSignedByDebtor(): boolean {
-        // TODO: check validity of signature
-        return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
+
+        if (
+            this.data.debtorSignature === NULL_ECDSA_SIGNATURE ||
+            !SignatureUtils.isValidSignature(
+                debtOrderDataWrapper.getDebtorCommitmentHash(),
+                this.data.debtorSignature,
+                this.data.debtor,
+            )
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -367,20 +368,6 @@ export class DebtOrder {
         return this.dharma.order.cancelOrderAsync(this.data, {
             from: this.data.debtor,
         });
-    }
-
-    /**
-     * Returns whether the loan request has been signed by a creditor.
-     *
-     * @example
-     * loanRequest.isSignedByCreditor();
-     * => true
-     *
-     * @return {boolean}
-     */
-    public isSignedByCreditor(): boolean {
-        // TODO: check validity of signature
-        return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     /**
