@@ -118,6 +118,16 @@ export async function setCreditorProxyAllowanceToUnlimited(
     return dharma.token.setUnlimitedCreditorProxyAllowanceAsync(tokenAddress, { from: owner });
 }
 
+/**
+ * Eventually determnines whether the user specified has allotted an unlimited allowance to the
+ * creditor proxy.
+ *
+ * @example
+ * await Token.hasUnlimitedCreditorProxyAllowance(dharma, "0x...", "REP");
+ * => true
+ *
+ * @returns {Promise<boolean>}
+ */
 export async function hasUnlimitedCreditorProxyAllowance(
     dharma: Dharma,
     symbol: string,
