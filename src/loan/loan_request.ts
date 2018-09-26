@@ -83,6 +83,19 @@ export class LoanRequest extends DebtOrder {
     }
 
     /**
+     * Eventually returns true if the current loan request has been filled on the blockchain.
+     *
+     * @example
+     * await loanRequest.isFilled();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isFilled(): Promise<boolean> {
+        return this.isWrittenToBlockchain();
+    }
+
+    /**
      * Eventually throws if the prospective creditor is unable to fill the loan request.
      *
      * @returns {Promise<void>}

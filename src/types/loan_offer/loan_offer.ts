@@ -98,6 +98,19 @@ export class LoanOffer extends DebtOrder {
         }
     }
 
+    /**
+     * Eventually returns true if the current loan offer has been accepted on the blockchain.
+     *
+     * @example
+     * await loanOffer.isAccepted();
+     * => true
+     *
+     * @returns {Promise<boolean>}
+     */
+    public async isAccepted(): Promise<boolean> {
+        return this.isWrittenToBlockchain();
+    }
+
     private async accept(sender: string) {
         const creditorProxy = await this.dharma.contracts.loadCreditorProxyContract();
 

@@ -83,13 +83,13 @@ export async function testAccept(
         });
 
         test("is accepted by debtor", async () => {
-            const isFilledBefore = await loanOffer.isFilled();
-            expect(isFilledBefore).toEqual(false);
+            const isAcceptedBefore = await loanOffer.isAccepted();
+            expect(isAcceptedBefore).toEqual(false);
 
             await signAndAccept(loanOffer, DEBTOR.address);
 
-            const isFilledAfter = await loanOffer.isFilled();
-            expect(isFilledAfter).toEqual(true);
+            const isAcceptedAfter = await loanOffer.isAccepted();
+            expect(isAcceptedAfter).toEqual(true);
         });
     });
 }

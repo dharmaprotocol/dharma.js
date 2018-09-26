@@ -286,19 +286,6 @@ export class DebtOrder {
     }
 
     /**
-     * Eventually returns true if the current debt order has been filled on the blockchain.
-     *
-     * @example
-     * await loanRequest.isFilled();
-     * => true
-     *
-     * @returns {Promise<boolean>}
-     */
-    public async isFilled(): Promise<boolean> {
-        return this.dharma.order.checkOrderFilledAsync(this.data);
-    }
-
-    /**
      * Returns whether the loan request has been signed by a debtor.
      *
      * @example
@@ -429,5 +416,9 @@ export class DebtOrder {
             creditorSignature: this.data.creditorSignature!,
             underwriterSignature: this.data.underwriterSignature!,
         };
+    }
+
+    protected async isWrittenToBlockchain(): Promise<boolean> {
+        return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 }
