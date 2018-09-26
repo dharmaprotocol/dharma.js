@@ -6,6 +6,9 @@ import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
+import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
+import { SignatureUtils } from "../../utils/signature_utils";
+
 export class LoanRequest extends DebtOrder {
     /**
      * Eventually returns an instance of a LoanRequest object with the terms specified, signed by
@@ -64,6 +67,35 @@ export class LoanRequest extends DebtOrder {
         const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
 
         this.data.creditorSignature = await this.dharma.sign.asCreditor(this.data, isMetaMask);
+    }
+
+    /**
+     * Returns whether the loan request has been signed by a creditor.
+     *
+     * @example
+     * loanRequest.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByCreditor(): boolean {
+        if (this.data.creditorSignature === NULL_ECDSA_SIGNATURE) {
+            return false;
+        }
+
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
+
+        if (
+            !SignatureUtils.isValidSignature(
+                debtOrderDataWrapper.getCreditorCommitmentHash(),
+                this.data.creditorSignature,
+                this.data.creditor,
+            )
+        ) {
+            throw Error(DEBT_ORDER_ERRORS.INVALID_CREDITOR_SIGNATURE);
+        }
+
+        return true;
     }
 
     /**

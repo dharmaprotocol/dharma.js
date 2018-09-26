@@ -31,6 +31,8 @@ export const DEBT_ORDER_ERRORS = {
     ALREADY_SIGNED_BY_CREDITOR: `The creditor has already signed this debt order.`,
     INVALID_DEBTOR_SIGNATURE: singleLineString`The debtor signature is invalid.
         Please ensure the debtor signs the correct and most recent terms.`,
+    INVALID_CREDITOR_SIGNATURE: singleLineString`The creditor signature is invalid.
+        Please ensure the creditor signs the correct and most recent terms.`,
     PROXY_FILL_DISALLOWED: (className: string) =>
         singleLineString`A ${className} must be signed by both the creditor and
                          debtor before it can be filled by proxy.`,
@@ -373,20 +375,6 @@ export class DebtOrder {
         return this.dharma.order.cancelOrderAsync(this.data, {
             from: this.data.debtor,
         });
-    }
-
-    /**
-     * Returns whether the loan request has been signed by a creditor.
-     *
-     * @example
-     * loanRequest.isSignedByCreditor();
-     * => true
-     *
-     * @return {boolean}
-     */
-    public isSignedByCreditor(): boolean {
-        // TODO: check validity of signature
-        return this.data.creditorSignature !== NULL_ECDSA_SIGNATURE;
     }
 
     /**

@@ -7,6 +7,9 @@ import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
+import { NULL_ECDSA_SIGNATURE } from "../../../utils/constants";
+import { SignatureUtils } from "../../../utils/signature_utils";
+
 const GAS = 4712388;
 
 export class LoanOffer extends DebtOrder {
@@ -52,6 +55,33 @@ export class LoanOffer extends DebtOrder {
             this.data.creditor,
             isMetaMask,
         );
+    }
+
+    /**
+     * Returns whether the loan request has been signed by a creditor.
+     *
+     * @example
+     * loanRequest.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByCreditor(): boolean {
+        if (this.data.creditorSignature === NULL_ECDSA_SIGNATURE) {
+            return false;
+        }
+
+        if (
+            !SignatureUtils.isValidSignature(
+                this.getLoanOfferHash(),
+                this.data.creditorSignature,
+                this.data.creditor,
+            )
+        ) {
+            throw Error(DEBT_ORDER_ERRORS.INVALID_CREDITOR_SIGNATURE);
+        }
+
+        return true;
     }
 
     /**
