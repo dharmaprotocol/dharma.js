@@ -272,6 +272,25 @@ export class TokenAPI {
         return tokenContract.allowance.callAsync(ownerAddress, tokenTransferProxy.address);
     }
 
+    /**
+     * Asynchronously retrieves the allowance allotted to the `creditorProxy` by the specified owner.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the owner on whose behalf the allowance is being queried.
+     * @return              the allowance allotted to the `creditorProxy`.
+     */
+    public async getCreditorProxyAllowanceAsync(
+        tokenAddress: string,
+        ownerAddress: string,
+    ): Promise<BigNumber> {
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
+        const creditorProxy = await this.contracts.loadCreditorProxyContract();
+
+        return tokenContract.allowance.callAsync(ownerAddress, creditorProxy.address);
+    }
 
     /**
      * Eventually determines whether the creditor proxy allowance for the specified owner is unlimited.
