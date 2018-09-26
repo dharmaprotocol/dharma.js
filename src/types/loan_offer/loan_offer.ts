@@ -67,18 +67,15 @@ export class LoanOffer extends DebtOrder {
      * @return {boolean}
      */
     public isSignedByCreditor(): boolean {
-        if (this.data.creditorSignature === NULL_ECDSA_SIGNATURE) {
-            return false;
-        }
-
         if (
+            this.data.creditorSignature === NULL_ECDSA_SIGNATURE ||
             !SignatureUtils.isValidSignature(
                 this.getLoanOfferHash(),
                 this.data.creditorSignature,
                 this.data.creditor,
             )
         ) {
-            throw Error(DEBT_ORDER_ERRORS.INVALID_CREDITOR_SIGNATURE);
+            return false;
         }
 
         return true;
