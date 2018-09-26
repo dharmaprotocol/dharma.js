@@ -1,10 +1,12 @@
-import { BigNumber, Dharma } from "../../../../src";
+import { BigNumber, Dharma, Web3 } from "../../../../src";
 
 import { LoanOffer } from "../../../../src/types";
 
 import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
 import { setBalancesAndAllowances } from "../utils/set_balances_and_allowances";
+
+import { Web3Utils } from "../../../../utils/web3_utils";
 
 // Accounts
 import { ACCOUNTS } from "../../../accounts";
@@ -16,6 +18,10 @@ const DEBTOR = ACCOUNTS[1];
 
 const TX_DEFAULTS = { from: CREDITOR.address, gas: 4712388 };
 
+const provider = new Web3.providers.HttpProvider("http://localhost:8545");
+const web3 = new Web3(provider);
+const web3Utils = new Web3Utils(web3);
+
 export async function testAccept(
     dharma: Dharma,
     params: DebtOrderParams,
@@ -24,10 +30,20 @@ export async function testAccept(
     describe("passing valid params", () => {
         let loanOffer: LoanOffer;
 
+        let currentSnapshotId: number;
+
+        beforeAll(async () => {
+            currentSnapshotId = await web3Utils.saveTestSnapshot();
+        });
+
         beforeEach(async () => {
             loanOffer = await LoanOffer.createAndSignAsCreditor(dharma, params);
 
-            setBalancesAndAllowances(dharma, params, DEBTOR.address, CREDITOR.address);
+            await setBalancesAndAllowances(dharma, params, DEBTOR.address, CREDITOR.address);
+        });
+
+        afterEach(async () => {
+            await web3Utils.revertToSnapshot(currentSnapshotId);
         });
 
         test("is accepted by debtor", async () => {
