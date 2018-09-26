@@ -4,6 +4,7 @@ jest.unmock("@dharmaprotocol/contracts");
 
 import { VALID_DEBT_ORDER_PARAMS } from "./scenarios/valid_debt_order_params";
 
+import { testAcceptAsDebtor } from "./runners/accept_as_debtor";
 import { testCreate } from "./runners/create";
 import { testCreateAndSignAsCreditor } from "./runners/create_and_sign_as_creditor";
 
@@ -17,5 +18,9 @@ describe("Loan Request (Integration)", () => {
 
     describe("#createAndSignAsCreditor", async () => {
         await testCreateAndSignAsCreditor(dharma, VALID_DEBT_ORDER_PARAMS);
+    });
+
+    describe("#acceptAsDebtor", async () => {
+        await testAcceptAsDebtor(dharma, VALID_DEBT_ORDER_PARAMS);
     });
 });
