@@ -118,6 +118,18 @@ export async function setCreditorProxyAllowanceToUnlimited(
     return dharma.token.setUnlimitedCreditorProxyAllowanceAsync(tokenAddress, { from: owner });
 }
 
+export async function hasUnlimitedCreditorProxyAllowance(
+    dharma: Dharma,
+    symbol: string,
+    owner: string,
+): Promise<boolean> {
+    EthereumAddress.assertValid(owner);
+
+    const tokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(symbol);
+
+    return dharma.token.hasUnlimitedCreditorProxyAllowance(tokenAddress, owner);
+}
+
 /**
  * Eventually revokes the proxy's allowance for the specified token and user address pair.
  *
