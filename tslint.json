@@ -5,6 +5,7 @@
     "rules": {
         "no-implicit-dependencies": false,
         "object-literal-sort-keys": false,
-        "interface-name": false
+        "interface-name": false,
+        "no-floating-promises": true
     }
 }
