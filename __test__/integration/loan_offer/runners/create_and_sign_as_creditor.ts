@@ -9,7 +9,7 @@ export async function testCreateAndSignAsCreditor(dharma: Dharma, params: DebtOr
         let loanOffer: LoanOffer;
 
         beforeAll(async () => {
-            loanOffer = await LoanOffer.createAndSignAsCreditor<LoanOffer>(dharma, params);
+            loanOffer = await LoanOffer.createAndSignAsCreditor(dharma, params);
         });
 
         test("is signed by the creditor", async () => {
