@@ -22,6 +22,7 @@ import { applyNetworkDefaults, generateTxOptions } from "../../utils/transaction
 import { Assertions } from "../invariants";
 
 const ORDER_FILL_GAS_MAXIMUM = 600000;
+const ACCEPT_GAS_MAXIMUM = 800000;
 
 export const OrderAPIErrors = {
     EXPIRED: () =>
@@ -163,6 +164,32 @@ export class OrderAPI {
         );
 
         await this.assertValidLoanTerms(debtOrderData);
+    }
+
+    /**
+     * Asynchronously fills a debt offer via the creditor proxy.
+     *
+     * @param {DebtOrderData} debtOrderData
+     * @param {TxData} txOptions
+     * @returns {Promise<string>}
+     */
+    public async acceptOffer(debtOrderData: DebtOrderData, options?: TxData): Promise<string> {
+        const txOptions = await generateTxOptions(this.web3, ACCEPT_GAS_MAXIMUM, options);
+
+        const creditorProxy = await this.contracts.loadCreditorProxyContract();
+
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(debtOrderData);
+
+        return creditorProxy.fillDebtOffer.sendTransactionAsync(
+            debtOrderDataWrapper.getCreditor(),
+            debtOrderDataWrapper.getOrderAddresses(),
+            debtOrderDataWrapper.getOrderValues(),
+            debtOrderDataWrapper.getOrderBytes32(),
+            debtOrderDataWrapper.getSignaturesV(),
+            debtOrderDataWrapper.getSignaturesR(),
+            debtOrderDataWrapper.getSignaturesS(),
+            txOptions,
+        );
     }
 
     /**

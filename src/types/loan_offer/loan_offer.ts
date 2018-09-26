@@ -3,14 +3,11 @@ import { Dharma } from "../dharma";
 import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
 import { EthereumAddress } from "../../types";
-import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
 import { NULL_ECDSA_SIGNATURE } from "../../../utils/constants";
 import { SignatureUtils } from "../../../utils/signature_utils";
-
-const GAS = 800000;
 
 export class LoanOffer extends DebtOrder {
     public static async createAndSignAsCreditor(
@@ -99,7 +96,7 @@ export class LoanOffer extends DebtOrder {
 
         await this.signAsDebtor(this.data.debtor);
 
-        return this.accept(this.data.debtor);
+        return this.dharma.order.acceptOffer(this.data, { from: this.data.debtor });
     }
 
     /**
@@ -121,7 +118,7 @@ export class LoanOffer extends DebtOrder {
                 proxyAddress,
             );
 
-            return this.accept(proxySender);
+            return this.dharma.order.acceptOffer(this.data, { from: proxySender });
         } else {
             throw new Error(DEBT_ORDER_ERRORS.PROXY_FILL_DISALLOWED("loan offer"));
         }
@@ -140,24 +137,7 @@ export class LoanOffer extends DebtOrder {
         return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
-    private async accept(sender: string) {
-        const creditorProxy = await this.dharma.contracts.loadCreditorProxyContract();
-
-        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
-
-        return creditorProxy.fillDebtOffer.sendTransactionAsync(
-            this.data.creditor,
-            debtOrderDataWrapper.getOrderAddresses(),
-            debtOrderDataWrapper.getOrderValues(),
-            debtOrderDataWrapper.getOrderBytes32(),
-            debtOrderDataWrapper.getSignaturesV(),
-            debtOrderDataWrapper.getSignaturesR(),
-            debtOrderDataWrapper.getSignaturesS(),
-            { from: sender, gas: GAS },
-        );
-    }
-
-    private getLoanOfferHash(): string {
+    public getLoanOfferHash(): string {
         return Web3Utils.soliditySHA3(
             this.data.creditor,
             this.data.issuanceVersion,
