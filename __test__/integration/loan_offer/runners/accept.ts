@@ -8,6 +8,8 @@ import { ContractsAPI } from "../../../../src/apis/";
 
 import { DummyTokenContract } from "../../../../src/wrappers";
 
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
 // Accounts
 import { ACCOUNTS } from "../../../accounts";
 
@@ -20,7 +22,7 @@ const TX_DEFAULTS = { from: CREDITOR.address, gas: 4712388 };
 
 export async function testAccept(
     dharma: Dharma,
-    params: any,
+    params: DebtOrderParams,
     signAndAccept: (loanOffer: LoanOffer, address: string) => void,
 ) {
     describe("passing valid params", () => {

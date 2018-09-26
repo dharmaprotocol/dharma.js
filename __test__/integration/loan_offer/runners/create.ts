@@ -2,7 +2,9 @@ import { Dharma } from "../../../../src";
 
 import { LoanOffer } from "../../../../src/types";
 
-export async function testCreate(dharma: Dharma, params: any) {
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
+export async function testCreate(dharma: Dharma, params: DebtOrderParams) {
     describe("passing valid params", () => {
         let loanOffer: LoanOffer;
 

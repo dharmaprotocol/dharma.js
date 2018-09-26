@@ -4,7 +4,9 @@ import { LoanOffer } from "../../../../src/types";
 
 import { testAccept } from "./accept";
 
-export async function testAcceptAsProxy(dharma: Dharma, params: any) {
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
+export async function testAcceptAsProxy(dharma: Dharma, params: DebtOrderParams) {
     async function signAndAccept(loanOffer: LoanOffer, address: string) {
         await loanOffer.signAsDebtor(address);
 

@@ -2,12 +2,14 @@ import { Dharma } from "../../../../src";
 
 import { LoanOffer } from "../../../../src/types";
 
-export async function testCreateAndSignAsCreditor(dharma: Dharma, params: any) {
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
+export async function testCreateAndSignAsCreditor(dharma: Dharma, params: DebtOrderParams) {
     describe("passing valid params", () => {
         let loanOffer: LoanOffer;
 
         beforeAll(async () => {
-            loanOffer = await LoanOffer.createAndSignAsCreditor(dharma, params);
+            loanOffer = await LoanOffer.createAndSignAsCreditor<LoanOffer>(dharma, params);
         });
 
         test("is signed by the creditor", async () => {
