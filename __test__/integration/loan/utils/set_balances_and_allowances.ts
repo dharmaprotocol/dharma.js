@@ -1,11 +1,12 @@
 import { setBalanceForSymbol, setUnlimitedAllowanceForSymbol } from "../../../utils/utils";
 
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
 import { Dharma } from "../../../../src/types/dharma";
-import { LoanRequestParams } from "../../../../src/loan";
 
 export async function setBalancesAndAllowances(
     dharma: Dharma,
-    params: LoanRequestParams,
+    params: DebtOrderParams,
     debtor: string,
     creditor: string,
 ): Promise<void> {

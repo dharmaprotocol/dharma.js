@@ -1,6 +1,6 @@
-import { LoanRequestParams } from "../../../../src/loan";
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
-export const VALID_LOAN_REQUEST: LoanRequestParams = {
+export const VALID_LOAN_REQUEST: DebtOrderParams = {
     principalAmount: 5,
     principalToken: "REP",
     collateralAmount: 10,
