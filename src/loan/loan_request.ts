@@ -6,6 +6,8 @@ import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
+import { DebtOrderDataWrapper } from "../wrappers";
+
 import { NULL_ECDSA_SIGNATURE } from "../../utils/constants";
 import { SignatureUtils } from "../../utils/signature_utils";
 
