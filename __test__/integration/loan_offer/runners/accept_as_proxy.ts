@@ -6,11 +6,13 @@ import { testAccept } from "./accept";
 
 import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
-export async function testAcceptAsProxy(dharma: Dharma, params: DebtOrderParams) {
-    async function signAndAccept(loanOffer: LoanOffer, address: string) {
-        await loanOffer.signAsDebtor(address);
+import { ACCOUNTS } from "../../../accounts";
 
-        await loanOffer.acceptAsProxy(address);
+export async function testAcceptAsProxy(dharma: Dharma, params: DebtOrderParams) {
+    async function signAndAccept(loanOffer: LoanOffer, debtorAddress: string) {
+        await loanOffer.signAsDebtor(debtorAddress);
+
+        await loanOffer.acceptAsProxy(ACCOUNTS[3].address);
     }
 
     await testAccept(dharma, params, signAndAccept);

@@ -23,7 +23,7 @@ const TX_DEFAULTS = { from: CREDITOR.address, gas: 4712388 };
 export async function testAccept(
     dharma: Dharma,
     params: DebtOrderParams,
-    signAndAccept: (loanOffer: LoanOffer, address: string) => void,
+    signAndAccept: (loanOffer: LoanOffer, debtorAddress: string) => void,
 ) {
     describe("passing valid params", () => {
         let loanOffer: LoanOffer;
