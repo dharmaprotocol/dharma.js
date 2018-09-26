@@ -16,8 +16,6 @@ const { Token } = Dharma.Types;
 const CREDITOR = ACCOUNTS[0];
 const DEBTOR = ACCOUNTS[1];
 
-const TX_DEFAULTS = { from: CREDITOR.address, gas: 4712388 };
-
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);

@@ -10,7 +10,7 @@ import { Web3Utils } from "../../../utils/web3_utils";
 import { NULL_ECDSA_SIGNATURE } from "../../../utils/constants";
 import { SignatureUtils } from "../../../utils/signature_utils";
 
-const GAS = 4712388;
+const GAS = 800000;
 
 export class LoanOffer extends DebtOrder {
     public static async createAndSignAsCreditor(
