@@ -8,7 +8,7 @@ export async function testAcceptAsProxy(dharma: Dharma, params: any) {
     async function signAndAccept(loanOffer: LoanOffer, address: string) {
         await loanOffer.signAsDebtor(address);
 
-        await loanOffer.acceptAsProxy(address, { gas: 4712388 });
+        await loanOffer.acceptAsProxy(address);
     }
 
     await testAccept(dharma, params, signAndAccept);

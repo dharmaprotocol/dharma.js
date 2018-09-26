@@ -2,12 +2,12 @@ import { Dharma } from "../dharma";
 
 import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_order";
 
-import { EthereumAddress, TxData } from "../../types";
+import { EthereumAddress } from "../../types";
 import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
-const DECISION_ENGINE_ADDRESS = "decisionEngineAddress";
+const GAS = 4712388;
 
 export class LoanOffer extends DebtOrder {
     public static async createAndSignAsCreditor(
@@ -64,16 +64,13 @@ export class LoanOffer extends DebtOrder {
      *
      * @returns {Promise<string>} the hash of the Ethereum transaction to fill the loan request
      */
-    public async acceptAsDebtor(
-        debtorAddress?: string,
-        transactionOptions?: TxData,
-    ): Promise<string> {
+    public async acceptAsDebtor(debtorAddress?: string): Promise<string> {
         this.data.debtor = await EthereumAddress.validAddressOrCurrentUser(
             this.dharma,
             debtorAddress,
         );
 
-        return this.accept(this.data.debtor, transactionOptions);
+        return this.accept(this.data.debtor);
     }
 
     /**
@@ -88,23 +85,20 @@ export class LoanOffer extends DebtOrder {
      *
      * @return {Promise<string>}
      */
-    public async acceptAsProxy(
-        proxyAddress?: string,
-        transactionOptions?: TxData,
-    ): Promise<string> {
+    public async acceptAsProxy(proxyAddress?: string): Promise<string> {
         if (this.isSignedByCreditor() && this.isSignedByDebtor()) {
             const proxySender = await EthereumAddress.validAddressOrCurrentUser(
                 this.dharma,
                 proxyAddress,
             );
 
-            return this.accept(proxySender, transactionOptions);
+            return this.accept(proxySender);
         } else {
             throw new Error(DEBT_ORDER_ERRORS.PROXY_FILL_DISALLOWED("loan offer"));
         }
     }
 
-    private async accept(sender: string, transactionOptions?: TxData) {
+    private async accept(sender: string) {
         const creditorProxy = await this.dharma.contracts.loadCreditorProxyContract();
 
         const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
@@ -117,7 +111,7 @@ export class LoanOffer extends DebtOrder {
             debtOrderDataWrapper.getSignaturesV(),
             debtOrderDataWrapper.getSignaturesR(),
             debtOrderDataWrapper.getSignaturesS(),
-            { ...transactionOptions, from: sender },
+            { from: sender, gas: GAS },
         );
     }
 
