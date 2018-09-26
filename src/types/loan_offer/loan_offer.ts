@@ -100,6 +100,8 @@ export class LoanOffer extends DebtOrder {
             debtorAddress,
         );
 
+        await this.signAsDebtor(this.data.debtor);
+
         return this.accept(this.data.debtor);
     }
 

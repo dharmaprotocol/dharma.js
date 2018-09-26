@@ -8,8 +8,6 @@ import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
 export async function testAcceptAsDebtor(dharma: Dharma, params: DebtOrderParams) {
     async function signAndAccept(loanOffer: LoanOffer, address: string) {
-        await loanOffer.signAsDebtor(address);
-
         await loanOffer.acceptAsDebtor(address);
     }
 
