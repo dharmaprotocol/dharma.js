@@ -67,19 +67,6 @@ export class LoanRequest extends DebtOrder {
     }
 
     /**
-     * Eventually returns true if the current loan request has been filled by a creditor.
-     *
-     * @example
-     * await loanRequest.isFilled();
-     * => true
-     *
-     * @returns {Promise<boolean>}
-     */
-    public async isFilled(): Promise<boolean> {
-        return this.dharma.order.checkOrderFilledAsync(this.data);
-    }
-
-    /**
      * Eventually determines if the prospective creditor is able to fill the loan request.
      *
      * @returns {Promise<boolean>}
