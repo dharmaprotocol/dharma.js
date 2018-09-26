@@ -417,8 +417,4 @@ export class DebtOrder {
             underwriterSignature: this.data.underwriterSignature!,
         };
     }
-
-    protected async isWrittenToBlockchain(): Promise<boolean> {
-        return this.dharma.order.checkOrderFilledAsync(this.data);
-    }
 }

@@ -137,7 +137,7 @@ export class LoanOffer extends DebtOrder {
      * @returns {Promise<boolean>}
      */
     public async isAccepted(): Promise<boolean> {
-        return this.isWrittenToBlockchain();
+        return this.dharma.order.checkOrderFilledAsync(this.data);
     }
 
     private async accept(sender: string) {
