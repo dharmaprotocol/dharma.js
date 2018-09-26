@@ -14,6 +14,8 @@ import { Dharma } from "../types/dharma";
 
 import { DebtOrderDataWrapper } from "../wrappers";
 
+import { SignatureUtils } from "../../utils/signature_utils";
+
 import {
     DebtOrderData,
     DurationUnit,
@@ -27,6 +29,8 @@ import {
 export const DEBT_ORDER_ERRORS = {
     ALREADY_SIGNED_BY_DEBTOR: `The debtor has already signed this debt order.`,
     ALREADY_SIGNED_BY_CREDITOR: `The creditor has already signed this debt order.`,
+    INVALID_DEBTOR_SIGNATURE: singleLineString`The debtor signature is invalid.
+        Please ensure the debtor signs the correct and most recent terms.`,
     PROXY_FILL_DISALLOWED: (className: string) =>
         singleLineString`A ${className} must be signed by both the creditor and
                          debtor before it can be filled by proxy.`,
@@ -295,8 +299,23 @@ export class DebtOrder {
      * @return {boolean}
      */
     public isSignedByDebtor(): boolean {
-        // TODO: check validity of signature
-        return this.data.debtorSignature !== NULL_ECDSA_SIGNATURE;
+        if (this.data.debtorSignature === NULL_ECDSA_SIGNATURE) {
+            return false;
+        }
+
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
+
+        if (
+            !SignatureUtils.isValidSignature(
+                debtOrderDataWrapper.getDebtorCommitmentHash(),
+                this.data.debtorSignature,
+                this.data.debtor,
+            )
+        ) {
+            throw Error(DEBT_ORDER_ERRORS.INVALID_DEBTOR_SIGNATURE);
+        }
+
+        return true;
     }
 
     /**
