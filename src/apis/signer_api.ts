@@ -153,7 +153,7 @@ export class SignerAPI {
      *              allows users to specify which behavior they prefer.
      * @return The ECDSA signature of the payload as signed by the address
      */
-    private async signPayloadWithAddress(
+    public async signPayloadWithAddress(
         payload: string,
         address: string,
         shouldAddPersonalMessagePrefix: boolean,

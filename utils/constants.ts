@@ -42,6 +42,7 @@ export const ERC721_COLLATERALIZER_CONTRACT_CACHE_KEY = "ERC721CollateralizerCon
 export const ERC721_COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY =
     "ERC721CollateralizedSimpleInterestTermsContract";
 export const ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY = "ERC721TokenRegistryContract";
+export const CREDITOR_PROXY_CONTRACT_CACHE_KEY = "CreditorProxyContract";
 
 export const TERMS_CONTRACT_TYPES = {
     COLLATERALIZED_SIMPLE_INTEREST_LOAN: "CollateralizedSimpleInterestLoan",

@@ -2,6 +2,7 @@ import { setBalanceForSymbol, setUnlimitedAllowanceForSymbol } from "../../../ut
 
 import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
+import { Token } from "../../../../src/types";
 import { Dharma } from "../../../../src/types/dharma";
 
 export async function setBalancesAndAllowances(
@@ -16,5 +17,5 @@ export async function setBalancesAndAllowances(
 
     // Configure balances and allowances for creditor.
     await setBalanceForSymbol(dharma, params.principalAmount, params.principalToken, creditor);
-    await setUnlimitedAllowanceForSymbol(dharma, params.principalToken, creditor);
+    await Token.setCreditorProxyAllowanceToUnlimited(dharma, params.principalToken, creditor);
 }

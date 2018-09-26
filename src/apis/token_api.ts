@@ -144,6 +144,52 @@ export class TokenAPI {
     }
 
     /**
+     * Asynchronously set an unlimited proxy allowance to the `creditorProxy`.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
+    public async setUnlimitedCreditorProxyAllowanceAsync(
+        tokenAddress: string,
+        options?: TxData,
+    ): Promise<string> {
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
+        return this.setCreditorProxyAllowanceAsync(tokenAddress, UNLIMITED_ALLOWANCE, options);
+    }
+
+    /**
+     * Asynchronously set an allowance to the `creditorProxy`.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  allowance    the size of the allowance.
+     * @param  options      any parameters necessary to modify the transaction.
+     * @return              the hash of the resulting transaction.
+     */
+    public async setCreditorProxyAllowanceAsync(
+        tokenAddress: string,
+        allowance: BigNumber,
+        options?: TxData,
+    ): Promise<string> {
+        const txOptions = await generateTxOptions(this.web3, TRANSFER_GAS_MAXIMUM, options);
+
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
+        const creditorProxyContract = await this.contracts.loadCreditorProxyContract();
+
+        return tokenContract.approve.sendTransactionAsync(
+            creditorProxyContract.address,
+            allowance,
+            txOptions,
+        );
+    }
+
+    /**
      * Asynchronously set an allowance to the `tokenTransferProxy`.
      *
      * @param  tokenAddress address of the ERC20 token.
@@ -224,6 +270,45 @@ export class TokenAPI {
         const tokenTransferProxy = await this.contracts.loadTokenTransferProxyAsync();
 
         return tokenContract.allowance.callAsync(ownerAddress, tokenTransferProxy.address);
+    }
+
+    /**
+     * Asynchronously retrieves the allowance allotted to the `creditorProxy` by the specified owner.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the owner on whose behalf the allowance is being queried.
+     * @return              the allowance allotted to the `creditorProxy`.
+     */
+    public async getCreditorProxyAllowanceAsync(
+        tokenAddress: string,
+        ownerAddress: string,
+    ): Promise<BigNumber> {
+        const tokenContract = await this.contracts.loadERC20TokenAsync(tokenAddress);
+
+        await this.assert.token.implementsERC20(tokenContract);
+
+        const creditorProxy = await this.contracts.loadCreditorProxyContract();
+
+        return tokenContract.allowance.callAsync(ownerAddress, creditorProxy.address);
+    }
+
+    /**
+     * Eventually determines whether the creditor proxy allowance for the specified owner is unlimited.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the owner whose allowance is being queried.
+     * @returns {Promise<boolean>}
+     */
+    public async hasUnlimitedCreditorProxyAllowance(
+        tokenAddress: string,
+        ownerAddress: string,
+    ): Promise<boolean> {
+        const existingAllowance = await this.getCreditorProxyAllowanceAsync(
+            tokenAddress,
+            ownerAddress,
+        );
+
+        return TokenAPI.isUnlimitedAllowance(existingAllowance);
     }
 
     /**

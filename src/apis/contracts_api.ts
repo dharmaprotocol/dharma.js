@@ -2,32 +2,12 @@
 import * as singleLineString from "single-line-string";
 import * as Web3 from "web3";
 import { BigNumber } from "../../utils/bignumber";
-// wrappers
-import {
-    CollateralizedSimpleInterestTermsContractContract,
-    CollateralizerContract,
-    ContractRegistryContract,
-    ContractWrapper,
-    DebtKernelContract,
-    DebtRegistryContract,
-    DebtTokenContract,
-    ERC20Contract,
-    ERC721CollateralizedSimpleInterestTermsContractContract,
-    ERC721CollateralizerContract,
-    ERC721TokenContract,
-    ERC721TokenRegistryContract,
-    MintableERC721TokenContract,
-    RepaymentRouterContract,
-    SimpleInterestTermsContractContract,
-    TermsContract,
-    TokenRegistryContract,
-    TokenTransferProxyContract,
-} from "../wrappers";
 // utils
 import {
     COLLATERALIZED_SIMPLE_INTEREST_TERMS_CONTRACT_CACHE_KEY,
     COLLATERALIZER_CONTRACT_CACHE_KEY,
     CONTRACT_REGISTRY_CONTRACT_CACHE_KEY,
+    CREDITOR_PROXY_CONTRACT_CACHE_KEY,
     DEBT_KERNEL_CONTRACT_CACHE_KEY,
     DEBT_REGISTRY_CONTRACT_CACHE_KEY,
     DEBT_TOKEN_CONTRACT_CACHE_KEY,
@@ -43,6 +23,28 @@ import {
 } from "../../utils/constants";
 // types
 import { AddressBook } from "../types";
+// wrappers
+import {
+    CollateralizedSimpleInterestTermsContractContract,
+    CollateralizerContract,
+    ContractRegistryContract,
+    ContractWrapper,
+    CreditorProxyContract,
+    DebtKernelContract,
+    DebtRegistryContract,
+    DebtTokenContract,
+    ERC20Contract,
+    ERC721CollateralizedSimpleInterestTermsContractContract,
+    ERC721CollateralizerContract,
+    ERC721TokenContract,
+    ERC721TokenRegistryContract,
+    MintableERC721TokenContract,
+    RepaymentRouterContract,
+    SimpleInterestTermsContractContract,
+    TermsContract,
+    TokenRegistryContract,
+    TokenTransferProxyContract,
+} from "../wrappers";
 
 export interface DharmaContracts {
     debtKernel: DebtKernelContract;
@@ -549,6 +551,23 @@ export class ContractsAPI {
         this.cache[ERC721_TOKEN_REGISTRY_CONTRACT_CACHE_KEY] = erc721TokenRegistryContract;
 
         return erc721TokenRegistryContract;
+    }
+
+    public async loadCreditorProxyContract(
+        transactionOptions: object = {},
+    ): Promise<CreditorProxyContract> {
+        if (CREDITOR_PROXY_CONTRACT_CACHE_KEY in this.cache) {
+            return this.cache[CREDITOR_PROXY_CONTRACT_CACHE_KEY] as CreditorProxyContract;
+        }
+
+        const creditorProxyContract: CreditorProxyContract = await CreditorProxyContract.deployed(
+            this.web3,
+            transactionOptions,
+        );
+
+        this.cache[CREDITOR_PROXY_CONTRACT_CACHE_KEY] = creditorProxyContract;
+
+        return creditorProxyContract;
     }
 
     public async loadTokenRegistry(

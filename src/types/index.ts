@@ -17,3 +17,5 @@ export { RepaymentRouterError } from "./repayment_router_error";
 export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";
+
+export { LoanOffer } from "./loan_offer";
