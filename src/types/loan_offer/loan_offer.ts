@@ -7,8 +7,6 @@ import { DebtOrderDataWrapper } from "../../wrappers";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
-const DECISION_ENGINE_ADDRESS = "decisionEngineAddress";
-
 export class LoanOffer extends DebtOrder {
     public static async createAndSignAsCreditor(
         dharma: Dharma,
