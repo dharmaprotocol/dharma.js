@@ -1,10 +1,8 @@
 jest.unmock("@dharmaprotocol/contracts");
 
 import { Web3 } from "../../../src";
-
-import { Dharma } from "../../../src/types/dharma";
-import { TokenData } from "../../../src/token/token";
 import { Token } from "../../../src/types";
+import { Dharma } from "../../../src/types/dharma";
 
 import { ACCOUNTS } from "../../accounts";
 
@@ -24,6 +22,32 @@ const TOKEN_SYMBOL = "MKR";
 const OWNER = ACCOUNTS[0].address;
 
 describe("Token (Integration)", () => {
+    describe("#setCreditorProxyAllowanceToUnlimited", () => {
+        describe("when the user has not granted the creditor proxy an allowance", () => {
+            beforeEach(async () => {
+                await Token.revokeCreditorProxyAllowance(dharma, TOKEN_SYMBOL, OWNER);
+            });
+
+            afterEach(async () => {
+                await Token.revokeCreditorProxyAllowance(dharma, TOKEN_SYMBOL, OWNER);
+            });
+
+            test("sets the allowance to unlimited", async () => {
+                const txHash = await Token.setCreditorProxyAllowanceToUnlimited(
+                    dharma,
+                    TOKEN_SYMBOL,
+                    OWNER,
+                );
+
+                await dharma.blockchain.awaitTransactionMinedAsync(txHash);
+
+                await expect(
+                    Token.hasUnlimitedCreditorProxyAllowance(dharma, TOKEN_SYMBOL, OWNER),
+                ).resolves.toEqual(true);
+            });
+        });
+    });
+
     describe("#makeAllowanceUnlimitedIfNecessary", () => {
         describe("when the user does not have any allowance", () => {
             let txHash: string | void;
