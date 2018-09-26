@@ -272,6 +272,26 @@ export class TokenAPI {
         return tokenContract.allowance.callAsync(ownerAddress, tokenTransferProxy.address);
     }
 
+
+    /**
+     * Eventually determines whether the creditor proxy allowance for the specified owner is unlimited.
+     *
+     * @param  tokenAddress address of the ERC20 token.
+     * @param  ownerAddress the owner whose allowance is being queried.
+     * @returns {Promise<boolean>}
+     */
+    public async hasUnlimitedCreditorProxyAllowance(
+        tokenAddress: string,
+        ownerAddress: string,
+    ): Promise<boolean> {
+        const existingAllowance = await this.getCreditorProxyAllowanceAsync(
+            tokenAddress,
+            ownerAddress,
+        );
+
+        return TokenAPI.isUnlimitedAllowance(existingAllowance);
+    }
+
     /**
      * Returns a token attributes object, including symbol and name, for the token with the given
      * symbol that is listed in Dharma's token registry.
