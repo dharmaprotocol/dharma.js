@@ -49,6 +49,7 @@ export class LTVLoanOffer {
 
     private creditorSignature?: ECDSASignature;
     private debtorSignature?: ECDSASignature;
+    private collateralAmount?: number;
 
     constructor(private readonly dharma: Dharma, params: LTVParams) {
         const {
@@ -111,17 +112,16 @@ export class LTVLoanOffer {
         );
     }
 
-    // private async toDebtOrderData: Promise<DebtOrderData> {
-    //
-    // }
-    //
-    // public async acceptAsDebtor(): Promise<string> {
-    //
-    // }
-    //
-    // public async signAsDebtor(): Promise<void> {
-    //
-    // }
+    public setCollateralAmount(collateralAmount: number) {
+        // TODO: assert prices are set
+        // TODO: assert collateralAmount sufficient
+
+        this.collateralAmount = collateralAmount;
+    }
+
+    public getCollateralAmount(): number {
+        return this.collateralAmount;
+    }
 
     public getCreditorCommitmentTermsHash(): string {
         return Web3Utils.soliditySHA3(
