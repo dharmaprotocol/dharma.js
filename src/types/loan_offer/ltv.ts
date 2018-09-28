@@ -13,6 +13,8 @@ import {
     TokenAmount,
 } from "../";
 
+import { SignedPrice } from "./signed_price";
+
 import { BigNumber } from "../../../utils/bignumber";
 
 export interface LTVData {
@@ -50,6 +52,8 @@ export class LTVLoanOffer {
     private creditorSignature?: ECDSASignature;
     private debtorSignature?: ECDSASignature;
     private collateralAmount?: number;
+    private principalPrice?: SignedPrice;
+    private collateralPrice?: SignedPrice;
 
     constructor(private readonly dharma: Dharma, params: LTVParams) {
         const {
@@ -112,10 +116,31 @@ export class LTVLoanOffer {
         );
     }
 
+    public setPrincipalPrice(principalPrice: SignedPrice) {
+        // TODO: assert signed address matches principal token address
+        // TODO: assert signed price feed provider address is the address we expect
+        // TODO: assert signed time is within some delta of current time (?)
+        this.principalPrice = principalPrice;
+    }
+
+    public getPrincipalPrice(): SignedPrice {
+        return this.principalPrice;
+    }
+
+    public setCollateralPrice(collateralPrice: SignedPrice) {
+        // TODO: assert signed address matches collateral token address
+        // TODO: assert signed price feed provider address is the address we expect
+        // TODO: assert signed time is within some delta of current time (?)
+        this.collateralPrice = collateralPrice;
+    }
+
+    public getCollateralPrice(): SignedPrice {
+        return this.principalPrice;
+    }
+
     public setCollateralAmount(collateralAmount: number) {
         // TODO: assert prices are set
         // TODO: assert collateralAmount sufficient
-
         this.collateralAmount = collateralAmount;
     }
 
