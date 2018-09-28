@@ -2,7 +2,7 @@ import * as singleLineString from "single-line-string";
 
 import { Dharma } from "../types/dharma";
 
-import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "./debt_order";
+import { DEBT_ORDER_ERRORS, DebtOrder, CollateralizedDebtOrderParams } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
@@ -35,7 +35,7 @@ export class LoanRequest extends DebtOrder {
      */
     public static async createAndSignAsDebtor(
         dharma: Dharma,
-        params: DebtOrderParams,
+        params: CollateralizedDebtOrderParams,
         debtor?: string,
     ): Promise<LoanRequest> {
         const request = await LoanRequest.create<LoanRequest>(dharma, params);
