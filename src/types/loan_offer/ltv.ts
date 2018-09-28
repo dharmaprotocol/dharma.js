@@ -1,3 +1,5 @@
+import * as singleLineString from "single-line-string";
+
 import { Web3Utils } from "../../../utils/web3_utils";
 
 import { DebtOrderParams } from "../../loan/debt_order";
@@ -16,6 +18,13 @@ import {
 import { SignedPrice } from "./signed_price";
 
 import { BigNumber } from "../../../utils/bignumber";
+
+export const LTV_LOAN_OFFER_ERRORS = {
+    INSUFFICIENT_COLLATERAL_AMOUNT: (collateralAmount: number, collateralTokenSymbol: string) =>
+        singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is too high
+            for the maximum loan-to-value.`,
+    PRICES_NOT_SET: () => `The prices of the principal and collateral must be set first.`,
+};
 
 export interface LTVData {
     principal: TokenAmount;
@@ -108,7 +117,6 @@ export class LTVLoanOffer {
     }
 
     public setPrincipalPrice(principalPrice: SignedPrice) {
-        // TODO: assert signed address matches principal token address
         // TODO: assert signed price feed provider address is the address we expect
         // TODO: assert signed time is within some delta of current time (?)
         this.principalPrice = principalPrice;
@@ -119,7 +127,6 @@ export class LTVLoanOffer {
     }
 
     public setCollateralPrice(collateralPrice: SignedPrice) {
-        // TODO: assert signed address matches collateral token address
         // TODO: assert signed price feed provider address is the address we expect
         // TODO: assert signed time is within some delta of current time (?)
         this.collateralPrice = collateralPrice;
@@ -141,6 +148,22 @@ export class LTVLoanOffer {
 
     public async signAsDebtor(debtorAddress?: string): Promise<void> {
         // TODO: check if already signed by debtor
+
+        if (!this.principalPrice || !this.collateralPrice) {
+            throw new Error(LTV_LOAN_OFFER_ERRORS.PRICES_NOT_SET());
+        }
+
+        // TODO: assert signed address matches principal token address
+        // TODO: assert signed address matches collateral token address
+
+        if (!this.collateralAmountIsSufficient()) {
+            throw new Error(
+                LTV_LOAN_OFFER_ERRORS.INSUFFICIENT_COLLATERAL_AMOUNT(
+                    this.collateralAmount,
+                    this.data.collateralTokenSymbol,
+                ),
+            );
+        }
 
         this.debtor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, debtorAddress);
 
@@ -210,5 +233,24 @@ export class LTVLoanOffer {
             this.data.relayerFee,
             this.data.expirationTimestampInSec,
         );
+    }
+
+    private collateralAmountIsSufficient(): boolean {
+        if (!this.collateralAmount || !this.principalPrice || !this.collateralPrice) {
+            return false;
+        }
+
+        // We do not use the TokenAmount's rawValue here because what matters is the "real world" amount
+        // of the principal and collateral, without regard for how many decimals are used in their
+        // blockchain representations.
+        const principalValue = new BigNumber(this.data.principal.decimalAmount).times(
+            this.principalPrice.tokenPrice,
+        );
+
+        const collateralValue = new BigNumber(this.collateralAmount).times(
+            this.collateralPrice.tokenPrice,
+        );
+
+        return principalValue.div(collateralValue).lte(this.data.ltv);
     }
 }
