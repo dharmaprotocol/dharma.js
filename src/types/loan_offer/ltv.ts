@@ -49,11 +49,13 @@ export class LTVLoanOffer {
 
     private readonly data: LTVData;
 
+    private creditor?: string;
     private creditorSignature?: ECDSASignature;
     private debtorSignature?: ECDSASignature;
     private collateralAmount?: number;
     private principalPrice?: SignedPrice;
     private collateralPrice?: SignedPrice;
+    private debtor?: string;
 
     constructor(private readonly dharma: Dharma, params: LTVParams) {
         const {
@@ -96,11 +98,9 @@ export class LTVLoanOffer {
      * @return {Promise<void>}
      */
     public async signAsCreditor(creditorAddress?: string): Promise<void> {
-        if (this.isSignedByCreditor()) {
-            throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
-        }
+        // TODO: check if already signed by creditor
 
-        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+        this.creditor = await EthereumAddress.validAddressOrCurrentUser(
             this.dharma,
             creditorAddress,
         );
@@ -109,9 +109,9 @@ export class LTVLoanOffer {
 
         const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
 
-        this.data.creditorSignature = await this.dharma.sign.signPayloadWithAddress(
+        this.creditorSignature = await this.dharma.sign.signPayloadWithAddress(
             loanOfferHash,
-            this.data.creditor,
+            this.creditor,
             isMetaMask,
         );
     }
@@ -148,7 +148,23 @@ export class LTVLoanOffer {
         return this.collateralAmount;
     }
 
-    public getCreditorCommitmentTermsHash(): string {
+    public async signAsDebtor(debtorAddress?: string): Promise<void> {
+        // TODO: check if already signed by debtor
+
+        this.debtor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, debtorAddress);
+
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        const debtorCommitmentHash = this.getDebtorCommitHash();
+
+        this.debtorSignature = await this.dharma.sign.signPayloadWithAddress(
+            debtorCommitmentHash,
+            this.debtor,
+            isMetaMask,
+        );
+    }
+
+    private getCreditorCommitmentTermsHash(): string {
         return Web3Utils.soliditySHA3(
             this.data.kernelVersion,
             this.data.issuanceVersion,
@@ -167,10 +183,37 @@ export class LTVLoanOffer {
         );
     }
 
-    public getCreditorCommitmentHash(): string {
+    private getCreditorCommitmentHash(): string {
         return Web3Utils.soliditySHA3(
             LTVLoanOffer.decisionEngineAddress,
             this.getCreditorCommitmentTermsHash(),
+        );
+    }
+
+    private getIssuanceCommitmentHash(): string {
+        return Web3Utils.soliditySHA3(
+            this.data.issuanceVersion,
+            this.debtor,
+            this.data.underwriter,
+            this.data.underwriterRiskRating,
+            this.data.termsContract,
+            this.data.termsContractParameters,
+            this.data.salt,
+        );
+    }
+
+    private getDebtorCommitHash(): string {
+        return Web3Utils.soliditySHA3(
+            this.data.kernelVersion,
+            this.getIssuanceCommitmentHash(),
+            this.data.underwriterFee,
+            this.data.principal.rawAmount,
+            this.data.principalToken,
+            this.data.debtorFee,
+            this.data.creditorFee,
+            this.data.relayer,
+            this.data.relayerFee,
+            this.data.expirationTimestampInSec,
         );
     }
 }
