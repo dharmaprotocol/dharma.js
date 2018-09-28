@@ -164,6 +164,10 @@ export class LTVLoanOffer {
         );
     }
 
+    public async acceptAsDebtor(): Promise<void> {
+        // TODO: send transaction to CreditorProxtContract
+    }
+
     private getCreditorCommitmentTermsHash(): string {
         return Web3Utils.soliditySHA3(
             this.data.kernelVersion,
