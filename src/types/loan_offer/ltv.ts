@@ -35,15 +35,6 @@ export interface LTVParams extends DebtOrderParams {
     priceProvider: string;
 }
 
-export interface CreditorCommmitmentTerms {
-    decisionEngineAddress: string;
-    decisionEngineParams: DecisionEngineParams;
-}
-
-export interface DecisionEngineParams {
-    ltv: BigNumber;
-}
-
 export class LTVLoanOffer {
     public static decisionEngineAddress = "test";
 
