@@ -1,3 +1,5 @@
+import { Web3Utils } from "../../../utils/web3_utils";
+
 import { DebtOrderParams } from "../../loan/debt_order";
 
 import { Dharma } from "../dharma";
@@ -41,6 +43,8 @@ export interface DecisionEngineParams {
 }
 
 export class LTVLoanOffer {
+    public static decisionEngineAddress = "test";
+
     private readonly data: LTVData;
 
     private creditorSignature?: ECDSASignature;
@@ -75,6 +79,38 @@ export class LTVLoanOffer {
         };
     }
 
+    /**
+     * Eventually signs the loan offer as the creditor.
+     *
+     * @throws Throws if the loan offer is already signed by a creditor.
+     *
+     * @example
+     * loanOffer.signAsCreditor();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
+    public async signAsCreditor(creditorAddress?: string): Promise<void> {
+        if (this.isSignedByCreditor()) {
+            throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_CREDITOR);
+        }
+
+        this.data.creditor = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            creditorAddress,
+        );
+
+        const loanOfferHash = this.getCreditorCommitmentHash();
+
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.creditorSignature = await this.dharma.sign.signPayloadWithAddress(
+            loanOfferHash,
+            this.data.creditor,
+            isMetaMask,
+        );
+    }
+
     // private async toDebtOrderData: Promise<DebtOrderData> {
     //
     // }
@@ -86,8 +122,30 @@ export class LTVLoanOffer {
     // public async signAsDebtor(): Promise<void> {
     //
     // }
-    //
-    // public getLoanOfferHash(): string {
-    //
-    // }
+
+    public getCreditorCommitmentTermsHash(): string {
+        return Web3Utils.soliditySHA3(
+            this.data.kernelVersion,
+            this.data.issuanceVersion,
+            this.data.termsContract,
+            this.data.principalAmount,
+            this.data.principalToken,
+            this.data.collateralToken,
+            this.data.ltv,
+            this.data.interestRate,
+            this.data.debtorFee,
+            this.data.creditorFee,
+            this.data.relayer,
+            this.data.relayerFee,
+            this.data.expirationTimestampInSec,
+            this.data.salt,
+        );
+    }
+
+    public getCreditorCommitmentHash(): string {
+        return Web3Utils.soliditySHA3(
+            LTVLoanOffer.decisionEngineAddress,
+            this.getCreditorCommitmentTermsHash(),
+        );
+    }
 }
