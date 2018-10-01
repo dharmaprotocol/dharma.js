@@ -18,4 +18,4 @@ export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";
 
-export { LoanOffer } from "./loan_offer";
+export { LoanOffer, MaxLTVLoanOffer } from "./loan_offer";

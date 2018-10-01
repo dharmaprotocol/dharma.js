@@ -34,8 +34,8 @@ export interface MaxLTVData {
     maxLTV: BigNumber;
     collateralTokenSymbol: string;
     priceProvider: string;
-    relayer: EthereumAddress;
-    relayerFee: TokenAmount;
+    relayer?: EthereumAddress;
+    relayerFee?: TokenAmount;
 }
 
 export interface MaxLTVParams extends DebtOrderParams {
@@ -74,17 +74,22 @@ export class MaxLTVLoanOffer {
             expiresInUnit,
         } = params;
 
-        this.data = {
+        const data = {
             principal: new TokenAmount(principalAmount, principalToken),
             interestRate: new InterestRate(interestRate),
             termLength: new TimeInterval(termDuration, termUnit),
             expiresIn: new TimeInterval(expiresInDuration, expiresInUnit),
             maxLTV: new BigNumber(maxLTV),
-            relayer: new EthereumAddress(relayerAddress),
-            relayerFee: new TokenAmount(relayerFeeAmount, principalToken),
             collateralTokenSymbol: collateralToken,
             priceProvider,
         };
+
+        if (relayerAddress && relayerFeeAmount) {
+            data.relayer = new EthereumAddress(relayerAddress);
+            data.relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
+        }
+
+        this.data = data;
     }
 
     /**
