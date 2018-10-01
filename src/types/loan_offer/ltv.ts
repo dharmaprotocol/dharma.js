@@ -19,14 +19,14 @@ import { SignedPrice } from "./signed_price";
 
 import { BigNumber } from "../../../utils/bignumber";
 
-export const LTV_LOAN_OFFER_ERRORS = {
+export const MAX_LTV_LOAN_OFFER_ERRORS = {
     INSUFFICIENT_COLLATERAL_AMOUNT: (collateralAmount: number, collateralTokenSymbol: string) =>
-        singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is too high
+        singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is too insufficient
             for the maximum loan-to-value.`,
     PRICES_NOT_SET: () => `The prices of the principal and collateral must be set first.`,
 };
 
-export interface LTVData {
+export interface MaxLTVData {
     principal: TokenAmount;
     interestRate: InterestRate;
     termLength: TimeInterval;
@@ -38,16 +38,17 @@ export interface LTVData {
     relayerFee: TokenAmount;
 }
 
-export interface LTVParams extends DebtOrderParams {
+export interface MaxLTVParams extends DebtOrderParams {
     ltv: number;
     collateralTokenSymbol: string;
     priceProvider: string;
 }
 
-export class LTVLoanOffer {
+export class MaxLTVLoanOffer {
+    // TODO: replace with decision engine address (async function?)
     public static decisionEngineAddress = "test";
 
-    private readonly data: LTVData;
+    private readonly data: MaxLTVData;
 
     private creditor?: string;
     private creditorSignature?: ECDSASignature;
@@ -57,7 +58,7 @@ export class LTVLoanOffer {
     private collateralPrice?: SignedPrice;
     private debtor?: string;
 
-    constructor(private readonly dharma: Dharma, params: LTVParams) {
+    constructor(private readonly dharma: Dharma, params: MaxLTVParams) {
         const {
             ltv,
             priceProvider,
@@ -150,7 +151,7 @@ export class LTVLoanOffer {
         // TODO: check if already signed by debtor
 
         if (!this.principalPrice || !this.collateralPrice) {
-            throw new Error(LTV_LOAN_OFFER_ERRORS.PRICES_NOT_SET());
+            throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.PRICES_NOT_SET());
         }
 
         // TODO: assert signed address matches principal token address
@@ -158,7 +159,7 @@ export class LTVLoanOffer {
 
         if (!this.collateralAmountIsSufficient()) {
             throw new Error(
-                LTV_LOAN_OFFER_ERRORS.INSUFFICIENT_COLLATERAL_AMOUNT(
+                MAX_LTV_LOAN_OFFER_ERRORS.INSUFFICIENT_COLLATERAL_AMOUNT(
                     this.collateralAmount,
                     this.data.collateralTokenSymbol,
                 ),
@@ -203,7 +204,7 @@ export class LTVLoanOffer {
 
     private getCreditorCommitmentHash(): string {
         return Web3Utils.soliditySHA3(
-            LTVLoanOffer.decisionEngineAddress,
+            MaxLTVLoanOffer.decisionEngineAddress,
             this.getCreditorCommitmentTermsHash(),
         );
     }
