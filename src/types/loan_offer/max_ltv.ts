@@ -22,6 +22,8 @@ import { SignedPrice } from "./signed_price";
 import { BigNumber } from "../../../utils/bignumber";
 
 export const MAX_LTV_LOAN_OFFER_ERRORS = {
+    ALREADY_SIGNED_BY_DEBTOR: () => `The debtor has already signed the loan offer.`,
+    COLLATERAL_AMOUNT_NOT_SET: () => `The collateral amount must be set first`,
     INSUFFICIENT_COLLATERAL_AMOUNT: (collateralAmount: number, collateralTokenSymbol: string) =>
         singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is insufficient
             for the maximum loan-to-value.`,
@@ -191,10 +193,16 @@ export class MaxLTVLoanOffer {
     }
 
     public async signAsDebtor(debtorAddress?: string): Promise<void> {
-        // TODO: check if already signed by debtor
+        if (this.isSignedByDebtor()) {
+            throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.ALREADY_SIGNED_BY_DEBTOR());
+        }
 
         if (!this.principalPrice || !this.collateralPrice) {
             throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.PRICES_NOT_SET());
+        }
+
+        if (!this.collateralAmount) {
+            throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.COLLATERAL_AMOUNT_NOT_SET());
         }
 
         // TODO: assert signed address matches principal token address
