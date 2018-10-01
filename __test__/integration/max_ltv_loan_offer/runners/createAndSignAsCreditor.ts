@@ -4,12 +4,16 @@ import { MaxLTVLoanOffer } from "../../../../src/types";
 
 import { MaxLTVParams } from "../../../../src/types/loan_offer/max_ltv";
 
-export function testConstructor(dharma: Dharma, params: MaxLTVParams) {
+import { ACCOUNTS } from "../../../accounts";
+
+export async function testCreateAndSignAsCreditor(dharma: Dharma, params: MaxLTVParams) {
     describe("passing valid params", () => {
         let loanOffer: MaxLTVLoanOffer;
 
-        beforeEach(() => {
-            loanOffer = new MaxLTVLoanOffer(dharma, params);
+        beforeEach(async () => {
+            const creditor = ACCOUNTS[0].address;
+
+            loanOffer = await MaxLTVLoanOffer.createAndSignAsCreditor(dharma, params, creditor);
         });
 
         test("returns a MaxLTVLoanOffer", () => {
@@ -22,10 +26,10 @@ export function testConstructor(dharma: Dharma, params: MaxLTVParams) {
             expect(isSignedByDebtor).toEqual(false);
         });
 
-        test("not signed by the creditor", () => {
+        test("is signed by the creditor", () => {
             const isSignedByCreditor = loanOffer.isSignedByCreditor();
 
-            expect(isSignedByCreditor).toEqual(false);
+            expect(isSignedByCreditor).toEqual(true);
         });
     });
 }
