@@ -50,6 +50,18 @@ export class MaxLTVLoanOffer {
     // TODO: replace with decision engine address (async function?)
     public static decisionEngineAddress = "test";
 
+    public static async createAndSignAsCreditor(
+        dharma: Dharma,
+        params: MaxLTVParams,
+        creditor?: string,
+    ): Promise<MaxLTVLoanOffer> {
+        const offer = new MaxLTVLoanOffer(dharma, params);
+
+        await offer.signAsCreditor(creditor);
+
+        return offer;
+    }
+
     private readonly data: MaxLTVData;
 
     private creditor?: string;
@@ -138,8 +150,8 @@ export class MaxLTVLoanOffer {
             this.creditorSignature &&
             SignatureUtils.isValidSignature(
                 this.getCreditorCommitmentHash(),
-                this.data.creditorSignature,
-                this.data.creditor,
+                this.creditorSignature,
+                this.creditor,
             )
         ) {
             return true;
@@ -224,8 +236,8 @@ export class MaxLTVLoanOffer {
             this.debtorSignature &&
             SignatureUtils.isValidSignature(
                 this.getDebtorCommitHash(),
-                this.data.debtorSignature,
-                this.data.debtor,
+                this.debtorSignature,
+                this.debtor,
             )
         ) {
             return true;
