@@ -270,6 +270,9 @@ export class MaxLTVLoanOffer {
     }
 
     private getCreditorCommitmentHash(): string {
+        // TODO: remove mock implementation
+        return Web3Utils.soliditySHA3("mockCreditorCommitmentHash");
+
         return Web3Utils.soliditySHA3(
             MaxLTVLoanOffer.decisionEngineAddress,
             this.getCreditorCommitmentTermsHash(),
@@ -289,6 +292,9 @@ export class MaxLTVLoanOffer {
     }
 
     private getDebtorCommitHash(): string {
+        // TODO: remove mock implementation
+        return Web3Utils.soliditySHA3("mockDebtorCommitmentHash");
+
         return Web3Utils.soliditySHA3(
             this.data.kernelVersion,
             this.getIssuanceCommitmentHash(),
