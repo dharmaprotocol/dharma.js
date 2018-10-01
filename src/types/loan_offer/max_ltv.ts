@@ -4,6 +4,8 @@ import { Web3Utils } from "../../../utils/web3_utils";
 
 import { DebtOrderParams } from "../../loan/debt_order";
 
+import { SignatureUtils } from "../../../utils/signature_utils";
+
 import { Dharma } from "../dharma";
 
 import {
@@ -122,6 +124,30 @@ export class MaxLTVLoanOffer {
         );
     }
 
+    /**
+     * Returns whether the loan offer has been signed by a creditor.
+     *
+     * @example
+     * loanOffer.isSignedByCreditor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByCreditor(): boolean {
+        if (
+            this.creditorSignature &&
+            SignatureUtils.isValidSignature(
+                this.getCreditorCommitmentHash(),
+                this.data.creditorSignature,
+                this.data.creditor,
+            )
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
     public setPrincipalPrice(principalPrice: SignedPrice) {
         // TODO: assert signed price feed provider address is the address we expect
         // TODO: assert signed time is within some delta of current time (?)
@@ -182,6 +208,30 @@ export class MaxLTVLoanOffer {
             this.debtor,
             isMetaMask,
         );
+    }
+
+    /**
+     * Returns whether the loan offer has been signed by a debtor.
+     *
+     * @example
+     * loanOffer.isSignedByDebtor();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByDebtor(): boolean {
+        if (
+            this.debtorSignature &&
+            SignatureUtils.isValidSignature(
+                this.getDebtorCommitHash(),
+                this.data.debtorSignature,
+                this.data.debtor,
+            )
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
     public async acceptAsDebtor(): Promise<void> {
