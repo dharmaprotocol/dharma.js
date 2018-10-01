@@ -23,7 +23,7 @@ import { BigNumber } from "../../../utils/bignumber";
 
 export const MAX_LTV_LOAN_OFFER_ERRORS = {
     INSUFFICIENT_COLLATERAL_AMOUNT: (collateralAmount: number, collateralTokenSymbol: string) =>
-        singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is too insufficient
+        singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is insufficient
             for the maximum loan-to-value.`,
     PRICES_NOT_SET: () => `The prices of the principal and collateral must be set first.`,
 };
@@ -325,6 +325,6 @@ export class MaxLTVLoanOffer {
             this.collateralPrice.tokenPrice,
         );
 
-        return principalValue.div(collateralValue).lte(this.data.maxLTV);
+        return principalValue.div(collateralValue).lte(this.data.maxLTV.div(100));
     }
 }

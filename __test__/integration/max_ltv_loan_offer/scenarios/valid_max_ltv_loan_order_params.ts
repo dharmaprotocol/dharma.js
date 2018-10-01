@@ -9,7 +9,7 @@ export const VALID_MAX_LTV_LOAN_ORDER_PARAMS: MaxLTVParams = {
     interestRate: 12.3,
     maxLTV: 50,
     priceProvider: ACCOUNTS[0].address,
-    principalAmount: 5,
+    principalAmount: 10,
     principalToken: "REP",
     termDuration: 6,
     termUnit: "months",
