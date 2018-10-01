@@ -31,7 +31,7 @@ export interface MaxLTVData {
     interestRate: InterestRate;
     termLength: TimeInterval;
     expiresIn: TimeInterval;
-    ltv: BigNumber;
+    maxLTV: BigNumber;
     collateralTokenSymbol: string;
     priceProvider: string;
     relayer: EthereumAddress;
@@ -39,8 +39,8 @@ export interface MaxLTVData {
 }
 
 export interface MaxLTVParams extends DebtOrderParams {
-    ltv: number;
-    collateralTokenSymbol: string;
+    maxLTV: number;
+    collateralToken: string;
     priceProvider: string;
 }
 
@@ -60,9 +60,9 @@ export class MaxLTVLoanOffer {
 
     constructor(private readonly dharma: Dharma, params: MaxLTVParams) {
         const {
-            ltv,
+            maxLTV,
             priceProvider,
-            collateralTokenSymbol,
+            collateralToken,
             principalAmount,
             principalToken,
             relayerAddress,
@@ -79,10 +79,10 @@ export class MaxLTVLoanOffer {
             interestRate: new InterestRate(interestRate),
             termLength: new TimeInterval(termDuration, termUnit),
             expiresIn: new TimeInterval(expiresInDuration, expiresInUnit),
-            ltv: new BigNumber(ltv),
+            maxLTV: new BigNumber(maxLTV),
             relayer: new EthereumAddress(relayerAddress),
             relayerFee: new TokenAmount(relayerFeeAmount, principalToken),
-            collateralTokenSymbol,
+            collateralTokenSymbol: collateralToken,
             priceProvider,
         };
     }
@@ -191,7 +191,7 @@ export class MaxLTVLoanOffer {
             this.data.principalAmount,
             this.data.principalToken,
             this.data.collateralToken,
-            this.data.ltv,
+            this.data.maxLTV,
             this.data.interestRate,
             this.data.debtorFee,
             this.data.creditorFee,
@@ -252,6 +252,6 @@ export class MaxLTVLoanOffer {
             this.collateralPrice.tokenPrice,
         );
 
-        return principalValue.div(collateralValue).lte(this.data.ltv);
+        return principalValue.div(collateralValue).lte(this.data.maxLTV);
     }
 }
