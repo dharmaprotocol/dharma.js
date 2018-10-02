@@ -273,6 +273,8 @@ export class MaxLTVLoanOffer {
         // TODO: assert prices are set
         // TODO: assert collateralAmount sufficient
         this.collateralAmount = collateralAmount;
+
+        this.termsContractParameters = this.packTermsContractParameters();
     }
 
     public getCollateralAmount(): number {
@@ -303,8 +305,6 @@ export class MaxLTVLoanOffer {
                 ),
             );
         }
-
-        this.packAndSetTermsContractParameters();
 
         this.debtor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, debtorAddress);
 
@@ -374,6 +374,10 @@ export class MaxLTVLoanOffer {
     }
 
     private getIssuanceCommitmentHash(): string {
+        if (!this.collateralAmount) {
+            throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.COLLATERAL_AMOUNT_NOT_SET());
+        }
+
         // We remove underwriting as a feature, since the creditor has no mechanism to mandate a maximum
         // underwriter risk rating.
 
@@ -425,7 +429,11 @@ export class MaxLTVLoanOffer {
         return principalValue.div(collateralValue).lte(this.data.maxLTV.div(100));
     }
 
-    private packAndSetTermsContractParameters(): Promise<void> {
+    private packTermsContractParameters(): string {
+        if (!this.collateralAmount) {
+            throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.COLLATERAL_AMOUNT_NOT_SET());
+        }
+
         const { adapter, collateralTokenIndex, principalTokenIndex } = this.data;
 
         const collateralTokenAmount = new TokenAmount(
@@ -446,9 +454,6 @@ export class MaxLTVLoanOffer {
             gracePeriodInDays: new BigNumber(0),
         };
 
-        this.termsContractParameters = adapter.packParameters(
-            simpleInterestTerms,
-            collateralizedSimpleInterestTerms,
-        );
+        return adapter.packParameters(simpleInterestTerms, collateralizedSimpleInterestTerms);
     }
 }
