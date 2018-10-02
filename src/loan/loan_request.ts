@@ -2,7 +2,7 @@ import * as singleLineString from "single-line-string";
 
 import { Dharma } from "../types/dharma";
 
-import { DEBT_ORDER_ERRORS, DebtOrder, CollateralizedDebtOrderParams } from "./debt_order";
+import { CollateralizedDebtOrderParams, DEBT_ORDER_ERRORS, DebtOrder } from "./debt_order";
 
 import { EthereumAddress } from "../types";
 
