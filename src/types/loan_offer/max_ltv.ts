@@ -342,7 +342,7 @@ export class MaxLTVLoanOffer {
 
         const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
 
-        const debtorCommitmentHash = this.getDebtorCommitHash();
+        const debtorCommitmentHash = this.getDebtorCommitmentHash();
 
         this.debtorSignature = await this.dharma.sign.signPayloadWithAddress(
             debtorCommitmentHash,
@@ -364,7 +364,7 @@ export class MaxLTVLoanOffer {
         if (
             this.debtorSignature &&
             SignatureUtils.isValidSignature(
-                this.getDebtorCommitHash(),
+                this.getDebtorCommitmentHash(),
                 this.debtorSignature,
                 this.debtor,
             )
@@ -424,7 +424,7 @@ export class MaxLTVLoanOffer {
         );
     }
 
-    private getDebtorCommitHash(): string {
+    private getDebtorCommitmentHash(): string {
         // We remove underwriting as a feature, since the creditor has no mechanism to mandate a maximum
         // underwriter risk rating.
 
