@@ -80,6 +80,7 @@ export interface DebtOrderParams {
     relayerAddress?: string;
     relayerFeeAmount?: number;
     creditorFeeAmount?: number;
+    debtorFeeAmount?: number;
 }
 
 export interface CollateralizedDebtOrderParams extends DebtOrderParams {
@@ -120,6 +121,7 @@ export class DebtOrder {
             expiresInDuration,
             expiresInUnit,
             creditorFeeAmount,
+            debtorFeeAmount,
         } = params;
 
         const principal = new TokenAmount(principalAmount, principalToken);
@@ -173,6 +175,13 @@ export class DebtOrder {
 
             loanRequestConstructorParams.creditorFee = creditorFee;
             data.creditorFee = creditorFee.rawAmount;
+        }
+
+        if (debtorFeeAmount && debtorFeeAmount > 0) {
+            const debtorFee = new TokenAmount(debtorFeeAmount, principalToken);
+
+            loanRequestConstructorParams.debtorFee = debtorFee;
+            data.debtorFee = debtorFee.rawAmount;
         }
 
         data.kernelVersion = debtKernel.address;

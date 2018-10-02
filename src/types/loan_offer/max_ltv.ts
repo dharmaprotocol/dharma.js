@@ -60,7 +60,6 @@ export interface MaxLTVParams extends DebtOrderParams {
     maxLTV: number;
     collateralToken: string;
     priceProvider: string;
-    debtorFeeAmount?: number;
 }
 
 export class MaxLTVLoanOffer {
