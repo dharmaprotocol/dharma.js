@@ -44,7 +44,9 @@ export const MAX_LTV_LOAN_OFFER_ERRORS = {
 };
 
 export interface MaxLTVData {
+    adapter: CollateralizedSimpleInterestLoanAdapter;
     collateralTokenAddress: string;
+    collateralTokenIndex: BigNumber;
     collateralTokenSymbol: string;
     creditorFee: BigNumber;
     debtorFee: BigNumber;
@@ -56,6 +58,7 @@ export interface MaxLTVData {
     priceProvider: string;
     principal: TokenAmount;
     principalTokenAddress: string;
+    principalTokenIndex: BigNumber;
     relayer: EthereumAddress;
     relayerFee: TokenAmount;
     salt: BigNumber;
@@ -102,6 +105,17 @@ export class MaxLTVLoanOffer {
             collateralToken,
         );
 
+        const adapter = (await dharma.adapters.getAdapterByTermsContractAddress(
+            termsContract,
+        )) as CollateralizedSimpleInterestLoanAdapter;
+
+        const principalTokenIndex = await dharma.contracts.getTokenIndexBySymbolAsync(
+            principalToken,
+        );
+        const collateralTokenIndex = await dharma.contracts.getTokenIndexBySymbolAsync(
+            collateralToken,
+        );
+
         let relayer = new EthereumAddress(NULL_ADDRESS);
         let relayerFee = new TokenAmount(0, principalToken);
         let creditorFee = new BigNumber(0);
@@ -123,7 +137,9 @@ export class MaxLTVLoanOffer {
         }
 
         const data: MaxLTVData = {
+            adapter,
             collateralTokenAddress,
+            collateralTokenIndex,
             collateralTokenSymbol: collateralToken,
             creditorFee,
             debtorFee,
@@ -135,6 +151,7 @@ export class MaxLTVLoanOffer {
             priceProvider,
             principal: new TokenAmount(principalAmount, principalToken),
             principalTokenAddress,
+            principalTokenIndex,
             relayer,
             relayerFee,
             salt: MaxLTVLoanOffer.generateSalt(),
@@ -287,7 +304,7 @@ export class MaxLTVLoanOffer {
             );
         }
 
-        await this.packAndSetTermsContractParameters();
+        this.packAndSetTermsContractParameters();
 
         this.debtor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, debtorAddress);
 
@@ -408,17 +425,8 @@ export class MaxLTVLoanOffer {
         return principalValue.div(collateralValue).lte(this.data.maxLTV.div(100));
     }
 
-    private async packAndSetTermsContractParameters(): Promise<void> {
-        const adapter = (await this.dharma.adapters.getAdapterByTermsContractAddress(
-            this.data.termsContract,
-        )) as CollateralizedSimpleInterestLoanAdapter;
-
-        const principalTokenIndex = await this.dharma.contracts.getTokenIndexBySymbolAsync(
-            this.data.principal.tokenSymbol,
-        );
-        const collateralTokenIndex = await this.dharma.contracts.getTokenIndexBySymbolAsync(
-            this.data.collateralTokenSymbol,
-        );
+    private packAndSetTermsContractParameters(): Promise<void> {
+        const { adapter, collateralTokenIndex, principalTokenIndex } = this.data;
 
         const collateralTokenAmount = new TokenAmount(
             this.collateralAmount,
@@ -438,7 +446,7 @@ export class MaxLTVLoanOffer {
             gracePeriodInDays: new BigNumber(0),
         };
 
-        this.termsContractParameters = await adapter.packParameters(
+        this.termsContractParameters = adapter.packParameters(
             simpleInterestTerms,
             collateralizedSimpleInterestTerms,
         );
