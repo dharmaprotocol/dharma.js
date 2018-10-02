@@ -2,6 +2,12 @@ import { RepaymentRouter } from "@dharmaprotocol/contracts";
 
 import * as singleLineString from "single-line-string";
 
+import {
+    CollateralizedSimpleInterestLoanAdapter,
+    CollateralizedTermsContractParameters,
+} from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
+import { SimpleInterestTermsContractParameters } from "../../../src/adapters/simple_interest_loan_adapter";
+
 import { Web3Utils } from "../../../utils/web3_utils";
 
 import { DebtOrderParams } from "../../loan/debt_order";
@@ -52,6 +58,7 @@ export interface MaxLTVData {
     principalTokenAddress: string;
     relayer: EthereumAddress;
     relayerFee: TokenAmount;
+    salt: BigNumber;
     termLength: TimeInterval;
     termsContract: string;
 }
@@ -154,16 +161,15 @@ export class MaxLTVLoanOffer {
         return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
     }
 
-    private readonly data: MaxLTVData;
-
+    private collateralAmount?: number;
+    private collateralPrice?: SignedPrice;
     private creditor?: string;
     private creditorSignature?: ECDSASignature;
-    private debtorSignature?: ECDSASignature;
-    private collateralAmount?: number;
-    private principalPrice?: SignedPrice;
-    private collateralPrice?: SignedPrice;
     private debtor?: string;
+    private debtorSignature?: ECDSASignature;
     private expirationTimestampInSec?: BigNumber;
+    private principalPrice?: SignedPrice;
+    private termsContractParameters?: string;
 
     constructor(private readonly dharma: Dharma, private readonly data: MaxLTVData) {}
 
@@ -281,6 +287,8 @@ export class MaxLTVLoanOffer {
             );
         }
 
+        await this.packAndSetTermsContractParameters();
+
         this.debtor = await EthereumAddress.validAddressOrCurrentUser(this.dharma, debtorAddress);
 
         const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
@@ -319,7 +327,7 @@ export class MaxLTVLoanOffer {
     }
 
     public async acceptAsDebtor(): Promise<void> {
-        // TODO: send transaction to CreditorProxtContract
+        // TODO: send transaction to CreditorProxyContract
     }
 
     private getCreditorCommitmentTermsHash(): string {
@@ -349,27 +357,30 @@ export class MaxLTVLoanOffer {
     }
 
     private getIssuanceCommitmentHash(): string {
+        // We remove underwriting as a feature, since the creditor has no mechanism to mandate a maximum
+        // underwriter risk rating.
+
         return Web3Utils.soliditySHA3(
             this.data.issuanceVersion,
             this.debtor,
-            this.data.underwriter,
-            this.data.underwriterRiskRating,
+            NULL_ADDRESS, // underwriter
+            new BigNumber(0), // undwriter risk rating
             this.data.termsContract,
-            this.data.termsContractParameters,
+            this.termsContractParameters,
             this.data.salt,
         );
     }
 
     private getDebtorCommitHash(): string {
-        // TODO: remove mock implementation
-        return Web3Utils.soliditySHA3("mockDebtorCommitmentHash");
+        // We remove underwriting as a feature, since the creditor has no mechanism to mandate a maximum
+        // underwriter risk rating.
 
         return Web3Utils.soliditySHA3(
             this.data.kernelVersion,
             this.getIssuanceCommitmentHash(),
-            this.data.underwriterFee,
+            new BigNumber(0), // underwriter fee
             this.data.principal.rawAmount,
-            this.data.principalToken,
+            this.data.principalTokenAddress,
             this.data.debtorFee,
             this.data.creditorFee,
             this.data.relayer,
@@ -395,5 +406,41 @@ export class MaxLTVLoanOffer {
         );
 
         return principalValue.div(collateralValue).lte(this.data.maxLTV.div(100));
+    }
+
+    private async packAndSetTermsContractParameters(): Promise<void> {
+        const adapter = (await this.dharma.adapters.getAdapterByTermsContractAddress(
+            this.data.termsContract,
+        )) as CollateralizedSimpleInterestLoanAdapter;
+
+        const principalTokenIndex = await this.dharma.contracts.getTokenIndexBySymbolAsync(
+            this.data.principal.tokenSymbol,
+        );
+        const collateralTokenIndex = await this.dharma.contracts.getTokenIndexBySymbolAsync(
+            this.data.collateralTokenSymbol,
+        );
+
+        const collateralTokenAmount = new TokenAmount(
+            this.collateralAmount,
+            this.data.collateralTokenSymbol,
+        );
+
+        const simpleInterestTerms: SimpleInterestTermsContractParameters = {
+            principalAmount: this.data.principal.rawAmount,
+            interestRate: this.data.interestRate.raw,
+            amortizationUnit: this.data.termLength.getAmortizationUnit(),
+            termLength: new BigNumber(this.data.termLength.amount),
+            principalTokenIndex,
+        };
+        const collateralizedSimpleInterestTerms: CollateralizedTermsContractParameters = {
+            collateralTokenIndex,
+            collateralAmount: collateralTokenAmount.rawAmount,
+            gracePeriodInDays: new BigNumber(0),
+        };
+
+        this.termsContractParameters = await adapter.packParameters(
+            simpleInterestTerms,
+            collateralizedSimpleInterestTerms,
+        );
     }
 }
