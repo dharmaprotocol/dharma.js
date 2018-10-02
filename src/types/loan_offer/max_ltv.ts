@@ -1,3 +1,5 @@
+import { RepaymentRouter } from "@dharmaprotocol/contracts";
+
 import * as singleLineString from "single-line-string";
 
 import { Web3Utils } from "../../../utils/web3_utils";
@@ -5,6 +7,8 @@ import { Web3Utils } from "../../../utils/web3_utils";
 import { DebtOrderParams } from "../../loan/debt_order";
 
 import { SignatureUtils } from "../../../utils/signature_utils";
+
+import { NULL_ECDSA_SIGNATURE, SALT_DECIMALS } from "../../../utils/constants";
 
 import { Dharma } from "../dharma";
 
@@ -31,26 +35,97 @@ export const MAX_LTV_LOAN_OFFER_ERRORS = {
 };
 
 export interface MaxLTVData {
-    principal: TokenAmount;
-    interestRate: InterestRate;
-    termLength: TimeInterval;
-    expiresIn: TimeInterval;
-    maxLTV: BigNumber;
+    collateralTokenAddress: string;
     collateralTokenSymbol: string;
+    creditorFee?: BigNumber;
+    debtorFee?: BigNumber;
+    expiresIn: TimeInterval;
+    interestRate: InterestRate;
+    issuanceVersion: string;
+    kernelVersion: string;
+    maxLTV: BigNumber;
     priceProvider: string;
+    principal: TokenAmount;
+    principalTokenAddress: string;
     relayer?: EthereumAddress;
     relayerFee?: TokenAmount;
+    termLength: TimeInterval;
+    termsContract: string;
 }
 
 export interface MaxLTVParams extends DebtOrderParams {
     maxLTV: number;
     collateralToken: string;
     priceProvider: string;
+    debtorFeeAmount?: number;
 }
 
 export class MaxLTVLoanOffer {
     // TODO: replace with decision engine address (async function?)
     public static decisionEngineAddress = "test";
+
+    public static async create(dharma: Dharma, params: MaxLTVParams): Promise<MaxLTVLoanOffer> {
+        const {
+            collateralToken,
+            creditorFeeAmount,
+            debtorFeeAmount,
+            expiresInDuration,
+            expiresInUnit,
+            interestRate,
+            maxLTV,
+            priceProvider,
+            principalAmount,
+            principalToken,
+            relayerAddress,
+            relayerFeeAmount,
+            termDuration,
+            termUnit,
+        } = params;
+
+        const kernelVersion = (await this.dharma.contracts.loadDebtKernelAsync()).address;
+        const issuanceVersion = (await this.dharma.contracts.loadRepaymentRouterAsync()).address;
+        const termsContract = (await this.dharma.contracts.loadCollateralizedSimpleInterestTermsContract())
+            .address;
+        const principalTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
+            this.data.principal.tokenSymbol,
+        );
+        const collateralTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
+            this.data.collateralTokenSymbol,
+        );
+
+        const data: MaxLTVData = {
+            collateralTokenAddress
+            collateralTokenSymbol: collateralToken,
+            expiresIn: new TimeInterval(expiresInDuration, expiresInUnit),
+            interestRate: new InterestRate(interestRate),
+            issuanceVersion,
+            kernelVersion,
+            maxLTV: new BigNumber(maxLTV),
+            priceProvider,
+            principal: new TokenAmount(principalAmount, principalToken),
+            principalTokenAddress,
+            salt: MaxLTVLoanOffer.generateSalt(),
+            termLength: new TimeInterval(termDuration, termUnit),
+            termsContract,
+        };
+
+        if (relayerAddress && relayerFeeAmount) {
+            data.relayer = new EthereumAddress(relayerAddress);
+            data.relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
+        }
+
+        if (creditorFeeAmount && creditorFeeAmount > 0) {
+            const creditorFeeTokenAmount = new TokenAmount(creditorFeeAmount, principalToken);
+            data.creditorFee = creditorFeeTokenAmount.rawAmount;
+        }
+
+        if (debtorFeeAmount && debtorFeeAmount > 0) {
+            const debtorFeeTokenAmount = new TokenAmount(debtorFeeAmount, principalToken);
+            data.debtorFee = debtorFeeTokenAmount.rawAmount;
+        }
+
+        return new MaxLTVLoanOffer(dharma, data);
+    }
 
     public static async createAndSignAsCreditor(
         dharma: Dharma,
@@ -64,6 +139,10 @@ export class MaxLTVLoanOffer {
         return offer;
     }
 
+    public static generateSalt(): BigNumber {
+        return BigNumber.random(SALT_DECIMALS).times(new BigNumber(10).pow(SALT_DECIMALS));
+    }
+
     private readonly data: MaxLTVData;
 
     private creditor?: string;
@@ -73,40 +152,9 @@ export class MaxLTVLoanOffer {
     private principalPrice?: SignedPrice;
     private collateralPrice?: SignedPrice;
     private debtor?: string;
+    private expirationTimestampInSec?: BigNumber;
 
-    constructor(private readonly dharma: Dharma, params: MaxLTVParams) {
-        const {
-            maxLTV,
-            priceProvider,
-            collateralToken,
-            principalAmount,
-            principalToken,
-            relayerAddress,
-            relayerFeeAmount,
-            interestRate,
-            termDuration,
-            termUnit,
-            expiresInDuration,
-            expiresInUnit,
-        } = params;
-
-        const data = {
-            principal: new TokenAmount(principalAmount, principalToken),
-            interestRate: new InterestRate(interestRate),
-            termLength: new TimeInterval(termDuration, termUnit),
-            expiresIn: new TimeInterval(expiresInDuration, expiresInUnit),
-            maxLTV: new BigNumber(maxLTV),
-            collateralTokenSymbol: collateralToken,
-            priceProvider,
-        };
-
-        if (relayerAddress && relayerFeeAmount) {
-            data.relayer = new EthereumAddress(relayerAddress);
-            data.relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
-        }
-
-        this.data = data;
-    }
+    constructor(private readonly dharma: Dharma, private readonly data: MaxLTVData) {}
 
     /**
      * Eventually signs the loan offer as the creditor.
@@ -126,6 +174,11 @@ export class MaxLTVLoanOffer {
             this.dharma,
             creditorAddress,
         );
+
+        // Set the expiration timestamp
+        const currentBlocktime = new BigNumber(await this.dharma.blockchain.getCurrentBlockTime());
+
+        this.expirationTimestampInSec = this.data.expiresIn.fromTimestamp(currentBlocktime);
 
         const loanOfferHash = this.getCreditorCommitmentHash();
 
@@ -263,24 +316,21 @@ export class MaxLTVLoanOffer {
             this.data.kernelVersion,
             this.data.issuanceVersion,
             this.data.termsContract,
-            this.data.principalAmount,
-            this.data.principalToken,
-            this.data.collateralToken,
+            this.data.principal.rawAmount,
+            this.data.principalTokenAddress,
+            this.data.collateralTokenAddress,
             this.data.maxLTV,
             this.data.interestRate,
-            this.data.debtorFee,
-            this.data.creditorFee,
-            this.data.relayer,
-            this.data.relayerFee,
-            this.data.expirationTimestampInSec,
-            this.data.salt,
+            this.data.debtorFee ? this.data.debtorFee : new BigNumber(0),
+            this.data.creditorFee ? this.data.creditorFee : new BigNumber(0),
+            this.data.relayer ? this.data.relayer : NULL_ECDSA_SIGNATURE,
+            this.data.relayerFee ? this.data.relayerFee : new BigNumber(0),
+            this.expirationTimestampInSec,
+            this.salt,
         );
     }
 
     private getCreditorCommitmentHash(): string {
-        // TODO: remove mock implementation
-        return Web3Utils.soliditySHA3("mockCreditorCommitmentHash");
-
         return Web3Utils.soliditySHA3(
             MaxLTVLoanOffer.decisionEngineAddress,
             this.getCreditorCommitmentTermsHash(),

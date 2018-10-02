@@ -1,6 +1,6 @@
 import { Dharma } from "../dharma";
 
-import { DEBT_ORDER_ERRORS, DebtOrder, CollateralizedDebtOrderParams } from "../../loan/debt_order";
+import { CollateralizedDebtOrderParams, DEBT_ORDER_ERRORS, DebtOrder } from "../../loan/debt_order";
 
 import { EthereumAddress } from "../../types";
 
