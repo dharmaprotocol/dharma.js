@@ -40,8 +40,8 @@ export const MAX_LTV_LOAN_OFFER_ERRORS = {
 export interface MaxLTVData {
     collateralTokenAddress: string;
     collateralTokenSymbol: string;
-    creditorFee?: BigNumber;
-    debtorFee?: BigNumber;
+    creditorFee: BigNumber;
+    debtorFee: BigNumber;
     expiresIn: TimeInterval;
     interestRate: InterestRate;
     issuanceVersion: string;
@@ -50,8 +50,8 @@ export interface MaxLTVData {
     priceProvider: string;
     principal: TokenAmount;
     principalTokenAddress: string;
-    relayer?: EthereumAddress;
-    relayerFee?: TokenAmount;
+    relayer: EthereumAddress;
+    relayerFee: TokenAmount;
     termLength: TimeInterval;
     termsContract: string;
 }
@@ -95,9 +95,31 @@ export class MaxLTVLoanOffer {
             collateralToken,
         );
 
+        let relayer = NULL_ADDRESS;
+        let relayerFee = new BigNumber(0);
+        let creditorFee = new BigNumber(0);
+        let debtorFee = new BigNumber(0);
+
+        if (relayerAddress && relayerFeeAmount) {
+            relayer = new EthereumAddress(relayerAddress);
+            relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
+        }
+
+        if (creditorFeeAmount && creditorFeeAmount > 0) {
+            const creditorFeeTokenAmount = new TokenAmount(creditorFeeAmount, principalToken);
+            creditorFee = creditorFeeTokenAmount.rawAmount;
+        }
+
+        if (debtorFeeAmount && debtorFeeAmount > 0) {
+            debtorFeeTokenAmount = new TokenAmount(debtorFeeAmount, principalToken);
+            debtorFee = debtorFeeTokenAmount.rawAmount;
+        }
+
         const data: MaxLTVData = {
             collateralTokenAddress,
             collateralTokenSymbol: collateralToken,
+            creditorFee,
+            debtorFee,
             expiresIn: new TimeInterval(expiresInDuration, expiresInUnit),
             interestRate: new InterestRate(interestRate),
             issuanceVersion,
@@ -106,25 +128,12 @@ export class MaxLTVLoanOffer {
             priceProvider,
             principal: new TokenAmount(principalAmount, principalToken),
             principalTokenAddress,
+            relayer,
+            relayerFee,
             salt: MaxLTVLoanOffer.generateSalt(),
             termLength: new TimeInterval(termDuration, termUnit),
             termsContract,
         };
-
-        if (relayerAddress && relayerFeeAmount) {
-            data.relayer = new EthereumAddress(relayerAddress);
-            data.relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
-        }
-
-        if (creditorFeeAmount && creditorFeeAmount > 0) {
-            const creditorFeeTokenAmount = new TokenAmount(creditorFeeAmount, principalToken);
-            data.creditorFee = creditorFeeTokenAmount.rawAmount;
-        }
-
-        if (debtorFeeAmount && debtorFeeAmount > 0) {
-            const debtorFeeTokenAmount = new TokenAmount(debtorFeeAmount, principalToken);
-            data.debtorFee = debtorFeeTokenAmount.rawAmount;
-        }
 
         return new MaxLTVLoanOffer(dharma, data);
     }
@@ -323,10 +332,10 @@ export class MaxLTVLoanOffer {
             this.data.collateralTokenAddress,
             this.data.maxLTV,
             this.data.interestRate.raw.mul(FIXED_POINT_SCALING_FACTOR),
-            this.data.debtorFee ? this.data.debtorFee : new BigNumber(0),
-            this.data.creditorFee ? this.data.creditorFee : new BigNumber(0),
-            this.data.relayer ? this.data.relayer.toString() : NULL_ADDRESS,
-            this.data.relayerFee ? this.data.relayerFee : new BigNumber(0),
+            this.data.debtorFee,
+            this.data.creditorFee,
+            this.data.relayer,
+            this.data.relayerFee,
             this.expirationTimestampInSec,
             this.data.salt,
         );
