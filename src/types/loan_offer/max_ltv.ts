@@ -102,8 +102,8 @@ export class MaxLTVLoanOffer {
             collateralToken,
         );
 
-        let relayer = NULL_ADDRESS;
-        let relayerFee = new BigNumber(0);
+        let relayer = new EthereumAddress(NULL_ADDRESS);
+        let relayerFee = new TokenAmount(0, principalToken);
         let creditorFee = new BigNumber(0);
         let debtorFee = new BigNumber(0);
 
@@ -118,7 +118,7 @@ export class MaxLTVLoanOffer {
         }
 
         if (debtorFeeAmount && debtorFeeAmount > 0) {
-            debtorFeeTokenAmount = new TokenAmount(debtorFeeAmount, principalToken);
+            const debtorFeeTokenAmount = new TokenAmount(debtorFeeAmount, principalToken);
             debtorFee = debtorFeeTokenAmount.rawAmount;
         }
 
@@ -342,8 +342,8 @@ export class MaxLTVLoanOffer {
             this.data.interestRate.raw.mul(FIXED_POINT_SCALING_FACTOR),
             this.data.debtorFee,
             this.data.creditorFee,
-            this.data.relayer,
-            this.data.relayerFee,
+            this.data.relayer.toString(),
+            this.data.relayerFee.rawAmount,
             this.expirationTimestampInSec,
             this.data.salt,
         );
@@ -383,8 +383,8 @@ export class MaxLTVLoanOffer {
             this.data.principalTokenAddress,
             this.data.debtorFee,
             this.data.creditorFee,
-            this.data.relayer,
-            this.data.relayerFee,
+            this.data.relayer.toString(),
+            this.data.relayerFee.rawAmount,
             this.expirationTimestampInSec,
         );
     }
