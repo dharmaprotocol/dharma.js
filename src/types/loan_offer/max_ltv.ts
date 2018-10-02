@@ -255,6 +255,15 @@ export class MaxLTVLoanOffer {
         return false;
     }
 
+    /**
+     * Sets the principal price.
+     *
+     * @throws Throws if the price is for the wrong token
+     *
+     * @example
+     * loanOffer.setPrincipalPrice(signedPrincipalPrice);
+     *
+     */
     public setPrincipalPrice(principalPrice: SignedPrice) {
         if (principalPrice.tokenAddress !== this.data.principalTokenAddress) {
             throw new Error(
@@ -270,10 +279,27 @@ export class MaxLTVLoanOffer {
         this.principalPrice = principalPrice;
     }
 
+    /**
+     * Gets the principal price.
+     *
+     * @example
+     * loanOffer.getPrincipalPrice();
+     *
+     * @return {SignedPrice}
+     */
     public getPrincipalPrice(): SignedPrice {
         return this.principalPrice;
     }
 
+    /**
+     * Sets the collateral price.
+     *
+     * @throws Throws if the price is for the wrong token
+     *
+     * @example
+     * loanOffer.setCollateralPrice(signedPrincipalPrice);
+     *
+     */
     public setCollateralPrice(collateralPrice: SignedPrice) {
         if (collateralPrice.tokenAddress !== this.data.collateralTokenAddress) {
             throw new Error(
@@ -289,10 +315,27 @@ export class MaxLTVLoanOffer {
         this.collateralPrice = collateralPrice;
     }
 
+    /**
+     * Gets the collateral price.
+     *
+     * @example
+     * loanOffer.getCollateralPrice();
+     *
+     * @return {SignedPrice}
+     */
     public getCollateralPrice(): SignedPrice {
         return this.principalPrice;
     }
 
+    /**
+     * Sets the collateral amount.
+     *
+     * @throws Throws if the collateral amount is insufficient.
+     *
+     * @example
+     * loanOffer.setCollateralAmount(1000);
+     *
+     */
     public setCollateralAmount(collateralAmount: number) {
         if (
             this.principalPrice &&
@@ -312,10 +355,32 @@ export class MaxLTVLoanOffer {
         this.termsContractParameters = this.packTermsContractParameters();
     }
 
+    /**
+     * Gets the collateral amount.
+     *
+     * @example
+     * loanOffer.getCollateralAmount();
+     *
+     * @return {SignedPrice}
+     */
     public getCollateralAmount(): number {
         return this.collateralAmount;
     }
 
+    /**
+     * Eventually signs the loan offer as the debtor.
+     *
+     * @throws Throws if the loan offer is already signed by a debtor.
+     * @throws Throws if the prices are not set.
+     * @throws Throws if the collateral amount is not set.
+     * @throws Throws if the collateral amount is insufficient.
+     *
+     * @example
+     * loanOffer.signAsDebtor();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
     public async signAsDebtor(debtorAddress?: string): Promise<void> {
         if (this.isSignedByDebtor()) {
             throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.ALREADY_SIGNED_BY_DEBTOR());
