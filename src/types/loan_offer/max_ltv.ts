@@ -35,11 +35,15 @@ const MAX_INTEREST_RATE_PRECISION = 4;
 const FIXED_POINT_SCALING_FACTOR = 10 ** MAX_INTEREST_RATE_PRECISION;
 
 export const MAX_LTV_LOAN_OFFER_ERRORS = {
+    ALREADY_SIGNED_BY_CREDITOR: () => `The creditor has already signed the loan offer.`,
     ALREADY_SIGNED_BY_DEBTOR: () => `The debtor has already signed the loan offer.`,
     COLLATERAL_AMOUNT_NOT_SET: () => `The collateral amount must be set first`,
     INSUFFICIENT_COLLATERAL_AMOUNT: (collateralAmount: number, collateralTokenSymbol: string) =>
         singleLineString`Collateral of ${collateralAmount} ${collateralTokenSymbol} is insufficient
             for the maximum loan-to-value.`,
+    PRICE_OF_INCORRECT_TOKEN: (receivedAddress: string, expectedAddress: string) =>
+        singleLineString`Received price of token at address ${receivedAddress},
+            but expected price of token at address ${expectedAddress}.`,
     PRICES_NOT_SET: () => `The prices of the principal and collateral must be set first.`,
 };
 
@@ -202,7 +206,9 @@ export class MaxLTVLoanOffer {
      * @return {Promise<void>}
      */
     public async signAsCreditor(creditorAddress?: string): Promise<void> {
-        // TODO: check if already signed by creditor
+        if (this.isSignedByCreditor()) {
+            throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.ALREADY_SIGNED_BY_CREDITOR());
+        }
 
         this.creditor = await EthereumAddress.validAddressOrCurrentUser(
             this.dharma,
@@ -250,8 +256,17 @@ export class MaxLTVLoanOffer {
     }
 
     public setPrincipalPrice(principalPrice: SignedPrice) {
-        // TODO: assert signed price feed provider address is the address we expect
+        if (principalPrice.tokenAddress !== this.data.principalTokenAddress) {
+            throw new Error(
+                MAX_LTV_LOAN_OFFER_ERRORS.PRICE_OF_INCORRECT_TOKEN(
+                    principalPrice.tokenAddress,
+                    this.data.principalTokenAddress,
+                ),
+            );
+        }
+
         // TODO: assert signed time is within some delta of current time (?)
+
         this.principalPrice = principalPrice;
     }
 
@@ -260,8 +275,17 @@ export class MaxLTVLoanOffer {
     }
 
     public setCollateralPrice(collateralPrice: SignedPrice) {
-        // TODO: assert signed price feed provider address is the address we expect
+        if (collateralPrice.tokenAddress !== this.data.collateralTokenAddress) {
+            throw new Error(
+                MAX_LTV_LOAN_OFFER_ERRORS.PRICE_OF_INCORRECT_TOKEN(
+                    collateralPrice.tokenAddress,
+                    this.data.collateralTokenAddress,
+                ),
+            );
+        }
+
         // TODO: assert signed time is within some delta of current time (?)
+
         this.collateralPrice = collateralPrice;
     }
 
@@ -270,8 +294,19 @@ export class MaxLTVLoanOffer {
     }
 
     public setCollateralAmount(collateralAmount: number) {
-        // TODO: assert prices are set
-        // TODO: assert collateralAmount sufficient
+        if (
+            this.principalPrice &&
+            this.collateralPrice &&
+            !this.collateralAmountIsSufficient(collateralAmount)
+        ) {
+            throw new Error(
+                MAX_LTV_LOAN_OFFER_ERRORS.INSUFFICIENT_COLLATERAL_AMOUNT(
+                    collateralAmount,
+                    this.data.collateralTokenSymbol,
+                ),
+            );
+        }
+
         this.collateralAmount = collateralAmount;
 
         this.termsContractParameters = this.packTermsContractParameters();
@@ -294,10 +329,7 @@ export class MaxLTVLoanOffer {
             throw new Error(MAX_LTV_LOAN_OFFER_ERRORS.COLLATERAL_AMOUNT_NOT_SET());
         }
 
-        // TODO: assert signed address matches principal token address
-        // TODO: assert signed address matches collateral token address
-
-        if (!this.collateralAmountIsSufficient()) {
+        if (!this.collateralAmountIsSufficient(this.collateralAmount)) {
             throw new Error(
                 MAX_LTV_LOAN_OFFER_ERRORS.INSUFFICIENT_COLLATERAL_AMOUNT(
                     this.collateralAmount,
@@ -410,8 +442,8 @@ export class MaxLTVLoanOffer {
         );
     }
 
-    private collateralAmountIsSufficient(): boolean {
-        if (!this.collateralAmount || !this.principalPrice || !this.collateralPrice) {
+    private collateralAmountIsSufficient(collateralAmount: number): boolean {
+        if (!this.principalPrice || !this.collateralPrice) {
             return false;
         }
 
@@ -422,7 +454,7 @@ export class MaxLTVLoanOffer {
             this.principalPrice.tokenPrice,
         );
 
-        const collateralValue = new BigNumber(this.collateralAmount).times(
+        const collateralValue = new BigNumber(collateralAmount).times(
             this.collateralPrice.tokenPrice,
         );
 

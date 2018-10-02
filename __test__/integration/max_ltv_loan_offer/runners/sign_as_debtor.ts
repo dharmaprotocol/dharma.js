@@ -114,11 +114,11 @@ export async function testSignAsDebtor(dharma: Dharma, params: MaxLTVParams) {
 
                 await loanOffer.signAsCreditor(creditor);
 
-                await setPrices();
-
                 const collateralAmount = 10;
 
                 loanOffer.setCollateralAmount(collateralAmount);
+
+                await setPrices();
 
                 await expect(loanOffer.signAsDebtor(debtor)).rejects.toThrow(
                     MAX_LTV_LOAN_OFFER_ERRORS.INSUFFICIENT_COLLATERAL_AMOUNT(
