@@ -1,6 +1,6 @@
 import { Dharma } from "../dharma";
 
-import { DEBT_ORDER_ERRORS, DebtOrder, DebtOrderParams } from "../../loan/debt_order";
+import { CollateralizedDebtOrderParams, DEBT_ORDER_ERRORS, DebtOrder } from "../../loan/debt_order";
 
 import { EthereumAddress } from "../../types";
 
@@ -12,7 +12,7 @@ import { SignatureUtils } from "../../../utils/signature_utils";
 export class LoanOffer extends DebtOrder {
     public static async createAndSignAsCreditor(
         dharma: Dharma,
-        params: DebtOrderParams,
+        params: CollateralizedDebtOrderParams,
         creditor?: string,
     ): Promise<LoanOffer> {
         const offer = await LoanOffer.create<LoanOffer>(dharma, params);

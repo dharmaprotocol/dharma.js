@@ -72,8 +72,6 @@ export interface OrderData {
 export interface DebtOrderParams {
     principalAmount: number;
     principalToken: string;
-    collateralAmount: number;
-    collateralToken: string;
     interestRate: number;
     termDuration: number;
     termUnit: DurationUnit;
@@ -82,6 +80,12 @@ export interface DebtOrderParams {
     relayerAddress?: string;
     relayerFeeAmount?: number;
     creditorFeeAmount?: number;
+    debtorFeeAmount?: number;
+}
+
+export interface CollateralizedDebtOrderParams extends DebtOrderParams {
+    collateralAmount: number;
+    collateralToken: string;
 }
 
 export interface DebtOrderTerms {
@@ -102,7 +106,7 @@ export class DebtOrder {
 
     public static async create<T extends DebtOrder>(
         dharma: Dharma,
-        params: DebtOrderParams,
+        params: CollateralizedDebtOrderParams,
     ): Promise<T> {
         const {
             principalAmount,
@@ -117,6 +121,7 @@ export class DebtOrder {
             expiresInDuration,
             expiresInUnit,
             creditorFeeAmount,
+            debtorFeeAmount,
         } = params;
 
         const principal = new TokenAmount(principalAmount, principalToken);
@@ -170,6 +175,13 @@ export class DebtOrder {
 
             loanRequestConstructorParams.creditorFee = creditorFee;
             data.creditorFee = creditorFee.rawAmount;
+        }
+
+        if (debtorFeeAmount && debtorFeeAmount > 0) {
+            const debtorFee = new TokenAmount(debtorFeeAmount, principalToken);
+
+            loanRequestConstructorParams.debtorFee = debtorFee;
+            data.debtorFee = debtorFee.rawAmount;
         }
 
         data.kernelVersion = debtKernel.address;
