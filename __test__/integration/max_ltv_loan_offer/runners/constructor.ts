@@ -8,8 +8,8 @@ export function testConstructor(dharma: Dharma, params: MaxLTVParams) {
     describe("passing valid params", () => {
         let loanOffer: MaxLTVLoanOffer;
 
-        beforeEach(() => {
-            loanOffer = new MaxLTVLoanOffer(dharma, params);
+        beforeEach(async () => {
+            loanOffer = await MaxLTVLoanOffer.create(dharma, params);
         });
 
         test("returns a MaxLTVLoanOffer", () => {

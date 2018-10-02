@@ -43,8 +43,8 @@ export async function testSignAsDebtor(dharma: Dharma, params: MaxLTVParams) {
             loanOffer.setCollateralPrice(collateralPrice);
         }
 
-        beforeEach(() => {
-            loanOffer = new MaxLTVLoanOffer(dharma, params);
+        beforeEach(async () => {
+            loanOffer = await MaxLTVLoanOffer.create(dharma, params);
         });
 
         test("signs the offer as the debtor if all prerequisites are met", async () => {

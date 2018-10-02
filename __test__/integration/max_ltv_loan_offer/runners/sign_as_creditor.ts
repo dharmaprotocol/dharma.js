@@ -12,8 +12,8 @@ export async function testSignAsCreditor(dharma: Dharma, params: MaxLTVParams) {
 
         let loanOffer: MaxLTVLoanOffer;
 
-        beforeEach(() => {
-            loanOffer = new MaxLTVLoanOffer(dharma, params);
+        beforeEach(async () => {
+            loanOffer = await MaxLTVLoanOffer.create(dharma, params);
         });
 
         test("signs the offer as the creditor", async () => {

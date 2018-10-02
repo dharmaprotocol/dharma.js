@@ -8,7 +8,7 @@ import { DebtOrderParams } from "../../loan/debt_order";
 
 import { SignatureUtils } from "../../../utils/signature_utils";
 
-import { NULL_ECDSA_SIGNATURE, SALT_DECIMALS } from "../../../utils/constants";
+import { NULL_ADDRESS, NULL_ECDSA_SIGNATURE, SALT_DECIMALS } from "../../../utils/constants";
 
 import { Dharma } from "../dharma";
 
@@ -24,6 +24,9 @@ import {
 import { SignedPrice } from "./signed_price";
 
 import { BigNumber } from "../../../utils/bignumber";
+
+const MAX_INTEREST_RATE_PRECISION = 4;
+const FIXED_POINT_SCALING_FACTOR = 10 ** MAX_INTEREST_RATE_PRECISION;
 
 export const MAX_LTV_LOAN_OFFER_ERRORS = {
     ALREADY_SIGNED_BY_DEBTOR: () => `The debtor has already signed the loan offer.`,
@@ -82,19 +85,19 @@ export class MaxLTVLoanOffer {
             termUnit,
         } = params;
 
-        const kernelVersion = (await this.dharma.contracts.loadDebtKernelAsync()).address;
-        const issuanceVersion = (await this.dharma.contracts.loadRepaymentRouterAsync()).address;
-        const termsContract = (await this.dharma.contracts.loadCollateralizedSimpleInterestTermsContract())
+        const kernelVersion = (await dharma.contracts.loadDebtKernelAsync()).address;
+        const issuanceVersion = (await dharma.contracts.loadRepaymentRouterAsync()).address;
+        const termsContract = (await dharma.contracts.loadCollateralizedSimpleInterestTermsContract())
             .address;
-        const principalTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
-            this.data.principal.tokenSymbol,
+        const principalTokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(
+            principalToken,
         );
-        const collateralTokenAddress = await this.dharma.contracts.getTokenAddressBySymbolAsync(
-            this.data.collateralTokenSymbol,
+        const collateralTokenAddress = await dharma.contracts.getTokenAddressBySymbolAsync(
+            collateralToken,
         );
 
         const data: MaxLTVData = {
-            collateralTokenAddress
+            collateralTokenAddress,
             collateralTokenSymbol: collateralToken,
             expiresIn: new TimeInterval(expiresInDuration, expiresInUnit),
             interestRate: new InterestRate(interestRate),
@@ -132,7 +135,7 @@ export class MaxLTVLoanOffer {
         params: MaxLTVParams,
         creditor?: string,
     ): Promise<MaxLTVLoanOffer> {
-        const offer = new MaxLTVLoanOffer(dharma, params);
+        const offer = await MaxLTVLoanOffer.create(dharma, params);
 
         await offer.signAsCreditor(creditor);
 
@@ -320,13 +323,13 @@ export class MaxLTVLoanOffer {
             this.data.principalTokenAddress,
             this.data.collateralTokenAddress,
             this.data.maxLTV,
-            this.data.interestRate,
+            this.data.interestRate.raw.mul(FIXED_POINT_SCALING_FACTOR),
             this.data.debtorFee ? this.data.debtorFee : new BigNumber(0),
             this.data.creditorFee ? this.data.creditorFee : new BigNumber(0),
-            this.data.relayer ? this.data.relayer : NULL_ECDSA_SIGNATURE,
+            this.data.relayer ? this.data.relayer.toString() : NULL_ADDRESS,
             this.data.relayerFee ? this.data.relayerFee : new BigNumber(0),
             this.expirationTimestampInSec,
-            this.salt,
+            this.data.salt,
         );
     }
 
@@ -363,7 +366,7 @@ export class MaxLTVLoanOffer {
             this.data.creditorFee,
             this.data.relayer,
             this.data.relayerFee,
-            this.data.expirationTimestampInSec,
+            this.expirationTimestampInSec,
         );
     }
 
