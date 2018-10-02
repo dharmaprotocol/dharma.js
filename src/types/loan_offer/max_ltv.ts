@@ -7,6 +7,7 @@ import {
     CollateralizedTermsContractParameters,
 } from "../../../src/adapters/collateralized_simple_interest_loan_adapter";
 import { SimpleInterestTermsContractParameters } from "../../../src/adapters/simple_interest_loan_adapter";
+import { FIXED_POINT_SCALING_FACTOR } from "../../../src/adapters/simple_interest_loan_terms";
 
 import { Web3Utils } from "../../../utils/web3_utils";
 
@@ -30,9 +31,6 @@ import {
 import { SignedPrice } from "./signed_price";
 
 import { BigNumber } from "../../../utils/bignumber";
-
-const MAX_INTEREST_RATE_PRECISION = 4;
-const FIXED_POINT_SCALING_FACTOR = 10 ** MAX_INTEREST_RATE_PRECISION;
 
 export const MAX_LTV_LOAN_OFFER_ERRORS = {
     ALREADY_SIGNED_BY_CREDITOR: () => `The creditor has already signed the loan offer.`,
