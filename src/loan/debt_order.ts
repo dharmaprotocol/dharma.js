@@ -41,10 +41,16 @@ export interface DebtOrderConstructorParams {
     interestRate: InterestRate;
     termLength: TimeInterval;
     expiresAt: number;
+    // relayer
     relayer?: EthereumAddress;
     relayerFee?: TokenAmount;
+    // fee splitting
     creditorFee?: TokenAmount;
     debtorFee?: TokenAmount;
+    // underwriter
+    underwriterRiskRating?: number;
+    underwriterFee?: TokenAmount;
+    underwriter?: EthereumAddress;
 }
 
 export interface OrderData {
@@ -83,6 +89,9 @@ export interface DebtOrderParams {
     relayerAddress?: string;
     relayerFeeAmount?: number;
     creditorFeeAmount?: number;
+    underwriterAddress?: string;
+    underwriterRiskRating?: number;
+    underwriterFeeAmount?: number;
 }
 
 export interface DebtOrderTerms {
@@ -118,6 +127,9 @@ export class DebtOrder {
             expiresInDuration,
             expiresInUnit,
             creditorFeeAmount,
+            underwriterFeeAmount,
+            underwriterAddress,
+            underwriterRiskRating,
         } = params;
 
         const principal = new TokenAmount(principalAmount, principalToken);
