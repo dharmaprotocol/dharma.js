@@ -24,6 +24,7 @@ import {
     InterestRate,
     TimeInterval,
     TokenAmount,
+    UnderwriterRiskRating,
 } from "../types";
 
 export const DEBT_ORDER_ERRORS = {
@@ -48,7 +49,7 @@ export interface DebtOrderConstructorParams {
     creditorFee?: TokenAmount;
     debtorFee?: TokenAmount;
     // underwriter
-    underwriterRiskRating?: number;
+    underwriterRiskRating?: UnderwriterRiskRating;
     underwriterFee?: TokenAmount;
     underwriter?: EthereumAddress;
 }
@@ -188,14 +189,15 @@ export class DebtOrder {
         if (underwriterAddress && underwriterAddress !== NULL_ADDRESS) {
             const undewriter = new EthereumAddress(underwriterAddress);
             const underwriterFee = new TokenAmount(underwriterFeeAmount, principalToken);
+            const riskRating = new UnderwriterRiskRating(underwriterRiskRating);
 
             loanRequestConstructorParams.underwriter = undewriter;
             loanRequestConstructorParams.underwriterFee = underwriterFee;
-            loanRequestConstructorParams.underwriterRiskRating = underwriterRiskRating;
+            loanRequestConstructorParams.underwriterRiskRating = riskRating;
 
             data.underwriter = undewriter.toString();
             data.underwriterFee = underwriterFee.rawAmount;
-            data.underwriterRiskRating = new BigNumber(underwriterRiskRating);
+            data.underwriterRiskRating = riskRating.scaled;
         }
 
         data.kernelVersion = debtKernel.address;
@@ -256,16 +258,14 @@ export class DebtOrder {
         }
 
         if (debtOrderData.underwriter && debtOrderData.underwriter !== NULL_ADDRESS) {
-            const underwriter = new EthereumAddress(debtOrderData.underwriter);
-            const underwriterFee = TokenAmount.fromRaw(
+            loanRequestParams.underwriter = new EthereumAddress(debtOrderData.underwriter);
+            loanRequestParams.underwriterFee = TokenAmount.fromRaw(
                 debtOrderData.underwriterFee,
                 principal.tokenSymbol,
             );
-            const underwriterRiskRating = debtOrderData.underwriterRiskRating.toNumber();
-
-            loanRequestParams.underwriter = underwriter;
-            loanRequestParams.underwriterFee = underwriterFee;
-            loanRequestParams.underwriterRiskRating = underwriterRiskRating;
+            loanRequestParams.underwriterRiskRating = new UnderwriterRiskRating(
+                debtOrderData.underwriterRiskRating,
+            );
         }
 
         if (debtOrderData.creditorFee && debtOrderData.creditorFee.greaterThan(0)) {
