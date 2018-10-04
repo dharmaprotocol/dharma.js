@@ -2,7 +2,7 @@ import { BigNumber } from "../../../../utils/bignumber";
 
 import { ACCOUNTS } from "../../../accounts";
 
-import { Debt, LoanRequest, InterestRate, TokenAmount } from "../../../../src/types";
+import { Debt, InterestRate, LoanRequest, TokenAmount } from "../../../../src/types";
 
 import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
