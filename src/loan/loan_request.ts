@@ -189,6 +189,17 @@ export class LoanRequest extends DebtOrder {
         }
     }
 
+    /**
+     * Eventually signs the loan request as the underwriter.
+     *
+     * @throws Throws if the loan request is already signed by an underwriter.
+     *
+     * @example
+     * loanRequest.signAsUnderwriter();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
     public async signAsUnderwriter(underwriterAddress?: string): Promise<void> {
         if (this.isSignedByUnderwriter()) {
             throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_UNDERWRITER);
