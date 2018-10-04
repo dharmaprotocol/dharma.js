@@ -255,6 +255,19 @@ export class DebtOrder {
             loanRequestParams.relayerFee = relayerFee;
         }
 
+        if (debtOrderData.underwriter && debtOrderData.underwriter !== NULL_ADDRESS) {
+            const underwriter = new EthereumAddress(debtOrderData.underwriter);
+            const underwriterFee = TokenAmount.fromRaw(
+                debtOrderData.underwriterFee,
+                principal.tokenSymbol,
+            );
+            const underwriterRiskRating = debtOrderData.underwriterRiskRating.toNumber();
+
+            loanRequestParams.underwriter = underwriter;
+            loanRequestParams.underwriterFee = underwriterFee;
+            loanRequestParams.underwriterRiskRating = underwriterRiskRating;
+        }
+
         if (debtOrderData.creditorFee && debtOrderData.creditorFee.greaterThan(0)) {
             loanRequestParams.creditorFee = TokenAmount.fromRaw(
                 debtOrderData.creditorFee,
