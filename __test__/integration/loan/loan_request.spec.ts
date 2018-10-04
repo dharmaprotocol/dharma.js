@@ -4,9 +4,9 @@ import { Dharma, Web3 } from "../../../src";
 jest.unmock("@dharmaprotocol/contracts");
 
 import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
-import { generateOrderData } from "./scenarios/valid_order_data";
-import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
 import { UNDERWRITTEN_LOAN_REQUEST } from "./scenarios/underwritten_loan_request";
+import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
+import { generateOrderData } from "./scenarios/valid_order_data";
 
 // Test runners
 import { testCancel } from "./runners/cancel";
