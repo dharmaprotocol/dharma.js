@@ -1,4 +1,5 @@
 export { Debt, Debts, Investment, Investments, LoanRequest } from "../loan";
+export { LoanOffer } from "./loan_offer";
 export { Token } from "../token";
 
 export { DebtOrderData, DEBT_ORDER_DATA_DEFAULTS } from "./debt_order_data";
@@ -17,5 +18,4 @@ export { RepaymentRouterError } from "./repayment_router_error";
 export { TokenAmount } from "./token_amount";
 export { InterestRate } from "./interest_rate";
 export { TimeInterval } from "./time_interval";
-
-export { LoanOffer } from "./loan_offer";
+export { UnderwriterRiskRating } from "./underwriter_risk_rating";
