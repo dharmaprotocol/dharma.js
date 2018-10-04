@@ -26,7 +26,7 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
 export async function testLoad(
     dharma: Dharma,
-    generateLoanData: (principalToken: string, termsContract: string) => OrderData,
+    generateOrderData: (principalToken: string, termsContract: string) => OrderData,
 ) {
     describe("when given valid data for a LoanRequest", () => {
         let loanRequest: LoanRequest;
@@ -41,7 +41,7 @@ export async function testLoad(
             const collateralizedTerms = await contracts.loadCollateralizedSimpleInterestTermsContract();
             const collateralizedTermsAddress = collateralizedTerms.address;
 
-            const loanData = generateLoanData(wethAddress, collateralizedTermsAddress);
+            const loanData = generateOrderData(wethAddress, collateralizedTermsAddress);
 
             loanRequest = await LoanRequest.load<LoanRequest>(dharma, loanData);
         });

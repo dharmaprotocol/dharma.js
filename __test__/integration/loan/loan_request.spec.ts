@@ -4,7 +4,7 @@ import { Dharma, Web3 } from "../../../src";
 jest.unmock("@dharmaprotocol/contracts");
 
 import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
-import { generateLoanData } from "./scenarios/valid_loan_data";
+import { generateOrderData } from "./scenarios/valid_order_data";
 import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
 
 // Test runners
@@ -40,7 +40,7 @@ describe("Loan Request (Integration)", () => {
     });
 
     describe("#load", async () => {
-        await testLoad(dharma, generateLoanData);
+        await testLoad(dharma, generateOrderData);
     });
 
     describe("#cancel", async () => {
