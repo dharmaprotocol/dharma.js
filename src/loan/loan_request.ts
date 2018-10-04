@@ -188,4 +188,29 @@ export class LoanRequest extends DebtOrder {
             throw new Error(DEBT_ORDER_ERRORS.PROXY_FILL_DISALLOWED("loan request"));
         }
     }
+    /**
+     * Returns whether the loan request has been signed by an underwriter.
+     *
+     * @example
+     * loanRequest.isSignedByUnderwriter();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByUnderwriter(): boolean {
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
+
+        if (
+            this.data.underwriterSignature === NULL_ECDSA_SIGNATURE ||
+            !SignatureUtils.isValidSignature(
+                debtOrderDataWrapper.getUnderwriterCommitmentHash(),
+                this.data.underwriterSignature,
+                this.data.underwriter,
+            )
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 }
