@@ -27,8 +27,9 @@ import {
 } from "../types";
 
 export const DEBT_ORDER_ERRORS = {
-    ALREADY_SIGNED_BY_DEBTOR: `The debtor has already signed this debt order.`,
-    ALREADY_SIGNED_BY_CREDITOR: `The creditor has already signed this debt order.`,
+    ALREADY_SIGNED_BY_DEBTOR: `A debtor has already signed this debt order.`,
+    ALREADY_SIGNED_BY_CREDITOR: `A creditor has already signed this debt order.`,
+    ALREADY_SIGNED_BY_UNDERWRITER: `An underwriter has already signed this debt order.`,
     PROXY_FILL_DISALLOWED: (className: string) =>
         singleLineString`A ${className} must be signed by both the creditor and
                          debtor before it can be filled by proxy.`,
