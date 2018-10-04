@@ -4,7 +4,7 @@ import { ACCOUNTS } from "../../../accounts";
 
 const UNDERWRITER_PARAMS = {
     underwriterAddress: ACCOUNTS[8].address,
-    underwriterRiskRating: 3.2,
+    underwriterRiskRating: 3.2, // i.e., 3.2% chance that the debtor defaults
     underwriterFeeAmount: 0.6,
 };
 
