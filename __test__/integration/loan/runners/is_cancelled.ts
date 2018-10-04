@@ -1,15 +1,15 @@
-// Debt Order
-import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
+import { LoanRequest } from "../../../../src/loan";
 
-// Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/types/dharma";
 
-export async function testIsCancelled(dharma: Dharma, params: LoanRequestParams) {
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
+export async function testIsCancelled(dharma: Dharma, params: DebtOrderParams) {
     let loanRequest: LoanRequest;
 
     describe("when an order has just been opened", () => {
         beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, params);
+            loanRequest = await LoanRequest.create<LoanRequest>(dharma, params);
         });
 
         test(`eventually returns false`, async () => {

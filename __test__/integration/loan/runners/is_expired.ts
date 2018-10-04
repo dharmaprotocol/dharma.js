@@ -11,7 +11,7 @@ export async function testExpired(dharma: Dharma, scenario: IsExpiredScenario) {
         let loanRequest: LoanRequest;
 
         beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, scenario.params);
+            loanRequest = await LoanRequest.create<LoanRequest>(dharma, scenario.params);
         });
 
         test(`eventually returns ${scenario.isExpired}`, async () => {

@@ -4,7 +4,8 @@ import * as Web3 from "web3";
 import { BigNumber } from "../../../../utils/bignumber";
 
 import { LoanRequest } from "../../../../src/loan";
-import { LoanData } from "../../../../src/loan/agreement";
+
+import { OrderData } from "../../../../src/loan/debt_order";
 
 // Import Dharma for typing-checking.
 import { Dharma } from "../../../../src/types/dharma";
@@ -25,7 +26,7 @@ const TX_DEFAULTS = { from: ACCOUNTS[0].address, gas: 400000 };
 
 export async function testLoad(
     dharma: Dharma,
-    generateLoanData: (principalToken: string, termsContract: string) => LoanData,
+    generateLoanData: (principalToken: string, termsContract: string) => OrderData,
 ) {
     describe("when given valid data for a LoanRequest", () => {
         let loanRequest: LoanRequest;
@@ -42,7 +43,7 @@ export async function testLoad(
 
             const loanData = generateLoanData(wethAddress, collateralizedTermsAddress);
 
-            loanRequest = await LoanRequest.load(dharma, loanData);
+            loanRequest = await LoanRequest.load<LoanRequest>(dharma, loanData);
         });
 
         it("eventually returns a LoanRequest", () => {

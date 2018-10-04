@@ -4,9 +4,9 @@ import { Web3Utils } from "../../../../utils/web3_utils";
 
 import { Dharma } from "../../../../src/types/dharma";
 
-import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
+import { LoanRequest } from "../../../../src/loan";
 
-import { Token } from "../../../../src/types";
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
 import { ACCOUNTS } from "../../../accounts";
 
@@ -24,7 +24,7 @@ const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const web3 = new Web3(provider);
 const web3Utils = new Web3Utils(web3);
 
-export async function testIsFillable(dharma: Dharma, params: LoanRequestParams) {
+export async function testIsFillable(dharma: Dharma, params: DebtOrderParams) {
     describe("for a loan request with valid parameters", () => {
         let currentSnapshotId: number;
         let loanRequest: LoanRequest;
