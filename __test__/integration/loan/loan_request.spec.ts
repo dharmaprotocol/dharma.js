@@ -4,8 +4,9 @@ import { Dharma, Web3 } from "../../../src";
 jest.unmock("@dharmaprotocol/contracts");
 
 import { IS_EXPIRED_SCENARIOS } from "./scenarios/is_expired_scenarios";
-import { generateOrderData } from "./scenarios/valid_order_data";
+import { UNDERWRITTEN_LOAN_REQUEST } from "./scenarios/underwritten_loan_request";
 import { VALID_LOAN_REQUEST } from "./scenarios/valid_loan_request";
+import { generateOrderData } from "./scenarios/valid_order_data";
 
 // Test runners
 import { testCancel } from "./runners/cancel";
@@ -16,6 +17,7 @@ import { testExpired } from "./runners/is_expired";
 import { testIsFillable } from "./runners/is_fillable";
 import { testLoad } from "./runners/load";
 import { testSignAsDebtor } from "./runners/sign_as_debtor";
+import { testSignAsUnderwriter } from "./runners/sign_as_underwriter";
 
 const provider = new Web3.providers.HttpProvider("http://localhost:8545");
 const dharma = new Dharma(provider);
@@ -53,5 +55,9 @@ describe("Loan Request (Integration)", () => {
 
     describe("#isFillable", async () => {
         await testIsFillable(dharma, VALID_LOAN_REQUEST);
+    });
+
+    describe("#signAsUnderwriter", async () => {
+        await testSignAsUnderwriter(dharma, UNDERWRITTEN_LOAN_REQUEST);
     });
 });
