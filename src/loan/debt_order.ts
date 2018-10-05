@@ -24,11 +24,13 @@ import {
     InterestRate,
     TimeInterval,
     TokenAmount,
+    UnderwriterRiskRating,
 } from "../types";
 
 export const DEBT_ORDER_ERRORS = {
-    ALREADY_SIGNED_BY_DEBTOR: `The debtor has already signed this debt order.`,
-    ALREADY_SIGNED_BY_CREDITOR: `The creditor has already signed this debt order.`,
+    ALREADY_SIGNED_BY_DEBTOR: `A debtor has already signed this debt order.`,
+    ALREADY_SIGNED_BY_CREDITOR: `A creditor has already signed this debt order.`,
+    ALREADY_SIGNED_BY_UNDERWRITER: `An underwriter has already signed this debt order.`,
     PROXY_FILL_DISALLOWED: (className: string) =>
         singleLineString`A ${className} must be signed by both the creditor and
                          debtor before it can be filled by proxy.`,
@@ -40,10 +42,16 @@ export interface DebtOrderConstructorParams {
     interestRate: InterestRate;
     termLength: TimeInterval;
     expiresAt: number;
+    // relayer
     relayer?: EthereumAddress;
     relayerFee?: TokenAmount;
+    // fee splitting
     creditorFee?: TokenAmount;
     debtorFee?: TokenAmount;
+    // underwriter
+    underwriterRiskRating?: UnderwriterRiskRating;
+    underwriterFee?: TokenAmount;
+    underwriter?: EthereumAddress;
 }
 
 export interface OrderData {
@@ -82,6 +90,9 @@ export interface DebtOrderParams {
     relayerAddress?: string;
     relayerFeeAmount?: number;
     creditorFeeAmount?: number;
+    underwriterAddress?: string;
+    underwriterRiskRating?: number;
+    underwriterFeeAmount?: number;
 }
 
 export interface DebtOrderTerms {
@@ -117,6 +128,9 @@ export class DebtOrder {
             expiresInDuration,
             expiresInUnit,
             creditorFeeAmount,
+            underwriterFeeAmount,
+            underwriterAddress,
+            underwriterRiskRating,
         } = params;
 
         const principal = new TokenAmount(principalAmount, principalToken);
@@ -155,14 +169,14 @@ export class DebtOrder {
         const salt = this.generateSalt();
 
         if (relayerAddress && relayerAddress !== NULL_ADDRESS) {
-            loanRequestConstructorParams.relayer = new EthereumAddress(relayerAddress);
-
+            const relayer = new EthereumAddress(relayerAddress);
             const relayerFee = new TokenAmount(relayerFeeAmount, principalToken);
 
+            loanRequestConstructorParams.relayer = relayer;
             loanRequestConstructorParams.relayerFee = relayerFee;
 
-            data.relayer = relayerAddress;
-            data.relayerFee = new BigNumber(relayerFee.rawAmount);
+            data.relayer = relayer.toString();
+            data.relayerFee = relayerFee.rawAmount;
         }
 
         if (creditorFeeAmount && creditorFeeAmount > 0) {
@@ -170,6 +184,20 @@ export class DebtOrder {
 
             loanRequestConstructorParams.creditorFee = creditorFee;
             data.creditorFee = creditorFee.rawAmount;
+        }
+
+        if (underwriterAddress && underwriterAddress !== NULL_ADDRESS) {
+            const undewriter = new EthereumAddress(underwriterAddress);
+            const underwriterFee = new TokenAmount(underwriterFeeAmount, principalToken);
+            const riskRating = new UnderwriterRiskRating(underwriterRiskRating);
+
+            loanRequestConstructorParams.underwriter = undewriter;
+            loanRequestConstructorParams.underwriterFee = underwriterFee;
+            loanRequestConstructorParams.underwriterRiskRating = riskRating;
+
+            data.underwriter = undewriter.toString();
+            data.underwriterFee = underwriterFee.rawAmount;
+            data.underwriterRiskRating = riskRating.scaled;
         }
 
         data.kernelVersion = debtKernel.address;
@@ -227,6 +255,17 @@ export class DebtOrder {
 
             loanRequestParams.relayer = relayer;
             loanRequestParams.relayerFee = relayerFee;
+        }
+
+        if (debtOrderData.underwriter && debtOrderData.underwriter !== NULL_ADDRESS) {
+            loanRequestParams.underwriter = new EthereumAddress(debtOrderData.underwriter);
+            loanRequestParams.underwriterFee = TokenAmount.fromRaw(
+                debtOrderData.underwriterFee,
+                principal.tokenSymbol,
+            );
+            loanRequestParams.underwriterRiskRating = new UnderwriterRiskRating(
+                debtOrderData.underwriterRiskRating,
+            );
         }
 
         if (debtOrderData.creditorFee && debtOrderData.creditorFee.greaterThan(0)) {

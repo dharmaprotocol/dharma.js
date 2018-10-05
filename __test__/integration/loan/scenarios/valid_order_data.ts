@@ -1,4 +1,4 @@
-export const generateLoanData = (principalToken: string, termsContract: string) => {
+export const generateOrderData = (principalToken: string, termsContract: string) => {
     return {
         principalToken,
         termsContract,

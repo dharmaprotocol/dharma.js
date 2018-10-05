@@ -188,4 +188,59 @@ export class LoanRequest extends DebtOrder {
             throw new Error(DEBT_ORDER_ERRORS.PROXY_FILL_DISALLOWED("loan request"));
         }
     }
+
+    /**
+     * Eventually signs the loan request as the underwriter.
+     *
+     * @throws Throws if the loan request is already signed by an underwriter.
+     *
+     * @example
+     * loanRequest.signAsUnderwriter();
+     * => Promise<void>
+     *
+     * @return {Promise<void>}
+     */
+    public async signAsUnderwriter(underwriterAddress?: string): Promise<void> {
+        if (this.isSignedByUnderwriter()) {
+            throw new Error(DEBT_ORDER_ERRORS.ALREADY_SIGNED_BY_UNDERWRITER);
+        }
+
+        this.data.underwriter = await EthereumAddress.validAddressOrCurrentUser(
+            this.dharma,
+            underwriterAddress,
+        );
+
+        const isMetaMask = !!this.dharma.web3.currentProvider.isMetaMask;
+
+        this.data.underwriterSignature = await this.dharma.sign.asUnderwriter(
+            this.data,
+            isMetaMask,
+        );
+    }
+
+    /**
+     * Returns whether the loan request has been signed by an underwriter.
+     *
+     * @example
+     * loanRequest.isSignedByUnderwriter();
+     * => true
+     *
+     * @return {boolean}
+     */
+    public isSignedByUnderwriter(): boolean {
+        const debtOrderDataWrapper = new DebtOrderDataWrapper(this.data);
+
+        if (
+            this.data.underwriterSignature === NULL_ECDSA_SIGNATURE ||
+            !SignatureUtils.isValidSignature(
+                debtOrderDataWrapper.getUnderwriterCommitmentHash(),
+                this.data.underwriterSignature,
+                this.data.underwriter,
+            )
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 }
