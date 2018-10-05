@@ -1,20 +1,14 @@
-// Debt Order
-import { LoanRequestParams } from "../../../../src/loan";
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
 
 import { DurationUnit } from "../../../../src/types";
 
-// Test utils
-import { ACCOUNTS } from "../../../accounts";
-
-const debtor = ACCOUNTS[1];
-
 export interface IsExpiredScenario {
     description: string;
-    params: LoanRequestParams;
+    params: DebtOrderParams;
     isExpired: boolean;
 }
 
-const DEFAULT: LoanRequestParams = {
+const DEFAULT: DebtOrderParams = {
     principalAmount: 5,
     principalToken: "REP",
     collateralAmount: 10,

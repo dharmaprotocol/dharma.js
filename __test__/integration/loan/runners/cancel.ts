@@ -1,15 +1,15 @@
-// Debt Order
-import { LoanRequest, LoanRequestParams } from "../../../../src/loan";
+import { LoanRequest } from "../../../../src/loan";
 
-// Import Dharma for typing-checking.
+import { DebtOrderParams } from "../../../../src/loan/debt_order";
+
 import { Dharma } from "../../../../src/types/dharma";
 
-export async function testCancel(dharma: Dharma, params: LoanRequestParams) {
+export async function testCancel(dharma: Dharma, params: DebtOrderParams) {
     describe("for an open loan request", () => {
         let loanRequest: LoanRequest;
 
         beforeAll(async () => {
-            loanRequest = await LoanRequest.create(dharma, params);
+            loanRequest = await LoanRequest.create<LoanRequest>(dharma, params);
         });
 
         describe("calling cancel before the request has been signed by the debtor", () => {
