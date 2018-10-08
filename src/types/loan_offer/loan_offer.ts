@@ -140,14 +140,15 @@ export class LoanOffer extends DebtOrder {
     public getLoanOfferHash(): string {
         return Web3Utils.soliditySHA3(
             this.data.creditor,
+            this.data.kernelVersion,
             this.data.issuanceVersion,
-            this.data.creditorFee,
-            this.data.underwriter,
-            this.data.underwriterRiskRating,
             this.data.termsContract,
-            this.data.termsContractParameters,
-            this.data.expirationTimestampInSec,
+            this.data.principalToken,
             this.data.salt,
+            this.data.principalAmount,
+            this.data.creditorFee,
+            this.data.expirationTimestampInSec,
+            this.data.termsContractParameters,
         );
     }
 }
