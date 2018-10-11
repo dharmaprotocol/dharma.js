@@ -1,6 +1,6 @@
 {
     "name": "@dharmaprotocol/dharma.js",
-    "version": "0.1.71",
+    "version": "0.1.72",
     "description": "",
     "keywords": [],
     "main": "dist/dharma.umd.js",
@@ -126,7 +126,7 @@
         "webpack": "^3.11.0"
     },
     "dependencies": {
-        "@dharmaprotocol/contracts": "0.1.20",
+        "@dharmaprotocol/contracts": "0.1.21",
         "@types/lodash": "^4.14.104",
         "abi-decoder": "https://github.com/dharmaprotocol/abi-decoder",
         "bignumber.js": "^5.0.0",
