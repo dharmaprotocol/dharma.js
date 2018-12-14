@@ -1,5 +1,5 @@
 export const erc721CollateralizedSimpleInterestLoanOrder = {
-    id: "/CollateralizedSimpleInterestLoanOrder",
+    id: "/ERC721CollateralizedSimpleInterestLoanOrder",
     allOf: [
         { $ref: "/SimpleInterestLoanOrder" },
         {
