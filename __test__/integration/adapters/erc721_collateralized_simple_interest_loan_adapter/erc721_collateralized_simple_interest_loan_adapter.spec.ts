@@ -56,23 +56,28 @@ describe("ERC721 Collateralized Simple Interest Loan Adapter (Integration Tests)
         tokenApi,
     });
 
-    describe("#returnCollateral", () => {
-        describe("Successful return of collateral", () => {
-            SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
-        });
+    it("Note: this test suite (and feature set) has been temporarily deprecated");
 
-        describe("Unsuccessful attempt to return collateral", () => {
-            UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
-        });
-    });
+    // Temporarily deprecating test suite for 721 because we're temporarily deprecating 721 collateralization
+    // as a feature.
 
-    describe("#seizeCollateral", () => {
-        describe("Successful seizure of collateral", () => {
-            SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
-        });
-
-        describe("Unsuccessful attempt to seize collateral", () => {
-            UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
-        });
-    });
+    // describe("#returnCollateral", () => {
+    //     describe("Successful return of collateral", () => {
+    //         SUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
+    //     });
+    //
+    //     describe("Unsuccessful attempt to return collateral", () => {
+    //         UNSUCCESSFUL_RETURN_COLLATERAL_SCENARIOS.forEach(returnCollateralRunner.testScenario);
+    //     });
+    // });
+    //
+    // describe("#seizeCollateral", () => {
+    //     describe("Successful seizure of collateral", () => {
+    //         SUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
+    //     });
+    //
+    //     describe("Unsuccessful attempt to seize collateral", () => {
+    //         UNSUCCESSFUL_SEIZE_COLLATERAL_SCENARIOS.forEach(seizeCollateralRunner.testScenario);
+    //     });
+    // });
 });
