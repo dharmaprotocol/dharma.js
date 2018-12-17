@@ -68,8 +68,6 @@ export class AdaptersAPI {
                 return this.simpleInterestLoan;
             case TERMS_CONTRACT_TYPES.COLLATERALIZED_SIMPLE_INTEREST_LOAN:
                 return this.collateralizedSimpleInterestLoan;
-            case TERMS_CONTRACT_TYPES.ERC721_COLLATERALIZED_SIMPLE_INTEREST_LOAN:
-                return this.erc721CollateralizedSimpleInterestLoan;
             default:
                 throw new Error(AdaptersErrors.NO_ADAPTER_FOR_TERMS_CONTRACT(termsContractAddress));
         }
