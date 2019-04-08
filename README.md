@@ -1,5 +1,7 @@
 <img src="https://s3-us-west-2.amazonaws.com/dharma-assets/logo+orange.png"  width=300/>
 
+# NOTE: `dharma.js` is deprecated and no longer in active maintenance.  Please email support@dharma.io if you have any questions or concerns 
+
 ------------
 ## Hello, `dharma.js`!
 
